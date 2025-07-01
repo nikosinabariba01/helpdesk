@@ -26,10 +26,11 @@ use Illuminate\Support\Facades\Route;
 */
 Route::post('/telegram/webhook', [TelegramWebhookController::class, 'handle']);
 
-Route::get('/login', [LoginController::class, 'index'])->name('login');
-Route::post('/login', [LoginController::class, 'Login']);
+
 
 route::middleware(['guest'])->group(function(){
+    Route::get('/login', [LoginController::class, 'index'])->name('login');
+    Route::post('/login', [LoginController::class, 'Login']);
     Route::get('/register', [RegisterController::class, 'register']);
     Route::post('/register', [RegisterController::class, 'createAccount']);
 });
