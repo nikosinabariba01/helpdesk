@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->text('comment');
             $table->foreignId('ticket_id')->constrained('tickets')->onDelete('cascade');
+            $table->string('telegram_chat_id')->nullable()
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
