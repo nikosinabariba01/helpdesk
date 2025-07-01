@@ -1,56 +1,47 @@
-@extends('layouts.app') {{-- atau @extends('mainlayout.layout') --}}
-@section('content')
-<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
-    <div class="col-12 col-md-7 col-lg-5">
-        <div class="card shadow border-0 p-4">
-            <div class="card-body text-center">
-                <h3 class="mb-3 fw-bold">Login dengan Telegram</h3>
-                <div id="telegram-widget-box" class="mb-3">
-                    <!-- Telegram Login Widget akan muncul di sini -->
-                    <script async src="https://telegram.org/js/telegram-widget.js?22"
-                        data-telegram-login="kos74_bot" {{-- GANTI DENGAN BOT KAMU TANPA @ --}}
-                        data-size="large"
-                        data-userpic="false"
-                        data-request-access="write"
-                        data-onauth="onTelegramAuth">
-                    </script>
-                </div>
-
-                <div id="profile-wrap"></div>
-            </div>
-        </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Telegram Login Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Bootstrap CSS CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background: #f3f6fa; }
+    .center-box { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .profile-photo { width: 96px; height: 96px; object-fit: cover; border-radius: 50%; border: 3px solid #0d6efd; margin-bottom: 10px;}
+  </style>
+</head>
+<body>
+  <div class="center-box">
+    <div class="card shadow p-4 border-0" style="min-width:330px;">
+      <h3 class="mb-3 text-center">Login dengan Telegram</h3>
+      <div id="telegram-widget-box" class="mb-3 text-center">
+        <script async src="https://telegram.org/js/telegram-widget.js?22"
+          data-telegram-login="kos74_bot"  {{-- GANTI DENGAN BOT MU TANPA @ --}}
+          data-size="large"
+          data-userpic="false"
+          data-request-access="write"
+          data-onauth="onTelegramAuth">
+        </script>
+      </div>
+      <div id="profile-wrap" class="text-center"></div>
     </div>
-</div>
-@endsection
-
-@section('scripts')
-<script>
-function onTelegramAuth(user) {
-    // Buat konten profil Telegram yang rapi pakai Bootstrap
-    let foto = user.photo_url
-        ? `<img src="${user.photo_url}" class="rounded-circle border border-3 border-primary mb-3" width="96" height="96" alt="Profile Photo">`
-        : `<div class="rounded-circle bg-secondary mb-3" style="width:96px;height:96px;display:inline-block;"></div>`;
-    document.getElementById('profile-wrap').innerHTML = `
-        <div class="mb-2">${foto}</div>
-        <h5 class="mb-1 fw-bold">Hello, ${user.first_name ?? ''} ${user.last_name ?? ''}!</h5>
-        <div class="list-group text-start mt-3">
-            <div class="list-group-item">
-                <span class="fw-semibold">First Name:</span> ${user.first_name ?? '-'}
-            </div>
-            <div class="list-group-item">
-                <span class="fw-semibold">Last Name:</span> ${user.last_name ?? '-'}
-            </div>
-            <div class="list-group-item">
-                <span class="fw-semibold">Username:</span>
-                ${user.username ? `<a href="https://t.me/${user.username}" target="_blank">@${user.username}</a>` : '<span class="text-muted">-</span>'}
-            </div>
-            <div class="list-group-item">
-                <span class="fw-semibold">Telegram ID:</span> ${user.id}
-            </div>
-        </div>
-    `;
-    // Sembunyikan widget login
-    document.getElementById('telegram-widget-box').style.display = "none";
-}
-</script>
-@endsection
+  </div>
+  <script>
+    function onTelegramAuth(user) {
+      document.getElementById('profile-wrap').innerHTML = `
+        ${user.photo_url ? `<img src="${user.photo_url}" class="profile-photo">` : ""}
+        <h5 class="fw-bold">Hello, ${user.first_name ?? ""} ${user.last_name ?? ""}!</h5>
+        <ul class="list-group mb-0 mt-3">
+          <li class="list-group-item"><b>First Name:</b> ${user.first_name ?? '-'}</li>
+          <li class="list-group-item"><b>Last Name:</b> ${user.last_name ?? '-'}</li>
+          <li class="list-group-item"><b>Username:</b> ${user.username ? `<a href="https://t.me/${user.username}" target="_blank">@${user.username}</a>` : '-'}</li>
+          <li class="list-group-item"><b>Telegram ID:</b> ${user.id}</li>
+        </ul>
+      `;
+      document.getElementById('telegram-widget-box').style.display = "none";
+    }
+  </script>
+</body>
+</html>
