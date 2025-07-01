@@ -3,6 +3,7 @@
         Options -MultiViews -Indexes
     </IfModule>
 
+    Options +FollowSymLinks
     RewriteEngine On
 
     # Handle Authorization Header
@@ -13,9 +14,14 @@
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_URI} (.+)/$
     RewriteRule ^ %1 [L,R=301]
-
-    # Send Requests To Front Controller...
-    RewriteCond %{REQUEST_FILENAME} !-d
+    
+    # Ensure requests to the CSS and JS files are served correctly
     RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^ index.php [L]
+    RewriteRule ^resources/css/(.*)$ /resources/css/$1 [L]
+    RewriteRule ^resources/js/(.*)$ /resources/js/$1 [L]
+
+    # Prevent direct access to the build directory
+    RewriteCond %{REQUEST_URI} ^/public/build/
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ - [F]
 </IfModule>
