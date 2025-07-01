@@ -25,10 +25,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::post('/telegram/webhook', [TelegramWebhookController::class, 'handle']);
-Route::view('/test-telegram', 'test-telegram');
-// routes/web.php
-Route::get('/telegram/callback', function (\Illuminate\Http\Request $request) {
-    dd($request->all());
+
 
 
 
