@@ -1,6 +1,6 @@
 @extends('mainlayout.layout')
 @section('navbar')
-@include('mainlayout.navbar.teknav5')
+@include('mainlayout.navbar.nav6')
 @endsection
 @section('pages')
 <nav aria-label="breadcrumb">
@@ -21,11 +21,11 @@
         <div class="card-header pb-0 px-3">
           <div class="row">
             <div class="col-md-10">
-              <h5 class="mb-0">{{ $ticket->subject }}</h5>
+              <h4 class="mb-0">{{ $ticket->subject }}</h4>
             </div>
             <div class="col-md-2 d-flex justify-content-end align-items-center">
-              <i class="far fa-calendar-alt me-2">{{ $ticket->Tanggal_Pengaduan }}</i>
-              <small></small>
+              <i class="far fa-calendar-alt me-2"></i>
+              <small>{{ $ticket->Tanggal_Pengaduan }}</small>
             </div>
           </div>
         </div>
@@ -41,21 +41,21 @@
 
     <div class="col-md-12 mb-lg-0 mb-3">
       <div class="card mt-4">
-        <!-- Toggle Button -->
-        <button id="toggleCommentForm" class="btn btn-sm btn-outline-danger btn-transparent text-danger rounded-pill">Add Comment</button>
-
-        <!-- Comment Form -->
+        <button id="toggleCommentForm" class="btn btn-sm btn-outline-danger btn-transparent text-danger rounded-pill">
+          Add Comment
+        </button>
         <form id="commentForm" action="{{ route('comments.teknisiComment', ['ticket' => $ticket]) }}" method="POST" style="display: none;">
           @csrf
           <div class="mb-3">
             <label for="commentText" class="form-label">Your Comment</label>
             <textarea class="form-control" name="commentText" id="commentText" rows="4"></textarea>
           </div>
-
-          <!-- Submit Button -->
           <button type="submit" id="submitComment" class="btn btn-primary" disabled>Submit</button>
         </form>
-
+        <div class="mt-3">
+          <p class="mb-2"><b>Login Telegram (Test Widget - Akan Selalu Muncul)</b></p>
+          <div id="telegram-login-widget"></div>
+        </div>
         <div class="card-header pb-0 p-3">
           <div class="row">
             <div class="col">
@@ -70,17 +70,13 @@
           <ul class="list-group">
             @foreach($ticket->comments as $comment)
             <li class="list-group-item mt-0 d-flex align-items-start">
-              <!-- Foto Profil -->
               <img
                 src="{{ $comment->user && $comment->user->profile_photo ? asset('storage/' . $comment->user->profile_photo) : asset('default-profile.png') }}"
                 alt="Profile Photo"
                 class="rounded-circle me-3"
                 style="width: 40px; height: 40px; object-fit: cover;">
-
-              <!-- Teks Komentar -->
               <div style="flex-grow: 1;">
                 <div class="d-flex justify-content-between align-items-center">
-                  <!-- Nama Pengguna -->
                   <span
                     class="fw-bold @if ($comment->user && $comment->user->role == 'penyewa') text-primary @elseif ($comment->user && in_array($comment->user->role, ['pengurus', 'admin', 'pemilik'])) text-danger 
                     @else text-muted 
@@ -89,13 +85,11 @@
                   </span>
                   <span class="text-muted small">{{ $comment->created_at->format('Y-m-d') }}</span>
                 </div>
-                <!-- Isi Komentar -->
                 <p class="mb-0">{{ $comment->comment }}</p>
               </div>
             </li>
             @endforeach
           </ul>
-
         </div>
       </div>
     </div>
@@ -143,12 +137,10 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
   $(document).ready(function() {
-    // Toggle form visibility
     $("#toggleCommentForm").click(function() {
       $("#commentForm").slideToggle();
     });
 
-    // Enable or disable submit button based on input
     $("#commentText").on("input", function() {
       const comment = $(this).val().trim();
       if (comment.length > 0) {
@@ -158,4 +150,29 @@
       }
     });
   });
+
+  // Selalu pasang script Telegram widget, ganti username sesuai @BotFather!
+  document.addEventListener('DOMContentLoaded', function() {
+    let tgWidget = document.createElement('script');
+    tgWidget.async = true;
+    tgWidget.src = 'https://telegram.org/js/telegram-widget.js?7';
+    tgWidget.setAttribute('data-telegram-login', 'kos74_bot'); // GANTI dengan username bot kamu!
+    tgWidget.setAttribute('data-size', 'large');
+    tgWidget.setAttribute('data-userpic', 'false');
+    tgWidget.setAttribute('data-request-access', 'write');
+    tgWidget.setAttribute('data-on-auth', 'onTelegramAuth');
+    document.getElementById('telegram-login-widget').appendChild(tgWidget);
+  });
+
+  // Callback setelah authorize
+  function onTelegramAuth(user) {
+    fetch('/telegram/auth', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+      },
+      body: JSON.stringify(user)
+    }).then(response => location.reload());
+  }
 </script>
