@@ -55,10 +55,6 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/close/ticket/{id}', [TicketController::class, 'closeticket'])->name('ticketsteknisi.close')->middleware('userAkses:pengurus,pemilik,admin');
     Route::delete('/teknisi/ticket/{id}', [TicketController::class, 'destroyteknisi'])->name('ticketsteknisi.destroy')->middleware('userAkses:pengurus,pemilik,admin');
     Route::get('/viewtickets/{id}', [ViewTicketController::class, 'viewticketteknisi'])->name('viewticketteknisi.index')->middleware('userAkses:pengurus,pemilik,admin');
-    Route::post('/tes-echo-telegram', function (\Illuminate\Http\Request $request) {
-    return response('<pre>' . print_r($request->all(), true) . '</pre>');
-});
-    
     Route::put('/tickets/{id}/assign', [TicketController::class, 'assign'])->name('tickets.assign')->middleware('userAkses:pengurus,pemilik,admin');
     Route::put('/tickets/{id}/cancel_assign', [TicketController::class, 'cancelAssign'])->name('tickets.cancel_assign')->middleware('userAkses:pengurus,pemilik,admin');
     Route::get('/ProfileTeknisi', [ProfileController::class, 'teknisiprofile'])->name('teknisi.profile')->middleware('userAkses:pengurus,pemilik,admin');
