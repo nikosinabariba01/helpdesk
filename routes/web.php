@@ -24,10 +24,12 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+Route::post('/telegram/webhook', [TelegramWebhookController::class, 'handle']);
+
+Route::get('/login', [LoginController::class, 'index'])->name('login');
+Route::post('/login', [LoginController::class, 'Login']);
 
 route::middleware(['guest'])->group(function(){
-    Route::get('/', [LoginController::class, 'index']);
-    Route::post('/', [LoginController::class, 'Login']);
     Route::get('/register', [RegisterController::class, 'register']);
     Route::post('/register', [RegisterController::class, 'createAccount']);
 });
@@ -84,7 +86,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/tickets/{ticket}/comments', [TicketCommentController::class, 'store'])->name('comments.store')->middleware('userAkses:penyewa,admin');;
     Route::post('/tickets/{ticket}/teknisicomments', [TicketCommentController::class, 'teknisiComment'])->name('comments.teknisiComment')->middleware('userAkses:pengurus,pemilik,admin');
     Route::post('/telegram/auth', [TelegramAuthController::class, 'telegramAuthorize'])->middleware('auth');
-    Route::post('/telegram/webhook', [TelegramWebhookController::class, 'handle']);
     
 
     Route::get('/tickets/{ticket}/download-image', [TicketController::class, 'downloadImage'])->name('tickets.downloadImage');
