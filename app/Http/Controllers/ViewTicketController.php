@@ -1,20 +1,15 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Ticket;
-use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
 
-class ViewTicketController extends Controller
-{
+class ViewTicketController extends Controller {
 
     //customer
-    public function index($id)
-    {
+    public function index($id) {
         // Mengambil tiket dengan relasi 'asignee', 'user', dan 'comments' menggunakan eager loading
         $ticket = Ticket::with(['asignee', 'user', 'comments.user'])->findOrFail($id);
 
@@ -35,22 +30,18 @@ class ViewTicketController extends Controller
     }
 
     //teknisi
-    public function viewticketteknisi($id)
-    {
+    public function viewticketteknisi($id) {
         // Mengambil tiket dari database berdasarkan ID
-        $ticket = Ticket::with(['asignee', 'user', 'comments.user'])->findOrFail($id);
+        $ticket   = Ticket::with(['asignee', 'user', 'comments.user'])->findOrFail($id);
         $userName = $ticket->user->name;
         $ticket->setRelation('comments', $ticket->comments()->orderBy('created_at', 'desc')->get());
-
-
 
         return view('teknisiviewticket', compact('ticket', 'userName'));
     }
 
-    public function downloadImage(Ticket $ticket)
-    {
+    public function downloadImage(Ticket $ticket) {
         // Periksa apakah gambar ada
-        if (!$ticket->gambar || !Storage::exists('public/' . $ticket->gambar)) {
+        if (! $ticket->gambar || ! Storage::exists('public/' . $ticket->gambar)) {
             return back()->with('error', 'File not found.');
         }
 

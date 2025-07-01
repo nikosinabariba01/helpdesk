@@ -41,10 +41,13 @@
 
     <div class="col-md-12 mb-lg-0 mb-3">
       <div class="card mt-4">
+        @if (auth()->user()->telegram_chat_id)
+        <!-- Tombol Add Comment -->
         <button id="toggleCommentForm" class="btn btn-sm btn-outline-danger btn-transparent text-danger rounded-pill">
           Add Comment
         </button>
-        <form id="commentForm" action="{{ route('comments.teknisiComment', ['ticket' => $ticket]) }}" method="POST" style="display: none;">
+        <!-- Comment Form -->
+        <form id="commentForm" action="{{ comments.teknisiComment', ['ticket' => $ticket]) }}" method="POST" style="display: none;">
           @csrf
           <div class="mb-3">
             <label for="commentText" class="form-label">Your Comment</label>
@@ -52,10 +55,17 @@
           </div>
           <button type="submit" id="submitComment" class="btn btn-primary" disabled>Submit</button>
         </form>
-        <div class="mt-3">
-          <p class="mb-2"><b>Login Telegram (Test Widget - Akan Selalu Muncul)</b></p>
+        @else
+        <div class="d-flex flex-column align-items-center justify-content-center py-4">
+          <p class="text-danger mb-2">
+            <i class="fab fa-telegram-plane"></i>
+            Untuk dapat berkomentar, silakan hubungkan akun Telegram Anda terlebih dahulu.
+          </p>
+          <!-- Widget Telegram Login -->
           <div id="telegram-login-widget"></div>
         </div>
+        @endif
+
         <div class="card-header pb-0 p-3">
           <div class="row">
             <div class="col">
@@ -151,20 +161,21 @@
     });
   });
 
-  // Selalu pasang script Telegram widget, ganti username sesuai @BotFather!
+  @if(!auth()->user()->telegram_chat_id)
+  // Render widget hanya jika user belum authorize
   document.addEventListener('DOMContentLoaded', function() {
     let tgWidget = document.createElement('script');
     tgWidget.async = true;
     tgWidget.src = 'https://telegram.org/js/telegram-widget.js?7';
-    tgWidget.setAttribute('data-telegram-login', 'kos74_bot'); // GANTI dengan username bot kamu!
+    tgWidget.setAttribute('data-telegram-login', 'kos74_bot'); // GANTI username bot!
     tgWidget.setAttribute('data-size', 'large');
     tgWidget.setAttribute('data-userpic', 'false');
     tgWidget.setAttribute('data-request-access', 'write');
     tgWidget.setAttribute('data-on-auth', 'onTelegramAuth');
     document.getElementById('telegram-login-widget').appendChild(tgWidget);
   });
+  @endif
 
-  // Callback setelah authorize
   function onTelegramAuth(user) {
     fetch('/telegram/auth', {
       method: 'POST',
