@@ -61,7 +61,7 @@
           <p class="text-sm text-muted">Klik tombol di bawah ini untuk login dengan Telegram dan terhubung ke bot:</p>
           <div>
             <script async src="https://telegram.org/js/telegram-widget.js?22"
-              data-telegram-login="samplebot"
+              data-telegram-login="kos74_bot"
               data-size="large"
               data-userpic="false"
               data-auth-url="{{ url('/telegram-redirect') }}"
