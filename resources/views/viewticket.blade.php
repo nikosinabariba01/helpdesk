@@ -56,21 +56,21 @@
           <button type="submit" id="submitComment" class="btn btn-primary" disabled>Submit</button>
         </form>
 
-        <!-- Telegram Login Section -->
+        <!-- Telegram Widget -->
         <div class="mt-4">
-          <p class="text-sm text-muted">Login dengan Telegram untuk menghubungkan akun Anda:</p>
+          <p class="text-sm text-muted">Klik tombol di bawah ini untuk login dengan Telegram dan terhubung ke bot:</p>
           <div>
             <script async src="https://telegram.org/js/telegram-widget.js?22"
               data-telegram-login="kos74_bot"
               data-size="large"
-              data-userpic="true"
-              data-onauth="onTelegramAuth"
+              data-userpic="false"
+              data-auth-url="{{ url('/telegram-redirect') }}"
               data-request-access="write">
             </script>
           </div>
         </div>
 
-        <!-- Comment List -->
+        <!-- Comment Section -->
         <div class="card-header pb-0 p-3">
           <div class="row">
             <div class="col">
@@ -85,14 +85,14 @@
           <ul class="list-group">
             @foreach($ticket->comments as $comment)
             <li class="list-group-item mt-0 d-flex align-items-start">
-              <img src="{{ $comment->user && $comment->user->profile_photo ? asset('storage/' . $comment->user->profile_photo) : asset('default-profile.png') }}"
-                   alt="Profile Photo"
-                   class="rounded-circle me-3"
-                   style="width: 40px; height: 40px; object-fit: cover;">
+              <img
+                src="{{ $comment->user && $comment->user->profile_photo ? asset('storage/' . $comment->user->profile_photo) : asset('default-profile.png') }}"
+                alt="Profile Photo"
+                class="rounded-circle me-3"
+                style="width: 40px; height: 40px; object-fit: cover;">
               <div style="flex-grow: 1;">
                 <div class="d-flex justify-content-between align-items-center">
-                  <span class="fw-bold 
-                    @if ($comment->user && $comment->user->role == 'penyewa') text-primary 
+                  <span class="fw-bold @if ($comment->user && $comment->user->role == 'penyewa') text-primary 
                     @elseif ($comment->user && in_array($comment->user->role, ['pengurus', 'admin', 'pemilik'])) text-danger 
                     @else text-muted 
                     @endif">
@@ -149,7 +149,7 @@
 
 @endsection
 
-<!-- Scripts -->
+<!-- jQuery & Comment Script -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
   $(document).ready(function () {
@@ -166,28 +166,4 @@
       }
     });
   });
-
-  function onTelegramAuth(user) {
-    alert('Logged in as ' + user.first_name + ' ' + (user.last_name || '') + ' (' + user.id + (user.username ? ', @' + user.username : '') + ')');
-
-    // Kirim data ke backend Laravel
-    $.ajax({
-      url: '{{ route("telegram.auth") }}',
-      type: 'POST',
-      data: {
-        _token: '{{ csrf_token() }}',
-        telegram_id: user.id,
-        first_name: user.first_name,
-        last_name: user.last_name,
-        username: user.username,
-        photo_url: user.photo_url
-      },
-      success: function (response) {
-        console.log(response.message);
-      },
-      error: function (xhr) {
-        console.error("Telegram auth failed:", xhr.responseText);
-      }
-    });
-  }
 </script>
