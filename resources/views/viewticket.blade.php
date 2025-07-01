@@ -138,6 +138,12 @@
         <a href="{{ route('tickets.downloadImage', ['ticket' => $ticket->id]) }}" class="btn btn-link text-dark text-sm mb-0 px-0  hover:scale-200" style="margin-top: -6px;">
           <i class="fas fa-file-pdf me-1"></i> <span style="color: blue;">Download file</span>
         </a>
+        <script async src="https://telegram.org/js/telegram-widget.js?22" data-telegram-login="kos74_bot" data-size="large" data-onauth="onTelegramAuth(user)" data-request-access="write"></script>
+<script type="text/javascript">
+  function onTelegramAuth(user) {
+    alert('Logged in as ' + user.first_name + ' ' + user.last_name + ' (' + user.id + (user.username ? ', @' + user.username : '') + ')');
+  }
+</script>
       </ul>
     </div>
   </div>
