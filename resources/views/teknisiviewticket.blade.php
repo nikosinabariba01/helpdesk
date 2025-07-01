@@ -47,7 +47,7 @@
           Add Comment
         </button>
         <!-- Comment Form -->
-        <form id="commentForm" action="{{ comments.teknisiComment', ['ticket' => $ticket]) }}" method="POST" style="display: none;">
+        <form id="commentForm" action="{{ route('comments.teknisiComment', ['ticket' => $ticket]) }}" method="POST" style="display: none;">
           @csrf
           <div class="mb-3">
             <label for="commentText" class="form-label">Your Comment</label>
