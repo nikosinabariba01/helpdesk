@@ -24,12 +24,13 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
 Route::post('/telegram/webhook', [TelegramWebhookController::class, 'handle']);
 
 
 
 
-route::middleware(['guest'])->group(function(){
+route::middleware(['guest'])->group(function () {
     Route::get('/', [LoginController::class, 'index'])->name('login');
     Route::post('/', [LoginController::class, 'Login']);
     Route::get('/register', [RegisterController::class, 'register']);
@@ -37,7 +38,7 @@ route::middleware(['guest'])->group(function(){
 });
 
 
-route::get('/home', function(){
+route::get('/home', function () {
     return redirect('/');
 });
 
@@ -64,7 +65,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/ProfileTeknisi', [ProfileController::class, 'teknisiprofile'])->name('teknisi.profile')->middleware('userAkses:pengurus,pemilik,admin');
     Route::post('/ProfileTeknisi/update', [ProfileController::class, 'updatecustomer'])->name('teknisi.profileupdate')->middleware('userAkses:pengurus,pemilik,admin,penyewa');
 
-    
+
     Route::get('/customer', [CustomerController::class, 'index'])->name('customer.index')->middleware('userAkses:penyewa,admin');
     Route::get('/Active', [CustomerController::class, 'viewprocess'])->name('customer.viewprocess')->middleware('userAkses:penyewa,admin');
     Route::get('/Profile/edit', [ProfileController::class, 'index'])->name('customer.profile')->middleware('auth');
@@ -72,7 +73,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('customer/viewticket/{id}', [ViewTicketController::class, 'index'])->name('viewtickets.index')->middleware('userAkses:penyewa,admin');
     Route::post('/Profile/update', [ProfileController::class, 'updatecustomer'])->name('customer.profileupdate')->middleware('userAkses:pengurus,pemilik,admin,penyewa');
 
-    
+
 
     Route::get('/customer/ticket', [TicketController::class, 'index'])->name('customer.tickets')->middleware('userAkses:penyewa,admin');
     Route::post('/customer/ticket', [TicketController::class, 'store'])->name('tickets.store')->middleware('userAkses:penyewa,admin');
@@ -87,7 +88,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/tickets/{ticket}/comments', [TicketCommentController::class, 'store'])->name('comments.store')->middleware('userAkses:penyewa,admin');;
     Route::post('/tickets/{ticket}/teknisicomments', [TicketCommentController::class, 'teknisiComment'])->name('comments.teknisiComment')->middleware('userAkses:pengurus,pemilik,admin');
     Route::post('/telegram/auth', [TelegramAuthController::class, 'telegramAuthorize'])->middleware('auth');
-    
+
 
     Route::get('/tickets/{ticket}/download-image', [TicketController::class, 'downloadImage'])->name('tickets.downloadImage');
     Route::get('/tickets/{ticket}/download-image/teknisi', [ViewTicketController::class, 'downloadImage'])->name('ticketsteknisi.downloadImage');
@@ -95,13 +96,8 @@ Route::middleware(['auth'])->group(function () {
 
 
     Route::view('/test-telegram', 'test-telegram');
-// routes/web.php
-Route::get('/telegram/callback', function (\Illuminate\Http\Request $request) {
-    dd($request->all());
-});
-
-
-
-
-    
+    // routes/web.php
+    Route::get('/telegram/callback', function (\Illuminate\Http\Request $request) {
+        dd($request->all());
+    });
 });
