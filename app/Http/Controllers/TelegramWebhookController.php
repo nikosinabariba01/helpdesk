@@ -4,11 +4,20 @@ namespace App\Http\Controllers;
 use App\Models\Comment;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+
 
 class TelegramWebhookController extends Controller {
     public function handle(Request $request) {
+        // Log semua request yang masuk (debug)
+        Log::info('Telegram Webhook Hit', [
+            'body'    => $request->all(),
+            'headers' => $request->headers->all(),
+        ]);
+
         $message = $request->input('message');
         if (! $message || ! isset($message['from']['id'])) {
+            Log::warning('Telegram Webhook: No valid message or from ID!');
             return response()->json(['ok' => true]);
         }
 
@@ -16,8 +25,7 @@ class TelegramWebhookController extends Controller {
         $telegramUserId = $message['from']['id'];
         $user           = User::where('telegram_chat_id', $telegramUserId)->first();
 
-                       // Anda bisa mapping ke ticket tertentu, atau parsing ticket_id dari text (custom)
-        $ticketId = 1; // contoh default, sesuaikan kebutuhan
+        $ticketId = 1; // contoh default
 
         if ($user) {
             $comment            = new Comment();
@@ -25,6 +33,10 @@ class TelegramWebhookController extends Controller {
             $comment->user_id   = $user->id;
             $comment->ticket_id = $ticketId;
             $comment->save();
+
+            Log::info('Comment saved from Telegram user', ['user_id' => $user->id, 'comment' => $message['text']]);
+        } else {
+            Log::warning('Telegram Webhook: User not found!', ['telegram_id' => $telegramUserId]);
         }
 
         return response()->json(['ok' => true]);
