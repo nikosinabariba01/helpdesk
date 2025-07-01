@@ -31,7 +31,7 @@
         <div style="background:#fff;padding:24px 24px 12px 24px;border-radius:14px;box-shadow:0 1px 10px #0001;">
           <b>Halo, ${user.first_name || ''} ${user.last_name || ''}!</b><br>
           Username: ${user.username ? '@' + user.username : '(tidak ada username)'}<br>
-          Telegram ID: ${user.id}<br>
+          <b>Telegram ID:</b> ${user.id}<br>
           ${user.photo_url ? `<img src="${user.photo_url}" width="64" style="margin-top:8px;border-radius:40px;">` : ''}
         </div>
       `;
