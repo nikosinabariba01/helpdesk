@@ -93,9 +93,11 @@ Route::middleware(['auth'])->group(function () {
 
 
     Route::view('/test-telegram', 'test-telegram');
-Route::get('/telegram/callback', function (Request $request) {
+// routes/web.php
+Route::get('/telegram/callback', function (\Illuminate\Http\Request $request) {
     dd($request->all());
 });
+
 
 
 
