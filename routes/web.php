@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::post('/telegram/webhook', [TelegramWebhookController::class, 'handle']);
+Route::post('/webhook/telegram', [TicketCommentController::class, 'receiveTelegramMessage']);
 
 
 
@@ -77,7 +78,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/customer/ticket', [TicketController::class, 'store'])->name('tickets.store')->middleware('userAkses:penyewa,admin');
     Route::put('/customer/ticket/{id}', [TicketController::class, 'update'])->name('tickets.update')->middleware('userAkses:penyewa,admin');
     Route::put('/tickets/{id}', [TicketController::class, 'update'])->name('tickets.update')->middleware('userAkses:penyewa,admin');
-    Route::post('/webhook/telegram', [TicketCommentController::class, 'receiveTelegramMessage']);
 
 
     Route::delete('/customer/ticket/{id}', [TicketController::class, 'destroy'])->name('tickets.destroy')->middleware('userAkses:penyewa,admin');

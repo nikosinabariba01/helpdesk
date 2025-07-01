@@ -21,9 +21,20 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                return redirect(RouteServiceProvider::HOME);
+                // Tambahkan pengecekan role di sini:
+                $user = Auth::guard($guard)->user();
+                if ($user->role == 'admin') {
+                    return redirect('/admin');
+                } elseif (in_array($user->role, ['pengurus', 'pemilik'])) {
+                    return redirect('/teknisi');
+                } elseif ($user->role == 'penyewa') {
+                    return redirect('/customer');
+                } else {
+                    return redirect('/'); // fallback jika role tidak dikenali
+                }
             }
         }
+
 
         return $next($request);
     }
