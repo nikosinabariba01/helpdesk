@@ -43,11 +43,11 @@
                         <label class="form-label">Hubungkan Telegram:</label>
                         <!-- Widget Telegram -->
                         <script async src="https://telegram.org/js/telegram-widget.js?22"
-                            data-telegram-login="kos74_bot"  <!-- Ganti dengan username bot mu tanpa @ -->
+                            data-telegram-login="kos74_bot"  
                             data-size="large"
                             data-userpic="false"
                             data-request-access="write"
-                            data-auth-url="https://kos74.cloud/telegram/auth">
+                            data-auth-url="{{ url('telegram/auth') }}">
                         </script>
                     </div>
                     @endif

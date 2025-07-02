@@ -87,7 +87,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/tickets/{ticket}/comments', [TicketCommentController::class, 'store'])->name('comments.store')->middleware('userAkses:penyewa,admin');;
     Route::post('/tickets/{ticket}/teknisicomments', [TicketCommentController::class, 'teknisiComment'])->name('comments.teknisiComment')->middleware('userAkses:pengurus,pemilik,admin');
-    Route::post('/telegram/auth', [TelegramAuthController::class, 'telegramAuthorize'])->middleware('userAkses:pengurus,pemilik,admin');
+    Route::post('/telegram/auth', [TelegramAuthController::class, 'telegramAuthorize']);
 
 
     Route::get('/tickets/{ticket}/download-image', [TicketController::class, 'downloadImage'])->name('tickets.downloadImage');
