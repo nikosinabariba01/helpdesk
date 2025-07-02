@@ -47,7 +47,7 @@
                             data-size="large"
                             data-userpic="false"
                             data-request-access="write"
-                            data-auth-url="{{ url('/telegram/auth') }}">
+                            data-auth-url="https://kos74.cloud/telegram/auth">
                         </script>
                     </div>
                     @endif
