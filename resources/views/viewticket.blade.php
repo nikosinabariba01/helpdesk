@@ -41,37 +41,29 @@
 
     <div class="col-md-12 mb-lg-0 mb-3">
       <div class="card mt-4">
-        <!-- Toggle Button -->
-        @if(!Auth::user()->telegram_chat_id)
-          <button id="toggleTelegramAuth" class="btn btn-sm btn-outline-danger btn-transparent text-danger rounded-pill">Authorize Telegram</button>
-        @else
-          <button id="toggleCommentForm" class="btn btn-sm btn-outline-danger btn-transparent text-danger rounded-pill">Add Comment</button>
-        @endif
-
-        <!-- Telegram Authorization Form -->
-        @if(!Auth::user()->telegram_chat_id)
-          <div id="telegramAuthForm" class="mt-3">
-            <!-- Widget Telegram -->
-            <script async src="https://telegram.org/js/telegram-widget.js?22"
-              data-telegram-login="kos74_bot"  
-              data-size="large"
-              data-userpic="false"
-              data-request-access="write"
-              data-auth-url="{{ url('telegram/auth') }}">
-            </script>
-          </div>
-        @endif
-
+        @if (auth()->user()->telegram_chat_id)
+        <!-- Tombol Add Comment -->
+        <button id="toggleCommentForm" class="btn btn-sm btn-outline-danger btn-transparent text-danger rounded-pill">
+          Add Comment
+        </button>
         <!-- Comment Form -->
-        @if(Auth::user()->telegram_chat_id)
-          <form id="commentForm" action="{{ route('comments.store', ['ticket' => $ticket]) }}" method="POST" style="display: none;">
-            @csrf
-            <div class="mb-3">
-              <label for="commentText" class="form-label">Your Comment</label>
-              <textarea class="form-control" name="commentText" id="commentText" rows="4"></textarea>
-            </div>
-            <button type="submit" id="submitComment" class="btn btn-primary" disabled>Submit</button>
-          </form>
+        <form id="commentForm" action="{{ route('comments.teknisiComment', ['ticket' => $ticket]) }}" method="POST" style="display: none;">
+          @csrf
+          <div class="mb-3">
+            <label for="commentText" class="form-label">Your Comment</label>
+            <textarea class="form-control" name="commentText" id="commentText" rows="4"></textarea>
+          </div>
+          <button type="submit" id="submitComment" class="btn btn-primary" disabled>Submit</button>
+        </form>
+        @else
+        <div class="d-flex flex-column align-items-center justify-content-center py-4">
+          <p class="text-danger mb-2">
+            <i class="fab fa-telegram-plane"></i>
+            Untuk dapat berkomentar, silakan hubungkan akun Telegram Anda terlebih dahulu.
+          </p>
+          <!-- Widget Telegram Login -->
+          <div id="telegram-login-widget"></div>
+        </div>
         @endif
 
         <div class="card-header pb-0 p-3">
@@ -83,24 +75,29 @@
             </div>
           </div>
         </div>
-
         <div class="card-body p-3">
           <hr class="my-0">
           <ul class="list-group">
             @foreach($ticket->comments as $comment)
-              <li class="list-group-item mt-0 d-flex align-items-start">
-                <!-- Foto Profil -->
-                <img src="{{ $comment->user && $comment->user->profile_photo ? asset('storage/' . $comment->user->profile_photo) : asset('default-profile.png') }}" alt="Profile Photo" class="rounded-circle me-3" style="width: 40px; height: 40px; object-fit: cover;">
-                <div style="flex-grow: 1;">
-                  <div class="d-flex justify-content-between align-items-center">
-                    <span class="fw-bold @if ($comment->user && $comment->user->role == 'penyewa') text-primary @elseif ($comment->user && in_array($comment->user->role, ['pengurus', 'admin', 'pemilik'])) text-danger @else text-muted @endif">
-                      {{ $comment->user ? $comment->user->name : 'User Not Found' }}
-                    </span>
-                    <span class="text-muted small">{{ $comment->created_at->format('Y-m-d') }}</span>
-                  </div>
-                  <p class="mb-0">{{ $comment->comment }}</p>
+            <li class="list-group-item mt-0 d-flex align-items-start">
+              <img
+                src="{{ $comment->user && $comment->user->profile_photo ? asset('storage/' . $comment->user->profile_photo) : asset('default-profile.png') }}"
+                alt="Profile Photo"
+                class="rounded-circle me-3"
+                style="width: 40px; height: 40px; object-fit: cover;">
+              <div style="flex-grow: 1;">
+                <div class="d-flex justify-content-between align-items-center">
+                  <span
+                    class="fw-bold @if ($comment->user && $comment->user->role == 'penyewa') text-primary @elseif ($comment->user && in_array($comment->user->role, ['pengurus', 'admin', 'pemilik'])) text-danger 
+                    @else text-muted 
+                    @endif">
+                    {{ $comment->user ? $comment->user->name : 'User Not Found' }}
+                  </span>
+                  <span class="text-muted small">{{ $comment->created_at->format('Y-m-d') }}</span>
                 </div>
-              </li>
+                <p class="mb-0">{{ $comment->comment }}</p>
+              </div>
+            </li>
             @endforeach
           </ul>
         </div>
@@ -128,7 +125,7 @@
         </div>
         <div class="d-flex flex-column">
           <h7 class="mb-3 text-sm">{{ \Carbon\Carbon::parse($ticket->Tanggal_Pengaduan)->format('d F Y') }}</h7>
-          <span class="mb-3 text-xs">Jenis Pengaduan: <span class="text-dark font-weight-bold ms-sm-0">{{ $ticket->Jenis_Pengaduan }}</span></span>
+          <span class="mb-3 text-xs">Jenis Penganduan: <span class="text-dark font-weight-bold ms-sm-0">{{ $ticket->Jenis_Pengaduan }}</span></span>
           <span class="mb-3 text-xs">Lokasi: <span class="text-dark ms-sm-0 font-weight-bold">{{ $ticket->Lokasi }}</span></span>
           <span class="mb-3 text-xs">Status: <x-status-badge :status="$ticket->status" /></span>
           <span class="text-xs">
@@ -138,25 +135,22 @@
             </span>
           </span>
         </div>
-        <a href="{{ route('tickets.downloadImage', ['ticket' => $ticket->id]) }}" class="btn btn-link text-dark text-sm mb-0 px-0  hover:scale-200" style="margin-top: -6px;">
+        <a href="{{ route('ticketsteknisi.downloadImage', ['ticket' => $ticket->id]) }}" class="btn btn-link text-dark text-sm mb-0 px-0  hover:scale-200" style="margin-top: -6px;">
           <i class="fas fa-file-pdf me-1"></i> <span style="color: blue;">Download file</span>
         </a>
       </ul>
     </div>
   </div>
 </div>
-
 @endsection
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
   $(document).ready(function() {
-    // Toggle form visibility
     $("#toggleCommentForm").click(function() {
       $("#commentForm").slideToggle();
     });
 
-    // Enable or disable submit button based on input
     $("#commentText").on("input", function() {
       const comment = $(this).val().trim();
       if (comment.length > 0) {
@@ -165,10 +159,31 @@
         $("#submitComment").prop("disabled", true).removeClass("btn-primary").addClass("btn-secondary");
       }
     });
-
-    // Toggle telegram authorization button
-    $("#toggleTelegramAuth").click(function() {
-      $("#telegramAuthForm").slideToggle();
-    });
   });
+
+  @if(!auth()->user()->telegram_chat_id)
+  // Render widget hanya jika user belum authorize
+  document.addEventListener('DOMContentLoaded', function() {
+    let tgWidget = document.createElement('script');
+    tgWidget.async = true;
+    tgWidget.src = 'https://telegram.org/js/telegram-widget.js?22';
+    tgWidget.setAttribute('data-telegram-login', 'kos74_bot'); // GANTI username bot!
+    tgWidget.setAttribute('data-size', 'large');
+    tgWidget.setAttribute('data-userpic', 'false');
+    tgWidget.setAttribute('data-request-access', 'write');
+    tgWidget.setAttribute('data-on-auth', '{{ url('telegram/auth') }}');
+    document.getElementById('telegram-login-widget').appendChild(tgWidget);
+  });
+  @endif
+
+  function onTelegramAuth(user) {
+    fetch('/telegram/auth', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+      },
+      body: JSON.stringify(user)
+    }).then(response => location.reload());
+  }
 </script>
