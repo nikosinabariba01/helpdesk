@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
+use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -31,12 +32,21 @@ class TelegramWebhookController extends Controller {
             $user = User::where('telegram_chat_id', $telegramUserId)->first();
 
             if ($user) {
-                // Jika user ditemukan, buat komentar baru untuk tiket terkait
-                $comment            = new Comment();
-                $comment->comment   = $commentText;
-                $comment->user_id   = $user->id;              // ID user dari database
-                $comment->ticket_id = $message['chat']['id']; // Menggunakan ID chat Telegram untuk menentukan tiket
-                $comment->save();
+                // Dapatkan tiket yang sesuai dengan user
+                // Misalnya, bisa menggunakan ID tiket yang terkait dengan pengguna atau sesuatu yang relevan
+                $ticket = Ticket::where('user_id', $user->id)->first(); // Anda bisa menyesuaikan logika pencarian tiket sesuai kebutuhan
+
+                if ($ticket) {
+                    // Jika tiket ditemukan, buat komentar baru untuk tiket terkait
+                    $comment            = new Comment();
+                    $comment->comment   = $commentText;
+                    $comment->user_id   = $user->id;              // ID user dari database
+                    $comment->ticket_id = $ticket->id;             // Menggunakan ID tiket yang valid
+                    $comment->save();
+                } else {
+                    // Log jika tiket tidak ditemukan
+                    Log::error('Tiket tidak ditemukan untuk user Telegram ID: ' . $telegramUserId);
+                }
             }
 
             // Balas dengan pesan 'ok' ke Telegram
@@ -46,4 +56,5 @@ class TelegramWebhookController extends Controller {
         return response()->json(['ok' => false]);
     }
 }
+
 
