@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Ticket;
@@ -6,10 +7,12 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
-class ViewTicketController extends Controller {
+class ViewTicketController extends Controller
+{
 
     //customer
-    public function index($id) {
+    public function index($id)
+    {
         // Mengambil tiket dengan relasi 'asignee', 'user', dan 'comments' menggunakan eager loading
         $ticket = Ticket::with(['asignee', 'user', 'comments.user'])->findOrFail($id);
 
@@ -18,6 +21,9 @@ class ViewTicketController extends Controller {
         if ($authUserId !== $ticket->user_id) {
             abort(404, 'Ticket not found or unauthorized access.');
         }
+
+        // Simpan ID tiket ke session
+        session(['current_ticket_id' => $ticket->id]);
 
         // Mengurutkan komentar dari yang terbaru ke yang terlama
         $ticket->setRelation('comments', $ticket->comments()->orderBy('created_at', 'desc')->get());
@@ -30,7 +36,8 @@ class ViewTicketController extends Controller {
     }
 
     //teknisi
-    public function viewticketteknisi($id) {
+    public function viewticketteknisi($id)
+    {
         // Mengambil tiket dari database berdasarkan ID
         $ticket   = Ticket::with(['asignee', 'user', 'comments.user'])->findOrFail($id);
         $userName = $ticket->user->name;
@@ -39,7 +46,8 @@ class ViewTicketController extends Controller {
         return view('teknisiviewticket', compact('ticket', 'userName'));
     }
 
-    public function downloadImage(Ticket $ticket) {
+    public function downloadImage(Ticket $ticket)
+    {
         // Periksa apakah gambar ada
         if (! $ticket->gambar || ! Storage::exists('public/' . $ticket->gambar)) {
             return back()->with('error', 'File not found.');
