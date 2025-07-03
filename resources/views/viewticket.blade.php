@@ -57,7 +57,7 @@
               data-size="large"
               data-userpic="false"
               data-request-access="write"
-              data-auth-url="{{ url('telegram/auth') }}">
+              data-auth-url="{{ url('telegram/auth/' . $ticket->id) }}">
             </script>
           </div>
         @endif

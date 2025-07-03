@@ -11,7 +11,7 @@ class TelegramAuthController extends Controller {
     /**
      * Handle Telegram authorization and save telegram_chat_id to user.
      */
-    public function telegramAuthorize(Request $request) {
+    public function telegramAuthorize(Request $request, $ticket_id) {
         $data = $request->all();
         if (! $this->isValidTelegramAuth($data)) {
             return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
@@ -19,21 +19,19 @@ class TelegramAuthController extends Controller {
 
         $user = Auth::user();
         if ($user) {
-            $user->telegram_chat_id = $data['id']; // Telegram user ID
+            // Simpan telegram_chat_id ke user
+            $user->telegram_chat_id = $data['id'];
             $user->save();
 
-                                                      // Optional: Get the current ticket, if needed
-            $ticketId = session('current_ticket_id'); // Assuming you've stored the ticket ID in session before
-
-            // Redirect to the ticket details page
-            return redirect(route('viewtickets.index', ['id' => $ticketId]))->with('success', 'Akun Telegram berhasil terhubung!');
+            // Redirect ke halaman detail ticket dengan ticket_id
+            return redirect(route('viewtickets.index', ['id' => $ticket_id]))->with('success', 'Akun Telegram berhasil terhubung!');
         } else {
             return response()->json(['success' => false, 'message' => 'No authenticated user'], 401);
         }
     }
 
     /**
-     * Validate data from Telegram according to official docs.
+     * Validasi data dari Telegram sesuai dokumen resminya.
      */
     protected function isValidTelegramAuth($auth_data) {
         $check_hash = $auth_data['hash'];
