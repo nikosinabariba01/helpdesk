@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+use App\Models\Ticket;
+
+
 class TelegramAuthController extends Controller {
     /**
      * Handle Telegram authorization and save telegram_chat_id to user.
@@ -19,14 +22,18 @@ class TelegramAuthController extends Controller {
             $user->telegram_chat_id = $data['id']; // Telegram user ID
             $user->save();
 
-            return redirect(route('customer.profile'))->with('success', 'Akun Telegram berhasil terhubung!');
+                                                      // Optional: Get the current ticket, if needed
+            $ticketId = session('current_ticket_id'); // Assuming you've stored the ticket ID in session before
+
+            // Redirect to the ticket details page
+            return redirect(route('viewtickets.index', ['id' => $ticketId]))->with('success', 'Akun Telegram berhasil terhubung!');
         } else {
             return response()->json(['success' => false, 'message' => 'No authenticated user'], 401);
         }
     }
 
     /**
-     * Validasi data dari Telegram sesuai dokumen resminya.
+     * Validate data from Telegram according to official docs.
      */
     protected function isValidTelegramAuth($auth_data) {
         $check_hash = $auth_data['hash'];
@@ -40,7 +47,7 @@ class TelegramAuthController extends Controller {
         $data_check_string = implode("\n", $data_check_arr);
 
         $secret_key = hash('sha256', config('services.telegram.bot_token'), true);
-        $hash = hash_hmac('sha256', $data_check_string, $secret_key);
+        $hash       = hash_hmac('sha256', $data_check_string, $secret_key);
 
         return strcmp($hash, $check_hash) === 0;
     }
