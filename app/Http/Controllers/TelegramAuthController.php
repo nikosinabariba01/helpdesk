@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -7,12 +8,16 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Ticket;
 
 
-class TelegramAuthController extends Controller {
+class TelegramAuthController extends Controller
+{
     /**
      * Handle Telegram authorization and save telegram_chat_id to user.
      */
-    public function telegramAuthorize(Request $request, $ticket_id) {
+    public function telegramAuthorize(Request $request, $ticket_id)
+    {
         $data = $request->all();
+
+        // Validasi autentikasi data Telegram
         if (! $this->isValidTelegramAuth($data)) {
             return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
         }
@@ -23,8 +28,19 @@ class TelegramAuthController extends Controller {
             $user->telegram_chat_id = $data['id'];
             $user->save();
 
-            // Redirect ke halaman detail ticket dengan ticket_id
-            return redirect(route('viewtickets.index', ['id' => $ticket_id]))->with('success', 'Akun Telegram berhasil terhubung!');
+            // Cek role user dan arahkan ke halaman yang sesuai
+            if ($user->role == 'pengurus') {
+                // Jika pengurus, arahkan ke halaman teknisi
+                return redirect(route('viewticketteknisi.index', ['id' => $ticket_id]))
+                    ->with('success', 'Akun Telegram berhasil terhubung sebagai pengurus!');
+            } elseif ($user->role == 'penyewa') {
+                // Jika penyewa, arahkan ke halaman customer
+                return redirect(route('viewtickets.index', ['id' => $ticket_id]))
+                    ->with('success', 'Akun Telegram berhasil terhubung sebagai penyewa!');
+            } else {
+                // Jika role selain pengurus atau penyewa, beri pesan error atau ke halaman default
+                return redirect()->route('home')->with('error', 'Role tidak dikenali.');
+            }
         } else {
             return response()->json(['success' => false, 'message' => 'No authenticated user'], 401);
         }
@@ -33,7 +49,8 @@ class TelegramAuthController extends Controller {
     /**
      * Validasi data dari Telegram sesuai dokumen resminya.
      */
-    protected function isValidTelegramAuth($auth_data) {
+    protected function isValidTelegramAuth($auth_data)
+    {
         $check_hash = $auth_data['hash'];
         unset($auth_data['hash']);
         ksort($auth_data);
