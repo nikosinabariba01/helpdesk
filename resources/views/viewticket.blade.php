@@ -43,9 +43,23 @@
       <div class="card mt-4">
         <!-- Toggle Button -->
         @if(!Auth::user()->telegram_chat_id)
-          <button id="authorizeTelegramBtn" class="btn btn-sm btn-outline-danger btn-transparent text-danger rounded-pill">Authorize Telegram</button>
+          <button id="toggleTelegramAuth" class="btn btn-sm btn-outline-danger btn-transparent text-danger rounded-pill">Authorize Telegram</button>
         @else
           <button id="toggleCommentForm" class="btn btn-sm btn-outline-danger btn-transparent text-danger rounded-pill">Add Comment</button>
+        @endif
+
+        <!-- Telegram Authorization Form -->
+        @if(!Auth::user()->telegram_chat_id)
+          <div id="telegramAuthForm" class="mt-3">
+            <!-- Widget Telegram -->
+            <script async src="https://telegram.org/js/telegram-widget.js?22"
+              data-telegram-login="kos74_bot"  
+              data-size="large"
+              data-userpic="false"
+              data-request-access="write"
+              data-auth-url="{{ url('telegram/auth') }}">
+            </script>
+          </div>
         @endif
 
         <!-- Comment Form -->
@@ -59,17 +73,6 @@
             <button type="submit" id="submitComment" class="btn btn-primary" disabled>Submit</button>
           </form>
         @endif
-
-        <!-- Telegram Widget (Hidden Initially) -->
-        <div id="telegramAuthForm" style="display: none;">
-          <script async src="https://telegram.org/js/telegram-widget.js?22"
-            data-telegram-login="kos74_bot"  
-            data-size="large"
-            data-userpic="false"
-            data-request-access="write"
-            data-auth-url="{{ url('telegram/auth') }}">
-          </script>
-        </div>
 
         <div class="card-header pb-0 p-3">
           <div class="row">
@@ -163,9 +166,9 @@
       }
     });
 
-    // Directly trigger the Telegram login widget
-    $("#authorizeTelegramBtn").click(function() {
-      TWidgetLogin.auth(); // This will directly trigger the Telegram login widget
+    // Toggle telegram authorization button
+    $("#toggleTelegramAuth").click(function() {
+      $("#telegramAuthForm").slideToggle();
     });
   });
 </script>
