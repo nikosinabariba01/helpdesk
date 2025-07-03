@@ -41,7 +41,7 @@
 
     <div class="col-md-12 mb-lg-0 mb-3">
       <div class="card mt-4">
-        <!-- Button to toggle between Authorize Telegram and Comment -->
+        <!-- Toggle Button -->
         @if(!Auth::user()->telegram_chat_id)
           <button id="toggleTelegramAuth" class="btn btn-sm btn-outline-danger btn-transparent text-danger rounded-pill">Authorize Telegram</button>
         @else
