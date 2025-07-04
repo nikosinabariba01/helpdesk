@@ -72,6 +72,7 @@ class TelegramWebhookController extends Controller
     
             // Ambil tiket yang dimiliki oleh pengguna dan buat tombol untuk masing-masing tiket
             $tickets = Ticket::where('user_id', $user->id)->get();
+            Log::info("Tiket ditemukan untuk pengguna: " . $user->id);
             foreach ($tickets as $ticket) {
                 $keyboard['inline_keyboard'][] = [
                     [
