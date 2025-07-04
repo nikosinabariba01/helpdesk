@@ -97,6 +97,13 @@ class TelegramWebhookController extends Controller {
             }
         }
     }
+
+    protected function sendTelegramMessage($chatId, $message, $keyboard = null) {
+        // Kirim pesan ke Telegram dengan atau tanpa keyboard inline
+        $telegram = new TelegramService(); // Pastikan TelegramService sudah diimplementasikan
+        $telegram->sendMessage($chatId, $message, $keyboard);
+    }
+    
     
     // Menyimpan komentar berdasarkan ticket_id yang dipilih
     protected function saveComment($user, $commentText) {
