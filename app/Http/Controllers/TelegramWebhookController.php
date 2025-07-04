@@ -14,12 +14,12 @@ class TelegramWebhookController extends Controller {
         $update = $request->all();
         Log::info('Webhook DITERIMA:', $update);
 
-        if (isset($update['callback_query'])) {
-            // Ini adalah callback query
-            $this->handleCallback($update['callback_query']);
-        } elseif (isset($update['message'])) {
+        if (isset($update['message'])) {
             // Ini adalah pesan biasa
             $this->handleMessage($update['message']);
+        } elseif (isset($update['callback_query'])) {
+            // Ini adalah callback query
+            $this->handleCallback($update['callback_query']);
         }
 
         return response()->json(['ok' => true]);
