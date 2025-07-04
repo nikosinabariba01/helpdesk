@@ -7,24 +7,9 @@ use App\Models\User;
 use App\Services\TelegramService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 
 class TelegramWebhookController extends Controller {
-    public function handle(Request $request) {
-        // Menangani Update (Pesan atau Callback Query)
-        $update = $request->all();
-        Log::info('Webhook DITERIMA:', $update);
-
-        if (isset($update['callback_query'])) {
-            // Ini adalah callback query
-            $this->handleCallback($update['callback_query']);
-        } elseif (isset($update['message'])) {
-            // Ini adalah pesan biasa
-            $this->handleMessage($update['message']);
-        }
-
-        return response()->json(['ok' => true]);
-    }
-
     // Menangani callback query
     public function handleCallback($callbackQuery) {
         $chatId = $callbackQuery['from']['id']; // Ambil chat_id dari callback query
@@ -37,8 +22,8 @@ class TelegramWebhookController extends Controller {
 
             $ticket = Ticket::find($ticketId);
             if ($ticket) {
-                // Menyimpan ticket_id yang dipilih ke dalam session
-                session(['selected_ticket_id' => $ticket->id]);
+                // Menyimpan ticket_id yang dipilih ke dalam cache
+                Cache::put('selected_ticket_id_' . $chatId, $ticket->id, now()->addMinutes(30));
 
                 // Kirimkan pesan kepada pengguna untuk mengirimkan komentar
                 Log::info("Tiket ditemukan: {$ticket->id} - {$ticket->subject}");
@@ -63,28 +48,8 @@ class TelegramWebhookController extends Controller {
         $user = User::where('telegram_chat_id', $telegramUserId)->first();
 
         if ($user) {
-            // Membuat keyboard dengan pilihan tiket yang dimiliki pengguna
-            $keyboard = [
-                'inline_keyboard' => [],
-            ];
-
-            // Ambil tiket yang dimiliki oleh pengguna dan buat tombol untuk masing-masing tiket
-            $tickets = Ticket::where('user_id', $user->id)->get();
-            Log::info("Tiket ditemukan untuk pengguna: " . $user->id);
-            foreach ($tickets as $ticket) {
-                $keyboard['inline_keyboard'][] = [
-                    [
-                        'text'          => "Tiket #{$ticket->id} - {$ticket->subject}",
-                        'callback_data' => "ticket_{$ticket->id}", // Data yang dikirim saat memilih tiket
-                    ],
-                ];
-            }
-
-            // Kirim pesan dengan inline keyboard berisi pilihan tiket
-            $this->sendTelegramMessage($telegramChatId, "Silakan pilih tiket yang ingin Anda komentari:", $keyboard);
-
-            // Cek apakah ada ticket_id yang dipilih di session
-            $ticketId = session('selected_ticket_id');
+            // Mengambil ticket_id yang dipilih dari cache
+            $ticketId = Cache::get('selected_ticket_id_' . $telegramChatId);
             if ($ticketId) {
                 // Simpan komentar ke database untuk tiket yang dipilih
                 $comment            = new Comment();
