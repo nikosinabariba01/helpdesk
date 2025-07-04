@@ -27,8 +27,10 @@ class TelegramWebhookController extends Controller {
 
     // Menangani callback query
     public function handleCallback($callbackQuery) {
-        $chatId = $callbackQuery['message']['chat']['id'];
-        $data   = $callbackQuery['data'];
+        $chatId = $callbackQuery['from']['id']; // Gunakan callback_query['from']['id'] untuk mendapatkan chat_id
+        $data   = $callbackQuery['data'];       // Data yang dikirimkan saat memilih tiket, seperti "ticket_1234"
+
+        Log::info('Callback query diterima dengan data: ' . $data); // Debugging log
 
         if (strpos($data, 'ticket_') === 0) {
             $ticketId = substr($data, 7); // Mengambil ID tiket dari callback data
@@ -49,6 +51,8 @@ class TelegramWebhookController extends Controller {
         $telegramUsername = $message['from']['first_name'] . ' ' . $message['from']['last_name'];
         $telegramChatId   = $message['chat']['id'];
         $commentText      = $message['text']; // pesan yang dikirim
+
+        Log::info("Pesan diterima dari {$telegramUsername} (ID: {$telegramUserId}): {$commentText}"); // Debugging log
 
         // Cari user berdasarkan telegram_chat_id
         $user = User::where('telegram_chat_id', $telegramUserId)->first();
@@ -82,6 +86,7 @@ class TelegramWebhookController extends Controller {
         return $ticket ? $ticket->id : null;
     }
 }
+
 
 
 
