@@ -4,30 +4,27 @@ namespace App\Services;
 use Illuminate\Support\Facades\Http;
 
 class TelegramService {
-    protected $token;
+    private $apiUrl;
+    private $botToken;
 
     public function __construct() {
-        $this->token = config('services.telegram.bot_token');
+        $this->botToken = config('services.telegram.bot_token'); // Ambil bot token dari konfigurasi
+        $this->apiUrl   = "https://api.telegram.org/bot{$this->botToken}/";
     }
 
-    /**
-     * Kirim pesan ke satu user/teknisi (atau ke grup/channel, sesuai chat_id)
-     */
-    public function sendMessage($chatId, $text) {
-        $url = "https://api.telegram.org/bot{$this->token}/sendMessage";
-        return Http::post($url, [
+    public function sendMessage($chatId, $message, $keyboard = null) {
+        $url  = $this->apiUrl . 'sendMessage';
+        $data = [
             'chat_id'    => $chatId,
-            'text'       => $text,
+            'text'       => $message,
             'parse_mode' => 'HTML',
-        ]);
-    }
+        ];
 
-    /**
-     * Kirim pesan ke banyak user/teknisi sekaligus
-     */
-    public function sendBulkMessage(array $chatIds, $text) {
-        foreach ($chatIds as $chatId) {
-            $this->sendMessage($chatId, $text);
+        if ($keyboard) {
+            $data['reply_markup'] = json_encode($keyboard);
         }
+
+        Http::post($url, $data);
     }
 }
+

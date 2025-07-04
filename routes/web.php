@@ -26,6 +26,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('/telegram/webhook', [TelegramWebhookController::class, 'handle']);
+Route::post('/telegram/callback', [TelegramWebhookController::class, 'handleCallback']);
 Route::get('/', [LoginController::class, 'index'])->name('login');
 Route::post('/', [LoginController::class, 'Login']);
 
