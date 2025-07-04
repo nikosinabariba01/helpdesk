@@ -9,17 +9,19 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 
-class TelegramWebhookController extends Controller {
+class TelegramWebhookController extends Controller
+{
     // Menangani callback query
-    public function handleCallback($callbackQuery) {
+    public function handleCallback($callbackQuery)
+    {
         $chatId = $callbackQuery['from']['id']; // Ambil chat_id dari callback query
-        $data   = $callbackQuery['data'];       // Ambil data yang dikirimkan saat memilih tiket, seperti "ticket_35"
-
+        $data = $callbackQuery['data']; // Ambil data yang dikirimkan saat memilih tiket, seperti "ticket_35"
+    
         Log::info('Callback query diterima dengan data: ' . $data); // Debugging log
-
+    
         if (strpos($data, 'ticket_') === 0) {
             $ticketId = substr($data, 7); // Mengambil ID tiket dari callback data
-
+    
             $ticket = Ticket::find($ticketId);
             if ($ticket) {
                 // Menyimpan ticket_id yang dipilih ke dalam cache
@@ -36,17 +38,18 @@ class TelegramWebhookController extends Controller {
     }
 
     // Menangani pesan biasa
-    public function handleMessage($message) {
+    public function handleMessage($message)
+    {
         $telegramUserId   = $message['from']['id'];
         $telegramUsername = $message['from']['first_name'] . ' ' . $message['from']['last_name'];
         $telegramChatId   = $message['chat']['id'];
         $commentText      = $message['text']; // Pesan yang dikirim
-
+    
         Log::info("Pesan diterima dari {$telegramUsername} (ID: {$telegramUserId}): {$commentText}"); // Debugging log
-
+    
         // Cari user berdasarkan telegram_chat_id
         $user = User::where('telegram_chat_id', $telegramUserId)->first();
-
+    
         if ($user) {
             // Mengambil ticket_id yang dipilih dari cache
             $ticketId = Cache::get('selected_ticket_id_' . $telegramChatId);
@@ -67,7 +70,8 @@ class TelegramWebhookController extends Controller {
         return response()->json(['ok' => true]);
     }
 
-    protected function sendTelegramMessage($chatId, $message, $keyboard = null) {
+    protected function sendTelegramMessage($chatId, $message, $keyboard = null)
+    {
         // Kirim pesan ke Telegram dengan atau tanpa keyboard inline
         $telegram = new TelegramService();
         $telegram->sendMessage($chatId, $message, $keyboard);
