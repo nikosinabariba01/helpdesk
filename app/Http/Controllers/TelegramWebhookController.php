@@ -14,18 +14,18 @@ class TelegramWebhookController extends Controller {
         $update = $request->all();
         Log::info('Webhook DITERIMA:', $update);
 
-        if (isset($update['message'])) {
-            // Ini adalah pesan biasa
-            $this->handleMessage($update['message']);
-        } elseif (isset($update['callback_query'])) {
+        if (isset($update['callback_query'])) {
             // Ini adalah callback query
             $this->handleCallback($update['callback_query']);
+        } elseif (isset($update['message'])) {
+            // Ini adalah pesan biasa
+            $this->handleMessage($update['message']);
         }
 
         return response()->json(['ok' => true]);
     }
 
-    // Menangani callback query
+    // Menangani callback query (Pilihan tiket)
     public function handleCallback($callbackQuery) {
         $chatId = $callbackQuery['from']['id']; // Ambil chat_id dari callback query
         $data   = $callbackQuery['data'];       // Ambil data yang dikirimkan saat memilih tiket, seperti "ticket_35"
@@ -40,8 +40,10 @@ class TelegramWebhookController extends Controller {
                 // Menyimpan ticket_id yang dipilih ke dalam session
                 session(['selected_ticket_id' => $ticket->id]);
 
-                // Kirimkan pesan kepada pengguna untuk mengirimkan komentar
+                // Kirimkan pesan kepada pengguna bahwa tiket telah dipilih
                 Log::info("Tiket ditemukan: {$ticket->id} - {$ticket->subject}");
+
+                // Setelah memilih tiket, langsung minta pengguna mengirimkan komentar.
                 $this->sendTelegramMessage($chatId, "Silakan kirim komentar Anda untuk tiket #{$ticket->id} - {$ticket->subject}:");
             } else {
                 Log::error("Tiket dengan ID {$ticketId} tidak ditemukan.");
@@ -50,7 +52,7 @@ class TelegramWebhookController extends Controller {
         }
     }
 
-    // Menangani pesan biasa
+    // Menangani pesan biasa (Komentar dari pengguna)
     public function handleMessage($message) {
         $telegramUserId   = $message['from']['id'];
         $telegramUsername = $message['from']['first_name'] . ' ' . $message['from']['last_name'];
@@ -63,26 +65,6 @@ class TelegramWebhookController extends Controller {
         $user = User::where('telegram_chat_id', $telegramUserId)->first();
 
         if ($user) {
-            // Membuat keyboard dengan pilihan tiket yang dimiliki pengguna
-            $keyboard = [
-                'inline_keyboard' => [],
-            ];
-
-            // Ambil tiket yang dimiliki oleh pengguna dan buat tombol untuk masing-masing tiket
-            $tickets = Ticket::where('user_id', $user->id)->get();
-            Log::info("Tiket ditemukan untuk pengguna: " . $user->id);
-            foreach ($tickets as $ticket) {
-                $keyboard['inline_keyboard'][] = [
-                    [
-                        'text'          => "Tiket #{$ticket->id} - {$ticket->subject}",
-                        'callback_data' => "ticket_{$ticket->id}", // Data yang dikirim saat memilih tiket
-                    ],
-                ];
-            }
-
-            // Kirim pesan dengan inline keyboard berisi pilihan tiket
-            $this->sendTelegramMessage($telegramChatId, "Silakan pilih tiket yang ingin Anda komentari:", $keyboard);
-
             // Cek apakah ada ticket_id yang dipilih di session
             $ticketId = session('selected_ticket_id');
             if ($ticketId) {
@@ -94,8 +76,12 @@ class TelegramWebhookController extends Controller {
                 $comment->save();
 
                 Log::info("Komentar berhasil disimpan untuk tiket {$ticketId}: {$commentText}");
+
+                // Kirimkan pesan konfirmasi bahwa komentar berhasil disimpan
+                $this->sendTelegramMessage($telegramChatId, "Komentar Anda untuk tiket #{$ticketId} telah disimpan.");
             } else {
                 Log::error("Tidak ada tiket yang dipilih untuk user dengan ID {$telegramUserId}. Komentar tidak dapat disimpan.");
+                $this->sendTelegramMessage($telegramChatId, "Anda belum memilih tiket. Silakan pilih tiket terlebih dahulu.");
             }
         }
 
