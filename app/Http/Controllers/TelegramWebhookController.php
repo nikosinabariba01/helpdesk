@@ -14,6 +14,7 @@ class TelegramWebhookController extends Controller {
         $update = $request->all();
         Log::info('Webhook DITERIMA:', $update);
 
+        // Cek apakah ini adalah callback query
         if (isset($update['callback_query'])) {
             // Ini adalah callback query
             $this->handleCallback($update['callback_query']);
@@ -42,9 +43,7 @@ class TelegramWebhookController extends Controller {
 
                 // Kirimkan pesan kepada pengguna bahwa tiket telah dipilih
                 Log::info("Tiket ditemukan: {$ticket->id} - {$ticket->subject}");
-
-                // Setelah memilih tiket, langsung minta pengguna mengirimkan komentar.
-                $this->sendTelegramMessage($chatId, "Silakan kirim komentar Anda untuk tiket #{$ticket->id} - {$ticket->subject}:");
+                $this->sendTelegramMessage($chatId, "Tiket #{$ticket->id} - {$ticket->subject} telah dipilih. Silakan kirim komentar Anda.");
             } else {
                 Log::error("Tiket dengan ID {$ticketId} tidak ditemukan.");
                 $this->sendTelegramMessage($chatId, "Tiket yang Anda pilih tidak ditemukan.");
