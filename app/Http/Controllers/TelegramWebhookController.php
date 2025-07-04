@@ -14,7 +14,6 @@ class TelegramWebhookController extends Controller {
         $update = $request->all();
         Log::info('Webhook DITERIMA:', $update);
 
-        // Cek apakah ini adalah callback query
         if (isset($update['callback_query'])) {
             // Ini adalah callback query
             $this->handleCallback($update['callback_query']);
@@ -91,5 +90,26 @@ class TelegramWebhookController extends Controller {
         // Kirim pesan ke Telegram dengan atau tanpa keyboard inline
         $telegram = new TelegramService();
         $telegram->sendMessage($chatId, $message, $keyboard);
+    }
+
+    protected function sendTicketSelectionKeyboard($chatId) {
+        // Ambil tiket yang dimiliki oleh pengguna dan buat tombol untuk masing-masing tiket
+        $keyboard = [
+            'inline_keyboard' => [],
+        ];
+
+        // Ambil tiket yang dimiliki oleh pengguna dan buat tombol untuk masing-masing tiket
+        $tickets = Ticket::where('user_id', $chatId)->get();
+        foreach ($tickets as $ticket) {
+            $keyboard['inline_keyboard'][] = [
+                [
+                    'text'          => "Tiket #{$ticket->id} - {$ticket->subject}",
+                    'callback_data' => "ticket_{$ticket->id}", // Data yang dikirim saat memilih tiket
+                ],
+            ];
+        }
+
+        // Kirim pesan dengan inline keyboard berisi pilihan tiket
+        $this->sendTelegramMessage($chatId, "Silakan pilih tiket yang ingin Anda komentari:", $keyboard);
     }
 }
