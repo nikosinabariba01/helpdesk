@@ -30,16 +30,15 @@ class TelegramWebhookController extends Controller
     }
 
     // Menangani callback query
-    public function handleCallback($callbackQuery)
-    {
-        $chatId = $callbackQuery['from']['id']; // Gunakan callback_query['from']['id'] untuk mendapatkan chat_id
-        $data = $callbackQuery['data']; // Data yang dikirimkan saat memilih tiket, seperti "ticket_35"
-
+    public function handleCallback($callbackQuery) {
+        $chatId = $callbackQuery['message']['chat']['id']; // Ambil chat_id dari callback query
+        $data = $callbackQuery['data']; // Ambil data yang dikirimkan saat memilih tiket, seperti "ticket_35"
+    
         Log::info('Callback query diterima dengan data: ' . $data); // Debugging log
-
+    
         if (strpos($data, 'ticket_') === 0) {
             $ticketId = substr($data, 7); // Mengambil ID tiket dari callback data
-
+    
             $ticket = Ticket::find($ticketId);
             if ($ticket) {
                 // Kirimkan pesan kepada pengguna untuk mengirimkan komentar
@@ -49,47 +48,53 @@ class TelegramWebhookController extends Controller
                 Log::error("Tiket dengan ID {$ticketId} tidak ditemukan.");
                 $this->sendTelegramMessage($chatId, "Tiket yang Anda pilih tidak ditemukan.");
             }
-        } else {
-            Log::error("Data callback query tidak valid: {$data}");
         }
-    }
+    }    
 
 
     // Menangani pesan biasa
-    public function handleMessage($message)
-    {
+    public function handleMessage($message) {
         $telegramUserId   = $message['from']['id'];
         $telegramUsername = $message['from']['first_name'] . ' ' . $message['from']['last_name'];
         $telegramChatId   = $message['chat']['id'];
-        $commentText      = $message['text']; // pesan yang dikirim
-
+        $commentText      = $message['text']; // Pesan yang dikirim
+    
         Log::info("Pesan diterima dari {$telegramUsername} (ID: {$telegramUserId}): {$commentText}"); // Debugging log
-
+    
         // Cari user berdasarkan telegram_chat_id
         $user = User::where('telegram_chat_id', $telegramUserId)->first();
-
+    
         if ($user) {
-            // Cari tiket berdasarkan ID pengguna dan kirimkan komentar
-            $ticketId = $this->getTicketIdForUser($user);
-            if ($ticketId) {
-                // Simpan komentar ke database untuk tiket yang sesuai
-                $comment            = new Comment();
-                $comment->comment   = $commentText;
-                $comment->user_id   = $user->id;
-                $comment->ticket_id = $ticketId; // ID tiket yang valid
-                $comment->save();
+            // Membuat keyboard dengan pilihan tiket yang dimiliki pengguna
+            $keyboard = [
+                'inline_keyboard' => []
+            ];
+    
+            // Ambil tiket yang dimiliki oleh pengguna dan buat tombol untuk masing-masing tiket
+            $tickets = Ticket::where('user_id', $user->id)->get();
+            foreach ($tickets as $ticket) {
+                $keyboard['inline_keyboard'][] = [
+                    [
+                        'text' => "Tiket #{$ticket->id} - {$ticket->subject}",
+                        'callback_data' => "ticket_{$ticket->id}" // Data yang dikirim saat memilih tiket
+                    ]
+                ];
             }
+    
+            // Kirim pesan dengan inline keyboard berisi pilihan tiket
+            $this->sendTelegramMessage($telegramChatId, "Silakan pilih tiket yang ingin Anda komentari:", $keyboard);
         }
-
+    
         return response()->json(['ok' => true]);
     }
+    
 
-    protected function sendTelegramMessage($chatId, $message)
-    {
-        // Kirim pesan ke Telegram
+    protected function sendTelegramMessage($chatId, $message, $keyboard = null) {
+        // Kirim pesan ke Telegram dengan atau tanpa keyboard inline
         $telegram = new TelegramService();
-        $telegram->sendMessage($chatId, $message);
+        $telegram->sendMessage($chatId, $message, $keyboard);
     }
+    
 
     protected function getTicketIdForUser($user)
     {
