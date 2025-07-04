@@ -25,7 +25,7 @@ class TicketCommentController extends Controller {
         // Mengirim pesan ke Telegram
         $telegram = new TelegramService();
         $userName = auth()->user()->name;
-        $message  = "<b>Ticket #{$ticket->id}</b>\nKomentar oleh <b>{$userName} (Penyewa)</b>:\n{$comment->comment}";
+        $message  = "<b>Ticket #{$ticket->id}</b>\nKomentar oleh <b>{$userName} (anda)</b>:\n{$comment->comment}";
 
         // 1. Kirim ke pemilik tiket
         if ($ticket->user && $ticket->user->telegram_chat_id) {
