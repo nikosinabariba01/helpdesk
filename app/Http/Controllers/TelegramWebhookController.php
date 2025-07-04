@@ -1,80 +1,85 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\Comment;
 use App\Models\Ticket;
 use App\Models\User;
-use App\Services\TelegramService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class TelegramWebhookController extends Controller {
     public function handle(Request $request) {
-        // Ambil data pesan dari webhook
-        $message = $request->input('message');
+        // Menangani Update (Pesan atau Callback Query)
+        $update = $request->all();
+        Log::info('Webhook DITERIMA:', $update);
 
-        // Cek apakah ada pesan dan ID pengirim
-        if ($message && isset($message['from']['id'])) {
-            $telegramUserId = $message['from']['id']; // ID User Telegram
-            $telegramChatId = $message['chat']['id']; // ID Chat Telegram
-            $user           = User::where('telegram_chat_id', $telegramUserId)->first();
-
-            if ($user) {
-                // Ambil semua tiket yang dimiliki oleh pengguna
-                $tickets = Ticket::where('user_id', $user->id)->get();
-
-                if ($tickets->isEmpty()) {
-                    $this->sendTelegramMessage($telegramChatId, "Anda belum memiliki tiket yang dapat dipilih.");
-                } else {
-                    // Membuat Inline Keyboard untuk memilih tiket
-                    $keyboard = [];
-                    foreach ($tickets as $ticket) {
-                        $keyboard[] = [
-                            'text'          => "Tiket #{$ticket->id} - {$ticket->subject}",
-                            'callback_data' => "ticket_{$ticket->id}", // Data yang akan diterima saat memilih
-                        ];
-                    }
-
-                    // Kirim pesan dengan pilihan tiket
-                    $this->sendTelegramMessage(
-                        $telegramChatId,
-                        "Silakan pilih tiket yang ingin Anda komentari:",
-                        [
-                            'inline_keyboard' => [$keyboard],
-                        ]
-                    );
-                }
-            }
+        // Cek apakah ini adalah callback query
+        if (isset($update['callback_query'])) {
+            // Ini adalah callback query
+            $this->handleCallback($update['callback_query']);
+        } elseif (isset($update['message'])) {
+            // Ini adalah pesan biasa
+            $this->handleMessage($update['message']);
         }
 
-        // Balas 'ok' ke Telegram
         return response()->json(['ok' => true]);
     }
 
-    public function handleCallback(Request $request) {
-        $callbackQuery = $request->input('callback_query');
-        $chatId        = $callbackQuery['message']['chat']['id'];
-        $data          = $callbackQuery['data']; // data yang dikirimkan saat memilih tiket, seperti "ticket_1234"
+    // Menangani callback query
+    public function handleCallback($callbackQuery) {
+        $chatId = $callbackQuery['message']['chat']['id'];
+        $data   = $callbackQuery['data'];
 
         if (strpos($data, 'ticket_') === 0) {
-            $ticketId = substr($data, 3); // Mengambil ID tiket dari callback data
+            $ticketId = substr($data, 7); // Mengambil ID tiket dari callback data
 
             $ticket = Ticket::find($ticketId);
             if ($ticket) {
                 // Kirimkan pesan kepada pengguna untuk mengirimkan komentar
-                $this->sendTelegramMessage(
-                    $chatId,
-                    "Silakan kirim komentar Anda untuk tiket #{$ticket->id} - {$ticket->subject}:"
-                );
+                $this->sendTelegramMessage($chatId, "Silakan kirim komentar Anda untuk tiket #{$ticket->id} - {$ticket->subject}:");
             } else {
                 $this->sendTelegramMessage($chatId, "Tiket yang Anda pilih tidak ditemukan.");
+            }
+        }
+    }
+
+    // Menangani pesan biasa
+    public function handleMessage($message) {
+        $telegramUserId   = $message['from']['id'];
+        $telegramUsername = $message['from']['first_name'] . ' ' . $message['from']['last_name'];
+        $telegramChatId   = $message['chat']['id'];
+        $commentText      = $message['text']; // pesan yang dikirim
+
+        // Cari user berdasarkan telegram_chat_id
+        $user = User::where('telegram_chat_id', $telegramUserId)->first();
+
+        if ($user) {
+            // Cari tiket berdasarkan ID pengguna dan kirimkan komentar
+            $ticketId = $this->getTicketIdForUser($user);
+            if ($ticketId) {
+                // Simpan komentar ke database untuk tiket yang sesuai
+                $comment            = new Comment();
+                $comment->comment   = $commentText;
+                $comment->user_id   = $user->id;
+                $comment->ticket_id = $ticketId; // ID tiket yang valid
+                $comment->save();
             }
         }
 
         return response()->json(['ok' => true]);
     }
 
-    private function sendTelegramMessage($chatId, $message, $keyboard = null) {
-        $telegramService = new TelegramService();
-        $telegramService->sendMessage($chatId, $message, $keyboard);
+    protected function sendTelegramMessage($chatId, $message) {
+        // Kirim pesan ke Telegram
+        $telegram = new TelegramService();
+        $telegram->sendMessage($chatId, $message);
+    }
+
+    protected function getTicketIdForUser($user) {
+        // Ambil tiket yang valid berdasarkan user
+        // Misalnya ambil tiket pertama yang valid
+        $ticket = Ticket::where('user_id', $user->id)->first();
+        return $ticket ? $ticket->id : null;
     }
 }
 
