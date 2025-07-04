@@ -55,7 +55,7 @@ class TelegramWebhookController extends Controller {
         $data          = $callbackQuery['data']; // data yang dikirimkan saat memilih tiket, seperti "ticket_1234"
 
         if (strpos($data, 'ticket_') === 0) {
-            $ticketId = substr($data, 7); // Mengambil ID tiket dari callback data
+            $ticketId = substr($data, 3); // Mengambil ID tiket dari callback data
 
             $ticket = Ticket::find($ticketId);
             if ($ticket) {
