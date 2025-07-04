@@ -96,6 +96,11 @@ class TelegramWebhookController extends Controller
         // Ambil tiket yang valid berdasarkan user
         // Misalnya ambil tiket pertama yang valid
         $ticket = Ticket::where('user_id', $user->id)->first();
-        return $ticket ? $ticket->id : null;
+        if ($ticket) {
+            return $ticket->id;
+        } else {
+            Log::error("Tidak ditemukan tiket untuk user dengan ID {$user->id}");
+            return null;
+        }
     }
 }
