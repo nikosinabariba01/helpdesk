@@ -63,6 +63,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/tickets/{id}/assign', [TicketController::class, 'assign'])->name('tickets.assign')->middleware('userAkses:pengurus,pemilik,admin');
     Route::put('/tickets/{id}/cancel_assign', [TicketController::class, 'cancelAssign'])->name('tickets.cancel_assign')->middleware('userAkses:pengurus,pemilik,admin');
     Route::post('/tickets/{id}/requestFollowup', [TicketController::class, 'requestFollowup'])->name('ticketsteknisi.requestFollowup')->middleware('userAkses:pengurus,pemilik,admin');
+    Route::put('/tickets/{id}/cancel-request-followup', [TicketController::class, 'cancelRequestFollowUp'])->name('ticketsteknisi.cancelRequestFollowUp')->middleware('userAkses:pengurus,pemilik,admin');
     Route::get('/ProfileTeknisi', [ProfileController::class, 'teknisiprofile'])->name('teknisi.profile')->middleware('userAkses:pengurus,pemilik,admin');
     Route::post('/ProfileTeknisi/update', [ProfileController::class, 'updatecustomer'])->name('teknisi.profileupdate')->middleware('userAkses:pengurus,pemilik,admin,penyewa');
 

@@ -75,12 +75,18 @@
                                     @method('PUT')
                                     <button type="submit" class="btn btn-sm btn-outline-danger btn-transparent text-secondary">Cancel Assign</button>
                                 </form>
-
-                                <form method="POST" action="{{ route('ticketsteknisi.requestFollowup', $teknisidataticket->id) }}">
+                                <form method="POST" action="{{ $teknisidataticket->status == 'escalated' ? route('ticketsteknisi.cancelRequestFollowUp', $teknisidataticket->id) : route('ticketsteknisi.requestFollowup', $teknisidataticket->id) }}">
                                     @csrf
+                                    @if($teknisidataticket->status == 'escalated')
+                                    @method('PUT') <!-- Menggunakan PUT karena kita akan memperbarui status tiket -->
+                                    <button type="submit" class="btn btn-sm btn-outline-danger btn-transparent text-danger">
+                                        <i class="fa fa-times pe-2 text-danger"></i>Cancel Request
+                                    </button>
+                                    @else
                                     <button type="submit" class="btn btn-sm btn-outline-success btn-transparent text-success">
                                         <i class="fa fa-refresh pe-2 text-success"></i>Request Follow-up
                                     </button>
+                                    @endif
                                 </form>
                             </td>
                             <!-- "Edit" button within a dropdown -->
