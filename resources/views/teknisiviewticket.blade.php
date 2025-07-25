@@ -133,8 +133,8 @@
           <span class="mb-3 text-xs">Status: <x-status-badge :status="$ticket->status" /></span>
           <span class="text-xs">
             assigned by:
-            <span class="{{ $ticket->asignee ? 'text-dark' : 'text-danger' }} ms-sm-0 font-weight-bold">
-              {{ $ticket->asignee->name ?? 'not taken yet!' }}
+            <span class="{{ $ticket->asignees ? 'text-dark' : 'text-danger' }} ms-sm-0 font-weight-bold">
+              {{ $ticket->asignees->name ?? 'not taken yet!' }}
             </span>
           </span>
         </div>

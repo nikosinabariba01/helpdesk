@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTicketRequest;
 use App\Models\Ticket;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -26,8 +27,8 @@ class TicketController extends Controller
         // Temukan tiket berdasarkan ID
         $ticket = Ticket::findOrFail($id);
 
-        // Perbarui asignee_id dengan ID pengguna yang sedang login
-        $ticket->asignee_id = Auth::id();
+        // Mengassign tiket kepada pengurus yang sedang login (many-to-many relationship)
+        $ticket->asignees()->attach(Auth::id());  // Menambahkan pengurus yang sedang login
         $ticket->status = 'on process';
         // Simpan perubahan ke database
         $ticket->save();
@@ -38,20 +39,58 @@ class TicketController extends Controller
     public function cancelAssign($id)
     {
         $ticket = Ticket::findOrFail($id);
-        $ticket->asignee_id = null;
-        $ticket->status = 'open'; // Mengubah status menjadi 'open'
+
+        // Menghapus pengurus yang sedang login sebagai asignee
+        $ticket->asignees()->detach(Auth::id());  // Menghapus pengurus yang sedang login sebagai asignee
+
+        // Periksa apakah masih ada asignee lainnya
+        if ($ticket->asignees->count() === 0) {
+            // Jika tidak ada asignee lain, ubah status menjadi 'open'
+            $ticket->status = 'open';
+        } else {
+            // Jika masih ada asignee lain, status tetap 'on process'
+            $ticket->status = 'on process';
+        }
+
+        // Simpan perubahan ke database
         $ticket->save();
 
         return redirect()->back()->with('success', 'Assignment canceled successfully!');
     }
 
+    public function requestFollowUp($id)
+    {
+        $ticket = Ticket::findOrFail($id);
+
+        // Menambahkan pengurus yang sedang login sebagai asignee
+        $ticket->asignees()->attach(Auth::id());  // Menambahkan pengurus
+
+        // Menambahkan semua pemilik sebagai asignee
+        $owners = User::where('role', 'pemilik')->get();  // Ambil semua pemilik
+
+        foreach ($owners as $owner) {
+            // Menambahkan pemilik ke tiket sebagai asignee
+            $ticket->asignees()->attach($owner->id);  // Menambahkan pemilik ke tiket
+        }
+
+        // Update status menjadi "on process"
+        $ticket->status = 'on process';
+        $ticket->save();  // Simpan perubahan ke database
+
+        // Kirim pesan kepada pemilik untuk menindaklanjuti
+        foreach ($owners as $owner) {
+            $this->sendTelegramMessage($owner->telegram_chat_id, "Tindak lanjut diperlukan untuk tiket #{$ticket->id}. Harap segera menindaklanjuti.");
+        }
+
+        return redirect(route('teknisi.index'))->with('success', 'Permintaan tindak lanjut telah dikirim ke pemilik.');
+    }
+
+
+
     public function closeticket(Request $request, $id)
     {
         // Temukan tiket berdasarkan ID
         $ticket = Ticket::findOrFail($id);
-
-        // Perbarui asignee_id dengan ID pengguna yang sedang login
-        $ticket->asignee_id = Auth::id();
         $ticket->status = 'close';
         // Simpan perubahan ke database
         $ticket->save();
@@ -196,6 +235,4 @@ class TicketController extends Controller
         // Unduh file
         return Storage::download('public/' . $ticket->gambar, basename($ticket->gambar));
     }
-
-    
 }

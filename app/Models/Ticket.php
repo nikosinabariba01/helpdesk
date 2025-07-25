@@ -42,10 +42,10 @@ class Ticket extends Model
         return $this->hasMany(Comment::class);
     }
     
-    public function asignee()
-{
-    return $this->belongsTo(User::class, 'asignee_id');
-}
+    public function asignees()
+    {
+        return $this->belongsToMany(User::class, 'ticket_assignees', 'ticket_id', 'user_id');
+    }
 
 
     
