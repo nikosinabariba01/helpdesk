@@ -132,7 +132,7 @@
           <span class="mb-3 text-xs">Lokasi: <span class="text-dark ms-sm-0 font-weight-bold">{{ $ticket->Lokasi }}</span></span>
           <span class="mb-3 text-xs">Status: <x-status-badge :status="$ticket->status" /></span>
           <span class="text-xs">
-            assigned by:
+            assigned bye:
             <span class="{{ $ticket->asignees->isNotEmpty() ? 'text-dark' : 'text-danger' }} ms-sm-0 font-weight-bold">
               @foreach($ticket->asignees as $assignee)
               {{ $assignee->name }}@if(!$loop->last), @endif
