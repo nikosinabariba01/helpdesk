@@ -70,10 +70,17 @@
                                 <span class="text-secondary text-xs font-weight-bold ">{{ $teknisidataticket->Detail }}</span>
                             </td>
                             <td class="align-middle text-center text-sm">
-                                <form action="{{ route('tickets.cancel_assign', $teknisidataticket->id) }}" method="POST">
+                                <form action="{{ route('tickets.cancel_assign', $teknisidataticket->id) }}" method="POST" class="mb-2">
                                     @csrf
                                     @method('PUT')
                                     <button type="submit" class="btn btn-sm btn-outline-danger btn-transparent text-secondary">Cancel Assign</button>
+                                </form>
+
+                                <form method="POST" action="{{ route('ticketsteknisi.requestFollowup', $teknisidataticket->id) }}">
+                                    @csrf
+                                    <button type="submit" class="btn btn-sm btn-outline-success btn-transparent text-success">
+                                        <i class="fa fa-refresh pe-2 text-success"></i>Request Follow-up
+                                    </button>
                                 </form>
                             </td>
                             <!-- "Edit" button within a dropdown -->
