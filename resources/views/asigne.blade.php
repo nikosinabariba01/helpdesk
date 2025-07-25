@@ -70,11 +70,15 @@
                                 <span class="text-secondary text-xs font-weight-bold ">{{ $teknisidataticket->Detail }}</span>
                             </td>
                             <td class="align-middle text-center text-sm">
+                                <!-- Cek apakah tiket sudah diassign oleh pemilik -->
+                                @if($teknisidataticket->asignees->where('role', 'pemilik')->isEmpty())
+                                <!-- Jika belum ada pemilik yang meng-assign, tampilkan tombol cancel assign -->
                                 <form action="{{ route('tickets.cancel_assign', $teknisidataticket->id) }}" method="POST" class="mb-2">
                                     @csrf
                                     @method('PUT')
                                     <button type="submit" class="btn btn-sm btn-outline-danger btn-transparent text-secondary">Cancel Assign</button>
                                 </form>
+                                <!-- Tombol Request Follow-up jika tiket belum escalated -->
                                 <form method="POST" action="{{ $teknisidataticket->status == 'escalated' ? route('ticketsteknisi.cancelRequestFollowUp', $teknisidataticket->id) : route('ticketsteknisi.requestFollowup', $teknisidataticket->id) }}">
                                     @csrf
                                     @if($teknisidataticket->status == 'escalated')
@@ -88,6 +92,14 @@
                                     </button>
                                     @endif
                                 </form>
+                                @else
+                                <!-- Jika sudah ada pemilik yang meng-assign, hanya tampilkan tombol Cancel Assign -->
+                                <form action="{{ route('tickets.cancel_assign', $teknisidataticket->id) }}" method="POST" class="mb-2">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="submit" class="btn btn-sm btn-outline-danger btn-transparent text-secondary">Cancel Assign</button>
+                                </form>
+                                @endif
                             </td>
                             <!-- "Edit" button within a dropdown -->
                             <td class="align-middle text-center border border-light">
