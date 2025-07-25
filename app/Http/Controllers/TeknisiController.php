@@ -68,7 +68,7 @@ class TeknisiController extends Controller {
             ->orderBy('created_at', 'desc')
             ->get();
     
-        return view('escalation', compact('teknisi_data_ticket', 'totalTickets'));
+        return view('escalation', compact('teknisi_data_ticket'));
     }
     
 
