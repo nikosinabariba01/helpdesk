@@ -61,24 +61,25 @@ class TicketController extends Controller
     public function requestFollowUp($id)
     {
         $ticket = Ticket::findOrFail($id);
-
-        // Menambahkan pengurus yang sedang login sebagai asignee
-        $ticket->asignees()->attach(Auth::id());  // Menambahkan pengurus
-
-        // Menambahkan semua pemilik sebagai asignee
+    
+        // Menambahkan pengurus yang sedang login sebagai assignee
+        $ticket->asignees()->sync([Auth::id()]);  // Update assignee untuk pengurus
+    
+        // Menambahkan semua pemilik sebagai assignee
         $owners = User::where('role', 'pemilik')->get();  // Ambil semua pemilik
-
-        foreach ($owners as $owner) {
-            // Menambahkan pemilik ke tiket sebagai asignee
-            $ticket->asignees()->attach($owner->id);  // Menambahkan pemilik ke tiket
-        }
-
+    
+        $ownerIds = $owners->pluck('id')->toArray(); // Ambil array ID pemilik
+    
+        // Sync assignee dengan pengurus dan pemilik
+        $ticket->asignees()->sync(array_merge([Auth::id()], $ownerIds));  // Update assignees dengan pengurus dan pemilik
+    
         // Update status menjadi "on process"
         $ticket->status = 'on process';
         $ticket->save();  // Simpan perubahan ke database
-
+    
         return redirect(route('teknisi.index'))->with('success', 'Permintaan tindak lanjut telah dikirim ke pemilik.');
     }
+    
 
 
 
