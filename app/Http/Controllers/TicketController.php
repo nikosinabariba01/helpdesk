@@ -84,15 +84,24 @@ class TicketController extends Controller
     }
 
     public function cancelRequestFollowUp($id)
-    {
-        $ticket = Ticket::findOrFail($id);
+{
+    $ticket = Ticket::findOrFail($id);
 
-        // Mengubah status tiket dari 'escalated' ke 'on process'
-        $ticket->status = 'on process';
-        $ticket->save();
+    // Mengubah status tiket dari 'escalated' ke 'on process'
+    $ticket->status = 'on process';
 
-        return redirect()->back()->with('success', 'Request follow-up telah dibatalkan dan tiket kembali ke status "on process".');
+    // Menghapus pemilik dari asignee (role pemilik)
+    $owners = User::where('role', 'pemilik')->get();  // Ambil semua pemilik
+    foreach ($owners as $owner) {
+        // Hapus pemilik dari asignee
+        $ticket->asignees()->detach($owner->id);  // Menghapus pemilik dari asignee
     }
+
+    // Simpan perubahan ke database
+    $ticket->save();
+
+    return redirect()->back()->with('success', 'Request follow-up telah dibatalkan dan tiket kembali ke status "on process". Pemilik telah dihapus sebagai asignee.');
+}
 
 
     public function closeticket(Request $request, $id)
