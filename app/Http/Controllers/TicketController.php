@@ -26,18 +26,18 @@ class TicketController extends Controller
     {
         // Temukan tiket berdasarkan ID
         $ticket = Ticket::findOrFail($id);
-    
+
         // Menyinkronkan pengurus yang sedang login dengan tiket
         $ticket->asignees()->sync([Auth::id()]);  // Menambahkan pengurus yang sedang login dan menghapus yang lain jika ada
-    
+
         $ticket->status = 'on process';  // Ubah status menjadi 'on process'
-        
+
         // Simpan perubahan ke database
         $ticket->save();
-    
+
         return redirect(route('teknisi.index'))->with('success', 'Tiket berhasil di-assign.');
     }
-    
+
 
     public function cancelAssign($id)
     {
@@ -66,42 +66,44 @@ class TicketController extends Controller
         $ticket = Ticket::findOrFail($id);
 
         // Menambahkan pengurus yang sedang login sebagai assignee
-        $ticket->asignees()->sync([Auth::id()]);  // Update assignee untuk pengurus
+        $ticket->asignees()->sync([Auth::id()]);  // Hanya update assignee untuk pengurus yang login
 
-        // Menambahkan semua pemilik sebagai assignee
-        $owners = User::where('role', 'pemilik')->get();  // Ambil semua pemilik
-
-        $ownerIds = $owners->pluck('id')->toArray(); // Ambil array ID pemilik
-
-        // Sync assignee dengan pengurus dan pemilik
-        $ticket->asignees()->sync(array_merge([Auth::id()], $ownerIds));  // Update assignees dengan pengurus dan pemilik
-
-        // Update status menjadi "on process"
+        // Update status tiket menjadi 'escalated'
         $ticket->status = 'escalated';
         $ticket->save();  // Simpan perubahan ke database
 
-        return redirect()->back()->with('success', 'Permintaan tindak lanjut telah dikirim ke pemilik.');
+        return redirect()->back()->with('success', 'Tiket berhasil di-escalated.');
     }
+
 
     public function cancelRequestFollowUp($id)
-{
-    $ticket = Ticket::findOrFail($id);
+    {
+        $ticket = Ticket::findOrFail($id);
 
-    // Mengubah status tiket dari 'escalated' ke 'on process'
-    $ticket->status = 'on process';
+        // Kembalikan status tiket dari 'escalated' ke 'on process'
+        $ticket->status = 'on process';
+        $ticket->save();  // Simpan perubahan ke database
 
-    // Menghapus pemilik dari asignee (role pemilik)
-    $owners = User::where('role', 'pemilik')->get();  // Ambil semua pemilik
-    foreach ($owners as $owner) {
-        // Hapus pemilik dari asignee
-        $ticket->asignees()->detach($owner->id);  // Menghapus pemilik dari asignee
+        return redirect()->back()->with('success', 'Tiket berhasil dikembalikan ke status "on process"');
     }
 
-    // Simpan perubahan ke database
-    $ticket->save();
+    public function acceptEscalation($id)
+    {
+        $ticket = Ticket::findOrFail($id);
 
-    return redirect()->back()->with('success', 'Request follow-up telah dibatalkan dan tiket kembali ke status "on process". Pemilik telah dihapus sebagai asignee.');
-}
+        // Cek apakah sudah ada pemilik yang mengassign
+        if (!$ticket->asignees->contains(Auth::id())) {
+            // Menambahkan pemilik yang sedang login sebagai asignee
+            $ticket->asignees()->attach(Auth::id());  // Menambahkan pemilik yang login
+        }
+
+        // Ubah status tiket kembali ke "on process"
+        $ticket->status = 'on process';
+        $ticket->save();  // Simpan perubahan ke database
+
+        return redirect()->back()->with('success', 'Tiket berhasil dikembalikan ke status "on process" dengan pemilik sebagai asignee.');
+    }
+
 
 
     public function closeticket(Request $request, $id)

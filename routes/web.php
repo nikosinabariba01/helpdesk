@@ -66,6 +66,10 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/tickets/{id}/cancel-request-followup', [TicketController::class, 'cancelRequestFollowUp'])->name('ticketsteknisi.cancelRequestFollowUp')->middleware('userAkses:pengurus,pemilik,admin');
     Route::get('/ProfileTeknisi', [ProfileController::class, 'teknisiprofile'])->name('teknisi.profile')->middleware('userAkses:pengurus,pemilik,admin');
     Route::post('/ProfileTeknisi/update', [ProfileController::class, 'updatecustomer'])->name('teknisi.profileupdate')->middleware('userAkses:pengurus,pemilik,admin,penyewa');
+    // Route untuk eskalasi
+    Route::get('/tickets/escalation', [TeknisiController::class, 'viewEscalation'])->name('tickets.viewEscalation')->middleware('userAkses:pengurus,pemilik,admin');
+    Route::put('/tickets/{id}/escalation', [TicketController::class, 'acceptEscalation'])->name('tickets.accept_escalation')->middleware('userAkses:pengurus,pemilik,admin');
+
 
 
     Route::get('/customer', [CustomerController::class, 'index'])->name('customer.index')->middleware('userAkses:penyewa,admin');

@@ -58,6 +58,25 @@ class TeknisiController extends Controller {
         return view('asigne', compact('teknisi_data_ticket', 'totalTickets'));
     }
 
+    public function viewEscalation() {
+        // Dapatkan ID pengguna yang sedang login
+        $userId = Auth::id();
+    
+        // Mengambil tiket yang sudah memiliki assignees yang sesuai dengan user_id yang sedang login dan status 'escalated'
+        $teknisi_data_ticket = Ticket::with('user')
+            ->whereHas('asignees', function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            })
+            ->where('status', 'escalated')  // Hanya menampilkan tiket dengan status escalated
+            ->orderBy('created_at', 'desc')
+            ->get();
+    
+        $totalTickets = $teknisi_data_ticket->count();
+    
+        return view('escalation', compact('teknisi_data_ticket', 'totalTickets'));
+    }
+    
+
     public function closeticket() {
         // Dapatkan ID pengguna yang sedang login
         $userId = Auth::id();
