@@ -64,35 +64,7 @@
                                 {{ $teknisidataticket->user->name }}
                             </td>
                             <td class="align-middle text-center text-sm border border-light">
-                            <td class="align-middle text-center text-sm border border-light">
-                                <!-- Mendapatkan role pengguna yang sedang login -->
-                                @php
-                                $userRole = Auth::user()->role;
-                                @endphp
-
-                                <!-- Cek jika role pengguna adalah pengurus -->
-                                @if($userRole == 'pengurus')
-                                <!-- Jika role pengguna adalah pengurus -->
-                                @if($teknisidataticket->status == 'open')
-                                <span class="badge badge-sm bg-gradient-success">{{ $teknisidataticket->status }}</span>
-                                @elseif($teknisidataticket->status == 'on process')
-                                <span class="badge badge-sm bg-gradient-warning">{{ $teknisidataticket->status }}</span>
-                                @elseif($teknisidataticket->status == 'close')
-                                <span class="badge badge-sm bg-gradient-danger">{{ $teknisidataticket->status }}</span>
-                                @elseif($teknisidataticket->status == 'escalated')
-                                @if($teknisidataticket->asignees->where('role', 'pemilik')->isEmpty())
-                                <!-- Jika tiket escalated tapi belum ada pemilik yang mengassign -->
-                                <span class="badge badge-sm bg-gradient-info">Escalated</span>
-                                @else
-                                <!-- Jika tiket escalated dan sudah di-assign oleh pemilik -->
-                                <span class="badge badge-sm bg-gradient-primary">Accepted - In Progress</span>
-                                @endif
-                                @else
-                                <!-- Handle case when status is not recognized -->
-                                @endif
-                                @endif
-                            </td>
-
+                                <x-status-badge :status="$teknisidataticket->status" />
                             </td>
                             <td class="align-middle text-center text-limit-30 border border-light">
                                 <span class="text-secondary text-xs font-weight-bold ">{{ $teknisidataticket->Detail }}</span>
