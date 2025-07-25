@@ -11,7 +11,7 @@ class ViewTicketController extends Controller {
     //customer
     public function index($id) {
         // Mengambil tiket dengan relasi 'asignee', 'user', dan 'comments' menggunakan eager loading
-        $ticket = Ticket::with(['asignee', 'user', 'comments.user'])->findOrFail($id);
+        $ticket = Ticket::with(['asignees', 'user', 'comments.user'])->findOrFail($id);
 
         // Periksa apakah pengguna yang terautentikasi memiliki akses ke tiket
         $authUserId = Auth::id();
@@ -32,7 +32,7 @@ class ViewTicketController extends Controller {
     //teknisi
     public function viewticketteknisi($id) {
         // Mengambil tiket dari database berdasarkan ID
-        $ticket   = Ticket::with(['asignee', 'user', 'comments.user'])->findOrFail($id);
+        $ticket   = Ticket::with(['asignees', 'user', 'comments.user'])->findOrFail($id);
         $userName = $ticket->user->name;
         $ticket->setRelation('comments', $ticket->comments()->orderBy('created_at', 'desc')->get());
 
