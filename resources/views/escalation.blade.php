@@ -23,10 +23,7 @@
         </div>
         <div class="card-body px-0 pt-0 pb-2 h-500">
             @if($escalated_Tickets->isEmpty())
-            <div class="table-responsive margin-right: 15px; position: relative;" style="height: 400px; max-height: 400px; overflow-y: auto;">
-                <!-- Add your button here -->
-                <a href="{{ route('teknisi.index') }}" class="btn btn-primary position-absolute top-50 start-50 translate-middle">assign ticket</a>
-            </div>
+
             @else
             <div class="table-responsive margin-right: 15px;" style="height: 400px; max-height: 400px; overflow-y: auto;">
                 <table class="table align-items-center mb-0">
