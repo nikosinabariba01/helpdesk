@@ -22,7 +22,7 @@
             <h6 class="mb-0">assign ticket</h6>
         </div>
         <div class="card-body px-0 pt-0 pb-2 h-500">
-            @if($teknisi_data_ticket->isEmpty())
+            @if($escalated_Tickets->isEmpty())
             <div class="table-responsive margin-right: 15px; position: relative;" style="height: 400px; max-height: 400px; overflow-y: auto;">
                 <!-- Add your button here -->
                 <a href="{{ route('teknisi.index') }}" class="btn btn-primary position-absolute top-50 start-50 translate-middle">assign ticket</a>
@@ -41,38 +41,38 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($teknisi_data_ticket as $teknisidataticket)
+                        @foreach($escalated_Tickets as $escalatedTickets)
                         <tr>
                             <td>
                                 <div class="d-flex px-2 py-1">
                                     <div class="d-flex flex-column justify-content-center">
                                         <h6 class="mb-0 text-s text-limit-35" title="Subject">
-                                            <a href="{{ route('viewticketteknisi.index', ['id' => $teknisidataticket->id]) }}">
-                                                {{ $teknisidataticket->subject }}
+                                            <a href="{{ route('viewticketteknisi.index', ['id' => $escalatedTickets->id]) }}">
+                                                {{ $escalatedTickets->subject }}
                                             </a>
                                         </h6>
 
                                         <div class="d-flex list-inline">
-                                            <li class="text-xs list-inline-item text-secondary"><i class="fa fa-circle fa-xs text-danger"></i>#CT-{{ $teknisidataticket->id }}</li>
-                                            <li class="text-xs list-inline-item text-secondary" title="type"><i class="fa fa-circle fa-xs text-primary"></i>{{ $teknisidataticket->Jenis_Pengaduan }}</li>
-                                            <li class="text-xs list-inline-item text-secondary" title="Created Date"><i class="fa fa-circle fa-xs text-secondary"></i></i> {{ $teknisidataticket->formattedTanggalPengaduan }}</li>
+                                            <li class="text-xs list-inline-item text-secondary"><i class="fa fa-circle fa-xs text-danger"></i>#CT-{{ $escalatedTickets->id }}</li>
+                                            <li class="text-xs list-inline-item text-secondary" title="type"><i class="fa fa-circle fa-xs text-primary"></i>{{ $escalatedTickets->Jenis_Pengaduan }}</li>
+                                            <li class="text-xs list-inline-item text-secondary" title="Created Date"><i class="fa fa-circle fa-xs text-secondary"></i></i> {{ $escalatedTickets->formattedTanggalPengaduan }}</li>
                                         </div>
                                     </div>
                                 </div>
                             </td>
                             <td class="align-middle text-center text-sm text-limit-20 border border-light">
-                                {{ $teknisidataticket->user->name }}
+                                {{ $escalatedTickets->user->name }}
                             </td>
                             <td class="align-middle text-center text-sm border border-light">
-                                <x-status-badge :status="$teknisidataticket->status" />
+                                <x-status-badge :status="$escalatedTickets->status" />
                             </td>
                             <td class="align-middle text-center text-limit-30 border border-light">
-                                <span class="text-secondary text-xs font-weight-bold ">{{ $teknisidataticket->Detail }}</span>
+                                <span class="text-secondary text-xs font-weight-bold ">{{ $escalatedTickets->Detail }}</span>
                             </td>
                             <td class="align-middle text-center text-sm">
                                 <!-- Tombol untuk Pemilik, hanya akan muncul "Accept Escalation" jika status tiket adalah "escalated" -->
-                                @if($teknisidataticket->status == 'escalated')
-                                <form action="{{ route('tickets.accept_escalation', $teknisidataticket->id) }}" method="POST" class="mb-2">
+                                @if($escalatedTickets->status == 'escalated')
+                                <form action="{{ route('tickets.accept_escalation', $escalatedTickets->id) }}" method="POST" class="mb-2">
                                     @csrf
                                     @method('PUT') <!-- Menggunakan PUT karena kita akan memperbarui status tiket -->
                                     <button type="submit" class="btn btn-sm btn-outline-success btn-transparent text-success">
@@ -93,13 +93,13 @@
                                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
                                         <li>
                                         <li>
-                                            <a class="dropdown-item text-info" href="{{ route('viewticketteknisi.index', ['id' => $teknisidataticket->id]) }}">
+                                            <a class="dropdown-item text-info" href="{{ route('viewticketteknisi.index', ['id' => $escalatedTickets->id]) }}">
                                                 <i class="fa fa-eye pe-2 text-info"></i>Detail
                                             </a>
                                         </li>
                                         </li>
                                         <li>
-                                            <form method="POST" action="{{ route('ticketsteknisi.close', $teknisidataticket->id) }}">
+                                            <form method="POST" action="{{ route('ticketsteknisi.close', $escalatedTickets->id) }}">
                                                 @method('PUT')
                                                 @csrf
                                                 <button type="submit" class="dropdown-item text-danger" href="#" onclick="return confirm ('are you sure?')"><i class="fa fa-minus pe-2 text-danger"></i>close</button>

@@ -1,4 +1,5 @@
 <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
+@if(Auth::user()->role == 'pemilik')
       <ul class="navbar-nav">
         <li class="nav-item">
           <a class="nav-link" href="{{route('teknisi.index')}}">
@@ -41,4 +42,8 @@
           </a>
         </li>
       </ul>
+      @elseif(Auth::user()->role == 'pengurus')
+      @else
+        <p>User role not recognized.</p>
+    @endif
     </div>
