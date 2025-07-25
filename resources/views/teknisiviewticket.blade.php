@@ -43,35 +43,35 @@
       <div class="card mt-4">
         <!-- Toggle Button -->
         @if(!Auth::user()->telegram_chat_id)
-          <button id="toggleTelegramAuth" class="btn btn-sm btn-outline-danger btn-transparent text-danger rounded-pill">Authorize Telegram</button>
+        <button id="toggleTelegramAuth" class="btn btn-sm btn-outline-danger btn-transparent text-danger rounded-pill">Authorize Telegram</button>
         @else
-          <button id="toggleCommentForm" class="btn btn-sm btn-outline-danger btn-transparent text-danger rounded-pill">Add Comment</button>
+        <button id="toggleCommentForm" class="btn btn-sm btn-outline-danger btn-transparent text-danger rounded-pill">Add Comment</button>
         @endif
 
         <!-- Telegram Authorization Form -->
         @if(!Auth::user()->telegram_chat_id)
-          <div id="telegramAuthForm" class="mt-3">
-            <!-- Widget Telegram -->
-            <script async src="https://telegram.org/js/telegram-widget.js?22"
-              data-telegram-login="kos74_bot"  
-              data-size="large"
-              data-userpic="false"
-              data-request-access="write"
-              data-auth-url="{{ url('telegram/auth/' . $ticket->id) }}">
-            </script>
-          </div>
+        <div id="telegramAuthForm" class="mt-3">
+          <!-- Widget Telegram -->
+          <script async src="https://telegram.org/js/telegram-widget.js?22"
+            data-telegram-login="kos74_bot"
+            data-size="large"
+            data-userpic="false"
+            data-request-access="write"
+            data-auth-url="{{ url('telegram/auth/' . $ticket->id) }}">
+          </script>
+        </div>
         @endif
 
         <!-- Comment Form -->
         @if(Auth::user()->telegram_chat_id)
-          <form id="commentForm" action="{{ route('comments.teknisiComment', ['ticket' => $ticket]) }}" method="POST" style="display: none;">
-            @csrf
-            <div class="mb-3">
-              <label for="commentText" class="form-label">Your Comment</label>
-              <textarea class="form-control" name="commentText" id="commentText" rows="4"></textarea>
-            </div>
-            <button type="submit" id="submitComment" class="btn btn-primary" disabled>Submit</button>
-          </form>
+        <form id="commentForm" action="{{ route('comments.teknisiComment', ['ticket' => $ticket]) }}" method="POST" style="display: none;">
+          @csrf
+          <div class="mb-3">
+            <label for="commentText" class="form-label">Your Comment</label>
+            <textarea class="form-control" name="commentText" id="commentText" rows="4"></textarea>
+          </div>
+          <button type="submit" id="submitComment" class="btn btn-primary" disabled>Submit</button>
+        </form>
         @endif
 
         <div class="card-header pb-0 p-3">
@@ -88,19 +88,19 @@
           <hr class="my-0">
           <ul class="list-group">
             @foreach($ticket->comments as $comment)
-              <li class="list-group-item mt-0 d-flex align-items-start">
-                <!-- Foto Profil -->
-                <img src="{{ $comment->user && $comment->user->profile_photo ? asset('storage/' . $comment->user->profile_photo) : asset('default-profile.png') }}" alt="Profile Photo" class="rounded-circle me-3" style="width: 40px; height: 40px; object-fit: cover;">
-                <div style="flex-grow: 1;">
-                  <div class="d-flex justify-content-between align-items-center">
-                    <span class="fw-bold @if ($comment->user && $comment->user->role == 'penyewa') text-primary @elseif ($comment->user && in_array($comment->user->role, ['pengurus', 'admin', 'pemilik'])) text-danger @else text-muted @endif">
-                      {{ $comment->user ? $comment->user->name : 'User Not Found' }}
-                    </span>
-                    <span class="text-muted small">{{ $comment->created_at->format('Y-m-d') }}</span>
-                  </div>
-                  <p class="mb-0">{{ $comment->comment }}</p>
+            <li class="list-group-item mt-0 d-flex align-items-start">
+              <!-- Foto Profil -->
+              <img src="{{ $comment->user && $comment->user->profile_photo ? asset('storage/' . $comment->user->profile_photo) : asset('default-profile.png') }}" alt="Profile Photo" class="rounded-circle me-3" style="width: 40px; height: 40px; object-fit: cover;">
+              <div style="flex-grow: 1;">
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="fw-bold @if ($comment->user && $comment->user->role == 'penyewa') text-primary @elseif ($comment->user && in_array($comment->user->role, ['pengurus', 'admin', 'pemilik'])) text-danger @else text-muted @endif">
+                    {{ $comment->user ? $comment->user->name : 'User Not Found' }}
+                  </span>
+                  <span class="text-muted small">{{ $comment->created_at->format('Y-m-d') }}</span>
                 </div>
-              </li>
+                <p class="mb-0">{{ $comment->comment }}</p>
+              </div>
+            </li>
             @endforeach
           </ul>
         </div>
@@ -133,8 +133,11 @@
           <span class="mb-3 text-xs">Status: <x-status-badge :status="$ticket->status" /></span>
           <span class="text-xs">
             assigned by:
-            <span class="{{ $ticket->asignees ? 'text-dark' : 'text-danger' }} ms-sm-0 font-weight-bold">
-              {{ $ticket->asignees->name ?? 'not taken yet!' }}
+            <span class="{{ $ticket->asignees->isNotEmpty() ? 'text-dark' : 'text-danger' }} ms-sm-0 font-weight-bold">
+              @foreach($ticket->asignees as $assignee)
+              {{ $assignee->name }}@if(!$loop->last), @endif
+              @endforeach
+              {{ $ticket->asignees->isEmpty() ? 'not taken yet!' : '' }}
             </span>
           </span>
         </div>
