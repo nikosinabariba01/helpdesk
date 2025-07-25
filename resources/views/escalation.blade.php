@@ -22,9 +22,6 @@
             <h6 class="mb-0">assign ticket</h6>
         </div>
         <div class="card-body px-0 pt-0 pb-2 h-500">
-            @if($escalated_Tickets->isEmpty())
-
-            @else
             <div class="table-responsive margin-right: 15px;" style="height: 400px; max-height: 400px; overflow-y: auto;">
                 <table class="table align-items-center mb-0">
                     <thead>
