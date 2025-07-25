@@ -18,7 +18,7 @@
                 </a>
             </li>
         </ul>
-    @elseif(Auth::user()->role == 'user')
+    @elseif(Auth::user()->role == 'pengurus')
         <ul class="navbar-nav">
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('teknisi.index') }}">
