@@ -26,15 +26,18 @@ class TicketController extends Controller
     {
         // Temukan tiket berdasarkan ID
         $ticket = Ticket::findOrFail($id);
-
-        // Mengassign tiket kepada pengurus yang sedang login (many-to-many relationship)
-        $ticket->asignees()->attach(Auth::id());  // Menambahkan pengurus yang sedang login
-        $ticket->status = 'on process';
+    
+        // Menyinkronkan pengurus yang sedang login dengan tiket
+        $ticket->asignees()->sync([Auth::id()]);  // Menambahkan pengurus yang sedang login dan menghapus yang lain jika ada
+    
+        $ticket->status = 'on process';  // Ubah status menjadi 'on process'
+        
         // Simpan perubahan ke database
         $ticket->save();
-
-        return redirect(route('teknisi.index'))->with('success', 'Data Tiket Berhasil diupdate');
+    
+        return redirect(route('teknisi.index'))->with('success', 'Tiket berhasil di-assign.');
     }
+    
 
     public function cancelAssign($id)
     {
@@ -90,8 +93,6 @@ class TicketController extends Controller
 
         return redirect()->back()->with('success', 'Request follow-up telah dibatalkan dan tiket kembali ke status "on process".');
     }
-
-
 
 
     public function closeticket(Request $request, $id)
