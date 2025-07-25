@@ -29,10 +29,7 @@ class TicketController extends Controller
     
         // Cek apakah pengurus yang sedang login sudah ada di dalam asignees
         // Jika tidak ada, tambahkan pengurus yang sedang login
-        if (!$ticket->asignees->contains(Auth::id())) {
-            // Menambahkan pengurus yang sedang login tanpa menghapus assignees lainnya (termasuk pemilik)
-            $ticket->asignees()->attach(Auth::id());
-        }
+        $ticket->asignees()->syncWithoutDetaching([Auth::id()]);
     
         $ticket->status = 'on process';  // Ubah status menjadi 'on process'
     
