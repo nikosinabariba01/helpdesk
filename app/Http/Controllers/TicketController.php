@@ -77,7 +77,7 @@ class TicketController extends Controller
         $ticket->status = 'escalated';
         $ticket->save();  // Simpan perubahan ke database
 
-        return redirect(route('teknisi.index'))->with('success', 'Permintaan tindak lanjut telah dikirim ke pemilik.');
+        return redirect()->back()->with('success', 'Permintaan tindak lanjut telah dikirim ke pemilik.');
     }
 
     public function cancelRequestFollowUp($id)
