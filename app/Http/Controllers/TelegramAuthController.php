@@ -29,7 +29,7 @@ class TelegramAuthController extends Controller
             $user->save();
 
             // Cek role user dan arahkan ke halaman yang sesuai
-            if ($user->role == 'pengurus') {
+            if (in_array($user->role, ['pengurus', 'pemilik'])) {
                 // Jika pengurus, arahkan ke halaman teknisi
                 return redirect(route('viewticketteknisi.index', ['id' => $ticket_id]))
                     ->with('success', 'Akun Telegram berhasil terhubung sebagai pengurus!');
