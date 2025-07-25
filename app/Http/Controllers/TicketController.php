@@ -77,11 +77,6 @@ class TicketController extends Controller
         $ticket->status = 'on process';
         $ticket->save();  // Simpan perubahan ke database
 
-        // Kirim pesan kepada pemilik untuk menindaklanjuti
-        foreach ($owners as $owner) {
-            $this->sendTelegramMessage($owner->telegram_chat_id, "Tindak lanjut diperlukan untuk tiket #{$ticket->id}. Harap segera menindaklanjuti.");
-        }
-
         return redirect(route('teknisi.index'))->with('success', 'Permintaan tindak lanjut telah dikirim ke pemilik.');
     }
 
