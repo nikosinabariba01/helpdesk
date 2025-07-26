@@ -24,7 +24,7 @@
                 <!-- Kolom Pencarian dengan input-group -->
                 <div class="input-group input-group-sm">
                     <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
-                    <input type="text" id="search" class="form-control" placeholder="Search" onfocus="focused(this)" onfocusout="defocused(this)">
+                    <input type="text" id="search" class="form-control" placeholder="Search here" onfocus="focused(this)" onfocusout="defocused(this)">
                 </div>
                 <!-- Tombol Sortir -->
                 <div class="dropdown ms-3">
