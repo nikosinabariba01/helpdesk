@@ -106,9 +106,13 @@
 <script>
     $(document).ready(function() {
         var table = $('#escalationTable').DataTable({
+            searching: true, // Tetap mengaktifkan pencarian
+            ordering: false, // Menonaktifkan tombol sortir
+            paging: false, // Menonaktifkan paginasi
+            lengthChange: false, // Menonaktifkan dropdown jumlah entri
         });
 
-        // Menyembunyikan elemen-elemen DataTables yang tidak diperlukan
+        // Menyembunyikan elemen pencarian default DataTables
         $('#escalationTable_filter').hide(); // Menyembunyikan kolom pencarian default
         $('#escalationTable_length').hide(); // Menyembunyikan opsi "Show Entries"
         $('#escalationTable_paginate').hide(); // Menyembunyikan pagination
