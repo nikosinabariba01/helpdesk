@@ -106,12 +106,15 @@
 <script>
     $(document).ready(function() {
         var table = $('#escalationTable').DataTable({
-            searching: true, // Tetap mengaktifkan fungsionalitas pencarian
+            searching: true, // Tetap mengaktifkan pencarian
             ordering: true, // Mengaktifkan sortir
         });
 
-        // Menyembunyikan tombol pencarian default DataTables
-        $('#escalationTable_filter').hide(); // Menyembunyikan pencarian default
+        // Menyembunyikan elemen-elemen DataTables yang tidak diperlukan
+        $('#escalationTable_filter').hide(); // Menyembunyikan kolom pencarian default
+        $('#escalationTable_length').hide(); // Menyembunyikan opsi "Show Entries"
+        $('#escalationTable_paginate').hide(); // Menyembunyikan pagination
+        $('th.sorting, th.sorting_asc, th.sorting_desc').hide(); // Menyembunyikan tombol sortir default
 
         // Menambahkan pencarian kustom menggunakan id "search"
         $('#search').on('keyup', function() {
