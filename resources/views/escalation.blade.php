@@ -105,9 +105,14 @@
 
 <script>
     $(document).ready(function() {
-        $('#escalationTable').DataTable({
-            searching: true,
-            ordering: true,
+        var table = $('#escalationTable').DataTable({
+            searching: true, // Mengaktifkan pencarian
+            ordering: true, // Mengaktifkan sortir
+        });
+
+        // Menambahkan pencarian kustom menggunakan id "search"
+        $('#search').on('keyup', function() {
+            table.search(this.value).draw();
         });
     });
 </script>
