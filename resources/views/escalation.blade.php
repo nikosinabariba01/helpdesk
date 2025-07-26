@@ -93,9 +93,9 @@
                             <!-- "Edit" button within a dropdown -->
                             <td class="align-middle text-center border border-light">
                                 <div class="dropdown">
-                                    <a class="btn btn-link" href="#" role="button" id="dropdownMenuLink" >
+                                    <button class="btn btn-link" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class="fa fa-ellipsis-v fa-sm"></i>
-                                    </a>
+                                    </button>
                                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
                                         <li>
                                             <a class="dropdown-item text-info" href="{{ route('viewticketteknisi.index', ['id' => $teknisidataticket->id]) }}">
@@ -150,22 +150,5 @@
     });
 </script>
 
-<script>
-    $(document).ready(function () {
-        // Menangani klik untuk membuka dropdown
-        $('#dropdownMenuLink').on('click', function (e) {
-            var $el = $(this).next('.dropdown-menu');
-            var isVisible = $el.is(':visible');
-            
-            // Jika dropdown sudah terbuka, sembunyikan; jika tidak, tampilkan
-            if (isVisible) {
-                $el.fadeOut(300);
-            } else {
-                $('.dropdown-menu').fadeOut(300); // Menyembunyikan semua dropdown lainnya
-                $el.fadeIn(300);
-            }
-        });
-    });
-</script>
 
 @endsection
