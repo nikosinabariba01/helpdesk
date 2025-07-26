@@ -24,9 +24,11 @@
     Service IT
   </title>
   <!-- Tambahkan CDN jQuery dan DataTables -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
 
   <!--     Fonts and icons     -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
@@ -131,7 +133,7 @@
 
   <script>
     $(document).ready(function() {
-      // Inisialisasi DataTable
+      // Inisialisasi DataTable dengan gaya Bootstrap
       $('.table').DataTable({
         paging: true, // Mengaktifkan pagination
         searching: true, // Mengaktifkan pencarian
@@ -139,9 +141,15 @@
         order: [
           [0, 'asc']
         ], // Urutan default (misalnya, kolom pertama secara ascending)
+        responsive: true, // Membuat tabel responsif
+        language: {
+          search: "_INPUT_", // Mengubah placeholder pencarian
+          searchPlaceholder: "Cari tiket..."
+        }
       });
     });
   </script>
+
 
   <!-- Github buttons -->
   <script async defer src="https://buttons.github.io/buttons.js"></script>
