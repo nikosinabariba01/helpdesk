@@ -108,16 +108,15 @@
         var table = $('#escalationTable').DataTable({
             searching: true, // Tetap mengaktifkan pencarian
             ordering: false, // Menonaktifkan tombol sortir
-            paging: false, // Menonaktifkan pagination
+            paging: false, // Menonaktifkan paginasi
             lengthChange: false, // Menonaktifkan dropdown jumlah entri
-            info: false, // Menonaktifkan informasi tabel seperti "Showing 1 to 10 of 50 entries"
-            columnDefs: [
-                {
-                    targets: [2, 3, 4, 5], // Menonaktifkan tombol sortir untuk kolom lainnya
-                    orderable: false
-                }
-            ]
         });
+
+        // Menyembunyikan elemen pencarian default DataTables
+        $('#escalationTable_filter').hide(); // Menyembunyikan kolom pencarian default
+        $('#escalationTable_length').hide(); // Menyembunyikan opsi "Show Entries"
+        $('#escalationTable_paginate').hide(); // Menyembunyikan pagination
+        $('th.sorting, th.sorting_asc, th.sorting_desc').hide(); // Menyembunyikan tombol sortir default
 
         // Menambahkan pencarian kustom menggunakan id "search"
         $('#search').on('keyup', function() {
