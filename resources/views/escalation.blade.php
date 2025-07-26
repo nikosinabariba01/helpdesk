@@ -150,5 +150,22 @@
     });
 </script>
 
+<script>
+    $(document).ready(function () {
+        // Menangani klik untuk membuka dropdown
+        $('#dropdownMenuLink').on('click', function (e) {
+            var $el = $(this).next('.dropdown-menu');
+            var isVisible = $el.is(':visible');
+            
+            // Jika dropdown sudah terbuka, sembunyikan; jika tidak, tampilkan
+            if (isVisible) {
+                $el.fadeOut(300);
+            } else {
+                $('.dropdown-menu').fadeOut(300); // Menyembunyikan semua dropdown lainnya
+                $el.fadeIn(300);
+            }
+        });
+    });
+</script>
 
 @endsection
