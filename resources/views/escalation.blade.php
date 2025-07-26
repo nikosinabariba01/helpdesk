@@ -38,77 +38,46 @@
                 <table class="table align-items-center mb-0" id="escalationTable">
                     <thead>
                         <tr>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">subject</th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">User</th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Status</th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Deskripsi</th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Asign</th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">aksi</th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;" data-orderable="true">subject</th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;" data-orderable="true">User</th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;" data-orderable="false">Status</th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;" data-orderable="false">Deskripsi</th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;" data-orderable="false">Asign</th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;" data-orderable="false">aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($teknisi_data_ticket as $teknisidataticket)
                         <tr>
-                            <td>
-                                <div class="d-flex px-2 py-1">
-                                    <div class="d-flex flex-column justify-content-center">
-                                        <h6 class="mb-0 text-s text-limit-35" title="Subject">
-                                            <a href="{{ route('viewticketteknisi.index', ['id' => $teknisidataticket->id]) }}">
-                                                {{ $teknisidataticket->subject }}
-                                            </a>
-                                        </h6>
-
-                                        <div class="d-flex list-inline">
-                                            <li class="text-xs list-inline-item text-secondary"><i class="fa fa-circle fa-xs text-danger"></i>#CT-{{ $teknisidataticket->id }}</li>
-                                            <li class="text-xs list-inline-item text-secondary" title="type"><i class="fa fa-circle fa-xs text-primary"></i>{{ $teknisidataticket->Jenis_Pengaduan }}</li>
-                                            <li class="text-xs list-inline-item text-secondary" title="Created Date"><i class="fa fa-circle fa-xs text-secondary"></i></i> {{ $teknisidataticket->formattedTanggalPengaduan }}</li>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="align-middle text-center text-sm text-limit-20 border border-light">
-                                {{ $teknisidataticket->user->name }}
-                            </td>
-                            <td class="align-middle text-center text-sm border border-light">
-                                <x-status-badge :status="$teknisidataticket->status" />
-                            </td>
-                            <td class="align-middle text-center text-limit-30 border border-light">
-                                <span class="text-secondary text-xs font-weight-bold ">{{ $teknisidataticket->Detail }}</span>
-                            </td>
-                            <td class="align-middle text-center text-sm">
-                                <!-- Tombol untuk Pemilik, hanya akan muncul "Accept Escalation" jika status tiket adalah "escalated" -->
+                            <td>{{ $teknisidataticket->subject }}</td>
+                            <td class="text-center">{{ $teknisidataticket->user->name }}</td>
+                            <td class="text-center"><x-status-badge :status="$teknisidataticket->status" /></td>
+                            <td class="text-center">{{ $teknisidataticket->Detail }}</td>
+                            <td class="text-center">
                                 @if($teknisidataticket->status == 'escalated')
                                 <form action="{{ route('tickets.accept_escalation', $teknisidataticket->id) }}" method="POST" class="mb-2">
                                     @csrf
-                                    @method('PUT') <!-- Menggunakan PUT karena kita akan memperbarui status tiket -->
+                                    @method('PUT')
                                     <button type="submit" class="btn btn-sm btn-outline-success btn-transparent text-success">
                                         <i class="fa fa-check pe-2 text-success"></i> Accept Escalation
                                     </button>
                                 </form>
                                 @else
-                                <!-- Jika status bukan escalated, tidak ada tombol untuk pemilik -->
                                 <span class="text-muted">No escalation required</span>
                                 @endif
                             </td>
-                            <!-- "Edit" button within a dropdown -->
-                            <td class="align-middle text-center border border-light">
+                            <td class="text-center">
                                 <div class="dropdown">
                                     <a class="btn btn-link" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class="fa fa-ellipsis-v fa-sm"></i>
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
-                                        <li>
-                                        <li>
-                                            <a class="dropdown-item text-info" href="{{ route('viewticketteknisi.index', ['id' => $teknisidataticket->id]) }}">
-                                                <i class="fa fa-eye pe-2 text-info"></i>Detail
-                                            </a>
-                                        </li>
-                                        </li>
+                                        <li><a class="dropdown-item text-info" href="{{ route('viewticketteknisi.index', ['id' => $teknisidataticket->id]) }}">Detail</a></li>
                                         <li>
                                             <form method="POST" action="{{ route('ticketsteknisi.close', $teknisidataticket->id) }}">
                                                 @method('PUT')
                                                 @csrf
-                                                <button type="submit" class="dropdown-item text-danger" href="#" onclick="return confirm ('are you sure?')"><i class="fa fa-minus pe-2 text-danger"></i>close</button>
+                                                <button type="submit" class="dropdown-item text-danger" href="#" onclick="return confirm ('are you sure?')">close</button>
                                             </form>
                                         </li>
                                     </ul>
@@ -117,7 +86,6 @@
                         </tr>
                         @endforeach
                     </tbody>
-
                 </table>
             </div>
             @endif
@@ -125,23 +93,26 @@
     </div>
 </div>
 
-
-@endsection
-
 <script>
     $(document).ready(function() {
         var table = $('#escalationTable').DataTable({
             searching: true, // Tetap mengaktifkan pencarian
-            ordering: false, // Menonaktifkan tombol sortir
-            paging: false, // Menonaktifkan paginasi
+            ordering: false, // Menonaktifkan tombol sortir untuk semua kolom kecuali subject dan user
+            paging: false, // Menonaktifkan pagination
             lengthChange: false, // Menonaktifkan dropdown jumlah entri
+            info: false, // Menonaktifkan informasi tabel seperti "Showing 1 to 10 of 50 entries"
+            columnDefs: [
+                {
+                    targets: [2, 3, 4, 5], // Menonaktifkan tombol sortir untuk kolom lainnya
+                    orderable: false
+                }
+            ]
         });
 
         // Menyembunyikan elemen pencarian default DataTables
         $('#escalationTable_filter').hide(); // Menyembunyikan kolom pencarian default
         $('#escalationTable_length').hide(); // Menyembunyikan opsi "Show Entries"
         $('#escalationTable_paginate').hide(); // Menyembunyikan pagination
-        $('th.sorting, th.sorting_asc, th.sorting_desc').hide(); // Menyembunyikan tombol sortir default
 
         // Menambahkan pencarian kustom menggunakan id "search"
         $('#search').on('keyup', function() {
@@ -149,3 +120,4 @@
         });
     });
 </script>
+@endsection
