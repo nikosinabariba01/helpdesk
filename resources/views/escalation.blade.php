@@ -106,8 +106,6 @@
 <script>
     $(document).ready(function() {
         var table = $('#escalationTable').DataTable({
-            searching: true, // Tetap mengaktifkan pencarian
-            ordering: true, // Mengaktifkan sortir
         });
 
         // Menyembunyikan elemen-elemen DataTables yang tidak diperlukan
