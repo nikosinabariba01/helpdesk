@@ -132,12 +132,6 @@
             paging: false, // Menonaktifkan pagination
             lengthChange: false, // Menonaktifkan dropdown jumlah entri
             info: false, // Menonaktifkan informasi tabel seperti "Showing 1 to 10 of 50 entries"
-            columnDefs: [
-                {
-                    targets: [2, 3, 4, 5], // Menonaktifkan tombol sortir untuk kolom lainnya
-                    orderable: false
-                }
-            ]
         });
 
         // Menyembunyikan elemen pencarian default DataTables
