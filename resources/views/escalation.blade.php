@@ -106,13 +106,16 @@
 <script>
     $(document).ready(function() {
         var table = $('#escalationTable').DataTable({
-            searching: false, // Mengaktifkan pencarian
+            searching: true, // Tetap mengaktifkan fungsionalitas pencarian
             ordering: true, // Mengaktifkan sortir
         });
 
+        // Menyembunyikan tombol pencarian default DataTables
+        $('#escalationTable_filter').hide(); // Menyembunyikan pencarian default
+
         // Menambahkan pencarian kustom menggunakan id "search"
         $('#search').on('keyup', function() {
-            table.search(this.value).draw();
+            table.search(this.value).draw(); // Menyaring berdasarkan nilai input pencarian
         });
     });
 </script>
