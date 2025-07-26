@@ -116,7 +116,6 @@
         $('#escalationTable_filter').hide(); // Menyembunyikan kolom pencarian default
         $('#escalationTable_length').hide(); // Menyembunyikan opsi "Show Entries"
         $('#escalationTable_paginate').hide(); // Menyembunyikan pagination
-        $('th.sorting, th.sorting_asc, th.sorting_desc').hide(); // Menyembunyikan tombol sortir default
 
         // Menambahkan pencarian kustom menggunakan id "search"
         $('#search').on('keyup', function() {
