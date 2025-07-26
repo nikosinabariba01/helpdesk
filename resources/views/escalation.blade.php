@@ -45,7 +45,7 @@
             </div>
             @else
             <div class="table-responsive margin-right: 15px;" style="height: 400px; max-height: 400px; overflow-y: auto;">
-                <table class="table table-hover align-items-center mb-0" id="escalationTable">
+                <table class="table table-hover align-items-center mb-0">
                     <thead>
                         <tr>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">subject</th>
