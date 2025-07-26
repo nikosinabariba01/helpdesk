@@ -149,4 +149,10 @@
         });
     });
 </script>
+
+<script>
+    $(document).ready(function() {
+        $('#dropdownMenuLink').dropdown('dispose'); // Menonaktifkan dropdown jika sudah ada masalah
+    });
+</script>
 @endsection
