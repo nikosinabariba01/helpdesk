@@ -28,56 +28,45 @@
                 <a href="{{ route('teknisi.index') }}" class="btn btn-primary position-absolute top-50 start-50 translate-middle">assign ticket</a>
             </div>
             @else
-            <div class="table-responsive margin-right: 15px;" style="height: 400px; max-height: 400px; overflow-y: auto;">
-                <table class="table align-items-center mb-0" id="escalationTable">
+            <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                <table class="table table-bordered table-striped" id="escalationTable">
                     <thead>
                         <tr>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">subject</th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">User</th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Status</th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Deskripsi</th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Asign</th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">aksi</th>
+                            <th class="text-center" style="padding: 10px;">Subject</th>
+                            <th class="text-center" style="padding: 10px;">User</th>
+                            <th class="text-center" style="padding: 10px;">Status</th>
+                            <th class="text-center" style="padding: 10px;">Deskripsi</th>
+                            <th class="text-center" style="padding: 10px;">Asign</th>
+                            <th class="text-center" style="padding: 10px;">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($teknisi_data_ticket as $teknisidataticket)
                         <tr>
-                            <td>
-                                <div class="d-flex px-2 py-1">
-                                    <div class="d-flex flex-column justify-content-center">
-                                        <h6 class="mb-0 text-s text-limit-35" title="Subject">
-                                            <a href="{{ route('viewticketteknisi.index', ['id' => $teknisidataticket->id]) }}">
-                                                {{ $teknisidataticket->subject }}
-                                            </a>
-                                        </h6>
-                                    </div>
-                                </div>
+                            <td class="text-center">
+                                <a href="{{ route('viewticketteknisi.index', ['id' => $teknisidataticket->id]) }}">
+                                    {{ $teknisidataticket->subject }}
+                                </a>
                             </td>
-                            <td class="align-middle text-center text-sm text-limit-20 border border-light">
-                                {{ $teknisidataticket->user->name }}
-                            </td>
-                            <td class="align-middle text-center text-sm border border-light">
+                            <td class="text-center">{{ $teknisidataticket->user->name }}</td>
+                            <td class="text-center">
                                 <x-status-badge :status="$teknisidataticket->status" />
                             </td>
-                            <td class="align-middle text-center text-limit-30 border border-light">
-                                <span class="text-secondary text-xs font-weight-bold ">{{ $teknisidataticket->Detail }}</span>
-                            </td>
-                            <td class="align-middle text-center text-sm">
-                                <!-- Accept Escalation button -->
+                            <td class="text-center">{{ $teknisidataticket->Detail }}</td>
+                            <td class="text-center">
                                 @if($teknisidataticket->status == 'escalated')
                                 <form action="{{ route('tickets.accept_escalation', $teknisidataticket->id) }}" method="POST" class="mb-2">
                                     @csrf
-                                    @method('PUT') <!-- Menggunakan PUT karena kita akan memperbarui status tiket -->
-                                    <button type="submit" class="btn btn-sm btn-outline-success btn-transparent text-success">
-                                        <i class="fa fa-check pe-2 text-success"></i> Accept Escalation
+                                    @method('PUT')
+                                    <button type="submit" class="btn btn-sm btn-outline-success">
+                                        <i class="fa fa-check pe-2"></i> Accept Escalation
                                     </button>
                                 </form>
                                 @else
                                 <span class="text-muted">No escalation required</span>
                                 @endif
                             </td>
-                            <td class="align-middle text-center border border-light">
+                            <td class="text-center">
                                 <div class="dropdown">
                                     <a class="btn btn-link" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class="fa fa-ellipsis-v fa-sm"></i>
@@ -85,14 +74,16 @@
                                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
                                         <li>
                                             <a class="dropdown-item text-info" href="{{ route('viewticketteknisi.index', ['id' => $teknisidataticket->id]) }}">
-                                                <i class="fa fa-eye pe-2 text-info"></i>Detail
+                                                <i class="fa fa-eye pe-2 text-info"></i> Detail
                                             </a>
                                         </li>
                                         <li>
                                             <form method="POST" action="{{ route('ticketsteknisi.close', $teknisidataticket->id) }}">
                                                 @method('PUT')
                                                 @csrf
-                                                <button type="submit" class="dropdown-item text-danger" href="#" onclick="return confirm ('are you sure?')"><i class="fa fa-minus pe-2 text-danger"></i>close</button>
+                                                <button type="submit" class="dropdown-item text-danger" onclick="return confirm('Are you sure?')">
+                                                    <i class="fa fa-minus pe-2 text-danger"></i> Close
+                                                </button>
                                             </form>
                                         </li>
                                     </ul>
