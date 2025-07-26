@@ -93,23 +93,10 @@
                             <!-- "Edit" button within a dropdown -->
                             <td class="align-middle text-center border border-light">
                                 <div class="dropdown">
-                                    <a class="btn btn-link" href="#" role="button" id="dropdownMenuLink" >
+                                    <a class="btn btn-link" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class="fa fa-ellipsis-v fa-sm"></i>
                                     </a>
-                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
-                                        <li>
-                                            <a class="dropdown-item text-info" href="{{ route('viewticketteknisi.index', ['id' => $teknisidataticket->id]) }}">
-                                                <i class="fa fa-eye pe-2 text-info"></i>Detail
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <form method="POST" action="{{ route('ticketsteknisi.close', $teknisidataticket->id) }}">
-                                                @method('PUT')
-                                                @csrf
-                                                <button type="submit" class="dropdown-item text-danger" href="#" onclick="return confirm ('are you sure?')"><i class="fa fa-minus pe-2 text-danger"></i>close</button>
-                                            </form>
-                                        </li>
-                                    </ul>
+
                                 </div>
                             </td>
                         </tr>
