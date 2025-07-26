@@ -22,16 +22,22 @@
             <h6 class="mb-0">Escalated Ticket</h6>
             <div class="d-flex">
                 <!-- Kolom Pencarian -->
-                <label for="search" class="text-white me-2">Search:</label>
-                <input type="text" id="search" class="form-control form-control-sm" placeholder="Search">
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text" id="search-addon">
+                        <i class="ni ni-zoom-split-in"></i>
+                    </span>
+                    <input type="text" id="search" class="form-control" placeholder="Search">
+                </div>
                 <!-- Tombol Sortir -->
-                <button class="btn btn-outline-light ms-2" data-bs-toggle="dropdown">
-                    <i class="fa fa-sort"></i> Sort
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">Sort by Name</a></li>
-                    <li><a class="dropdown-item" href="#">Sort by Date</a></li>
-                </ul>
+                <div class="dropdown ms-3">
+                    <button class="btn btn-neutral btn-icon" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa fa-sort"></i>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <li><a class="dropdown-item" href="#">Sort by Name</a></li>
+                        <li><a class="dropdown-item" href="#">Sort by Date</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
         <div class="card-body px-0 pt-0 pb-2 h-500">
@@ -41,7 +47,7 @@
             </div>
             @else
             <div class="table-responsive margin-right: 15px;" style="height: 400px; max-height: 400px; overflow-y: auto;">
-                <table class="table align-items-center mb-0" id="escalationTable">
+                <table class="table table-hover align-items-center mb-0" id="escalationTable">
                     <thead>
                         <tr>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">subject</th>
@@ -101,8 +107,10 @@
 
 <script>
     $(document).ready(function() {
-        // Inisialisasi DataTables
-        $('#escalationTable').DataTable();
+        $('#escalationTable').DataTable({
+            searching: true,
+            ordering: true,
+        });
     });
 </script>
 @endsection
