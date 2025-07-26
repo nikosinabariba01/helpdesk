@@ -24,7 +24,7 @@
                 <!-- Kolom Pencarian dengan input-group -->
                 <div class="input-group input-group-sm">
                     <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
-                    <input type="text" id="escalationTable" class="form-control" placeholder="Search here" onfocus="focused(this)" onfocusout="defocused(this)">
+                    <input type="text" id="search" class="form-control" placeholder="Search here" onfocus="focused(this)" onfocusout="defocused(this)">
                 </div>
                 <!-- Tombol Sortir -->
                 <div class="dropdown ms-3">
@@ -45,7 +45,7 @@
             </div>
             @else
             <div class="table-responsive margin-right: 15px;" style="height: 400px; max-height: 400px; overflow-y: auto;">
-                <table class="table table-hover align-items-center mb-0" id="escalationTable">
+                <table class="table table-hover align-items-center mb-0" >
                     <thead>
                         <tr>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">subject</th>
