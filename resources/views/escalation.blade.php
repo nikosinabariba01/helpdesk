@@ -19,7 +19,7 @@
 <div class="card mb-4">
     <div class="card z-index-2 h-100 d-flex flex-column">
         <div class="card-header pb-0 d-flex align-items-center justify-content-between">
-            <h6 class="mb-0">assign ticket</h6>
+            <h6 class="mb-0">escalated ticket</h6>
         </div>
         <div class="card-body px-0 pt-0 pb-2 h-500">
             @if($teknisi_data_ticket->isEmpty())
