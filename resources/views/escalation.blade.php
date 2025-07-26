@@ -19,17 +19,23 @@
 <div class="card mb-4">
     <div class="card z-index-2 h-100 d-flex flex-column">
         <div class="card-header pb-0 d-flex align-items-center justify-content-between">
-            <h6 class="mb-0">escalated ticket</h6>
+            <h6 class="mb-0">Escalated Ticket</h6>
+            <div class="d-flex">
+                <!-- Kolom Pencarian dengan input-group -->
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
+                    <input type="text" id="search" class="form-control" placeholder="Search" onfocus="focused(this)" onfocusout="defocused(this)">
+                </div>
+            </div>
         </div>
         <div class="card-body px-0 pt-0 pb-2 h-500">
             @if($teknisi_data_ticket->isEmpty())
             <div class="table-responsive margin-right: 15px; position: relative;" style="height: 400px; max-height: 400px; overflow-y: auto;">
-                <!-- Add your button here -->
                 <a href="{{ route('teknisi.index') }}" class="btn btn-primary position-absolute top-50 start-50 translate-middle">assign ticket</a>
             </div>
             @else
             <div class="table-responsive margin-right: 15px;" style="height: 400px; max-height: 400px; overflow-y: auto;">
-                <table class="table align-items-center mb-0 " id="escalationTable">
+                <table class="table align-items-center mb-0 ">
                     <thead>
                         <tr>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">subject</th>
@@ -132,6 +138,7 @@
         });
 
         // Menyembunyikan elemen pencarian default DataTables
+        $('#escalationTable_filter').hide(); // Menyembunyikan kolom pencarian default
         $('#escalationTable_length').hide(); // Menyembunyikan opsi "Show Entries"
         $('#escalationTable_paginate').hide(); // Menyembunyikan pagination
         $('th.sorting, th.sorting_asc, th.sorting_desc').hide(); // Menyembunyikan tombol sortir default
