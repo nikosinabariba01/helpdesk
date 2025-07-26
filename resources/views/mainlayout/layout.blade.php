@@ -109,6 +109,7 @@
     </a>
 
   </div>
+  @stack('scripts')
   <!--   Core JS Files   -->
   <script src="{{ asset('style/assets/js/core/popper.min.js') }}"></script>
   <script src="{{ asset('style/assets/js/core/bootstrap.min.js') }}"></script>
