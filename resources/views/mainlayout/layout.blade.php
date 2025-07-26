@@ -34,11 +34,6 @@
   <link rel="stylesheet" href="{{ asset('style/assets/css/nucleo-svg.css') }}">
   <!-- CSS Files -->
   <link id="pagestyle" href="{{ asset('style/assets/css/argon-dashboard.css') }}" rel="stylesheet">
-  <!-- Bootstrap Table CSS -->
-  <link href="https://unpkg.com/bootstrap-table/dist/bootstrap-table.min.css" rel="stylesheet">
-
-  <!-- Bootstrap Table JS -->
-  <script src="https://unpkg.com/bootstrap-table/dist/bootstrap-table.min.js"></script>
 
 
 </head>
