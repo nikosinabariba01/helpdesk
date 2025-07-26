@@ -129,6 +129,20 @@
     }
   </script>
 
+  <script>
+    $(document).ready(function() {
+      // Inisialisasi DataTable
+      $('.table').DataTable({
+        paging: true, // Mengaktifkan pagination
+        searching: true, // Mengaktifkan pencarian
+        ordering: true, // Mengaktifkan sorting
+        order: [
+          [0, 'asc']
+        ], // Urutan default (misalnya, kolom pertama secara ascending)
+      });
+    });
+  </script>
+
   <!-- Github buttons -->
   <script async defer src="https://buttons.github.io/buttons.js"></script>
   <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->

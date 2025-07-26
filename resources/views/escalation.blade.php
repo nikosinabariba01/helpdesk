@@ -29,7 +29,7 @@
             </div>
             @else
             <div class="table-responsive margin-right: 15px;" style="height: 400px; max-height: 400px; overflow-y: auto;">
-                <table class="table align-items-center mb-0">
+                <table class="table align-items-center mb-0" id="escalationTable">
                     <thead>
                         <tr>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">subject</th>
@@ -51,12 +51,6 @@
                                                 {{ $teknisidataticket->subject }}
                                             </a>
                                         </h6>
-
-                                        <div class="d-flex list-inline">
-                                            <li class="text-xs list-inline-item text-secondary"><i class="fa fa-circle fa-xs text-danger"></i>#CT-{{ $teknisidataticket->id }}</li>
-                                            <li class="text-xs list-inline-item text-secondary" title="type"><i class="fa fa-circle fa-xs text-primary"></i>{{ $teknisidataticket->Jenis_Pengaduan }}</li>
-                                            <li class="text-xs list-inline-item text-secondary" title="Created Date"><i class="fa fa-circle fa-xs text-secondary"></i></i> {{ $teknisidataticket->formattedTanggalPengaduan }}</li>
-                                        </div>
                                     </div>
                                 </div>
                             </td>
@@ -70,7 +64,7 @@
                                 <span class="text-secondary text-xs font-weight-bold ">{{ $teknisidataticket->Detail }}</span>
                             </td>
                             <td class="align-middle text-center text-sm">
-                                <!-- Tombol untuk Pemilik, hanya akan muncul "Accept Escalation" jika status tiket adalah "escalated" -->
+                                <!-- Accept Escalation button -->
                                 @if($teknisidataticket->status == 'escalated')
                                 <form action="{{ route('tickets.accept_escalation', $teknisidataticket->id) }}" method="POST" class="mb-2">
                                     @csrf
@@ -80,11 +74,9 @@
                                     </button>
                                 </form>
                                 @else
-                                <!-- Jika status bukan escalated, tidak ada tombol untuk pemilik -->
                                 <span class="text-muted">No escalation required</span>
                                 @endif
                             </td>
-                            <!-- "Edit" button within a dropdown -->
                             <td class="align-middle text-center border border-light">
                                 <div class="dropdown">
                                     <a class="btn btn-link" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
@@ -92,11 +84,9 @@
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
                                         <li>
-                                        <li>
                                             <a class="dropdown-item text-info" href="{{ route('viewticketteknisi.index', ['id' => $teknisidataticket->id]) }}">
                                                 <i class="fa fa-eye pe-2 text-info"></i>Detail
                                             </a>
-                                        </li>
                                         </li>
                                         <li>
                                             <form method="POST" action="{{ route('ticketsteknisi.close', $teknisidataticket->id) }}">
@@ -111,9 +101,9 @@
                         </tr>
                         @endforeach
                     </tbody>
-
                 </table>
             </div>
+
             @endif
         </div>
     </div>
