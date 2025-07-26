@@ -53,34 +53,44 @@
                                 <div class="d-flex px-2 py-1">
                                     <div class="d-flex flex-column justify-content-center">
                                         <h6 class="mb-0 text-s text-limit-35" title="Subject">
-                                            <a href="{{ route('viewticketteknisi.index', ['id' => $teknisidataticket->id]) }}">{{ $teknisidataticket->subject }}</a>
+                                            <a href="{{ route('viewticketteknisi.index', ['id' => $teknisidataticket->id]) }}">
+                                                {{ $teknisidataticket->subject }}
+                                            </a>
                                         </h6>
+
                                         <div class="d-flex list-inline">
                                             <li class="text-xs list-inline-item text-secondary"><i class="fa fa-circle fa-xs text-danger"></i>#CT-{{ $teknisidataticket->id }}</li>
                                             <li class="text-xs list-inline-item text-secondary" title="type"><i class="fa fa-circle fa-xs text-primary"></i>{{ $teknisidataticket->Jenis_Pengaduan }}</li>
-                                            <li class="text-xs list-inline-item text-secondary" title="Created Date"><i class="fa fa-circle fa-xs text-secondary"></i>{{ $teknisidataticket->formattedTanggalPengaduan }}</li>
+                                            <li class="text-xs list-inline-item text-secondary" title="Created Date"><i class="fa fa-circle fa-xs text-secondary"></i></i> {{ $teknisidataticket->formattedTanggalPengaduan }}</li>
                                         </div>
                                     </div>
                                 </div>
                             </td>
-                            <td class="align-middle text-center text-sm text-limit-20 border border-light">{{ $teknisidataticket->user->name }}</td>
-                            <td class="align-middle text-center text-sm border border-light"><x-status-badge :status="$teknisidataticket->status" /></td>
+                            <td class="align-middle text-center text-sm text-limit-20 border border-light">
+                                {{ $teknisidataticket->user->name }}
+                            </td>
+                            <td class="align-middle text-center text-sm border border-light">
+                                <x-status-badge :status="$teknisidataticket->status" />
+                            </td>
                             <td class="align-middle text-center text-limit-30 border border-light">
                                 <span class="text-secondary text-xs font-weight-bold ">{{ $teknisidataticket->Detail }}</span>
                             </td>
                             <td class="align-middle text-center text-sm border border-light">
+                                <!-- Tombol untuk Pemilik, hanya akan muncul "Accept Escalation" jika status tiket adalah "escalated" -->
                                 @if($teknisidataticket->status == 'escalated')
                                 <form action="{{ route('tickets.accept_escalation', $teknisidataticket->id) }}" method="POST" class="mb-2">
                                     @csrf
-                                    @method('PUT')
+                                    @method('PUT') <!-- Menggunakan PUT karena kita akan memperbarui status tiket -->
                                     <button type="submit" class="btn btn-sm btn-outline-success btn-transparent text-success">
                                         <i class="fa fa-check pe-2 text-success"></i> Accept Escalation
                                     </button>
                                 </form>
                                 @else
+                                <!-- Jika status bukan escalated, tidak ada tombol untuk pemilik -->
                                 <span class="text-muted">No escalation required</span>
                                 @endif
                             </td>
+                            <!-- "Edit" button within a dropdown -->
                             <td class="align-middle text-center border border-light">
                                 <div class="dropdown">
                                     <a class="btn btn-link" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
@@ -120,10 +130,12 @@
             paging: false, // Menonaktifkan pagination
             lengthChange: false, // Menonaktifkan dropdown jumlah entri
             info: false, // Menonaktifkan informasi tabel seperti "Showing 1 to 10 of 50 entries"
-            columnDefs: [{
-                targets: [2, 3, 4, 5], // Menonaktifkan tombol sortir untuk kolom lainnya
-                orderable: false
-            }]
+            columnDefs: [
+                {
+                    targets: [2, 3, 4, 5], // Menonaktifkan tombol sortir untuk kolom lainnya
+                    orderable: false
+                }
+            ]
         });
 
         // Menyembunyikan elemen pencarian default DataTables
@@ -138,24 +150,5 @@
     });
 </script>
 
-<script>
-    $(document).ready(function() {
-        // Menambahkan sedikit delay dan memastikan dropdown berfungsi setelah halaman dimuat
-        $('#dropdownMenuLink').dropdown();
-    });
-</script>
 
-<style>
-    /* Menambahkan efek transisi pada dropdown */
-    .dropdown-menu {
-        display: none;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-
-    .dropdown.show .dropdown-menu {
-        display: block;
-        opacity: 1;
-    }
-</style>
 @endsection
