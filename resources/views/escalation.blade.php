@@ -20,8 +20,6 @@
     <div class="card z-index-2 h-100 d-flex flex-column">
         <div class="card-header pb-0 d-flex align-items-center justify-content-between">
             <h6 class="mb-0">escalated ticket</h6>
-            <!-- Button Sorting -->
-            <button class="btn btn-outline-secondary btn-sm" id="sortByDate" style="margin-left: 10px;">Sort by Date</button>
         </div>
         <div class="card-body px-0 pt-0 pb-2 h-500">
             @if($teknisi_data_ticket->isEmpty())
@@ -30,10 +28,6 @@
                 <a href="{{ route('teknisi.index') }}" class="btn btn-primary position-absolute top-50 start-50 translate-middle">assign ticket</a>
             </div>
             @else
-            <!-- Search Field -->
-            <div class="mb-3">
-                <input type="text" class="form-control" id="searchSubject" placeholder="Search by Subject..." />
-            </div>
             <div class="table-responsive margin-right: 15px;" style="height: 400px; max-height: 400px; overflow-y: auto;">
                 <table class="table align-items-center mb-0">
                     <thead>
@@ -127,36 +121,3 @@
 
 
 @endsection
-
-@push('scripts')
-<script>
-    // Sorting by Date (created_at)
-    document.getElementById("sortByDate").addEventListener("click", function() {
-        var table = document.getElementById("escalationTable");
-        var rows = Array.from(table.rows).slice(1); // Get all rows except header
-        rows.sort(function(a, b) {
-            var dateA = new Date(a.cells[4].innerText); // Column for created_at (Assume it's in the 4th column)
-            var dateB = new Date(b.cells[4].innerText);
-            return dateA - dateB; // Sort by date
-        });
-        rows.forEach(function(row) {
-            table.appendChild(row); // Re-append the sorted rows
-        });
-    });
-
-    // Search functionality by Subject
-    document.getElementById("searchSubject").addEventListener("input", function() {
-        var searchTerm = this.value.toLowerCase();
-        var table = document.getElementById("escalationTable");
-        var rows = Array.from(table.rows).slice(1); // Get all rows except header
-        rows.forEach(function(row) {
-            var subjectCell = row.cells[0].innerText.toLowerCase();
-            if (subjectCell.includes(searchTerm)) {
-                row.style.display = "";
-            } else {
-                row.style.display = "none";
-            }
-        });
-    });
-</script>
-@endpush

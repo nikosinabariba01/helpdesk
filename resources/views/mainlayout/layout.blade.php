@@ -34,6 +34,11 @@
   <link rel="stylesheet" href="{{ asset('style/assets/css/nucleo-svg.css') }}">
   <!-- CSS Files -->
   <link id="pagestyle" href="{{ asset('style/assets/css/argon-dashboard.css') }}" rel="stylesheet">
+  <!-- Bootstrap Table CSS -->
+  <link href="https://unpkg.com/bootstrap-table/dist/bootstrap-table.min.css" rel="stylesheet">
+
+  <!-- Bootstrap Table JS -->
+  <script src="https://unpkg.com/bootstrap-table/dist/bootstrap-table.min.js"></script>
 
 
 </head>
@@ -109,36 +114,6 @@
     </a>
 
   </div>
-  <script>
-    // Sorting by Date (created_at)
-    document.getElementById("sortByDate").addEventListener("click", function() {
-      var table = document.getElementById("escalationTable");
-      var rows = Array.from(table.rows).slice(1); // Get all rows except header
-      rows.sort(function(a, b) {
-        var dateA = new Date(a.cells[4].innerText); // Column for created_at (Assume it's in the 4th column)
-        var dateB = new Date(b.cells[4].innerText);
-        return dateA - dateB; // Sort by date
-      });
-      rows.forEach(function(row) {
-        table.appendChild(row); // Re-append the sorted rows
-      });
-    });
-
-    // Search functionality by Subject
-    document.getElementById("searchSubject").addEventListener("input", function() {
-      var searchTerm = this.value.toLowerCase();
-      var table = document.getElementById("escalationTable");
-      var rows = Array.from(table.rows).slice(1); // Get all rows except header
-      rows.forEach(function(row) {
-        var subjectCell = row.cells[0].innerText.toLowerCase();
-        if (subjectCell.includes(searchTerm)) {
-          row.style.display = "";
-        } else {
-          row.style.display = "none";
-        }
-      });
-    });
-  </script>
   <!--   Core JS Files   -->
   <script src="{{ asset('style/assets/js/core/popper.min.js') }}"></script>
   <script src="{{ asset('style/assets/js/core/bootstrap.min.js') }}"></script>
