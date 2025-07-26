@@ -93,9 +93,9 @@
                             <!-- "Edit" button within a dropdown -->
                             <td class="align-middle text-center border border-light">
                                 <div class="dropdown">
-                                    <button class="btn btn-link" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <a class="btn btn-link" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class="fa fa-ellipsis-v fa-sm"></i>
-                                    </button>
+                                    </a>
                                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
                                         <li>
                                             <a class="dropdown-item text-info" href="{{ route('viewticketteknisi.index', ['id' => $teknisidataticket->id]) }}">
