@@ -93,7 +93,7 @@
                             <!-- "Edit" button within a dropdown -->
                             <td class="align-middle text-center border border-light">
                                 <div class="dropdown">
-                                    <a class="btn btn-link" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown">
+                                    <a class="btn btn-link" href="#" role="button" id="dropdownMenuLink" >
                                         <i class="fa fa-ellipsis-v fa-sm"></i>
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
