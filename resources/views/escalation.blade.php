@@ -122,3 +122,11 @@
 
 @endsection
 
+<script>
+    $(document).ready(function() {
+        $('#escalationTable').DataTable({
+            searching: true,
+            ordering: true,
+        });
+    });
+</script>
