@@ -123,29 +123,39 @@
 </div>
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         var table = $('#escalationTable').DataTable({
-            searching: true, // Tetap mengaktifkan pencarian
-            ordering: false, // Menonaktifkan tombol sortir untuk semua kolom kecuali subject dan user
-            paging: false, // Menonaktifkan pagination
-            lengthChange: false, // Menonaktifkan dropdown jumlah entri
-            info: false, // Menonaktifkan informasi tabel seperti "Showing 1 to 10 of 50 entries"
+            searching: true,
+            ordering: false,
+            paging: false,
+            lengthChange: false,
+            info: false,
             columnDefs: [
-                {
-                    targets: [2, 3, 4, 5], // Menonaktifkan tombol sortir untuk kolom lainnya
-                    orderable: false
-                }
+                { targets: [2, 3, 4, 5], orderable: false }
             ]
         });
 
-        // Menyembunyikan elemen pencarian default DataTables
-        $('#escalationTable_filter').hide(); // Menyembunyikan kolom pencarian default
-        $('#escalationTable_length').hide(); // Menyembunyikan opsi "Show Entries"
-        $('#escalationTable_paginate').hide(); // Menyembunyikan pagination
+        // Menyembunyikan elemen pencarian bawaan
+        $('#escalationTable_filter').hide();
+        $('#escalationTable_length').hide();
+        $('#escalationTable_paginate').hide();
 
-        // Menambahkan pencarian kustom menggunakan id "search"
-        $('#search').on('keyup', function() {
-            table.search(this.value).draw(); // Menyaring berdasarkan nilai input pencarian
+        // Custom search hanya kolom Subject dan User (kolom 0 dan 1)
+        $('#search').on('keyup', function () {
+            var searchTerm = this.value.toLowerCase();
+
+            $.fn.dataTable.ext.search = [];
+            $.fn.dataTable.ext.search.push(
+                function (settings, data, dataIndex) {
+                    // Kolom subject dan user (kolom ke-0 dan ke-1)
+                    var subject = data[0].toLowerCase(); // subject
+                    var user = data[1].toLowerCase(); // user
+
+                    return subject.includes(searchTerm) || user.includes(searchTerm);
+                }
+            );
+
+            table.draw();
         });
     });
 </script>
