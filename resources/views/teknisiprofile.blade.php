@@ -266,7 +266,7 @@
                 <div class="row gx-4">
                     <div class="col-auto">
                         <div class="avatar avatar-xl position-relative">
-                            <img src="{{ Auth::user()->profile_photo ? asset('storage/public' . Auth::user()->profile_photo) : asset('default-profile.png') }}" alt="Profile Image" class="w-100 border-radius-lg shadow-sm">
+                            <img src="{{ Auth::user()->profile_photo ? asset('storage/public/' . Auth::user()->profile_photo) : asset('default-profile.png') }}" alt="Profile Image" class="w-100 border-radius-lg shadow-sm">
                         </div>
                     </div>
                     <div class="col-auto my-auto">
