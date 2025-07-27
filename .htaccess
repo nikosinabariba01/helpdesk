@@ -18,13 +18,5 @@
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
-
-    # Blok akses ke folder Laravel yang sensitif
-    RedirectMatch 403 ^/(app|bootstrap|config|database|resources|routes|storage|tests)(/|$)
     
-    # Blok file-file penting agar tidak bisa diakses publik
-    <FilesMatch "^(\.env|\.gitignore|composer\.(json|lock)|artisan|server\.php)$">
-      Order allow,deny
-      Deny from all
-    </FilesMatch>
 </IfModule>
