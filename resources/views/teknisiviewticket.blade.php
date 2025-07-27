@@ -90,7 +90,7 @@
             @foreach($ticket->comments as $comment)
             <li class="list-group-item mt-0 d-flex align-items-start">
               <!-- Foto Profil -->
-              <img src="{{ $comment->user && $comment->user->profile_photo ? asset('storage/' . $comment->user->profile_photo) : asset('default-profile.png') }}" alt="Profile Photo" class="rounded-circle me-3" style="width: 40px; height: 40px; object-fit: cover;">
+              <img src="{{ $comment->user && $comment->user->profile_photo ? asset('storage/public/' . $comment->user->profile_photo) : asset('default-profile.png') }}" alt="Profile Photo" class="rounded-circle me-3" style="width: 40px; height: 40px; object-fit: cover;">
               <div style="flex-grow: 1;">
                 <div class="d-flex justify-content-between align-items-center">
                   <span class="fw-bold @if ($comment->user && $comment->user->role == 'penyewa') text-primary @elseif ($comment->user && in_array($comment->user->role, ['pengurus', 'admin', 'pemilik'])) text-danger @else text-muted @endif">
