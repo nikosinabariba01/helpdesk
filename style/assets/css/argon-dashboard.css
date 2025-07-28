@@ -21117,7 +21117,7 @@ fieldset:disabled .btn {
   .dropdown .dropdown-menu {
     display: block;
     opacity: 0;
-    top: 0;
+    top: 100%;
     pointer-events: none;
     animation: hide-navbar-dropdown 0.25s ease forwards;
     -webkit-backface-visibility: hidden;
