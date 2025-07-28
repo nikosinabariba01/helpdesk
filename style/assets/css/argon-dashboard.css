@@ -21117,7 +21117,7 @@ fieldset:disabled .btn {
   .dropdown .dropdown-menu {
     display: block;
     opacity: 0;
-    top: 100%;
+    top: 0;
     pointer-events: none;
     animation: hide-navbar-dropdown 0.25s ease forwards;
     -webkit-backface-visibility: hidden;
@@ -22441,7 +22441,7 @@ hr.horizontal.gray-light {
 
 @media (min-width: 992px) {
   :not(.main-content) .navbar .dropdown .dropdown-menu {
-    top: 2.25rem !important;
+    top: 0.25rem !important;
   }
 
   :not(.main-content) .navbar .dropdown .dropdown-menu .dropdown .dropdown-menu {
