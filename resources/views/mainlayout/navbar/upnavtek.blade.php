@@ -56,7 +56,6 @@
                               </div>
                           </a>
                       </li>
-                  </ul>
                       <li class="mb-2">
                           <a class="dropdown-item border-radius-md" href="javascript:;">
                               <div class="d-flex py-1">
@@ -108,7 +107,3 @@
                   </ul>
               </li>
           </ul>
-
-
-
-          
