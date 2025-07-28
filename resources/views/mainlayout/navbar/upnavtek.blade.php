@@ -1,4 +1,4 @@
-          <ul class="navbar-nav justify-content-between justify-content-sm-end">
+          <ul class="navbar-nav d-flex justify-content-between justify-content-sm-center w-100">
               <li class="nav-item dropdown pe-2 d-flex align-items-center">
                   <a href="javascript:;" class="nav-link text-white p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                       <i class="fa fa-bell cursor-pointer"></i>
