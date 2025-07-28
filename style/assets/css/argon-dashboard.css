@@ -6584,6 +6584,7 @@ fieldset:disabled .btn {
   overflow-y: auto;
 }
 
+
 @media (max-width: 575.98px) {
   .modal-fullscreen-sm-down {
     width: 100vw;
@@ -26969,6 +26970,28 @@ pre[class*="language-"] {
   .ps {
     overflow: auto !important;
   }
+}
+
+@media (max-width: 575.98px) {
+    .navbar-nav {
+        justify-content: center; /* Menyusun item navbar di tengah */
+    }
+
+    .navbar-nav .nav-item {
+        padding-left: 10px; /* Menambahkan jarak antara item */
+        padding-right: 10px; /* Menambahkan jarak antara item */
+    }
+
+    /* Membuat dropdown menu muncul di sisi kanan */
+    .dropdown-menu {
+        right: 0;
+        left: auto;
+    }
+
+    /* Menambahkan spasi antara item pada menu */
+    .nav-item {
+        margin-right: 10px;
+    }
 }
 
 /*# sourceMappingURL=dashboard-free.css.map */
