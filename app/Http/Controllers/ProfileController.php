@@ -64,7 +64,19 @@ class ProfileController extends Controller
         }
     }
 
-    
+    public function servePhoto($filename)
+    {
+        // Path asli file
+        $path = storage_path('app/public/profile_photos/' . $filename);
+
+        // Cek file ada atau tidak
+        if (!File::exists($path)) {
+            abort(404);
+        }
+
+        // Bisa tambahkan cek autentikasi/otorisasi di sini jika perlu
+        return Response::file($path);
+    }
 
 
 
