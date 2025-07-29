@@ -21148,7 +21148,7 @@ fieldset:disabled .btn {
   }
 
   .dropdown:not(.dropdown-hover) .dropdown-menu {
-    margin-top: 0.25rem !important;
+    margin-top: 40px !important;
   }
 
   .dropdown .dropdown-menu:before {
@@ -22441,7 +22441,11 @@ hr.horizontal.gray-light {
 
 @media (min-width: 992px) {
   :not(.main-content) .navbar .dropdown .dropdown-menu {
-    top: 0.25rem !important;
+    top: 2.25rem !important;
+  }
+
+  :not(.main-content) .navbar .dropdown .dropdown-menu .dropdown .dropdown-menu {
+    top: 0 !important;
   }
 }
 
