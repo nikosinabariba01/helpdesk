@@ -28,7 +28,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('/telegram/webhook', [TelegramWebhookController::class, 'handle']);
 Route::get('/', [LoginController::class, 'index'])->name('login');
 Route::post('/', [LoginController::class, 'Login']);
-Route::get('/photo/{filename}', [ProfileController::class, 'servePhoto'])->name('profile.photo');
+
 
 
 route::middleware(['guest'])->group(function () {
