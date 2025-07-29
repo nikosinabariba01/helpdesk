@@ -18,17 +18,24 @@ class AdminController extends Controller
         // Dapatkan ID pengguna yang sedang login
         $userId = Auth::id();
 
-        // Ambil tiket yang memiliki asignee_id null dan status open
+        // Mengambil tiket yang belum memiliki asignees (belum ada yang meng-assign) dan status 'open'
         $teknisi_data_ticket = Ticket::with('user')
+            ->whereDoesntHave('asignees') // Mengambil tiket yang belum memiliki asignees
+            ->where('status', 'open')
             ->orderBy('created_at', 'desc')
             ->get();
 
-        // Hitung statistik tiket berdasarkan status
-        $totalOnProcessTickets = Ticket::where('asignee_id', $userId)
+        // Hitung total tiket yang sedang dalam proses (on process) berdasarkan asignee yang memiliki user_id yang sedang login
+        $totalOnProcessTickets = Ticket::whereHas('asignees', function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        })
             ->where('status', 'on process')
             ->count();
 
-        $totalClosedTickets = Ticket::where('asignee_id', $userId)
+        // Hitung total tiket yang berstatus 'close' berdasarkan asignee yang memiliki user_id yang sedang login
+        $totalClosedTickets = Ticket::whereHas('asignees', function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        })
             ->where('status', 'close')
             ->count();
 
@@ -82,7 +89,7 @@ class AdminController extends Controller
             'role.required' => 'Peran wajib dipilih.',
             'role.in' => 'Peran yang dipilih tidak valid.', // Memastikan hanya role baru yang bisa dipilih
         ]);
-    
+
         // Membuat user baru dengan data yang divalidasi
         User::create([
             'name' => $request->name,
@@ -90,11 +97,11 @@ class AdminController extends Controller
             'password' => Hash::make($request->password), // Enkripsi password
             'role' => $request->role, // Role yang dipilih
         ]);
-    
+
         // Redirect ke halaman manage user dengan pesan sukses
         return redirect()->route('admin.manageuser')->with('success', 'User berhasil dibuat.');
     }
-    
+
 
 
     /**
