@@ -79,7 +79,7 @@
                           Hi! {{ Auth::user()->name }}
                       </span>
                       <!-- Gambar Profil -->
-                      <img src="{{ Auth::user()->profile_photo ? route('profile.photo', ['filename' => basename(Auth::user()->profile_photo)]) }}"
+                      <img src="{{ Auth::user()->profile_photo ? route('profile.photo', ['filename' => basename(Auth::user()->profile_photo)]) : asset('default-profile.png') }}"
                           alt="Profile Photo"
                           class="rounded-circle"
                           style="width: 30px; height: 30px; object-fit: cover;">
