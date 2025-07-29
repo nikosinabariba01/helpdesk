@@ -3,7 +3,7 @@
                   <a href="javascript:;" class="nav-link text-white p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                       <i class="fa fa-bell cursor-pointer"></i>
                   </a>
-                  <ul class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
+                  <ul class="dropdown-menu dropdown-menu-end px-2 py-1 me-sm-n4" aria-labelledby="dropdownMenuButton">
                       <li class="mb-2">
                           <a class="dropdown-item border-radius-md" href="javascript:;">
                               <div class="d-flex py-1">
@@ -84,7 +84,7 @@
                           class="rounded-circle"
                           style="width: 30px; height: 30px; object-fit: cover;">
                   </a>
-                  <ul class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4 " aria-labelledby="dropdownMenuButton">
+                  <ul class="dropdown-menu dropdown-menu-end px-2 py-1 me-sm-n4 " aria-labelledby="dropdownMenuButton">
                       <li class="mb-2">
                           <a class="dropdown-item" href="{{route('teknisi.profile')}}">
                               <img src="/style/assets/img/setting.png" /> Profile
