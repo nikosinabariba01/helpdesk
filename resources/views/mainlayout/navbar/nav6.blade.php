@@ -86,7 +86,7 @@
         </div>
         <span class="nav-link-text ms-1">Manage User</span>
       </a>
-    </li>a>
+    </li>
     </li>
     <li class="nav-item">
       <a class="nav-link" href="{{route('customer.profile')}}">

@@ -68,14 +68,6 @@
                         <span class="nav-link-text ms-1">Manage User</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="rtl.html">
-                        <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="ni ni-world-2 text-danger text-sm opacity-10"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">Berita</span>
-                    </a>
-                </li>
             </ul>
             @elseif(Auth::user()->role == 'pengurus' || Auth::user()->role == 'pemilik')
             <ul class="navbar-nav">
@@ -109,14 +101,6 @@
                             <i class="ni ni-app text-info text-sm opacity-10"></i>
                         </div>
                         <span class="nav-link-text ms-1">Ticket List</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="rtl.html">
-                        <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="ni ni-world-2 text-danger text-sm opacity-10"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">Berita</span>
                     </a>
                 </li>
             </ul>
