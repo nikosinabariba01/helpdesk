@@ -88,11 +88,11 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('admin.settings') }}">
+                <a class="nav-link" href="{{route('customer.profile')}}">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="ni ni-settings text-warning text-sm opacity-10"></i>
                     </div>
-                    <span class="nav-link-text ms-1">Settings</span>
+                    <span class="nav-link-text ms-1">Profile</span>
                 </a>
             </li>
         </ul>

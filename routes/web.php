@@ -74,7 +74,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/customer', [CustomerController::class, 'index'])->name('customer.index')->middleware('userAkses:penyewa,admin');
     Route::get('/Active', [CustomerController::class, 'viewprocess'])->name('customer.viewprocess')->middleware('userAkses:penyewa,admin');
-    Route::get('/Profile/edit', [ProfileController::class, 'index'])->name('customer.profile')->middleware('auth');
+    Route::get('/Profile/edit', [ProfileController::class, 'index'])->name('customer.profile')->middleware('userAkses:penyewa,admin');
 
     Route::get('customer/viewticket/{id}', [ViewTicketController::class, 'index'])->name('viewtickets.index')->middleware('userAkses:penyewa,admin');
     Route::post('/Profile/update', [ProfileController::class, 'updatecustomer'])->name('customer.profileupdate')->middleware('userAkses:pengurus,pemilik,admin,penyewa');
