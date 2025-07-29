@@ -1,16 +1,16 @@
           <ul class="navbar-nav  justify-content-end">
               <li class="nav-item dropdown pe-0 d-flex align-items-center">
                   <a href="javascript:;" class="nav-link text-white p-0 d-flex align-items-center" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-            <!-- Teks "Hi!" dengan Nama Pengguna -->
-            <span class="d-none d-sm-inline-block me-2">
-                Hi! {{ Auth::user()->name }}
-            </span>
-            <!-- Gambar Profil -->
-            <img src="{{ Auth::user()->profile_photo ? route('profile.photo', ['filename' => basename(Auth::user()->profile_photo)]) : asset('default-profile.png') }}"
-                alt="Profile Photo" 
-                class="rounded-circle" 
-                style="width: 30px; height: 30px; object-fit: cover;">
-        </a>
+                      <!-- Teks "Hi!" dengan Nama Pengguna -->
+                      <span class="d-none d-sm-inline-block me-2">
+                          Hi! {{ Auth::user()->name }}
+                      </span>
+                      <!-- Gambar Profil -->
+                      <img src="{{ Auth::user()->profile_photo ? route('profile.photo', ['filename' => basename(Auth::user()->profile_photo)]) : asset('default-profile.png') }}"
+                          alt="Profile Photo"
+                          class="rounded-circle"
+                          style="width: 30px; height: 30px; object-fit: cover;">
+                  </a>
                   <ul class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4 " aria-labelledby="dropdownMenuButton">
                       <li class="mb-2">
                           <a class="dropdown-item text-dark" href="{{route('customer.profile')}}">
