@@ -12,8 +12,8 @@
                         <div class="my-auto">
                             <!-- Menampilkan foto profil user yang memberi komentar -->
                             <img src="{{ $comment->user->profile_photo 
-                                        ? route('profile.photo', ['filename' => basename($comment->user->profile_photo)]) 
-                                        : asset('default-profile.png') }}"
+                                                ? route('profile.photo', ['filename' => basename($comment->user->profile_photo)]) 
+                                                : asset('default-profile.png') }}"
                                 class="avatar avatar-sm me-3" alt="{{ $comment->user->name }}">
                         </div>
                         <div class="d-flex flex-column justify-content-start">
@@ -28,7 +28,6 @@
                             <!-- Menampilkan Waktu Komentar -->
                             <p class="text-xs text-secondary mb-0">
                                 <i class="fa-solid fa-clock">{{ $comment->created_at->diffForHumans() }}</i>
-                                <!-- Waktu relatif -->
                             </p>
                         </div>
                     </div>
@@ -37,18 +36,7 @@
             @endforeach
             @else
             <li class="mb-2">
-            <a class="dropdown-item text-muted" href="#">
-                <div class="d-flex py-1">
-                    <div class="my-auto">
-                        <i class="fa-solid fa-bell me-3 text-muted"></i> <!-- Icon Notifikasi -->
-                    </div>
-                    <div class="d-flex flex-column justify-content-start">
-                        <p class="text-sm font-weight-normal mb-1 text-muted">
-                            Belum ada pesan yang diterima
-                        </p>
-                    </div>
-                </div>
-            </a>
+                <span class="text-secondary">Belum ada pesan yang diterima</span> <!-- Pesan default ketika tidak ada komentar -->
             </li>
             @endif
         </ul>
