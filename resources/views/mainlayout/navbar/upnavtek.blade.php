@@ -17,9 +17,9 @@
                                   </div>
                                   <div class="d-flex flex-column justify-content-center">
                                       <!-- Menampilkan Subject Tiket dengan teks tebal -->
-                                      <h6 class="text-sm font-weight-bold mb-1">
-                                          Subject: {{ $comment->ticket->subject }}
-                                      </h6>
+                                      <h7 class="text-sm font-weight-bold mb-1">
+                                          {{ $comment->ticket->subject }}
+                                      </h7>
                                       <!-- Menampilkan New Message dan Nama Pengguna -->
                                       <p class="text-xs text-secondary mb-0">
                                           <span class="font-weight-normal">New message</span> from {{ $comment->user->name }}
