@@ -30,6 +30,8 @@ class CustomerController extends Controller
             ->latest()
             ->limit(3)  // Batasi 3 komentar terbaru
             ->get();
+
+        return $latestComments;
     }
 
     public function index()
