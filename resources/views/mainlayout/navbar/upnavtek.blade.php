@@ -8,9 +8,10 @@
                       <li class="mb-2">
                           <a class="dropdown-item text-info" href="{{ route('viewticketteknisi.index', ['id' => $comment->ticket_id]) }}">
                               <div class="d-flex py-1">
-                                  <div class="my-auto">
-                                      <img src="style/assets/img/team-2.jpg" class="avatar avatar-sm me-3">
-                                  </div>
+                                <div class="my-auto">
+                                    <!-- Menampilkan foto profil user yang memberi komentar -->
+                                    <img src="{{ route('servePhoto', ['filename' => $comment->user->profile_photo]) }}" class="avatar avatar-sm me-3" alt="{{ $comment->user->name }}">
+                                </div>
                                   <div class="d-flex flex-column justify-content-center">
                                       <h6 class="text-sm font-weight-normal mb-1">
                                           <span class="font-weight-bold">New message</span> from {{ $comment->ticket->user->name }}
