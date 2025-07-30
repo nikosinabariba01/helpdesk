@@ -11,8 +11,8 @@
                     <div class="d-flex py-1">
                         <div class="my-auto">
                             <!-- Menampilkan foto profil user yang memberi komentar -->
-                            <img src="{{ $comment->user->profile_photo
-                                        ? route('profile.photo', ['filename' => basename($comment->user->profile_photo)])
+                            <img src="{{ $comment->user->profile_photo 
+                                        ? route('profile.photo', ['filename' => basename($comment->user->profile_photo)]) 
                                         : asset('default-profile.png') }}"
                                 class="avatar avatar-sm me-3" alt="{{ $comment->user->name }}">
                         </div>
@@ -37,15 +37,18 @@
             @endforeach
             @else
             <li class="mb-2">
-                <a class="dropdown-item text-muted" href="#">
-                    <div class="d-flex py-1">
-                        <div class="d-flex flex-column justify-content-start">
-                            <p class="text-sm font-weight-normal mb-1 text-muted">
-                                Belum ada pesan yang diterima
-                            </p>
-                        </div>
+            <a class="dropdown-item text-muted" href="#">
+                <div class="d-flex py-1">
+                    <div class="my-auto">
+                        <i class="fa-solid fa-bell me-3 text-muted"></i> <!-- Icon Notifikasi -->
                     </div>
-                </a>
+                    <div class="d-flex flex-column justify-content-start">
+                        <p class="text-sm font-weight-normal mb-1 text-muted">
+                            Belum ada pesan yang diterima
+                        </p>
+                    </div>
+                </div>
+            </a>
             </li>
             @endif
         </ul>
