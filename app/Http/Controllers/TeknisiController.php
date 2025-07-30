@@ -32,6 +32,7 @@ class TeknisiController extends Controller
                 })
                     ->pluck('id')); // Mengambil tiket_id yang relevan
             })
+            ->where('user_id', '!=', $userId) // Menambahkan kondisi untuk menghindari komentar dari teknisi yang sedang login
             ->with('ticket.user')  // Mengambil informasi tiket dan pengguna yang mengomentari
             ->latest()  // Mengurutkan berdasarkan waktu terbaru
             ->limit(3)  // Batasi 3 komentar terbaru
