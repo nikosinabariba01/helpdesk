@@ -17,7 +17,7 @@
                                   </div>
                                   <div class="d-flex flex-column justify-content-center">
                                       <!-- Menampilkan Subject Tiket dengan teks tebal -->
-                                      <h7 class="text-sm font-weight-bold mb-1">
+                                      <h7 class="text-sm font-weight-bold mb-1 text-truncate" style="max-width: 250px;">
                                           {{ $comment->ticket->subject }}
                                       </h7>
                                       <!-- Menampilkan New Message dan Nama Pengguna -->
