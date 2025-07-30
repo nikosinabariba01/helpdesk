@@ -25,7 +25,7 @@
             </div>
             <div class="col-md-2 d-flex justify-content-end align-items-center">
               <i class="far fa-calendar-alt me-2"></i>
-              <small>{{ $ticket->created_at }}</small>
+              <small>{{ $ticket->created_at->format('Y-m-d') }}</small>
             </div>
           </div>
         </div>
