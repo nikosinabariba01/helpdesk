@@ -10,7 +10,7 @@
                               <div class="d-flex py-1">
                                 <div class="my-auto">
                                     <!-- Menampilkan foto profil user yang memberi komentar -->
-                                    <img src="{{ route('profile.photo', ['filename' => $comment->user->profile_photo]) }}" class="avatar avatar-sm me-3" alt="{{ $comment->user->name }}">
+                                    <img src="{{ $comment->user->profile_photo ? route('profile.photo', ['filename' => basename($comment->user->profile_photo)]) : asset('default-profile.png') }}" class="avatar avatar-sm me-3" alt="{{ $comment->user->name }}">
                                 </div>
                                   <div class="d-flex flex-column justify-content-center">
                                       <h6 class="text-sm font-weight-normal mb-1">
