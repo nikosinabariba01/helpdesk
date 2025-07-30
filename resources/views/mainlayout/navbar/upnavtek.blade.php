@@ -8,18 +8,24 @@
                       <li class="mb-2">
                           <a class="dropdown-item text-info" href="{{ route('viewticketteknisi.index', ['id' => $comment->ticket_id]) }}">
                               <div class="d-flex py-1">
-                                <div class="my-auto">
-                                    <!-- Menampilkan foto profil user yang memberi komentar -->
-                                    <img src="{{ $comment->user->profile_photo ? route('profile.photo', ['filename' => basename($comment->user->profile_photo)]) : asset('default-profile.png') }}" class="avatar avatar-sm me-3" alt="{{ $comment->user->name }}">
-                                </div>
+                                  <div class="my-auto">
+                                      <!-- Menampilkan foto profil user yang memberi komentar -->
+                                      <img src="{{ $comment->user->profile_photo 
+                                        ? route('profile.photo', ['filename' => basename($comment->user->profile_photo)]) 
+                                        : asset('default-profile.png') }}"
+                                          class="avatar avatar-sm me-3" alt="{{ $comment->user->name }}">
+                                  </div>
                                   <div class="d-flex flex-column justify-content-center">
                                       <h6 class="text-sm font-weight-normal mb-1">
-                                          <span class="font-weight-bold">New message</span> from {{ $comment->ticket->user->name }}
+                                          <span class="font-weight-bold">New message</span> from {{ $comment->user->name }}
                                       </h6>
                                       <p class="text-xs text-secondary mb-0">
                                           <i class="fa fa-clock me-1"></i>
                                           {{ $comment->created_at->diffForHumans() }} <!-- Waktu relatif -->
                                       </p>
+                                      <p class="text-sm text-secondary mb-0 mt-1">
+                                          <span class="font-weight-bold">Subject: </span>{{ $comment->ticket->subject }}
+                                      </p> <!-- Menampilkan subject tiket -->
                                   </div>
                               </div>
                           </a>
