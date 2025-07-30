@@ -82,7 +82,7 @@
                                     <button type="submit" class="btn btn-sm btn-outline-warning text-secondary">Re-assign</button>
                                     @else
                                     <!-- Jika sudah di-assign oleh teknisi lain -->
-                                    <button type="submit" class="btn btn-sm btn-outline-warning text-primary">Contribute</button>
+                                    <button type="submit" class="btn btn-sm btn-outline-success text-primary">Contribute</button>
                                     @endif
                                 </form>
                             </td>
