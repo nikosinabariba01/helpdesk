@@ -127,7 +127,7 @@
           </div>
         </div>
         <div class="d-flex flex-column">
-          <h7 class="mb-3 text-sm">{{ \Carbon\Carbon::parse($ticket->Tanggal_Pengaduan)->format('d F Y') }}</h7>
+          <h7 class="mb-3 text-sm">{{ \Carbon\Carbon::parse($comment->created_at)->format('Y-m-d') }}</h7>
           <span class="mb-3 text-xs">Jenis Pengaduan: <span class="text-dark font-weight-bold ms-sm-0">{{ $ticket->Jenis_Pengaduan }}</span></span>
           <span class="mb-3 text-xs">Lokasi: <span class="text-dark ms-sm-0 font-weight-bold">{{ $ticket->Lokasi }}</span></span>
           <span class="mb-3 text-xs">Status: <x-status-badge :status="$ticket->status" /></span>

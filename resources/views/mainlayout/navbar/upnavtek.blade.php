@@ -21,14 +21,16 @@
                                           {{ $comment->ticket->subject }}
                                       </h7>
                                       <!-- Menampilkan New Message dan Nama Pengguna -->
-                                      <p class="text-xs text-secondary mb-0">
-                                          <span class="font-weight-normal">New message</span> from {{ $comment->user->name }}
-                                      </p>
-                                      <!-- Menampilkan Waktu Komentar -->
-                                      <p class="text-xs text-secondary mb-0">
-                                          <i class="fa fa-clock me-1"></i>
-                                          {{ $comment->created_at->diffForHumans() }} <!-- Waktu relatif -->
-                                      </p>
+                                      <div class="d-flex justify-content-between">
+                                          <p class="text-xs text-secondary mb-0">
+                                              <span class="font-weight-normal">New message</span> from {{ $comment->user->name }}
+                                          </p>
+                                          <!-- Menambahkan sedikit jarak antara waktu dan new message -->
+                                          <p class="text-xs text-secondary mb-0 ml-2">
+                                              <i class="fa fa-clock me-1"></i>
+                                              {{ $comment->created_at->diffForHumans() }} <!-- Waktu relatif -->
+                                          </p>
+                                      </div>
                                   </div>
                               </div>
                           </a>
