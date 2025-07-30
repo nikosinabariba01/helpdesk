@@ -37,7 +37,9 @@
             @endforeach
             @else
             <li class="mb-2">
-                <span class="text-secondary">Belum ada pesan yang diterima</span> <!-- Pesan default ketika tidak ada komentar -->
+                                            <p class="text-xs text-secondary mb-1">
+                                <span class="font-weight-normal">Belum ada pesan yang diterima</span>
+                            </p>
             </li>
             @endif
         </ul>
