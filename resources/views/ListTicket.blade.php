@@ -77,7 +77,7 @@
                                     @if($teknisidataticket->asignees->isEmpty())
                                     <!-- Jika belum di-assign oleh siapapun -->
                                     <button type="submit" class="btn btn-sm btn-transparent text-primary">Assign</button>
-                                    @elseif($teknisidataticket->asignees->first()->id == $userId)
+                                    @elseif($teknisidataticket->asignees->first()->id == Auth::id())
                                     <!-- Jika sudah di-assign ke teknisi yang sedang login -->
                                     <button type="submit" class="btn btn-sm btn-outline-warning text-secondary">Re-assign</button>
                                     @else
