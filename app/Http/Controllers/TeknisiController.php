@@ -11,24 +11,37 @@ class TeknisiController extends Controller
 
     private function getLatestComments()
     {
-        // Dapatkan ID pengguna yang sedang login
+        // Dapatkan ID pengguna yang sedang login (teknisi)
         $userId = Auth::id();
 
-        // Mengambil tiket yang ditugaskan ke teknisi yang sedang login
+        // Ambil tiket yang ditugaskan ke teknisi yang sedang login
         $assignedTickets = Ticket::whereHas('asignees', function ($query) use ($userId) {
             $query->where('user_id', $userId); // Menyaring tiket yang ditugaskan ke teknisi
         })->pluck('id'); // Mengambil ID tiket yang ditugaskan ke teknisi
 
-        // Mengambil komentar-komentar terbaru yang terkait dengan tiket yang ditugaskan ke teknisi
-        // dan mengecualikan komentar dari pengguna yang sedang login
-        return Comment::whereIn('ticket_id', $assignedTickets)
-            ->where('user_id', '!=', $userId) // Menambahkan kondisi untuk menghindari komentar dari teknisi yang sedang login
-            ->with('ticket.user') // Mengambil informasi tiket dan pengguna yang mengomentari
-            ->latest()            // Mengurutkan berdasarkan waktu terbaru
-            ->limit(3)            // Batasi hanya 3 komentar terbaru
-            ->get();
-    }
+        // Mengambil waktu tiket di-assign
+        $assignTimes = Ticket::whereIn('id', $assignedTickets)
+            ->with('asignees') // Mengambil relasi asignees untuk mendapatkan waktu peng-assign-an
+            ->get()
+            ->pluck('asignees')
+            ->flatten()
+            ->where('user_id', $userId) // Filter untuk teknisi yang sedang login
+            ->pluck('pivot.created_at'); // Ambil waktu saat tiket di-assign
 
+        // Jika tiket di-assign, ambil waktu pertama dari tiket yang di-assign
+        $assignTime = $assignTimes->first();
+
+        // Ambil komentar terbaru setelah waktu tiket di-assign
+        $latestComments = Comment::whereIn('ticket_id', $assignedTickets)
+            ->where('user_id', '!=', $userId) // Hanya mengambil komentar dari teknisi lain
+            ->where('created_at', '>', $assignTime) // Mengambil komentar setelah waktu tiket di-assign
+            ->with('ticket.user') // Mengambil informasi tiket dan pengguna yang mengomentari
+            ->latest() // Mengurutkan berdasarkan waktu terbaru
+            ->limit(3) // Batasi hanya 3 komentar terbaru
+            ->get();
+
+        return $latestComments;
+    }
 
     // Fungsi untuk menampilkan data teknisi (tiket yang belum ditugaskan)
     public function index()

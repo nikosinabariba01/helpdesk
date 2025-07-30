@@ -20,19 +20,26 @@ class CustomerController extends Controller
         $ticketsByUser = Ticket::where('user_id', $userId)
             ->pluck('id'); // Mendapatkan ID tiket yang dibuat oleh penyewa
 
+        // Mengambil waktu pembuatan tiket (created_at)
+        $ticketCreateTimes = Ticket::whereIn('id', $ticketsByUser)
+            ->pluck('created_at'); // Ambil waktu created_at dari tiket yang dibuat oleh penyewa
+
         // Ambil komentar terbaru yang diberikan oleh teknisi pada tiket yang dibuat oleh penyewa
+        // dan hanya mengambil komentar yang dibuat setelah waktu pembuatan tiket
         $latestComments = Comment::whereIn('ticket_id', $ticketsByUser)  // Hanya tiket yang dibuat oleh penyewa
             ->whereHas('user', function ($query) {
                 // Pastikan komentar berasal dari teknisi (role pemilik atau pengurus)
                 $query->whereIn('role', ['pemilik', 'pengurus']);
             })
+            ->where('created_at', '>', $ticketCreateTimes->first()) // Ambil komentar setelah waktu pembuatan tiket
             ->with('ticket.user')  // Memuat relasi untuk menampilkan informasi tiket
-            ->latest()
+            ->latest()  // Mengurutkan berdasarkan waktu terbaru
             ->limit(3)  // Batasi 3 komentar terbaru
             ->get();
 
         return $latestComments;
     }
+
 
     public function index()
     {
