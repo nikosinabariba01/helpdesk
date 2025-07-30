@@ -25,7 +25,7 @@
             </div>
             <div class="col-md-2 d-flex justify-content-end align-items-center">
               <i class="far fa-calendar-alt me-2"></i>
-              <small>{{ $ticket->Tanggal_Pengaduan }}</small>
+              <small>{{ $ticket->created_at }}</small>
             </div>
           </div>
         </div>
@@ -96,7 +96,7 @@
                   <span class="fw-bold @if ($comment->user && $comment->user->role == 'penyewa') text-primary @elseif ($comment->user && in_array($comment->user->role, ['pengurus', 'admin', 'pemilik'])) text-danger @else text-muted @endif">
                     {{ $comment->user ? $comment->user->name : 'User Not Found' }}
                   </span>
-                  <span class="text-muted small">{{ \Carbon\Carbon::parse($comment->created_at)->format('Y-m-d') }}</span>
+                  <span class="text-muted small">{{ $comment->created_at->format('Y-m-d') }}</span>
                 </div>
                 <p class="mb-0">{{ $comment->comment }}</p>
               </div>
@@ -127,7 +127,7 @@
           </div>
         </div>
         <div class="d-flex flex-column">
-          <h7 class="mb-3 text-sm">{{ \Carbon\Carbon::parse($comment->created_at)->format('Y-m-d') }}</h7>
+          <h7 class="mb-3 text-sm">{{ \Carbon\Carbon::parse($ticket->created_at)->format('d F Y') }}</h7>
           <span class="mb-3 text-xs">Jenis Pengaduan: <span class="text-dark font-weight-bold ms-sm-0">{{ $ticket->Jenis_Pengaduan }}</span></span>
           <span class="mb-3 text-xs">Lokasi: <span class="text-dark ms-sm-0 font-weight-bold">{{ $ticket->Lokasi }}</span></span>
           <span class="mb-3 text-xs">Status: <x-status-badge :status="$ticket->status" /></span>

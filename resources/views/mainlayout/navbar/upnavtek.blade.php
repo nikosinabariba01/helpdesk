@@ -15,22 +15,20 @@
                                         : asset('default-profile.png') }}"
                                           class="avatar avatar-sm me-3" alt="{{ $comment->user->name }}">
                                   </div>
-                                  <div class="d-flex flex-column justify-content-center">
+                                  <div class="d-flex flex-column justify-content-between">
                                       <!-- Menampilkan Subject Tiket dengan teks tebal -->
                                       <h7 class="text-sm font-weight-bold mb-1 text-truncate" style="max-width: 250px;">
                                           {{ $comment->ticket->subject }}
                                       </h7>
                                       <!-- Menampilkan New Message dan Nama Pengguna -->
-                                      <div class="d-flex justify-content-between">
-                                          <p class="text-xs text-secondary mb-0">
-                                              <span class="font-weight-normal">New message</span> from {{ $comment->user->name }}
-                                          </p>
-                                          <!-- Menambahkan sedikit jarak antara waktu dan new message -->
-                                          <p class="text-xs text-secondary mb-0 ml-2">
-                                              <i class="fa fa-clock me-1"></i>
-                                              {{ $comment->created_at->diffForHumans() }} <!-- Waktu relatif -->
-                                          </p>
-                                      </div>
+                                      <p class="text-xs text-secondary mb-0">
+                                          <span class="font-weight-normal">New message</span> from {{ $comment->user->name }}
+                                      </p>
+                                      <!-- Menampilkan Waktu Komentar -->
+                                      <p class="text-xs text-secondary mb-0">
+                                          <i class="fa fa-clock me-1"></i>
+                                          {{ $comment->created_at->diffForHumans() }} <!-- Waktu relatif -->
+                                      </p>
                                   </div>
                               </div>
                           </a>
