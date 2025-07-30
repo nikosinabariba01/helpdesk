@@ -1,4 +1,4 @@
-<ul class="navbar-nav  justify-content-end">
+<ul class="navbar-nav ms-auto d-flex justify-content-end gap-2">
     <li class="nav-item dropdown pe-2 d-flex align-items-center">
         <a href="javascript:;" class="nav-link text-white p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="fa fa-bell cursor-pointer"></i> <!-- Icon Bell -->
@@ -11,8 +11,8 @@
                         <div class="my-auto">
                             <!-- Menampilkan foto profil user yang memberi komentar -->
                             <img src="{{ $comment->user->profile_photo 
-                                ? route('profile.photo', ['filename' => basename($comment->user->profile_photo)]) 
-                                : asset('default-profile.png') }}"
+                                        ? route('profile.photo', ['filename' => basename($comment->user->profile_photo)]) 
+                                        : asset('default-profile.png') }}"
                                 class="avatar avatar-sm me-3" alt="{{ $comment->user->name }}">
                         </div>
                         <div class="d-flex flex-column justify-content-start">
@@ -50,18 +50,18 @@
         </a>
         <ul class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4 " aria-labelledby="dropdownMenuButton">
             <li class="mb-2">
-                <a class="dropdown-item text-dark" href="{{route('customer.profile')}}">
-                    <img src="/style/assets/img/setting.png" class="text-dark" /> Profile
+                <a class="dropdown-item" href="{{route('teknisi.profile')}}">
+                    <img src="/style/assets/img/setting.png" /> Profile
                 </a>
             </li>
             <li>
-                <a class="dropdown-item text-warning" href="{{ route('logout') }}">
+                <a class="dropdown-item text-danger" href="{{ route('logout') }}">
                     <img src="/style/assets/img/user-logout.png" /> Logout
                 </a>
             </li>
         </ul>
     </li>
-    <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
+    <li class="nav-item d-xl-none ps-1 d-flex align-items-center">
         <a href="javascript:;" class="nav-link text-white p-0" id="iconNavbarSidenav">
             <div class="sidenav-toggler-inner">
                 <i class="sidenav-toggler-line bg-white"></i>
