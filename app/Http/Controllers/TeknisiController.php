@@ -11,31 +11,34 @@ class TeknisiController extends Controller
 
     private function getLatestComments()
     {
-        // Dapatkan ID pengguna yang sedang login (penyewa)
+        // Dapatkan ID pengguna yang sedang login (teknisi)
         $userId = Auth::id();
 
-        // Ambil tiket yang dibuat oleh penyewa
-        $ticketsByUser = Ticket::where('user_id', $userId)
-            ->pluck('id'); // Mendapatkan ID tiket yang dibuat oleh penyewa
+        // Mengambil tiket yang ditugaskan ke teknisi yang sedang login
+        $assignedTickets = Ticket::whereHas('asignees', function ($query) use ($userId) {
+            $query->where('user_id', $userId); // Menyaring tiket yang ditugaskan ke teknisi
+        })->pluck('id'); // Mengambil ID tiket yang ditugaskan ke teknisi
 
-        // Ambil komentar terbaru setelah tiket di-assign berdasarkan tiket_id
-        $latestComments = Comment::whereIn('ticket_id', $ticketsByUser)  // Hanya tiket yang dibuat oleh penyewa
-            ->whereHas('user', function ($query) {
-                // Pastikan komentar berasal dari teknisi (role pemilik atau pengurus)
-                $query->whereIn('role', ['pemilik', 'pengurus']);
+        // Ambil waktu peng-assign-an untuk setiap tiket yang di-assign
+        $assignTimes = TicketAssignee::whereIn('ticket_id', $assignedTickets)
+            ->where('user_id', $userId) // Pastikan teknisi yang sedang login
+            ->pluck('created_at', 'ticket_id'); // Mengambil created_at berdasarkan ticket_id
+
+        // Mengambil komentar terbaru yang terkait dengan tiket yang ditugaskan ke teknisi
+        // dan mengecualikan komentar dari teknisi yang sedang login
+        $latestComments = Comment::whereIn('ticket_id', $assignedTickets)  // Hanya tiket yang ditugaskan ke teknisi
+            ->where('user_id', '!=', $userId) // Menghindari komentar dari teknisi yang sedang login
+            ->where(function ($query) use ($assignTimes) {
+                // Pastikan komentar berasal setelah waktu peng-assign-an tiket
+                $query->whereIn('ticket_id', $assignTimes->keys())  // Hanya tiket yang memiliki waktu peng-assign-an
+                    ->where('created_at', '>', function ($subQuery) use ($assignTimes) {
+                        // Ambil waktu peng-assign-an berdasarkan ticket_id
+                        return $assignTimes->get($subQuery->get('ticket_id'));
+                    });
             })
-            ->where(function ($query) {
-                // Pastikan komentar hanya diambil setelah tiket di-assign
-                // Ambil waktu peng-assign-an berdasarkan ticket_id dan user_id yang sedang login
-                $query->whereIn('ticket_id', Ticket::whereHas('asignees', function ($query) {
-                    $query->where('user_id', Auth::id()); // Teknisi yang sedang login
-                })
-                    ->pluck('id')); // Mengambil tiket_id yang relevan
-            })
-            ->where('user_id', '!=', $userId) // Menambahkan kondisi untuk menghindari komentar dari teknisi yang sedang login
             ->with('ticket.user')  // Mengambil informasi tiket dan pengguna yang mengomentari
             ->latest()  // Mengurutkan berdasarkan waktu terbaru
-            ->limit(3)  // Batasi 3 komentar terbaru
+            ->limit(3)  // Batasi hanya 3 komentar terbaru
             ->get();
 
         return $latestComments;
