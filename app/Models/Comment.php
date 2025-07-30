@@ -13,4 +13,10 @@ class Comment extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    // Relasi dengan Ticket
+    public function ticket()
+    {
+        return $this->belongsTo(Ticket::class);
+    }
 }
