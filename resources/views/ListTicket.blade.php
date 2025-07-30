@@ -75,9 +75,14 @@
                                     @method('PUT')
                                     <!-- Cek apakah tiket sudah memiliki asignees -->
                                     @if($teknisidataticket->asignees->isEmpty())
-                                    <button type="submit" class="btn btn-sm bg-gradient-success text-white">Assign</button>
+                                    <!-- Jika belum di-assign oleh siapapun -->
+                                    <button type="submit" class="btn btn-sm btn-transparent text-primary">Assign</button>
+                                    @elseif($teknisidataticket->asignees->first()->id == $userId)
+                                    <!-- Jika sudah di-assign ke teknisi yang sedang login -->
+                                    <button type="submit" class="btn btn-sm btn-outline-warning text-secondary">Re-assign</button>
                                     @else
-                                    <button type="submit" class="btn btn-sm bg-gradient-success text-white">Contribute</button>
+                                    <!-- Jika sudah di-assign oleh teknisi lain -->
+                                    <button type="submit" class="btn btn-sm bg-gradient-success text-primary">Contribute</button>
                                     @endif
                                 </form>
                             </td>
