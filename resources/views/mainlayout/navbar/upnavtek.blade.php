@@ -67,7 +67,8 @@
                             </p>
                             <!-- Menampilkan Waktu Komentar -->
                             <p class="text-xs text-secondary mb-0">
-                                <i class="fa-solid fa-clock">{{ $comment->created_at->diffForHumans() }}</i>
+                                <i class="fa-solid fa-clock"></i>
+                                {{ $comment->created_at->diffForHumans() }}
                                 <!-- Waktu relatif -->
                             </p>
                         </div>
