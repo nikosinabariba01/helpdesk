@@ -50,7 +50,7 @@
         </a>
         <ul class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4 " aria-labelledby="dropdownMenuButton">
             <li class="mb-2">
-                <a class="dropdown-item" href="{{route('teknisi.profile')}}">
+                <a class="dropdown-item" href="{{route('customer.profile')}}">
                     <img src="/style/assets/img/setting.png" /> Profile
                 </a>
             </li>
