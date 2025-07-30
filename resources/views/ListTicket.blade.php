@@ -73,7 +73,12 @@
                                 <form action="{{ route('tickets.assign', $teknisidataticket->id) }}" method="POST">
                                     @csrf
                                     @method('PUT')
-                                    <button type="submit" class="btn btn-sm btn-outline-warning text-secondary">Re-assign</button>
+                                    <!-- Cek apakah tiket sudah memiliki asignees -->
+                                    @if($teknisidataticket->asignees->isEmpty())
+                                    <button type="submit" class="btn btn-sm bg-gradient-success text-white">Assign</button>
+                                    @else
+                                    <button type="submit" class="btn btn-sm bg-gradient-success text-white">Contribute</button>
+                                    @endif
                                 </form>
                             </td>
                             <!-- "Edit" button within a dropdown -->

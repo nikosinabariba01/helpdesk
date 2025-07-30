@@ -147,7 +147,7 @@ class TeknisiController extends Controller
         $userId = Auth::id();
 
         // Mengambil tiket yang memiliki asignees dan diurutkan berdasarkan 'created_at'
-        $teknisi_data_ticket = Ticket::with('user')
+        $teknisi_data_ticket = Ticket::with('user', 'asignees')
             ->orderBy('created_at', 'desc')
             ->get();
 
