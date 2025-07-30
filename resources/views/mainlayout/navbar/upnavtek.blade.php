@@ -44,6 +44,7 @@
             <i class="fa fa-bell cursor-pointer"></i> <!-- Icon Bell -->
         </a>
         <ul class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
+            @if($latestComments && $latestComments->isNotEmpty()) <!-- Pastikan $latestComments tidak kosong -->
             @foreach($latestComments as $comment)
             <li class="mb-2">
                 <a class="dropdown-item text-info" href="{{ route('viewticketteknisi.index', ['id' => $comment->ticket_id]) }}">
@@ -74,6 +75,11 @@
                 </a>
             </li>
             @endforeach
+            @else
+            <li class="mb-2">
+                <span class="text-secondary">Belum ada pesan yang diterima</span> <!-- Pesan default ketika tidak ada komentar -->
+            </li>
+            @endif
         </ul>
     </li>
     <li class="nav-item dropdown pe-0 d-flex align-items-center">

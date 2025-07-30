@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTicketRequest;
+use App\Models\Comment;
 use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -14,9 +15,13 @@ class TicketController extends Controller
     /**
      * Display a listing of the resource.
      */
-    function index()
+    public function index()
     {
-        return view('ticket');
+        // Mengambil komentar terbaru
+        $latestComments = $this->getLatestComments();
+
+        // Menampilkan view dan mengirimkan komentar terbaru ke view
+        return view('ticket', compact('latestComments'));
     }
 
     /**
@@ -26,19 +31,19 @@ class TicketController extends Controller
     {
         // Temukan tiket berdasarkan ID
         $ticket = Ticket::findOrFail($id);
-    
+
         // Cek apakah pengurus yang sedang login sudah ada di dalam asignees
         // Jika tidak ada, tambahkan pengurus yang sedang login
         $ticket->asignees()->syncWithoutDetaching([Auth::id()]);
-    
+
         $ticket->status = 'on process';  // Ubah status menjadi 'on process'
-    
+
         // Simpan perubahan ke database
         $ticket->save();
-    
+
         return redirect(route('teknisi.index'))->with('success', 'Tiket berhasil di-assign.');
     }
-    
+
 
 
     public function cancelAssign($id)
@@ -255,5 +260,28 @@ class TicketController extends Controller
 
         // Unduh file
         return Storage::download('public/' . $ticket->gambar, basename($ticket->gambar));
+    }
+
+    private function getLatestComments()
+    {
+        // Dapatkan ID pengguna yang sedang login (penyewa)
+        $userId = Auth::id();
+
+        // Ambil tiket yang dibuat oleh penyewa
+        $ticketsByUser = Ticket::where('user_id', $userId)
+            ->pluck('id'); // Mendapatkan ID tiket yang dibuat oleh penyewa
+
+        // Ambil komentar terbaru yang diberikan oleh teknisi pada tiket yang dibuat oleh penyewa
+        $latestComments = Comment::whereIn('ticket_id', $ticketsByUser)  // Hanya tiket yang dibuat oleh penyewa
+            ->whereHas('user', function ($query) {
+                // Pastikan komentar berasal dari teknisi (role pemilik atau pengurus)
+                $query->whereIn('role', ['pemilik', 'pengurus']);
+            })
+            ->with('ticket.user')  // Memuat relasi untuk menampilkan informasi tiket
+            ->latest()
+            ->limit(3)  // Batasi 3 komentar terbaru
+            ->get();
+
+        return $latestComments;
     }
 }
