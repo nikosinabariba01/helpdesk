@@ -19,10 +19,14 @@ class TeknisiController extends Controller
             $query->where('user_id', $userId); // Menyaring tiket yang ditugaskan ke teknisi
         })->pluck('id'); // Mengambil ID tiket yang ditugaskan ke teknisi
 
-        // Ambil waktu peng-assign-an untuk setiap tiket yang di-assign
-        $assignTimes = TicketAssignee::whereIn('ticket_id', $assignedTickets)
-            ->where('user_id', $userId) // Pastikan teknisi yang sedang login
-            ->pluck('created_at', 'ticket_id'); // Mengambil created_at berdasarkan ticket_id
+        // Mengambil waktu peng-assign-an dari tabel ticket_assignees (menggunakan pivot)
+        $assignTimes = Ticket::whereIn('id', $assignedTickets)
+            ->with('asignees')  // Mengambil relasi asignees untuk mendapatkan waktu peng-assign-an
+            ->get()
+            ->pluck('asignees') // Mendapatkan relasi asignees
+            ->flatten()  // Meratakan koleksi asignees untuk mengakses data created_at
+            ->where('user_id', $userId) // Filter untuk teknisi yang sedang login
+            ->pluck('pivot.created_at', 'id'); // Mengambil created_at dari tabel pivot ticket_assignees
 
         // Mengambil komentar terbaru yang terkait dengan tiket yang ditugaskan ke teknisi
         // dan mengecualikan komentar dari teknisi yang sedang login
@@ -32,7 +36,7 @@ class TeknisiController extends Controller
                 // Pastikan komentar berasal setelah waktu peng-assign-an tiket
                 $query->whereIn('ticket_id', $assignTimes->keys())  // Hanya tiket yang memiliki waktu peng-assign-an
                     ->where('created_at', '>', function ($subQuery) use ($assignTimes) {
-                        // Ambil waktu peng-assign-an berdasarkan ticket_id
+                        // Mengambil waktu peng-assign-an berdasarkan ticket_id
                         return $assignTimes->get($subQuery->get('ticket_id'));
                     });
             })
