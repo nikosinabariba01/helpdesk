@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 class CustomerController extends Controller
 {
 
-    private function getLatestComments()
+    private function getLatestCommentsfromteknisi()
     {
         // Dapatkan ID pengguna yang sedang login (penyewa)
         $userId = Auth::id();
@@ -20,18 +20,24 @@ class CustomerController extends Controller
         $ticketsByUser = Ticket::where('user_id', $userId)
             ->pluck('id'); // Mendapatkan ID tiket yang dibuat oleh penyewa
 
-        // Mengambil waktu pembuatan tiket (created_at)
-        $ticketCreateTimes = Ticket::whereIn('id', $ticketsByUser)
-            ->pluck('created_at'); // Ambil waktu created_at dari tiket yang dibuat oleh penyewa
+        // Ambil tiket yang dibuat oleh penyewa dan waktu pembuatan tiketnya
+        $ticketTimestamps = Ticket::whereIn('id', $ticketsByUser)
+            ->pluck('created_at', 'id'); // Mendapatkan waktu created_at tiap tiket
 
         // Ambil komentar terbaru yang diberikan oleh teknisi pada tiket yang dibuat oleh penyewa
-        // dan hanya mengambil komentar yang dibuat setelah waktu pembuatan tiket
         $latestComments = Comment::whereIn('ticket_id', $ticketsByUser)  // Hanya tiket yang dibuat oleh penyewa
             ->whereHas('user', function ($query) {
                 // Pastikan komentar berasal dari teknisi (role pemilik atau pengurus)
                 $query->whereIn('role', ['pemilik', 'pengurus']);
             })
-            ->where('created_at', '>', $ticketCreateTimes->first()) // Ambil komentar setelah waktu pembuatan tiket
+            ->where(function ($query) use ($ticketTimestamps) {
+                foreach ($ticketTimestamps as $ticketId => $ticketCreatedAt) {
+                    $query->orWhere(function ($q) use ($ticketId, $ticketCreatedAt) {
+                        $q->where('ticket_id', $ticketId)
+                            ->where('created_at', '>', $ticketCreatedAt); // Hanya ambil komentar setelah tiket dibuat
+                    });
+                }
+            })
             ->with('ticket.user')  // Memuat relasi untuk menampilkan informasi tiket
             ->latest()  // Mengurutkan berdasarkan waktu terbaru
             ->limit(3)  // Batasi 3 komentar terbaru
@@ -60,7 +66,7 @@ class CustomerController extends Controller
             ->where('status', 'close')
             ->count();
 
-        $latestComments = $this->getLatestComments();
+        $latestComments = $this->getLatestCommentsfromteknisi();
 
         return view('customer', compact('data_ticket', 'totalTickets', 'OnProcessTickets', 'closedtic', 'OpenTic', 'latestComments'));
     }
@@ -94,7 +100,7 @@ class CustomerController extends Controller
             ->where('status', 'close')
             ->count();
 
-        $latestComments = $this->getLatestComments();
+        $latestComments = $this->getLatestCommentsfromteknisi();
 
         return view('process', compact('data_ticket', 'totalTickets', 'OnProcessTickets', 'closedtic', 'OpenTic', 'latestComments'));
     }
