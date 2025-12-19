@@ -311,7 +311,13 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="profile_photo" class="form-control-label">Profile Photo</label>
-                                            <input id="profile_photo" name="profile_photo" class="form-control" type="file">
+                                            <input id="profile_photo" name="profile_photo" class="form-control @error('profile_photo') is-invalid @enderror" type="file" accept="image/*">
+                                            <!-- Menampilkan pesan error jika ada -->
+                                            @error('profile_photo')
+                                            <div class="invalid-feedback">
+                                                {{ $message }}
+                                            </div>
+                                            @enderror
                                         </div>
                                     </div>
                                 </div>
