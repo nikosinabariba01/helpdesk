@@ -180,7 +180,7 @@ class TicketController extends Controller
             'Jenis_Pengaduan' => 'required',
             'Lokasi' => 'required|string|max:255',
             'Detail' => 'required|string',
-            'gambar' => 'sometimes|file|mimes:jpg,jpeg,png,pdf|max:2048', // Validasi file gambar dan pdf dengan ukuran maksimal 2MB
+            'gambar' => 'sometimes|file|mimes:jpg,jpeg,png|max:2048', // Validasi file gambar dan pdf dengan ukuran maksimal 2MB
         ];
 
         // Pesan error custom untuk setiap field
@@ -199,8 +199,8 @@ class TicketController extends Controller
             'Detail.string' => 'Detail harus berupa teks.',
 
             'gambar.sometimes' => 'File gambar bersifat opsional, namun jika diunggah, pastikan format dan ukuran sesuai.',
-            'gambar.file' => 'File yang diunggah harus berupa file.',
-            'gambar.mimes' => 'Hanya file dengan ekstensi jpg, jpeg, png, dan pdf yang diperbolehkan.',
+            'gambar.image' => 'File yang diunggah harus berupa gambar.',
+            'gambar.mimes' => 'Hanya file dengan ekstensi jpg, jpeg, dan png yang diperbolehkan.',
             'gambar.max' => 'Ukuran file gambar tidak boleh lebih dari 2MB.',
         ];
 
