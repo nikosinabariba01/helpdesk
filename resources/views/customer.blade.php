@@ -17,7 +17,24 @@
 
 
 @section('container')
+<!-- Alert Error Message -->
+@if ($errors->any())
+<div class="alert alert-danger" role="alert">
+  <strong>Error!</strong> Please check the form for errors.
+  <ul>
+    @foreach ($errors->all() as $error)
+    <li>{{ $error }}</li>
+    @endforeach
+  </ul>
+</div>
+@endif
 
+<!-- Success Message -->
+@if(session('success'))
+<div class="alert alert-success" role="alert">
+  <strong>Success!</strong> {{ session('success') }}
+</div>
+@endif
 <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
   <div class="card">
     <div class="card-body p-3">
@@ -260,25 +277,6 @@
             @csrf
             @method('PUT')
             <input type="hidden" id="ticketId" name="ticketId" value="">
-
-            <!-- Alert Error Message -->
-            @if ($errors->any())
-            <div class="alert alert-danger" role="alert">
-              <strong>Error!</strong> Please check the form for errors.
-              <ul>
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-              </ul>
-            </div>
-            @endif
-
-            <!-- Success Message -->
-            @if(session('success'))
-            <div class="alert alert-success" role="alert">
-              <strong>Success!</strong> {{ session('success') }}
-            </div>
-            @endif
 
             <div class="row">
               <div class="col-md-12">
