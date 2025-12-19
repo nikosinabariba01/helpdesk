@@ -174,15 +174,38 @@ class TicketController extends Controller
     //customer
     public function update(Request $request, $id)
     {
+        // Aturan validasi
         $rules = [
             'subject' => 'required|string|max:255',
             'Jenis_Pengaduan' => 'required',
             'Lokasi' => 'required|string|max:255',
             'Detail' => 'required|string',
-            'gambar' => 'sometimes|file|mimes:jpg,jpeg,png,pdf',
+            'gambar' => 'sometimes|file|mimes:jpg,jpeg,png,pdf|max:2048', // Validasi file gambar dan pdf dengan ukuran maksimal 2MB
         ];
 
-        $request->validate($rules);
+        // Pesan error custom untuk setiap field
+        $messages = [
+            'subject.required' => 'Subject wajib diisi.',
+            'subject.string' => 'Subject harus berupa teks.',
+            'subject.max' => 'Subject tidak boleh lebih dari 255 karakter.',
+
+            'Jenis_Pengaduan.required' => 'Jenis pengaduan wajib dipilih.',
+
+            'Lokasi.required' => 'Lokasi wajib diisi.',
+            'Lokasi.string' => 'Lokasi harus berupa teks.',
+            'Lokasi.max' => 'Lokasi tidak boleh lebih dari 255 karakter.',
+
+            'Detail.required' => 'Detail wajib diisi.',
+            'Detail.string' => 'Detail harus berupa teks.',
+
+            'gambar.sometimes' => 'File gambar bersifat opsional, namun jika diunggah, pastikan format dan ukuran sesuai.',
+            'gambar.file' => 'File yang diunggah harus berupa file.',
+            'gambar.mimes' => 'Hanya file dengan ekstensi jpg, jpeg, png, dan pdf yang diperbolehkan.',
+            'gambar.max' => 'Ukuran file gambar tidak boleh lebih dari 2MB.',
+        ];
+
+        // Validasi request dengan pesan error custom
+        $request->validate($rules, $messages);
 
         // Temukan tiket berdasarkan ID dan update
         $ticket = Ticket::findOrFail($id);
@@ -190,13 +213,20 @@ class TicketController extends Controller
         $ticket->Jenis_Pengaduan = $request->Jenis_Pengaduan;
         $ticket->Lokasi = $request->Lokasi;
         $ticket->Detail = $request->Detail;
+
+        // Jika ada file gambar, simpan
         if ($request->hasFile('gambar')) {
+            // Pastikan file gambar yang diupload disimpan di direktori yang benar
             $ticket->gambar = $request->file('gambar')->store('img', 'public');
         }
+
+        // Simpan perubahan tiket
         $ticket->save();
 
+        // Redirect dengan pesan sukses
         return redirect(route('customer.index'))->with('success', 'Data Tiket Berhasil diupdate');
     }
+
 
 
     //Teknisi
