@@ -91,21 +91,24 @@
                 <div class="row">
                     <div class="col-md-6">
                         <label for="gambar">Gambar Pendukung</label>
-                        <input class="form-control form-control-sm" id="gambar" name="gambar" type="file">
+                        <input class="form-control form-control-sm" id="gambar" name="gambar" type="file" accept="image/*">
                         @error('gambar')
-                        <p class="text-danger">{{ $message }}</p>
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
                         @enderror
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-12 text-left mt-4">
-                        <button type="submit" class="btn btn-info btn-fill btn-wd">Submit ticket</button>
-                    </div>
-                </div>
-                <div class="clearfix"></div>
-            </form>
         </div>
+        <div class="row">
+            <div class="col-md-12 text-left mt-4">
+                <button type="submit" class="btn btn-info btn-fill btn-wd">Submit ticket</button>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        </form>
     </div>
+</div>
 </div>
 
 @endsection

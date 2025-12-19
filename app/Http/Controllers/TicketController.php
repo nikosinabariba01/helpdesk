@@ -129,6 +129,34 @@ class TicketController extends Controller
      */
     public function store(StoreTicketRequest $request)
     {
+        // Validasi untuk semua data form
+        $validated = $request->validate([
+            'subject' => 'required|string|max:255',
+            'Jenis_Pengaduan' => 'required|string',
+            'Lokasi' => 'required|string|max:255',
+            'Detail' => 'required|string',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',  // Validasi gambar
+        ], [
+            'subject.required' => 'Subject wajib diisi.',
+            'subject.string' => 'Subject harus berupa teks.',
+            'subject.max' => 'Subject tidak boleh lebih dari 255 karakter.',
+
+            'Jenis_Pengaduan.required' => 'Jenis pengaduan wajib dipilih.',
+
+            'Lokasi.required' => 'Lokasi wajib diisi.',
+            'Lokasi.string' => 'Lokasi harus berupa teks.',
+            'Lokasi.max' => 'Lokasi tidak boleh lebih dari 255 karakter.',
+
+            'Detail.required' => 'Detail wajib diisi.',
+            'Detail.string' => 'Detail harus berupa teks.',
+
+            'gambar.sometimes' => 'File gambar bersifat opsional, namun jika diunggah, pastikan format dan ukuran sesuai.',
+            'gambar.image' => 'File yang diunggah harus berupa gambar.',
+            'gambar.mimes' => 'Hanya file dengan ekstensi jpg, jpeg, dan png yang diperbolehkan.',
+            'gambar.max' => 'Ukuran file gambar tidak boleh lebih dari 2MB.',
+        ]);
+
+        // Membuat tiket baru
         $ticket = Ticket::create([
             'subject' => $request->subject,
             'Jenis_Pengaduan' => $request->Jenis_Pengaduan,
@@ -137,12 +165,16 @@ class TicketController extends Controller
             'user_id' => auth()->id(),
         ]);
 
-        if ($request->file('gambar')) {
+        // Memeriksa apakah ada file gambar dan menyimpannya jika ada
+        if ($request->hasFile('gambar')) {
+            // Menyimpan gambar menggunakan metode storeAttachment
             $this->storeAttachment($request, $ticket);
         }
 
+        // Mengarahkan kembali ke halaman dengan pesan sukses
         return redirect(route('customer.index'))->with('success', 'Data Tiket Berhasil diupdate');
     }
+
 
     /**
      * Display the specified resource.
