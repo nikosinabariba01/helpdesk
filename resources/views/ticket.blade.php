@@ -96,9 +96,7 @@
                         </label>
                         <input class="form-control form-control-sm" id="gambar" name="gambar" type="file" accept="image/*">
                         @error('gambar')
-                        <div class="invalid-feedback">
                             {{ $message }}
-                        </div>
                         @enderror
                     </div>
                 </div>
