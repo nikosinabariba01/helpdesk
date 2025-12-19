@@ -24,7 +24,7 @@
     Service IT
   </title>
 
-    <!-- CDN untuk jQuery dan DataTables -->
+  <!-- CDN untuk jQuery dan DataTables -->
   <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
@@ -80,15 +80,15 @@
         <div class="container-fluid">
           <div class="row align-items-center justify-content-lg-between">
             <div class="col-lg-6 mb-lg-0 mb-4">
-              <div class="copyright text-center text-sm text-muted text-lg-start">
-                © <script>
-                  document.write(new Date().getFullYear())
-                </script>,
-                made with <i class="fa fa-heart"></i> by
-                <a href="https://www.creative-tim.com" class="font-weight-bold" target="_blank">Diskominfo</a>
-              </div>
             </div>
           </div>
+        </div>
+        <div class="copyright text-center text-sm text-muted text-lg-start">
+          © <script>
+            document.write(new Date().getFullYear())
+          </script>,
+          made with <i class="fa fa-heart"></i> by
+          <a href="https://www.creative-tim.com" class="font-weight-bold" target="_blank">Nskos74</a>
         </div>
       </footer>
     </div>
