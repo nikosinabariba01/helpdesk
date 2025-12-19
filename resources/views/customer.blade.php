@@ -314,9 +314,11 @@
             <div class="row">
               <div class="col-md-6">
                 <label for="gambar">Gambar Pendukung</label>
-                <input class="form-control form-control-sm" id="gambar" name="gambar" type="file" accept="image/*">
+                <input class="form-control form-control-sm @error('gambar') is-invalid @enderror" id="gambar" name="gambar" type="file" accept="image/*">
                 @error('gambar')
-                <p class="text-danger">{{ $message }}</p>
+                <div class="invalid-feedback">
+                  {{ $message }}
+                </div>
                 @enderror
               </div>
             </div>
