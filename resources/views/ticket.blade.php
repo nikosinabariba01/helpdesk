@@ -90,14 +90,16 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        <label for="gambar" class="form-control-label">
-                            Gambar Pendukung
-                            <span class="text-muted" style="font-size: 0.8em; vertical-align: middle;">*boleh kosong</span>
-                        </label>
-                        <input class="form-control form-control-sm" id="gambar" name="gambar" type="file" accept="image/*">
-                        @error('gambar')
-                        <p class="text-danger">{{ $message }}</p>
-                        @enderror
+                        <div divclass="form-group card">
+                            <label for="gambar" class="form-control-label">
+                                Gambar Pendukung
+                                <span class="text-muted" style="font-size: 0.8em; vertical-align: middle;">*boleh kosong</span>
+                            </label>
+                            <input class="form-control form-control-sm" id="gambar" name="gambar" type="file" accept="image/*">
+                            @error('gambar')
+                            <p class="text-danger">{{ $message }}</p>
+                            @enderror
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12 text-left mt-4">
