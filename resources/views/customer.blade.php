@@ -314,7 +314,7 @@
             <div class="row">
               <div class="col-md-6">
                 <label for="gambar">Gambar Pendukung</label>
-                <input class="form-control form-control-sm" id="gambar" name="gambar" type="file">
+                <input class="form-control form-control-sm" id="gambar" name="gambar" type="file" accept="image/*">
                 @error('gambar')
                 <p class="text-danger">{{ $message }}</p>
                 @enderror
