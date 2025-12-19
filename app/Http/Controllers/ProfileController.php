@@ -1,44 +1,37 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Support\Facades\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
-class ProfileController extends Controller
-{
-    public function index()
-    {
-        $user = Auth::user(); // Ambil data user yang sedang login
+class ProfileController extends Controller {
+    public function index() {
+        $user = Auth::user();                    // Ambil data user yang sedang login
         return view('profile', compact('user')); // Tampilkan halaman profil
     }
 
-
-    function teknisiprofile()
-    {
+    function teknisiprofile() {
         $user = Auth::user();
         return view('teknisiprofile', compact('user'));
     }
 
-
-    public function updatecustomer(Request $request)
-    {
+    public function updatecustomer(Request $request) {
         $user = Auth::user(); // Ambil user yang sedang login
 
         // Validasi input
         $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string|max:500',
-            'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'name'          => 'required|string|max:255',
+            'description'   => 'nullable|string|max:500',
+            'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validasi gambar dengan ukuran maksimal 2MB
         ]);
 
         // Update data user
-        $user->name = $request->input('name');
+        $user->name        = $request->input('name');
         $user->description = $request->input('description');
 
         // Update foto profil jika ada
@@ -50,12 +43,18 @@ class ProfileController extends Controller
                 Storage::delete($user->profile_photo);
             }
 
-            // Simpan foto baru
-            $path = $file->store('profile_photos', 'public');
+                                                                                     // Membuat nama file unik untuk foto profil
+            $filename = Str::random(40) . '.' . $file->getClientOriginalExtension(); // Nama acak + ekstensi asli
+
+            // Simpan foto baru ke storage public
+            $path = $file->storeAs('profile_photos', $filename, 'public');
+
+            // Update path foto profil di database
             $user->profile_photo = $path;
         }
 
-        $user->save(); // Simpan perubahan
+        // Simpan perubahan user
+        $user->save();
 
         // Redirect berdasarkan role pengguna
         if ($user->role == 'pengurus' || $user->role == 'pemilik' || $user->role == 'admin') {
@@ -65,13 +64,12 @@ class ProfileController extends Controller
         }
     }
 
-    public function servePhoto($filename)
-    {
+    public function servePhoto($filename) {
         // Path asli file
         $path = storage_path('app/public/profile_photos/' . $filename);
 
         // Cek file ada atau tidak
-        if (!File::exists($path)) {
+        if (! File::exists($path)) {
             abort(404);
         }
 
@@ -79,9 +77,6 @@ class ProfileController extends Controller
         return Response::file($path);
     }
 
-
-
     // Redirect dengan pesan sukses
-
 
 }

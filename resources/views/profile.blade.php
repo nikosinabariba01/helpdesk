@@ -312,7 +312,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="profile_photo" class="form-control-label">Profile Photo</label>
-                                            <input id="profile_photo" name="profile_photo" class="form-control" type="file">
+                                            <input id="profile_photo" name="profile_photo" class="form-control" type="file" accept="image/*">
                                         </div>
                                     </div>
                                 </div>
