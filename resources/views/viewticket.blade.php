@@ -110,7 +110,7 @@
 </div>
 
 <div class="col-lg-3 ms-auto">
-  <div class="card h-100" style="max-height: 315px;">
+  <div class="card h-100" style="max-height: 350px;">
     <div class=" pb-0 p-3">
       <div class="row">
         <div class="col-12 d-flex align-items-center justify-content-center">
