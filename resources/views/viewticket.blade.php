@@ -140,11 +140,9 @@
               {{ $ticket->asignees->isEmpty() ? 'not taken yet!' : '' }}
             </span>
           </span>
-          <span class="mb-3">
-            <a href="{{ route('tickets.downloadImage', ['ticket' => $ticket->id]) }}" class="btn btn-link text-dark text-sm mb-0 px-0  hover:scale-200" style="margin-top: -6px;">
-              <i class="fas fa-file-pdf me-1"></i> <span style="color: blue;">Download file</span>
-            </a>
-          </span>
+          <a href="{{ route('tickets.downloadImage', ['ticket' => $ticket->id]) }}" class="btn btn-link text-dark text-sm mb-0 px-0  hover:scale-200" style="margin-top: -6px;">
+            <i class="fas fa-file-pdf me-1"></i> <span style="color: blue;">Download file</span>
+          </a>
         </div>
       </ul>
     </div>
