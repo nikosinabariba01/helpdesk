@@ -110,7 +110,7 @@
 </div>
 
 <div class="col-lg-3 ms-auto">
-  <div class="card h-100" style="max-height: 300px;">
+  <div class="card h-100" style="max-height: 315px;">
     <div class=" pb-0 p-3">
       <div class="row">
         <div class="col-12 d-flex align-items-center justify-content-center">
@@ -123,7 +123,9 @@
         <div class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
           <div class="d-flex flex-column">
             <h6 class="mb-2 text-dark font-weight-bold text-sm">{{ $userName }}</h6>
-            <span class="text-xs">#sp-{{ $ticket->id }}</span>
+            <span class="text-xs">
+              {{ 'sp-' . substr($ticket->id, 0, 3) . \Carbon\Carbon::parse($ticket->created_at)->format('dmy') . ($ticket->Jenis_Pengaduan == 0 ? '0' : '1') }}
+            </span>
           </div>
         </div>
         <div class="d-flex flex-column">
