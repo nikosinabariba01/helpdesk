@@ -124,7 +124,7 @@
           <div class="d-flex flex-column">
             <h6 class="mb-2 text-dark font-weight-bold text-sm">{{ $userName }}</h6>
             <span class="text-xs">
-              {{ 'sp-' . substr($ticket->id, 0, 3) . '-' . $ticket->uuid . '-' . \Carbon\Carbon::parse($ticket->created_at)->format('dmy') . '-' . ($ticket->Jenis_Pengaduan == 0 ? '0' : '1') }}
+              {{ 'sp-' . substr($ticket->id, 0, 3) . \Carbon\Carbon::parse($ticket->created_at)->format('dmy') . ($ticket->Jenis_Pengaduan == 0 ? '0' : '1') }}
             </span>
           </div>
         </div>
