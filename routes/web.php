@@ -76,7 +76,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/Active', [CustomerController::class, 'viewprocess'])->name('customer.viewprocess')->middleware('userAkses:penyewa,admin');
     Route::get('/Profile/edit', [ProfileController::class, 'index'])->name('customer.profile')->middleware('userAkses:penyewa,admin');
 
-    Route::get('customer/viewticket/{id}', [ViewTicketController::class, 'index'])->name('viewtickets.index')->middleware('userAkses:penyewa,admin');
+    Route::get('customer/viewticket/{id}', [ViewTicketController::class, 'index'])
+        ->where('id', '[0-9a-fA-F-]+')  // Menambahkan regular expression untuk menerima UUID
+        ->name('viewtickets.index')
+        ->middleware('userAkses:penyewa,admin');
     Route::post('/Profile/update', [ProfileController::class, 'updatecustomer'])->name('customer.profileupdate')->middleware('userAkses:pengurus,pemilik,admin,penyewa');
 
 
