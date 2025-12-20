@@ -1,17 +1,16 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Ramsey\Uuid\Guid\Guid as RamseyUuid; 
+use Ramsey\Uuid\Guid\Guid as RamseyUuid;
 
-use Carbon\Carbon;
-
-class Ticket extends Model
-{
+class Ticket extends Model {
     use HasFactory;
+
+    protected $keyType   = 'string'; // Tambahkan ini: Primary key adalah string (UUID)
+    public $incrementing = false;    // Tambahkan ini: Tidak auto-increment
 
     protected $fillable = [
         'subject',
@@ -23,19 +22,17 @@ class Ticket extends Model
         'Detail',
         'gambar',
         'user_id',
-        'asignee_id'
+        'asignee_id',
     ];
 
     protected $dates = ['Tanggal_Pengaduan'];
 
-    public function getFormattedTanggalPengaduanAttribute()
-    {
+    public function getFormattedTanggalPengaduanAttribute() {
         return $this->created_at->diffForHumans();
     }
 
     // Menambahkan event untuk auto-generate UUID v7 saat model dibuat
-    protected static function boot()
-    {
+    protected static function boot() {
         parent::boot();
 
         static::creating(function ($model) {
@@ -46,18 +43,15 @@ class Ticket extends Model
         });
     }
 
-    public function user(): BelongsTo
-    {
+    public function user(): BelongsTo {
         return $this->belongsTo(User::class);
     }
 
-    public function comments()
-    {
+    public function comments() {
         return $this->hasMany(Comment::class);
     }
 
-    public function asignees()
-    {
+    public function asignees() {
         return $this->belongsToMany(User::class, 'ticket_assignees', 'ticket_id', 'user_id');
     }
 }
