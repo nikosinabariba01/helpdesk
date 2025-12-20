@@ -57,7 +57,7 @@ class TelegramWebhookController extends Controller {
                 foreach ($tickets as $ticket) {
                     $keyboard['inline_keyboard'][] = [
                         [
-                            'text'          => "Tiket #{$ticket->id} - {$ticket->subject}",
+                            'text' => "Tiket sp-" . substr($ticket->id, 0, 3) . \Carbon\Carbon::parse($ticket->created_at)->format('dmy') . ($ticket->Jenis_Pengaduan == 0 ? '0' : '1') . " - {$ticket->subject}",
                             'callback_data' => "ticket_{$ticket->id}", // Data yang dikirim saat memilih tiket
                         ],
                     ];
