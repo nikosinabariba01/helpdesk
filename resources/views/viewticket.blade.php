@@ -126,6 +126,7 @@
             <span class="text-xs">
               #sp-{{ substr(preg_replace('/[^0-9]/', '', $ticket->id), 0, 3) }}-{{ $ticket->created_at->format('Y-m-d') }}-{{ $ticket->Jenis_Pengaduan == 'perbaikan' ? '0' : '1' }}
             </span>
+
           </div>
         </div>
         <div class="d-flex flex-column">
