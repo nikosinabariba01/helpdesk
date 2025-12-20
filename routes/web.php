@@ -25,9 +25,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::pattern('id', '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}');
-Route::pattern('ticket', '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}');    // Untuk {ticket}
-Route::pattern('user', '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}');      // Jika {user} juga UUID
-Route::pattern('ticket_id', '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'); // Untuk {ticket_id}
 Route::post('/telegram/webhook', [TelegramWebhookController::class, 'handle']);
 Route::get('/', [LoginController::class, 'index'])->name('login');
 Route::post('/', [LoginController::class, 'Login']);
