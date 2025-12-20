@@ -124,9 +124,24 @@
           <div class="d-flex flex-column">
             <h6 class="mb-2 text-dark font-weight-bold text-sm">{{ $userName }}</h6>
             <span class="text-xs">
-              #sp-{{ substr(preg_replace('/[^0-9]/', '', $ticket->id), 0, 3) }}
-            </span>
+              @php
+              // Ambil 3 digit pertama dari ID tiket
+              $ticketPrefix = substr($ticket->id, 0, 3);
 
+              // Ambil UUID tiket
+              $ticketUUID = $ticket->uuid; // Pastikan kolom UUID ada di database
+
+              // Format tanggal dalam format ddmmyyyy
+              $ticketDate = \Carbon\Carbon::parse($ticket->created_at)->format('dmy');
+
+              // Jenis pengaduan (0 = perbaikan, 1 = permintaan)
+              $jenisPengaduan = $ticket->Jenis_Pengaduan == 0 ? '0' : '1';
+
+              // Format ID tiket sesuai aturan yang diberikan
+              $formattedTicketId = "sp-{$ticketPrefix}-{$ticketUUID}-{$ticketDate}-{$jenisPengaduan}";
+              @endphp
+              {{ $formattedTicketId }} <!-- Menampilkan ID yang diformat -->
+            </span>
           </div>
         </div>
         <div class="d-flex flex-column">
