@@ -123,7 +123,9 @@
         <div class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
           <div class="d-flex flex-column">
             <h6 class="mb-2 text-dark font-weight-bold text-sm">{{ $userName }}</h6>
-            <span class="text-xs">#sp-{{ $ticket->id }}</span>
+            <span class="text-xs">
+              #sp-{{ substr(preg_replace('/[^0-9]/', '', $ticket->id), 0, 3) }}-{{ $ticket->created_at->format('Y-m-d') }}-{{ $ticket->Jenis_Pengaduan == 'perbaikan' ? '0' : '1' }}
+            </span>
           </div>
         </div>
         <div class="d-flex flex-column">
