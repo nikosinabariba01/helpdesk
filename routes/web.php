@@ -10,7 +10,6 @@ use App\Http\Controllers\TelegramAuthController;
 use App\Http\Controllers\TelegramWebhookController;
 use App\Http\Controllers\TicketCommentController;
 use App\Http\Controllers\TicketController;
-use App\Http\Controllers\UserController;
 use App\Http\Controllers\ViewTicketController;
 use Illuminate\Support\Facades\Route;
 
@@ -30,13 +29,11 @@ Route::get('/', [LoginController::class, 'index'])->name('login');
 Route::post('/', [LoginController::class, 'Login']);
 Route::get('/photo/{filename}', [ProfileController::class, 'servePhoto'])->name('profile.photo');
 
-
 route::middleware(['guest'])->group(function () {
 
     Route::get('/register', [RegisterController::class, 'register']);
     Route::post('/register', [RegisterController::class, 'createAccount']);
 });
-
 
 route::get('/home', function () {
     return redirect('/');
@@ -70,40 +67,30 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/tickets/escalation', [TeknisiController::class, 'viewEscalation'])->name('tickets.viewEscalation')->middleware('userAkses:pengurus,pemilik,admin');
     Route::put('/tickets/{id}/escalation', [TicketController::class, 'acceptEscalation'])->name('tickets.accept_escalation')->middleware('userAkses:pengurus,pemilik,admin');
 
-
-
     Route::get('/customer', [CustomerController::class, 'index'])->name('customer.index')->middleware('userAkses:penyewa,admin');
     Route::get('/Active', [CustomerController::class, 'viewprocess'])->name('customer.viewprocess')->middleware('userAkses:penyewa,admin');
     Route::get('/Profile/edit', [ProfileController::class, 'index'])->name('customer.profile')->middleware('userAkses:penyewa,admin');
 
     Route::get('customer/viewticket/{id}', [ViewTicketController::class, 'index'])
-        ->where('id', '[0-9a-fA-F-]+')  // Menambahkan regular expression untuk menerima UUID
-        ->name('viewtickets.index')
-        ->middleware('userAkses:penyewa,admin');
+        ->where('id', '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}') // Menggunakan regex untuk UUID
+        ->name('viewtickets.index');
+
     Route::post('/Profile/update', [ProfileController::class, 'updatecustomer'])->name('customer.profileupdate')->middleware('userAkses:pengurus,pemilik,admin,penyewa');
-
-
 
     Route::get('/customer/ticket', [TicketController::class, 'index'])->name('customer.tickets')->middleware('userAkses:penyewa,admin');
     Route::post('/customer/ticket', [TicketController::class, 'store'])->name('tickets.store')->middleware('userAkses:penyewa,admin');
     Route::put('/customer/ticket/{id}', [TicketController::class, 'update'])->name('tickets.update')->middleware('userAkses:penyewa,admin');
     Route::put('/tickets/{id}', [TicketController::class, 'update'])->name('tickets.update')->middleware('userAkses:penyewa,admin');
 
-
     Route::delete('/customer/ticket/{id}', [TicketController::class, 'destroy'])->name('tickets.destroy')->middleware('userAkses:penyewa,admin');
     Route::get('/logout', [LoginController::class, 'Logout'])->name('logout');
-
 
     Route::post('/tickets/{ticket}/comments', [TicketCommentController::class, 'store'])->name('comments.store')->middleware('userAkses:penyewa,admin');;
     Route::post('/tickets/{ticket}/teknisicomments', [TicketCommentController::class, 'teknisiComment'])->name('comments.teknisiComment')->middleware('userAkses:pengurus,pemilik,admin');
     Route::match(['GET', 'POST'], '/telegram/auth/{ticket_id}', [TelegramAuthController::class, 'telegramAuthorize']);
 
-
-
     Route::get('/tickets/{ticket}/download-image', [TicketController::class, 'downloadImage'])->name('tickets.downloadImage');
     Route::get('/tickets/{ticket}/download-image/teknisi', [ViewTicketController::class, 'downloadImage'])->name('ticketsteknisi.downloadImage');
-
-
 
     Route::view('/test-telegram', 'test-telegram');
     // routes/web.php

@@ -161,7 +161,7 @@
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
                       <li>
                       <li>
-                        <a class="dropdown-item text-info" href="{{route('viewtickets.index', ['id' => urlencode($dataticket->id)]);}}">
+                        <a class="dropdown-item text-info" href="{{ route('viewtickets.index', ['id' => $dataticket->id]) }}">
                           <i class="fa fa-eye pe-2 text-info"></i>Detail
                         </a>
                       </li>
