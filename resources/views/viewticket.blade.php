@@ -110,7 +110,7 @@
 </div>
 
 <div class="col-lg-3 ms-auto">
-  <div class="card h-100" style="max-height: 350px;">
+  <div class="card h-100" style="max-height: 315px;">
     <div class=" pb-0 p-3">
       <div class="row">
         <div class="col-12 d-flex align-items-center justify-content-center">
@@ -124,23 +124,7 @@
           <div class="d-flex flex-column">
             <h6 class="mb-2 text-dark font-weight-bold text-sm">{{ $userName }}</h6>
             <span class="text-xs">
-              @php
-              // Ambil 3 digit pertama dari ID tiket
-              $ticketPrefix = substr($ticket->id, 0, 3);
-
-              // Ambil UUID tiket
-              $ticketUUID = $ticket->uuid; // Pastikan kolom UUID ada di database
-
-              // Format tanggal dalam format ddmmyyyy
-              $ticketDate = \Carbon\Carbon::parse($ticket->created_at)->format('dmy');
-
-              // Jenis pengaduan (0 = perbaikan, 1 = permintaan)
-              $jenisPengaduan = $ticket->Jenis_Pengaduan == 0 ? '0' : '1';
-
-              // Format ID tiket sesuai aturan yang diberikan
-              $formattedTicketId = "sp-{$ticketPrefix}-{$ticketUUID}-{$ticketDate}-{$jenisPengaduan}";
-              @endphp
-              {{ $formattedTicketId }} <!-- Menampilkan ID yang diformat -->
+              {{ 'sp-' . substr($ticket->id, 0, 3) . '-' . $ticket->uuid . '-' . \Carbon\Carbon::parse($ticket->created_at)->format('dmy') . '-' . ($ticket->Jenis_Pengaduan == 0 ? '0' : '1') }}
             </span>
           </div>
         </div>
