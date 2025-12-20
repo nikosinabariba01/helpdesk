@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Ramsey\Uuid\Guid\Guid as RamseyUuid; 
 
 use Carbon\Carbon;
 
@@ -32,6 +33,19 @@ class Ticket extends Model
         return $this->created_at->diffForHumans();
     }
 
+    // Menambahkan event untuk auto-generate UUID v7 saat model dibuat
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->id)) {
+                // Generate UUID v7 using RamseyUuid
+                $model->id = RamseyUuid::uuid7()->toString();
+            }
+        });
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -41,12 +55,9 @@ class Ticket extends Model
     {
         return $this->hasMany(Comment::class);
     }
-    
+
     public function asignees()
     {
         return $this->belongsToMany(User::class, 'ticket_assignees', 'ticket_id', 'user_id');
     }
-
-
-    
 }
