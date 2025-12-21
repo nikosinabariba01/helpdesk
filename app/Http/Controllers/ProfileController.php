@@ -26,6 +26,7 @@ class ProfileController extends Controller
 
     public function updatecustomer(Request $request)
     {
+        /** @var \App\Models\User $user */
         $user = Auth::user(); // Ambil user yang sedang login
 
         // Validasi input

@@ -21,7 +21,7 @@ class TelegramAuthController extends Controller
         if (! $this->isValidTelegramAuth($data)) {
             return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
         }
-
+        /** @var \App\Models\User $user */
         $user = Auth::user();
         if ($user) {
             // Simpan telegram_chat_id ke user
