@@ -51,7 +51,10 @@ class Ticket extends Model {
         return $this->hasMany(Comment::class);
     }
 
-    public function asignees() {
-        return $this->belongsToMany(User::class, 'ticket_assignees', 'ticket_id', 'user_id');
+    // Relasi dengan TicketAssignee
+    public function asignees()
+    {
+        // Gunakan TicketAssignee sebagai pivot model
+        return $this->hasMany(TicketAssignee::class);
     }
 }
