@@ -19,7 +19,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('style/assets/img/apple-icon.png" rel="apple-touch-icon') }}">
-  <link rel="icon" type="image/png" href="/style/assets/img/logokos.png">
+  <link rel="icon" type="image/png" href="/style/assets/img/koslogo.png">
   
   <title>
     Service IT
@@ -51,7 +51,7 @@
     <div class="sidenav-header">
       <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
       <a class="navbar-brand m-0" href="" target="_blank">
-        <img src="/style/assets/img/logokos.png" class="navbar-brand-img h-100" alt="main_logo">
+        <img src="/style/assets/img/koslogo.png" class="navbar-brand-img h-100" alt="main_logo">
         <span class="ms-1 font-weight-bold">Kos 74 Service</span>
       </a>
     </div>
