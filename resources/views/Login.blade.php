@@ -97,11 +97,11 @@
                     background-size: cover;
                   ">
                                 <span class="mask bg-gradient-primary opacity-6"></span>
-                                <h4 class="mt-5 text-white font-weight-bolder position-relative">
-                                    PEMERINTAH KOTA SEMARANG
-                                </h4>
+                                <h3 class="mt-5 text-white font-weight-bolder position-relative">
+                                    KOST TENGGER 74
+                                </h3>
                                 <p class="text-white position-relative">
-                                    Dinas Komunikasi, Informatika, dan Statistik Kota Semarang
+                                    Jl. Tengger II No.74, Gajahmungkur Kota Semarang
                                 </p>
                             </div>
                         </div>
