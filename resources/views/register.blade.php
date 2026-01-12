@@ -15,7 +15,7 @@
         }
         .bg-cover {
             position: relative;
-            background-image: url('style/assets/img/maxresdefault.jpg');
+            background-image: url('style/assets/img/teraskos.png');
             background-size: cover;
             background-position: center;
             height: 100%;
