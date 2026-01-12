@@ -44,9 +44,7 @@
     </div>
     <main class="main-content mt-0">
         <section>
-            <div divclass="page-header min-vh-100" style="
-  background: linear-gradient(135deg, rgba(94,114,228,.10) 0%, #f8fafc 55%);
-">
+            <div class="page-header min-vh-100">
                 <div class="container">
                     <div class="row">
                         <div class="col-xl-4 col-lg-5 col-md-7 d-flex flex-column mx-lg-0 mx-auto">
