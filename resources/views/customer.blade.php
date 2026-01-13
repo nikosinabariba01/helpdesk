@@ -105,7 +105,7 @@
 </div>
 </div>
 <div class="row mt-4">
-  <div class="col-lg-8 mb-lg-0 mb-4 ">
+  <div class="col-lg-12 mb-lg-0 mb-4 ">
     <div class="card z-index-2 h-100 d-flex flex-column">
       <div class="card-header pb-0 d-flex align-items-center justify-content-between">
         <h6 class="mb-0">Ticket list</h6>
