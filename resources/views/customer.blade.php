@@ -193,21 +193,52 @@
 
   </div>
   <div class="col-lg-4 ms-auto">
-    <div class="card shadow-lg border-radius-lg overflow-hidden h-100 p-0">
-      <div class="card-header bg-gradient-success border-0 p-3">
-        <h5 class="mb-0 text-white">Ticket List</h5>
-      </div>
-      <div class="card-body p-4 h-500" style="overflow-y: auto;">
-        <div class="list-group">
-          @foreach($data_ticket as $dataticket)
-          <a href="{{ route('viewtickets.index', ['id' => $dataticket->id]) }}" class="list-group-item list-group-item-action shadow-sm mb-3" style="padding: 12px 16px;">
-            <div class="d-flex w-100 justify-content-between">
-              <h5 class="mb-1 text-dark" style="font-size: 16px;">{{ $dataticket->subject }}</h5>
-              <small class="text-muted" style="font-size: 12px;">{{ \Carbon\Carbon::parse($dataticket->created_at)->diffForHumans() }}</small>
+    <div class="row mt-4">
+      <div class="col-lg-12 mb-lg-0 mb-4">
+        <div class="card z-index-2 h-100 d-flex flex-column">
+          <div class="card-header pb-0 d-flex align-items-center justify-content-between">
+            <h6 class="mb-0">Ticket List</h6>
+          </div>
+          <div class="card-body px-0 pt-0 pb-2 h-500" style="overflow-y: auto;">
+            @if($data_ticket->isEmpty())
+            <div class="table-responsive margin-right: 15px; position: relative;" style="height: 400px; max-height: 400px; overflow-y: auto;">
+              <a href="{{ route('customer.tickets') }}" class="btn btn-primary position-absolute top-50 start-50 translate-middle">Buat Tiket</a>
             </div>
-            <p class="mb-1 text-muted" style="font-size: 14px;">{{ Str::limit($dataticket->Detail, 100) }}</p>
-          </a>
-          @endforeach
+            @else
+            <div class="table-responsive margin-right: 15px;" style="height: 400px; max-height: 400px; overflow-y: auto;">
+              <table class="table align-items-center mb-0">
+                <thead>
+                  <tr>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Subject</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @foreach($data_ticket as $dataticket)
+                  <tr class="cursor-pointer" style="border-bottom: 1px solid #e4e4e4;">
+                    <td>
+                      <div class="d-flex px-2 py-1">
+                        <div class="d-flex flex-column justify-content-center">
+                          <h6 class="mb-0 text-s text-limit-35" title="Subject">
+                            <a href="{{ route('viewtickets.index', ['id' => $dataticket->id]) }}" class="text-dark">
+                              {{ $dataticket->subject }}
+                            </a>
+                          </h6>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="text-secondary text-center">
+                      <div class="d-flex justify-content-center align-items-center" style="max-width: 250px; overflow: hidden; text-overflow: ellipsis;">
+                        <p class="text-xs text-muted mb-0">{{ Str::limit($dataticket->Detail, 100) }}</p>
+                      </div>
+                    </td>
+                  </tr>
+                  @endforeach
+                </tbody>
+              </table>
+            </div>
+            @endif
+          </div>
         </div>
       </div>
     </div>
