@@ -20,6 +20,13 @@
     <div class="card z-index-2 h-100 d-flex flex-column shadow-lg" style="border: 1px solid #e4e4e4;">
         <div class="card-header pb-0 d-flex align-items-center justify-content-between">
             <h6 class="mb-0">All Ticket List</h6>
+            <div class="d-flex">
+                <!-- Kolom Pencarian dengan input-group -->
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
+                    <input type="text" id="search" class="form-control" placeholder="Search" onfocus="focused(this)" onfocusout="defocused(this)">
+                </div>
+            </div>
         </div>
         <div class="card-body px-0 pt-0 pb-2 h-500">
             @if($teknisi_data_ticket->isEmpty())
@@ -121,5 +128,43 @@
     </div>
 </div>
 
+<script>
+    $(document).ready(function() {
+        var table = $('#escalationTable').DataTable({
+            searching: true,
+            ordering: false,
+            paging: false,
+            lengthChange: false,
+            info: false,
+            columnDefs: [{
+                targets: [2, 3, 4, 5],
+                orderable: false
+            }]
+        });
+
+        // Menyembunyikan elemen pencarian bawaan
+        $('#escalationTable_filter').hide();
+        $('#escalationTable_length').hide();
+        $('#escalationTable_paginate').hide();
+
+        // Custom search hanya kolom Subject dan User (kolom 0 dan 1)
+        $('#search').on('keyup', function() {
+            var searchTerm = this.value.toLowerCase();
+
+            $.fn.dataTable.ext.search = [];
+            $.fn.dataTable.ext.search.push(
+                function(settings, data, dataIndex) {
+                    // Kolom subject dan user (kolom ke-0 dan ke-1)
+                    var subject = data[0].toLowerCase(); // subject
+                    var user = data[1].toLowerCase(); // user
+
+                    return subject.includes(searchTerm) || user.includes(searchTerm);
+                }
+            );
+
+            table.draw();
+        });
+    });
+</script>
 
 @endsection
