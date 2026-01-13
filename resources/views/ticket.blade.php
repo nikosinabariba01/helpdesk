@@ -68,7 +68,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group card">
-                            <label for="Lokasi">Alamat</label>
+                            <label for="Lokasi">Lokasi/Nokamar</label>
                             <input type="text" id="Lokasi" name="Lokasi" class="form-control border-input" value="{{ old('Lokasi') }}">
                             @error('Lokasi')
                             <p class="text-danger">{{ $message }}</p>
