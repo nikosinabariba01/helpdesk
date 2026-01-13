@@ -318,9 +318,6 @@
 </div>
 
 </div>
-@endsection
-
-<!-- Modal -->
 <script>
   $(document).ready(function() {
     var table = $('#TicketTable').DataTable({
@@ -361,6 +358,10 @@
     });
   });
 </script>
+@endsection
+
+<!-- Modal -->
+
 
 <script>
   // Menangani peristiwa klik pada tombol edit
