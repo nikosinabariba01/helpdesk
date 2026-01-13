@@ -105,7 +105,7 @@
 </div>
 
 <div class="col-lg-3 ms-auto">
-  <div class="card h-100" style="max-height: 315px;">
+  <div class="card h-100" style="max-height: 315px; border-radius: 10px; border: 1px solid #e4e4e4;">
     <div class=" pb-0 p-3">
       <div class="row">
         <div class="col-12 d-flex align-items-center justify-content-center">
