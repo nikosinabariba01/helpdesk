@@ -159,7 +159,7 @@
                 <td class="align-middle text-center text-limit-30 border border-light">
                   <span class="text-secondary text-xs font-weight-bold ">{{ $dataticket->Detail }}</span>
                 </td class="align-middle text-center text-limit-30 border border-light">
-                  <span class="text-secondary text-xs font-weight-bold ">{{ $dataticket->Detail }}</span>
+                <span class="text-secondary text-xs font-weight-bold ">{{ $dataticket->Detail }}</span>
                 <!-- "Edit" button within a dropdown -->
                 <td class="align-middle text-center">
                   <div class="dropdown">
@@ -320,6 +320,9 @@
 
 </div>
 
+@endsection
+
+<!-- Modal -->
 <script>
   $(document).ready(function() {
     var table = $('#TicketTable').DataTable({
@@ -358,10 +361,6 @@
     });
   });
 </script>
-@endsection
-
-<!-- Modal -->
-
 
 <script>
   // Menangani peristiwa klik pada tombol edit
