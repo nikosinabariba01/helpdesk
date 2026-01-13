@@ -199,9 +199,9 @@
 
   </div>
   <div class="col-lg-4 ms-auto">
-    <div class="card shadow-lg border-radius-lg overflow-hidden h-100 p-0">
+    <div class="card shadow-lg overflow-hidden h-100 p-0">
       <div class="card-header bg-gradient-success border-0 p-3">
-        <h5 class="mb-0 text-white">Ticket List</h5>
+        <h5 class="mb-0 text-white">Announcement</h5>
       </div>
       <div class="card-body p-4" style="height: 500px; overflow-y: auto;">
         <div class="list-group">
