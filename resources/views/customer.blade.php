@@ -311,6 +311,44 @@
 </div>
 
 </div>
+<script>
+    $(document).ready(function() {
+        var table = $('#TicketTable').DataTable({
+            searching: true,
+            ordering: false,
+            paging: false,
+            lengthChange: false,
+            info: false,
+            columnDefs: [{
+                targets: [2, 3, 4, 5],
+                orderable: false
+            }]
+        });
+
+        // Menyembunyikan elemen pencarian bawaan
+        $('#TicketTable_filter').hide();
+        $('#TicketTable_length').hide();
+        $('#TicketTable_paginate').hide();
+
+        // Custom search hanya kolom Subject dan User (kolom 0 dan 1)
+        $('#search').on('keyup', function() {
+            var searchTerm = this.value.toLowerCase();
+
+            $.fn.dataTable.ext.search = [];
+            $.fn.dataTable.ext.search.push(
+                function(settings, data, dataIndex) {
+                    // Kolom subject dan user (kolom ke-0 dan ke-1)
+                    var subject = data[0].toLowerCase(); // subject
+                    var user = data[1].toLowerCase(); // user
+
+                    return subject.includes(searchTerm) || user.includes(searchTerm);
+                }
+            );
+
+            table.draw();
+        });
+    });
+</script>
 @endsection
 
 <!-- Modal -->
