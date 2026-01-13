@@ -19,6 +19,13 @@
   <div class="card z-index-2 h-100 d-flex flex-column shadow-lg" style="border: 1px solid #e4e4e4;">
     <div class="card-header pb-0 d-flex align-items-center justify-content-between">
       <h6 class="mb-0">Ticket list</h6>
+      <div class="d-flex">
+        <!-- Kolom Pencarian dengan input-group -->
+        <div class="input-group input-group-sm">
+          <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
+          <input type="text" id="search" class="form-control" placeholder="Search" onfocus="focused(this)" onfocusout="defocused(this)">
+        </div>
+      </div>
     </div>
     <div class="card-body px-0 pt-0 pb-2 h-500">
       @if($data_ticket->isEmpty())
