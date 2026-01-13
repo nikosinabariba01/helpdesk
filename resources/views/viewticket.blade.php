@@ -41,6 +41,9 @@
 
     <div class="col-md-12 mb-lg-0 mb-3">
       <div class="card mt-4">
+        <div class="card-header bg-gradient-success border-0 p-3">
+          <h5 class="mb-0 text-white">Comments</h5>
+        </div>
         <!-- Toggle Button -->
         @if(!Auth::user()->telegram_chat_id)
         <button id="toggleTelegramAuth" class="btn btn-sm btn-outline-danger btn-transparent text-danger rounded-pill">Authorize Telegram</button>
@@ -75,9 +78,6 @@
         @endif
 
         <div class="card shadow-lg border-radius-lg overflow-hidden h-100 p-0">
-          <div class="card-header bg-gradient-success border-0 p-3">
-            <h5 class="mb-0 text-white">Comments</h5>
-          </div>
 
           <div class="card-body p-3">
             <hr class="my-0">
