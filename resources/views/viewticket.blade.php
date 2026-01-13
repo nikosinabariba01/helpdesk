@@ -40,7 +40,7 @@
     </div>
 
     <div class="col-md-12 mb-lg-0 mb-3">
-      <div class="card mt-4">
+      <div class="card mt-4 shadow-sm" style="border-radius: 10px; border: 1px solid #e4e4e4;">
         <!-- Toggle Button -->
         @if(!Auth::user()->telegram_chat_id)
         <button id="toggleTelegramAuth" class="btn btn-sm btn-outline-danger btn-transparent text-danger rounded-pill">Authorize Telegram</button>
