@@ -194,7 +194,7 @@
   </div>
   <div class="col-lg-4 ms-auto">
     <div class="card shadow-lg border-radius-lg overflow-hidden h-100 p-0">
-      <div class="card-header bg-gradient-primary border-0 p-3">
+      <div class="card-header bg-gradient-info border-0 p-3">
         <h5 class="mb-0 text-white">Ticket List</h5>
       </div>
       <div class="card-body p-4">
@@ -208,7 +208,7 @@
             </thead>
             <tbody>
               @foreach($data_ticket as $dataticket)
-              <tr class="cursor-pointer" style="border-bottom: 2px solid #e4e4e4;">
+              <tr class="cursor-pointer" style="border-bottom: 1px solid #e4e4e4;">
                 <td>
                   <div class="d-flex px-2 py-1">
                     <div class="d-flex flex-column justify-content-center">
