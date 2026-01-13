@@ -106,7 +106,7 @@
 </div>
 <div class="row mt-4">
   <div class="col-lg-8 mb-lg-0 mb-4 ">
-    <div class="card z-index-2 h-100 d-flex flex-column">
+    <div class="card z-index-2 h-100 d-flex flex-column shadow-lg" style="border: 1px solid #e4e4e4;">
       <div class="card-header pb-0 d-flex align-items-center justify-content-between">
         <h6 class="mb-0">Ticket list</h6>
       </div>
@@ -118,7 +118,7 @@
         </div>
         @else
         <div class="table-responsive margin-right: 15px;" style="height: 400px; max-height: 400px; overflow-y: auto;">
-          <table class="table align-items-center mb-0">
+          <table class="table align-items-center mb-0 " id="TicketTable">
             <thead>
               <tr>
                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">subject</th>
