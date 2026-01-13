@@ -193,7 +193,7 @@
 
   </div>
   <div class="col-lg-4 ms-auto">
-    <div class="card shadow-lg border-light border-radius-lg overflow-hidden h-100 p-0">
+    <div class="card shadow-lg border-radius-lg overflow-hidden h-100 p-0">
       <div class="card-header bg-transparent border-0">
         <h5 class="mb-0">Ticket List</h5>
       </div>
