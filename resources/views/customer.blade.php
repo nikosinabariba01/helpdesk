@@ -193,56 +193,40 @@
 
   </div>
   <div class="col-lg-4 ms-auto">
-    <div class="card card-carousel overflow-hidden h-100 p-0 ">
-      <div id="carouselExampleCaptions" class="carousel slide h-100" data-bs-ride="carousel">
-        <div class="carousel-inner border-radius-lg h-100">
-          <div class="carousel-item h-100 active" style="background-image: url('style/assets/img/shintaeyong.jpg');
-      background-size: cover; background-position: center;">
-            <a href="https://bali.tribunnews.com/2024/01/28/piala-asia-peringatan-shin-tae-yong-soal-dampak-komentar-buruk-yang-berimbas-ke-mental-skuad-tim#:~:text=TRIBUN-BALI.COM%20-%20Head%20coach%20Shin%20Tae-yong%20mengingatkan%20untuk,knock%20out%20Piala%20Asia%2C%20Sabtu%2027%20Januari%202024." target="_blank" style="display: block; height: 100%;">
-              <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
-                <div class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
-                  <i class="ni ni-camera-compact text-dark opacity-10"></i>
-                </div>
-                <h5 class="text-white mb-1">Piala Asia:</h5>
-                <p>Peringatan Shin Tae-yong Soal Dampak Komentar Buruk yang Berimbas ke Mental & Skuad Tim...</p>
-              </div>
-            </a>
-          </div>
-          <div class="carousel-item h-100" style="background-image: url('style/assets/img/pemilih-pemula-ikut-sosialiasi-pemilu.jpg');
-      background-size: cover; background-position: center;">
-            <a href="https://www.detik.com/sumut/berita/d-7163376/pemilih-pemula-wajib-tahu-begini-cara-mencoblos-di-pemilu-2024" target="_blank" style="display: block; height: 100%;">
-              <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
-                <div class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
-                  <i class="ni ni-bulb-61 text-dark opacity-10"></i>
-                </div>
-                <h5 class="text-white mb-1">Cara Mencoblos di Pemilu 2024, Pemilih Pemula Wajib Tahu!</h5>
-                <p>Sebagai pemilih pemula, salah satu hal yang menjadi kendala dalam memilih di pemilu adalah cara mencoblos...</p>
-              </div>
-            </a>
-          </div>
-          <div class="carousel-item h-100" style="background-image: url('style/assets/img/rapats.jpg');
-      background-size: cover; background-position: center;">
-            <a href="https://www.detik.com/sumut/berita/d-7163376/pemilih-pemula-wajib-tahu-begini-cara-mencoblos-di-pemilu-2024" target="_blank" style="display: block; height: 100%;">
-              <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
-                <div class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
-                  <i class="ni ni-bulb-61 text-dark opacity-10"></i>
-                </div>
-                <h5 class="text-white mb-1">Pembahasan Rencana Kegiatan Tahun 2025 di DPRD Kota Semarang</h5>
-                <p>umat, 3 Januari 2025, DPRD Kota Semarang mengadakan rapat pembahasan rencana kegiatan...</p>
-              </div>
-            </a>
-          </div>
+    <div class="card overflow-hidden h-100 p-0">
+      <div class="card-header">
+        <h5 class="mb-0">Ticket List</h5>
+      </div>
+      <div class="card-body p-3">
+        <div class="table-responsive" style="height: 400px; max-height: 400px; overflow-y: auto;">
+          <table class="table align-items-center mb-0">
+            <thead>
+              <tr>
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Subject</th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach($data_ticket as $dataticket)
+              <tr>
+                <td>
+                  <div class="d-flex px-2 py-1">
+                    <div class="d-flex flex-column justify-content-center">
+                      <h6 class="mb-0 text-s text-limit-35" title="Subject">
+                        <a href="{{ route('viewtickets.index', ['id' => $dataticket->id]) }}">
+                          {{ $dataticket->subject }}
+                        </a>
+                      </h6>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              @endforeach
+            </tbody>
+          </table>
         </div>
-        <button class="carousel-control-prev w-5 me-3" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next w-5 me-3" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-        </button>
       </div>
     </div>
+
   </div>
 
   <!-- Modal -->
