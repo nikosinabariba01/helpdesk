@@ -41,9 +41,6 @@
 
     <div class="col-md-12 mb-lg-0 mb-3">
       <div class="card mt-4">
-        <div class="card-header border-0 p-3">
-          <h5 class="mb-0 text-black">Comments</h5>
-        </div>
         <!-- Toggle Button -->
         @if(!Auth::user()->telegram_chat_id)
         <button id="toggleTelegramAuth" class="btn btn-sm btn-outline-danger btn-transparent text-danger rounded-pill">Authorize Telegram</button>
