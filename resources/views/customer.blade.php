@@ -197,8 +197,7 @@
       <div class="card-header bg-gradient-success border-0 p-3">
         <h5 class="mb-0 text-white">Ticket List</h5>
       </div>
-      <div class="card-body p-4 h-800">
-        
+      <div class="card-body p-4 h-500" style="overflow-y: auto;">
         <div class="list-group">
           @foreach($data_ticket as $dataticket)
           <a href="{{ route('viewtickets.index', ['id' => $dataticket->id]) }}" class="list-group-item list-group-item-action shadow-sm mb-3" style="padding: 12px 16px;">
