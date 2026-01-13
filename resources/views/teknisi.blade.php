@@ -140,7 +140,7 @@
             <tbody>
               @foreach($teknisi_data_ticket as $teknisidataticket)
               <tr>
-                <td>
+                <td class="align-middle text-sm border border-light">
                   <div class="d-flex px-2 py-1">
                     <div class="d-flex flex-column justify-content-center">
                       <h6 class="mb-0 text-s text-limit-35" title="Subject">
@@ -166,7 +166,7 @@
                 <td class="align-middle text-center text-limit-30 border border-light">
                   <span class="text-secondary text-xs font-weight-bold ">{{ $teknisidataticket->Detail }}</span>
                 </td>
-                <td class="align-middle text-center text-sm">
+                <td class="align-middle text-center text-sm border border-light">
                   <form action="{{ route('tickets.assign', $teknisidataticket->id) }}" method="POST">
                     @csrf
                     @method('PUT')
