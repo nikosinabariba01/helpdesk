@@ -194,41 +194,20 @@
   </div>
   <div class="col-lg-4 ms-auto">
     <div class="card shadow-lg border-radius-lg overflow-hidden h-100 p-0">
-      <div class="card-header bg-gradient-info border-0 p-3">
+      <div class="card-header bg-gradient-success border-0 p-3">
         <h5 class="mb-0 text-white">Ticket List</h5>
       </div>
       <div class="card-body p-4">
-        <div class="table-responsive" style="height: 400px; max-height: 400px; overflow-y: auto;">
-          <table class="table align-items-center mb-0">
-            <thead>
-              <tr>
-                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Subject</th>
-                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              @foreach($data_ticket as $dataticket)
-              <tr class="cursor-pointer" style="border-bottom: 1px solid #e4e4e4;">
-                <td>
-                  <div class="d-flex px-2 py-1">
-                    <div class="d-flex flex-column justify-content-center">
-                      <h6 class="mb-0 text-s text-limit-35" title="Subject">
-                        <a href="{{ route('viewtickets.index', ['id' => $dataticket->id]) }}" class="text-dark">
-                          {{ $dataticket->subject }}
-                        </a>
-                      </h6>
-                    </div>
-                  </div>
-                </td>
-                <td class="text-secondary text-center">
-                  <div class="d-flex justify-content-center align-items-center" style="max-width: 250px; overflow: hidden; text-overflow: ellipsis;">
-                    <p class="text-xs text-muted mb-0">{{ $dataticket->Detail }}</p>
-                  </div>
-                </td>
-              </tr>
-              @endforeach
-            </tbody>
-          </table>
+        <div class="list-group">
+          @foreach($data_ticket as $dataticket)
+          <a href="{{ route('viewtickets.index', ['id' => $dataticket->id]) }}" class="list-group-item list-group-item-action shadow-sm mb-3">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1 text-dark">{{ $dataticket->subject }}</h5>
+              <small class="text-muted">{{ \Carbon\Carbon::parse($dataticket->created_at)->diffForHumans() }}</small>
+            </div>
+            <p class="mb-1 text-muted">{{ Str::limit($dataticket->Detail, 100) }}</p>
+          </a>
+          @endforeach
         </div>
       </div>
     </div>
