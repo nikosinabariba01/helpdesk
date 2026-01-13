@@ -42,7 +42,7 @@
     <div class="col-md-12 mb-lg-0 mb-3">
       <div class="card mt-4">
         <div class="card-header border-0 p-3">
-          <h5 class="mb-0 text-white">Comments</h5>
+          <h5 class="mb-0 text-black">Comments</h5>
         </div>
         <!-- Toggle Button -->
         @if(!Auth::user()->telegram_chat_id)
