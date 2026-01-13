@@ -193,11 +193,11 @@
 
   </div>
   <div class="col-lg-4 ms-auto">
-    <div class="card overflow-hidden h-100 p-0">
-      <div class="card-header">
+    <div class="card shadow-lg border-light border-radius-lg overflow-hidden h-100 p-0">
+      <div class="card-header bg-transparent border-0">
         <h5 class="mb-0">Ticket List</h5>
       </div>
-      <div class="card-body p-3">
+      <div class="card-body p-4">
         <div class="table-responsive" style="height: 400px; max-height: 400px; overflow-y: auto;">
           <table class="table align-items-center mb-0">
             <thead>
