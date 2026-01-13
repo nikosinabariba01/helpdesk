@@ -74,34 +74,36 @@
         </form>
         @endif
 
-        <div class="card shadow-lg border-radius-lg overflow-hidden h-100 p-0">
-          <div class="card-header bg-gradient-success border-0 p-3">
-            <h5 class="mb-0 text-white">Comments</h5>
-          </div>
-
-          <div class="card-body p-3">
-            <hr class="my-0">
-            <ul class="list-group">
-              @foreach($ticket->comments as $comment)
-              <li class="list-group-item mt-3 d-flex align-items-start shadow-sm" style="border-radius: 10px; border: 1px solid #e4e4e4; padding: 15px;">
-                <!-- Foto Profil -->
-                <img src="{{ $comment->user && $comment->user->profile_photo ? route('profile.photo', ['filename' => basename($comment->user->profile_photo)]) : asset('default-profile.png') }}" alt="Profile Photo" class="rounded-circle me-3" style="width: 45px; height: 45px; object-fit: cover; border: 2px solid #ddd;">
-
-                <div style="flex-grow: 1;">
-                  <div class="d-flex justify-content-between align-items-center">
-                    <span class="fw-bold @if ($comment->user && $comment->user->role == 'penyewa') text-primary @elseif ($comment->user && in_array($comment->user->role, ['pengurus', 'admin', 'pemilik'])) text-danger @else text-muted @endif">
-                      {{ $comment->user ? $comment->user->name : 'User Not Found' }}
-                    </span>
-                    <span class="text-muted small">{{ $comment->created_at->format('Y-m-d H:i') }}</span>
-                  </div>
-                  <p class="mb-0" style="font-size: 14px; color: #555;">{{ $comment->comment }}</p>
-                </div>
-              </li>
-              @endforeach
-            </ul>
+        <div class="card-header pb-0 p-3">
+          <div class="row">
+            <div class="col">
+              <div class="d-flex align-items-center">
+                <h6 class="mb-0">Comment</h6>
+              </div>
+            </div>
           </div>
         </div>
 
+        <div class="card-body p-3">
+          <hr class="my-0">
+          <ul class="list-group">
+            @foreach($ticket->comments as $comment)
+            <li class="list-group-item mt-0 d-flex align-items-start">
+              <!-- Foto Profil -->
+              <img src="{{ $comment->user && $comment->user->profile_photo ? route('profile.photo', ['filename' => basename($comment->user->profile_photo)]) : asset('default-profile.png') }}" alt="Profile Photo" class="rounded-circle me-3" style="width: 40px; height: 40px; object-fit: cover;">
+              <div style="flex-grow: 1;">
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="fw-bold @if ($comment->user && $comment->user->role == 'penyewa') text-primary @elseif ($comment->user && in_array($comment->user->role, ['pengurus', 'admin', 'pemilik'])) text-danger @else text-muted @endif">
+                    {{ $comment->user ? $comment->user->name : 'User Not Found' }}
+                  </span>
+                  <span class="text-muted small">{{ $comment->created_at->format('Y-m-d') }}</span>
+                </div>
+                <p class="mb-0">{{ $comment->comment }}</p>
+              </div>
+            </li>
+            @endforeach
+          </ul>
+        </div>
       </div>
     </div>
   </div>
