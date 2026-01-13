@@ -137,7 +137,7 @@
             <tbody>
               @foreach($data_ticket as $dataticket)
               <tr>
-                <td>
+                <td class="align-middle text-sm border border-light">
                   <div class="d-flex px-2 py-1">
                     <div class="d-flex flex-column justify-content-center">
                       <h6 class="mb-0 text-s text-limit-35" title="Subject">
@@ -153,14 +153,14 @@
                     </div>
                   </div>
                 </td>
-                <td class="align-middle text-center text-sm">
+                <td class="align-middle text-center text-sm border border-light">
                   <x-status-badge :status="$dataticket->status" />
                 </td>
-                <td class="align-middle text-center text-limit-30">
+                <td class="align-middle text-center text-limit-30 border border-light">
                   <span class="text-secondary text-xs font-weight-bold ">{{ $dataticket->Detail }}</span>
                 </td>
                 <!-- "Edit" button within a dropdown -->
-                <td class="align-middle text-center">
+                <td class="align-middle text-center border border-light">
                   <div class="dropdown">
                     <a class="btn text-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
                       <i class=""></i>
@@ -187,7 +187,6 @@
                     </ul>
                   </div>
                 </td>
-
               </tr>
               @endforeach
             </tbody>
