@@ -126,7 +126,7 @@
         </div>
         @else
         <div class="table-responsive margin-right: 15px;" style="height: 400px; max-height: 400px; overflow-y: auto;">
-          <table class="table align-items-center mb-0">
+          <table class="table align-items-center mb-0" id="TicketTable">
             <thead>
               <tr>
                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">subject</th>
@@ -338,7 +338,7 @@
 
 <script>
   $(document).ready(function() {
-    var table = $('#escalationTable').DataTable({
+    var table = $('#TicketTable').DataTable({
       searching: true,
       ordering: false,
       paging: false,
@@ -351,9 +351,9 @@
     });
 
     // Menyembunyikan elemen pencarian bawaan
-    $('#escalationTable_filter').hide();
-    $('#escalationTable_length').hide();
-    $('#escalationTable_paginate').hide();
+    $('#TicketTable_filter').hide();
+    $('#TicketTable_length').hide();
+    $('#TicketTable_paginate').hide();
 
     // Custom search hanya kolom Subject dan User (kolom 0 dan 1)
     $('#search').on('keyup', function() {
