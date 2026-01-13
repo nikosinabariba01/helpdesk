@@ -197,15 +197,15 @@
       <div class="card-header bg-gradient-success border-0 p-3">
         <h5 class="mb-0 text-white">Ticket List</h5>
       </div>
-      <div class="card-body p-4">
+      <div class="card-body p-4 h-800" style="overflow-y: auto;">
         <div class="list-group">
           @foreach($data_ticket as $dataticket)
-          <a href="{{ route('viewtickets.index', ['id' => $dataticket->id]) }}" class="list-group-item list-group-item-action shadow-sm mb-3">
+          <a href="{{ route('viewtickets.index', ['id' => $dataticket->id]) }}" class="list-group-item list-group-item-action shadow-sm mb-3" style="padding: 12px 16px;">
             <div class="d-flex w-100 justify-content-between">
-              <h5 class="mb-1 text-dark">{{ $dataticket->subject }}</h5>
-              <small class="text-muted">{{ \Carbon\Carbon::parse($dataticket->created_at)->diffForHumans() }}</small>
+              <h5 class="mb-1 text-dark" style="font-size: 16px;">{{ $dataticket->subject }}</h5>
+              <small class="text-muted" style="font-size: 12px;">{{ \Carbon\Carbon::parse($dataticket->created_at)->diffForHumans() }}</small>
             </div>
-            <p class="mb-1 text-muted">{{ Str::limit($dataticket->Detail, 100) }}</p>
+            <p class="mb-1 text-muted" style="font-size: 14px;">{{ Str::limit($dataticket->Detail, 100) }}</p>
           </a>
           @endforeach
         </div>
