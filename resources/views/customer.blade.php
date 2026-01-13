@@ -330,7 +330,7 @@
       lengthChange: false,
       info: false,
       columnDefs: [{
-        targets: [2, 3, 4, 5],
+        targets: [2, 3],
         orderable: false
       }]
     });
@@ -340,18 +340,20 @@
     $('#TicketTable_length').hide();
     $('#TicketTable_paginate').hide();
 
-    // Custom search hanya kolom Subject dan User (kolom 0 dan 1)
+    // Custom search untuk kolom Subject dan Status
     $('#search').on('keyup', function() {
       var searchTerm = this.value.toLowerCase();
 
-      $.fn.dataTable.ext.search = [];
+      $.fn.dataTable.ext.search.pop(); // Hapus filter sebelumnya jika ada
+
       $.fn.dataTable.ext.search.push(
         function(settings, data, dataIndex) {
-          // Kolom subject dan user (kolom ke-0 dan ke-1)
+          // Kolom subject (kolom 0) dan status (kolom 1)
           var subject = data[0].toLowerCase(); // subject
-          var user = data[1].toLowerCase(); // user
+          var status = data[1].toLowerCase(); // status
+          var description = data[2].toLowerCase(); // description
 
-          return subject.includes(searchTerm) || user.includes(searchTerm);
+          return subject.includes(searchTerm) || status.includes(searchTerm) || description.includes(searchTerm);
         }
       );
 
