@@ -80,7 +80,7 @@
             <hr class="my-0">
             <ul class="list-group">
               @foreach($ticket->comments as $comment)
-              <li class="list-group-item mt-3 d-flex align-items-start shadow-sm" style="border-radius: 10px; border: 1px solid #e4e4e4; padding: 13px;">
+              <li class="list-group-item mt-3 d-flex align-items-start shadow-sm" style="border-radius: 10px; border: 2px solid #e4e4e4; padding: 13px;">
                 <!-- Foto Profil -->
                 <img src="{{ $comment->user && $comment->user->profile_photo ? route('profile.photo', ['filename' => basename($comment->user->profile_photo)]) : asset('default-profile.png') }}" alt="Profile Photo" class="rounded-circle me-3" style="width: 45px; height: 45px; object-fit: cover; border: 2px solid #ddd;">
 
