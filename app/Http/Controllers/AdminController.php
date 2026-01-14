@@ -18,10 +18,8 @@ class AdminController extends Controller
         // Dapatkan ID pengguna yang sedang login
         $userId = Auth::id();
 
-        // Mengambil tiket yang belum memiliki asignees (belum ada yang meng-assign) dan status 'open'
-        $teknisi_data_ticket = Ticket::with('user')
-            ->whereDoesntHave('asignees') // Mengambil tiket yang belum memiliki asignees
-            ->where('status', 'open')
+        // Mengambil tiket yang 
+        $teknisi_data_ticket = Ticket::with('user', 'asignees')
             ->orderBy('created_at', 'desc')
             ->get();
 
