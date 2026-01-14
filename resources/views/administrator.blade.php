@@ -64,9 +64,16 @@
 </div>
 <div class="row mt-4">
     <div class="col-lg-12 mb-lg-0 mb-4 ">
-        <div class="card z-index-2 h-100 d-flex flex-column">
+        <div class="card z-index-2 h-100 d-flex flex-column shadow-lg" style="border: 1px solid #e4e4e4;">
             <div class="card-header pb-0 d-flex align-items-center justify-content-between">
                 <h6 class="mb-0">All Ticket List</h6>
+                <div class="d-flex">
+                    <!-- Kolom Pencarian dengan input-group -->
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
+                        <input type="text" id="search" class="form-control" placeholder="Search" onfocus="focused(this)" onfocusout="defocused(this)">
+                    </div>
+                </div>
             </div>
             <div class="card-body px-0 pt-0 pb-2 h-500">
                 @if($teknisi_data_ticket->isEmpty())
@@ -76,20 +83,21 @@
                 </div>
                 @else
                 <div class="table-responsive margin-right: 15px;" style="height: 400px; max-height: 400px; overflow-y: auto;">
-                    <table class="table align-items-center mb-0">
+                    <table class="table align-items-center mb-0" id="TicketTable">
                         <thead>
                             <tr>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">subject</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">User</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">Status</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">Deskripsi</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">subject</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">User</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Status</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Deskripsi</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Asign</th>
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($teknisi_data_ticket as $teknisidataticket)
-                            <tr>
-                                <td>
+                            <tr class="align-middle text-sm border border-light">
+                                <td class="align-middle text-sm border border-light">
                                     <div class="d-flex px-2 py-1">
                                         <div class="d-flex flex-column justify-content-center">
                                             <h6 class="mb-0 text-s text-limit-35" title="Subject">
@@ -99,27 +107,44 @@
                                             </h6>
 
                                             <div class="d-flex list-inline">
-                                                <li class="text-xs list-inline-item text-secondary"><i class="fa fa-circle fa-xs text-danger"></i>#CT-{{ $teknisidataticket->id }}</li>
+                                                <li class="text-xs list-inline-item text-secondary"><i class="fa fa-circle fa-xs text-danger"></i>{{'sp-' . substr(preg_replace('/[^0-9]/', '', $teknisidataticket->id), -3) . \Carbon\Carbon::parse($teknisidataticket->created_at)->format('dmy') . ($teknisidataticket->Jenis_Pengaduan == 0 ? '0' : '1');}}</li>
                                                 <li class="text-xs list-inline-item text-secondary" title="type"><i class="fa fa-circle fa-xs text-primary"></i>{{ $teknisidataticket->Jenis_Pengaduan }}</li>
                                                 <li class="text-xs list-inline-item text-secondary" title="Created Date"><i class="fa fa-circle fa-xs text-secondary"></i></i> {{ $teknisidataticket->formattedTanggalPengaduan }}</li>
                                             </div>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="align-middle text-center text-sm text-limit-20">
+                                <td class="align-middle text-center text-sm text-limit-20 border border-light">
                                     {{ $teknisidataticket->user->name }}
                                 </td>
                                 <td class="align-middle text-center text-sm">
                                     <x-status-badge :status="$teknisidataticket->status" />
                                 </td>
-                                <td class="align-middle text-center text-limit-30">
+                                <td class="align-middle text-center text-limit-30 border border-light">
                                     <span class="text-secondary text-xs font-weight-bold ">{{ $teknisidataticket->Detail }}</span>
                                 </td>
+                                <td class="align-middle text-center text-sm border border-light">
+                                    <form action="{{ route('tickets.assign', $teknisidataticket->id) }}" method="POST">
+                                        @csrf
+                                        @method('PUT')
+                                        <!-- Cek apakah tiket sudah memiliki asignees -->
+                                        @if($teknisidataticket->asignees->isEmpty())
+                                        <!-- Jika belum di-assign oleh siapapun -->
+                                        <button type="submit" class="btn btn-sm btn-transparent text-primary">Assign</button>
+                                        @elseif($teknisidataticket->asignees->first()->id == Auth::id())
+                                        <!-- Jika sudah di-assign ke teknisi yang sedang login -->
+                                        <button type="submit" class="btn btn-sm btn-outline-warning text-secondary">Re-assign</button>
+                                        @else
+                                        <!-- Jika sudah di-assign oleh teknisi lain -->
+                                        <button type="submit" class="btn btn-sm btn-outline-success text-primary">Contribute</button>
+                                        @endif
+                                    </form>
+                                </td>
                                 <!-- "Edit" button within a dropdown -->
-                                <td class="align-middle text-center">
+                                <td class="align-middle text-center ">
                                     <div class="dropdown">
-                                        <a class="btn text-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class=""></i>
+                                        <a class="btn btn-link" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fa fa-ellipsis-v fa-sm"></i>
                                         </a>
                                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
                                             <li>
@@ -133,9 +158,7 @@
                                                 <form method="POST" action="{{ route('tickets.destroy', $teknisidataticket->id) }}">
                                                     @method('delete')
                                                     @csrf
-                                                    <button type="submit" class="dropdown-item text-danger" href="#" onclick="return confirm('Are you sure?')">
-                                                        <i class="fa fa-trash pe-2 text-danger"></i> Delete
-                                                    </button>
+                                                    <button type="submit" class="dropdown-item text-danger" href="#" onclick="return confirm ('are you sure?')"><i class="fa fa-trash pe-2 text-danger"></i>delete</button>
                                                 </form>
                                             </li>
                                         </ul>
@@ -150,106 +173,6 @@
                 @endif
             </div>
         </div>
-
-
-
-
-        <!-- Modal -->
-        <div class="modal fade" id="exampleModalMessage" tabindex="-1" role="dialog" aria-labelledby="exampleModalMessageTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Edit Ticket</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        @if ($teknisi_data_ticket->isEmpty())
-                        <!-- Tampilkan tombol untuk membuat tiket baru -->
-                        <a href="{{ route('customer.index') }}" class="btn btn-primary">Buat Tiket Baru</a>
-                        @else
-                        <!-- Iterasi melalui data tiket jika tidak kosong -->
-                        @forelse ($teknisi_data_ticket as $teknisidataticket)
-                        <form method="POST" action="{{ route('ticketsteknisi.update', $teknisidataticket->id) }}" enctype="multipart/form-data">
-                            @method('PUT')
-                            @csrf
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label for="subject">Subject</label>
-                                        <input type="text" id="subject" name="subject" class="form-control border-input" value="">
-                                        @error('subject')
-                                        <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label for="Jenis_Pengaduan">Jenis Pengaduan</label>
-                                        <select id="Jenis_Pengaduan" name="Jenis_Pengaduan" class="form-control border-input">
-                                            <option value="" selected>--Pilih Jenis Pengaduan--</option>
-                                            <option value="perbaikan">Perbaikan</option>
-                                            <option value="permintaan">Permintaan</option>
-                                        </select>
-                                        @error('Jenis_Pengaduan')
-                                        <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label for="Lokasi">Alamat</label>
-                                        <input type="text" id="Lokasi" name="Lokasi" class="form-control border-input">
-                                        @error('Lokasi')
-                                        <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label for="Detail">Deskripsi</label>
-                                        <textarea id="Detail" name="Detail" rows="5" class="form-control border-input" placeholder="Here can be your description" value=""></textarea>
-                                        @error('Detail')
-                                        <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label for="gambar">Gambar Pendukung</label>
-                                    <input class="form-control form-control-sm" id="gambar" name="gambar" type="file">
-                                    @error('gambar')
-                                    <p class="text-danger">{{ $message }}</p>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12 text-left mt-4">
-                                    <button type="submit" class="btn btn-info btn-fill btn-wd">Submit ticket</button>
-                                </div>
-                            </div>
-                            <div class="clearfix"></div>
-                        </form>
-                        @empty
-                        <p>Tidak ada data tiket yang tersedia.</p>
-                        @endforelse
-                        @endif
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </div>
     <div class="row mt-4">
 
