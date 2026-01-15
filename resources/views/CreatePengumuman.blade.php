@@ -55,10 +55,11 @@
 
                 <div class="mt-2">
                     <label for="penyewa" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Pilih Penyewa:</label>
-                    <select class="form-control" name="penyewa[]" id="penyewa" placeholder="Choose Penyewa" multiple required>
-                        @foreach($penyewa as $user)
-                        <option value="{{ $user->id }}" {{ in_array($user->id, old('penyewa', [])) ? 'selected' : '' }}>{{ $user->name }}</option>
-                        @endforeach
+                    <select class="form-control" name="choices-button" id="choices-button" placeholder="Departure">
+                        <option value="Choice 1" selected="">Brazil</option>
+                        <option value="Choice 2">Bucharest</option>
+                        <option value="Choice 3">London</option>
+                        <option value="Choice 4">USA</option>
                     </select>
                     @error('penyewa')
                     <p class="text-danger">{{ $message }}</p>
