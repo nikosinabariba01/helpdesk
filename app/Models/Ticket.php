@@ -55,6 +55,6 @@ class Ticket extends Model {
     public function asignees()
     {
         // Gunakan TicketAssignee sebagai pivot model
-        return $this->hasMany(TicketAssignee::class);
+        return $this->belongsToMany(User::class, 'ticket_assignees', 'ticket_id', 'user_id');
     }
 }
