@@ -64,7 +64,7 @@
 
         <!-- Comment Form -->
         @if(Auth::user()->telegram_chat_id)
-        <form id="commentForm" action="{{ route('comments.store', ['ticket' => $ticket]) }}" method="POST" style="display: none;">
+        <form id="commentForm" action="{{ route('comments.teknisiComment', ['ticket' => $ticket]) }}" method="POST" style="display: none;">
           @csrf
           <div class="mb-3">
             <label for="commentText" class="form-label">Your Comment</label>
