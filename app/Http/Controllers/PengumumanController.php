@@ -2,16 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Pengumuman;
 use App\Models\User;
 use App\Services\TelegramService;
 use Illuminate\Http\Request;
+use App\Models\Pengumuman;
 
 class PengumumanController extends Controller
 {
-    public function createAnnouncement(Request $request)
+    // Menampilkan form untuk membuat pengumuman
+    public function create()
     {
-        // Validasi input pengumuman
+        // Mengambil semua penyewa untuk dipilih di form
+        $penyewa = User::where('role', 'penyewa')->get();
+
+        // Mengarahkan ke view 'CreatePengumuman' dan membawa data penyewa
+        return view('CreatePengumuman', compact ('penyewa'));
+    }
+
+    // Method store untuk menyimpan pengumuman
+    public function store(Request $request)
+    {
         $request->validate([
             'judul' => 'required|string|max:255',
             'deskripsi' => 'required|string',
@@ -23,17 +33,16 @@ class PengumumanController extends Controller
         $pengumuman = new Pengumuman();
         $pengumuman->judul = $request->input('judul');
         $pengumuman->deskripsi = $request->input('deskripsi');
-        $pengumuman->creator_id = auth()->user()->id;  // ID pengguna yang membuat pengumuman
+        $pengumuman->creator_id = auth()->user()->id;
         $pengumuman->save();
 
         // Menyimpan relasi pengumuman dengan penyewa
-        $pengumuman->penerima()->sync($request->input('penyewa')); // `penyewa` adalah array dari ID penyewa yang dipilih
+        $pengumuman->penerima()->sync($request->input('penyewa'));
 
-        // Mengirim pengumuman ke Telegram
+        // Kirim pengumuman ke Telegram
         $telegram = new TelegramService();
         $message = "<b>Pengumuman Baru:</b>\n<b>{$pengumuman->judul}</b>\n{$pengumuman->deskripsi}";
 
-        // Mengirim pesan ke setiap penyewa yang dipilih
         foreach ($request->input('penyewa') as $penyewaId) {
             $penyewa = User::find($penyewaId);
             if ($penyewa && $penyewa->telegram_chat_id) {

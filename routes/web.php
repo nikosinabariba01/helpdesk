@@ -68,6 +68,9 @@ Route::middleware(['auth'])->group(function () {
     // Route untuk eskalasi
     Route::get('/tickets/escalation', [TeknisiController::class, 'viewEscalation'])->name('tickets.viewEscalation')->middleware('userAkses:pengurus,pemilik,admin');
     Route::put('/tickets/{id}/escalation', [TicketController::class, 'acceptEscalation'])->name('tickets.accept_escalation')->middleware('userAkses:pengurus,pemilik,admin');
+    // Route untuk pengumuman
+    Route::get('/pengumuman/create', [App\Http\Controllers\PengumumanController::class, 'create'])->name('pengumuman.create')->middleware('userAkses:pengurus,pemilik,admin');
+    Route::post('/pengumuman/store', [App\Http\Controllers\PengumumanController::class, 'store'])->name('pengumuman.store')->middleware('userAkses:pengurus,pemilik,admin');
 
 
 
