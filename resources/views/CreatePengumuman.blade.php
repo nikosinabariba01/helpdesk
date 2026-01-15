@@ -51,7 +51,7 @@
                     <!-- Pilih Penyewa (Choices) -->
                     <div class="col-md-6">
                         <label for="penyewa" class="form-label">Pilih Penyewa:</label>
-                        <select class="form-control" name="choices-button" id="choices-button" placeholder="Choose or enter something" multiple>
+                        <select class="form-control" name="choices-button" id="choices-button" placeholder="search or choice" multiple>
                             <option value="Choice 1">Brazil</option>
                             <option value="Choice 2">Bucharest</option>
                             <option value="Choice 3">London</option>
