@@ -81,33 +81,6 @@
     </div>
 </div>
 
-<!-- Custom CSS untuk menimpa gaya Choices.js -->
-<style>
-    .choices__inner {
-        display: block;
-        width: 100%;
-        padding: 0.5rem 0.75rem;
-        font-size: 0.875rem;
-        font-weight: 400;
-        line-height: 1.4rem;
-        color: #495057;
-        background-color: #fff;
-        background-clip: padding-box;
-        border: 1px solid #d2d6da;
-        appearance: none;
-        border-radius: 0.5rem;
-        transition: box-shadow 0.15s ease, border-color 0.15s ease;
-    }
-    
-    /* Style untuk Judul Pengumuman */
-    label[for="judul"] {
-        padding: 0.9rem 0.75rem;
-        display: block;
-    }
-    
-    /* Anda bisa menambahkan lebih banyak aturan untuk menimpa gaya lain dari Choices.js, jika diperlukan */
-</style>
-
 <script>
     // Inisialisasi Choices.js untuk dropdown dengan multiple pilihan
     const choices = new Choices('#choices-button', {
