@@ -99,6 +99,12 @@
         transition: box-shadow 0.15s ease, border-color 0.15s ease;
     }
     
+    /* Style untuk Judul Pengumuman */
+    label[for="judul"] {
+        padding: 0.9rem 0.75rem;
+        display: block;
+    }
+    
     /* Anda bisa menambahkan lebih banyak aturan untuk menimpa gaya lain dari Choices.js, jika diperlukan */
 </style>
 
