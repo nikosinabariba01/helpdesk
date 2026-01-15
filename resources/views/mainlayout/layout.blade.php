@@ -41,8 +41,10 @@
   <link rel="stylesheet" href="{{ asset('style/assets/css/nucleo-svg.css') }}">
   <!-- CSS Files -->
   <link id="pagestyle" href="{{ asset('style/assets/css/argon-dashboard.css') }}" rel="stylesheet">
-<!-- Choices.js CSS -->
-<link href="https://cdn.jsdelivr.net/npm/choices.js@11.1.0/public/assets/styles/choices.min.css" rel="stylesheet">
+<!-- Choices.js CSS - Disabled to use Bootstrap styling only -->
+<!-- <link href="https://cdn.jsdelivr.net/npm/choices.js@11.1.0/public/assets/styles/choices.min.css" rel="stylesheet"> -->
+<!-- Custom Choices.js Bootstrap styling -->
+<link href="{{ asset('css/choices-bootstrap.css') }}" rel="stylesheet">
 
 <!-- Choices.js JS -->
 <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
