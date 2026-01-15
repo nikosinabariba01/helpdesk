@@ -55,7 +55,7 @@
 
                 <div class="mt-2">
                     <label for="penyewa" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Pilih Penyewa:</label>
-                    <select id="penyewa" name="penyewa[]" class="form-select" multiple required>
+                    <select class="form-control" name="penyewa[]" id="penyewa" placeholder="Choose Penyewa" multiple required>
                         @foreach($penyewa as $user)
                         <option value="{{ $user->id }}" {{ in_array($user->id, old('penyewa', [])) ? 'selected' : '' }}>{{ $user->name }}</option>
                         @endforeach
@@ -66,10 +66,14 @@
                 </div>
 
                 <div class="mt-3">
+                    <label for="choices-tags" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tags Penyewa:</label>
+                    <input class="form-control" id="choices-tags" data-color="dark" type="text" value="{{ old('penyewa', '') }}" placeholder="Masukkan nama penyewa" />
+                </div>
+
+                <div class="mt-3">
                     <button type="submit" class="btn btn-primary">Kirim Pengumuman</button>
                 </div>
             </form>
-
         </div>
     </div>
 </div>
