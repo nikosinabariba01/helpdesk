@@ -55,14 +55,12 @@
 
                 <div class="mt-2">
                     <label for="penyewa" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Pilih Penyewa:</label>
-                    <div class="choices__list choices__list--dropdown is-filled" aria-expanded="false"><input type="text" class="choices__input choices__input--cloned" autocomplete="off" autocapitalize="off" spellcheck="false" role="textbox" aria-autocomplete="list" aria-label="false" placeholder="" aria-activedescendant="choices--choices-button-item-choice-3">
-                        <div class="choices__list" role="listbox">
-                            <div id="choices--choices-button-item-choice-1" class="choices__item choices__item--choice choices__item--selectable" role="option" data-choice="" data-id="1" data-value="Choice 1" data-select-text="Press to select" data-choice-selectable="" aria-selected="false">Brazil</div>
-                            <div id="choices--choices-button-item-choice-2" class="choices__item choices__item--choice choices__item--selectable" role="option" data-choice="" data-id="2" data-value="Choice 2" data-select-text="Press to select" data-choice-selectable="" aria-selected="false">Bucharest</div>
-                            <div id="choices--choices-button-item-choice-3" class="choices__item choices__item--choice is-selected choices__item--selectable is-highlighted" role="option" data-choice="" data-id="3" data-value="Choice 3" data-select-text="Press to select" data-choice-selectable="" aria-selected="true">London</div>
-                            <div id="choices--choices-button-item-choice-4" class="choices__item choices__item--choice choices__item--selectable" role="option" data-choice="" data-id="4" data-value="Choice 4" data-select-text="Press to select" data-choice-selectable="">USA</div>
-                        </div>
-                    </div>
+                    <select class="form-control" name="choices-button" id="choices-button" placeholder="Choose or enter something">
+                        <option value="Choice 1" selected>Brazil</option>
+                        <option value="Choice 2">Bucharest</option>
+                        <option value="Choice 3">London</option>
+                        <option value="Choice 4">USA</option>
+                    </select>
                     @error('penyewa')
                     <p class="text-danger">{{ $message }}</p>
                     @enderror
@@ -70,7 +68,7 @@
 
                 <div class="mt-3">
                     <label for="choices-tags" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tags Penyewa:</label>
-                    <input class="form-control" id="choices-tags" data-color="dark" type="text" value="{{ old('penyewa', '') }}" placeholder="Masukkan nama penyewa" />
+                    <input class="form-control" id="choices-tags" type="text" placeholder="Enter something" />
                 </div>
 
                 <div class="mt-3">
@@ -80,4 +78,25 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Inisialisasi Choices.js untuk dropdown
+    const choices = new Choices('#choices-button', {
+        removeItemButton: true, // Menambahkan tombol hapus pada tag
+        duplicateItems: false, // Tidak memperbolehkan duplikat item
+        searchEnabled: true, // Mengaktifkan pencarian
+        placeholder: true, // Menampilkan placeholder
+        delimiter: ', ', // Pembatas tag
+        maxItemCount: -1, // Tidak membatasi jumlah tag
+        addItems: true, // Memungkinkan menambah item baru dari input
+    });
+
+    // Mendengarkan event ketika ada item yang dipilih
+    choices.passedElement.addEventListener('change', function(event) {
+        const selectedValues = event.target.value;
+        // Menampilkan pilihan yang dipilih di input text
+        document.getElementById('choices-tags').value = selectedValues;
+    });
+</script>
+
 @endsection

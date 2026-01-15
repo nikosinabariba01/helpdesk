@@ -20,12 +20,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('style/assets/img/apple-icon.png" rel="apple-touch-icon') }}">
   <link rel="icon" type="image/png" href="/style/assets/img/koslogo.png">
-  
+
   <title>
     Service IT
   </title>
 
-    <!-- CDN untuk jQuery dan DataTables -->
+  <!-- CDN untuk jQuery dan DataTables -->
   <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
@@ -41,6 +41,11 @@
   <link rel="stylesheet" href="{{ asset('style/assets/css/nucleo-svg.css') }}">
   <!-- CSS Files -->
   <link id="pagestyle" href="{{ asset('style/assets/css/argon-dashboard.css') }}" rel="stylesheet">
+  <!-- Choices.js CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" rel="stylesheet">
+  <!-- Choices.js JS -->
+  <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
 
 
 </head>
