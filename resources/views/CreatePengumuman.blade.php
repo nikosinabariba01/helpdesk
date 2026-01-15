@@ -22,7 +22,7 @@
 <div class="card mb-4">
     <div class="card z-index-2 h-100 d-flex flex-column">
         <div class="card-header d-flex justify-content-between align-items-center pb-3">
-            <h5 class="mb-2 ">Create Pengumuman</h5>
+            <h5 class="mb-2">Create Pengumuman</h5>
         </div>
         <div class="card-body px-0 pt-0 pb-2">
             @if ($errors->any())
@@ -37,36 +37,42 @@
 
             <form action="{{ route('pengumuman.store') }}" method="POST">
                 @csrf
-                <div>
-                    <label for="judul" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Judul Pengumuman:</label>
-                    <input type="text" id="judul" name="judul" value="{{ old('judul') }}" class="form-control">
-                    @error('judul')
-                    <p class="text-danger">{{ $message }}</p>
-                    @enderror
+                <!-- Baris untuk Judul Pengumuman dan Choices -->
+                <div class="row mb-3">
+                    <!-- Judul Pengumuman -->
+                    <div class="col-md-6">
+                        <label for="judul" class="form-label">Judul Pengumuman:</label>
+                        <input type="text" id="judul" name="judul" value="{{ old('judul') }}" class="form-control">
+                        @error('judul')
+                        <p class="text-danger">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Pilih Penyewa (Choices) -->
+                    <div class="col-md-6">
+                        <label for="penyewa" class="form-label">Pilih Penyewa:</label>
+                        <select class="form-control" name="choices-button" id="choices-button" placeholder="Choose or enter something" multiple>
+                            <option value="Choice 1">Brazil</option>
+                            <option value="Choice 2">Bucharest</option>
+                            <option value="Choice 3">London</option>
+                            <option value="Choice 4">USA</option>
+                        </select>
+                        @error('penyewa')
+                        <p class="text-danger">{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
 
-                <div>
-                    <label for="deskripsi" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Deskripsi Pengumuman:</label>
+                <!-- Deskripsi Pengumuman -->
+                <div class="mb-3">
+                    <label for="deskripsi" class="form-label">Deskripsi Pengumuman:</label>
                     <textarea id="deskripsi" name="deskripsi" class="form-control" rows="4">{{ old('deskripsi') }}</textarea>
                     @error('deskripsi')
                     <p class="text-danger">{{ $message }}</p>
                     @enderror
                 </div>
 
-                <div class="mt-2">
-                    <label for="penyewa" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Pilih Penyewa:</label>
-                    <select class="form-control" name="choices-button" id="choices-button" placeholder="Choose or enter something" multiple>
-                        <!-- Pilihan pertama kosong dan tanpa atribut selected -->
-                        <option value="Choice 1">Brazil</option>
-                        <option value="Choice 2">Bucharest</option>
-                        <option value="Choice 3">London</option>
-                        <option value="Choice 4">USA</option>
-                    </select>
-                    @error('penyewa')
-                    <p class="text-danger">{{ $message }}</p>
-                    @enderror
-                </div>
-
+                <!-- Submit Button -->
                 <div class="mt-3">
                     <button type="submit" class="btn btn-primary">Kirim Pengumuman</button>
                 </div>
@@ -97,6 +103,5 @@
         document.getElementById('choices-tags').value = selectedValues.join(', ');
     });
 </script>
-
 
 @endsection
