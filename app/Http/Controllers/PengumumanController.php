@@ -51,8 +51,10 @@ class PengumumanController extends Controller
     // Menampilkan form untuk membuat pengumuman
     public function create()
     {
-        // Mengambil semua penyewa untuk dipilih di form
-        $penyewa = User::where('role', 'penyewa')->get();
+        // Mengambil semua penyewa yang memiliki telegram_chat_id
+        $penyewa = User::where('role', 'penyewa')
+            ->whereNotNull('telegram_chat_id')
+            ->get();
 
         // Dapatkan komentar terbaru
         $latestComments = $this->getLatestComments();
@@ -68,8 +70,25 @@ class PengumumanController extends Controller
             'judul' => 'required|string|max:255',
             'deskripsi' => 'required|string',
             'penyewa' => 'required|array', // Penyewa yang dipilih
-            'penyewa.*' => 'exists:users,id', // Pastikan ID pengguna valid
         ]);
+
+        // Jika user memilih "Pilih Semua", ambil semua penyewa dengan telegram_chat_id
+        $penyewaIds = $request->input('penyewa');
+        if (in_array('all', $penyewaIds)) {
+            $penyewaIds = User::where('role', 'penyewa')
+                ->whereNotNull('telegram_chat_id')
+                ->pluck('id')
+                ->toArray();
+        } else {
+            // Validasi bahwa ID pengguna ada dan valid
+            $penyewaIds = array_filter($penyewaIds, function ($id) {
+                return User::where('id', $id)->where('role', 'penyewa')->whereNotNull('telegram_chat_id')->exists();
+            });
+        }
+
+        if (empty($penyewaIds)) {
+            return redirect()->back()->with('error', 'Silakan pilih setidaknya satu penyewa dengan Telegram Chat ID.');
+        }
 
         // Simpan pengumuman
         $pengumuman = new Pengumuman();
@@ -79,13 +98,13 @@ class PengumumanController extends Controller
         $pengumuman->save();
 
         // Menyimpan relasi pengumuman dengan penyewa
-        $pengumuman->penerima()->sync($request->input('penyewa'));
+        $pengumuman->penerima()->sync($penyewaIds);
 
         // Kirim pengumuman ke Telegram
         $telegram = new TelegramService();
         $message = "<b>Pengumuman Baru:</b>\n<b>{$pengumuman->judul}</b>\n{$pengumuman->deskripsi}";
 
-        foreach ($request->input('penyewa') as $penyewaId) {
+        foreach ($penyewaIds as $penyewaId) {
             $penyewa = User::find($penyewaId);
             if ($penyewa && $penyewa->telegram_chat_id) {
                 $telegram->sendMessage($penyewa->telegram_chat_id, $message);
