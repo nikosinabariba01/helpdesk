@@ -116,27 +116,8 @@
         delimiter: ', ', // Pembatas tag
         maxItemCount: -1, // Tidak membatasi jumlah tag
         addItems: true, // Memungkinkan menambah item baru dari input
-        itemSelectText: '' // Menghilangkan teks "Select"
-    });
-
-    // Mendengarkan event ketika ada item yang dipilih
-    const selectElement = document.getElementById('choices-button');
-    selectElement.addEventListener('change', function(event) {
-        const selectedValues = Array.from(event.target.selectedOptions).map(option => option.value);
-        
-        // Jika user memilih "Pilih Semua"
-        if (selectedValues.includes('all')) {
-            // Ambil semua option values kecuali "all"
-            const allOptions = Array.from(selectElement.options)
-                .filter(option => option.value !== 'all')
-                .map(option => option.value);
-            
-            // Set semua nilai (refresh choices)
-            choices.removeActiveItems();
-            allOptions.forEach(value => {
-                choices.setChoiceByValue(value);
-            });
-        }
+        itemSelectText: '', // Menghilangkan teks "Select"
+        shouldSort: false // Disable automatic sorting untuk mempertahankan urutan HTML
     });
 </script>
 
