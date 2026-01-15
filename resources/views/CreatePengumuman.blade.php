@@ -56,7 +56,8 @@
                 <div class="mt-2">
                     <label for="penyewa" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Pilih Penyewa:</label>
                     <select class="form-control" name="choices-button" id="choices-button" placeholder="Choose or enter something" multiple>
-                        <option value="Choice 1" selected>Brazil</option>
+                        <!-- Pilihan pertama kosong dan tanpa atribut selected -->
+                        <option value="Choice 1">Brazil</option>
                         <option value="Choice 2">Bucharest</option>
                         <option value="Choice 3">London</option>
                         <option value="Choice 4">USA</option>
