@@ -52,7 +52,7 @@
                     <div class="col-md-6">
                         <label for="penyewa" class="form-label">Pilih Penyewa:</label>
                         <select class="form-control" name="penyewa[]" id="choices-button" placeholder="search or choice" multiple>
-                            <option value="all">Pilih Semua</option>
+                            <option value="all" selected disabled>Pilih Semua</option>
                             @foreach($penyewa as $p)
                             <option value="{{ $p->id }}">{{ $p->name }}</option>
                             @endforeach
@@ -120,12 +120,23 @@
     });
 
     // Mendengarkan event ketika ada item yang dipilih
-    choices.passedElement.addEventListener('change', function(event) {
-        // Ambil semua nilai yang dipilih dalam dropdown
-        const selectedValues = event.target.value;
-
-        // Menampilkan nilai yang dipilih di input text sebagai tags
-        document.getElementById('choices-tags').value = selectedValues.join(', ');
+    const selectElement = document.getElementById('choices-button');
+    selectElement.addEventListener('change', function(event) {
+        const selectedValues = Array.from(event.target.selectedOptions).map(option => option.value);
+        
+        // Jika user memilih "Pilih Semua"
+        if (selectedValues.includes('all')) {
+            // Ambil semua option values kecuali "all"
+            const allOptions = Array.from(selectElement.options)
+                .filter(option => option.value !== 'all')
+                .map(option => option.value);
+            
+            // Set semua nilai (refresh choices)
+            choices.removeActiveItems();
+            allOptions.forEach(value => {
+                choices.setChoiceByValue(value);
+            });
+        }
     });
 </script>
 
