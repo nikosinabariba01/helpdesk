@@ -119,6 +119,40 @@
         itemSelectText: '', // Menghilangkan teks "Select"
         shouldSort: false // Disable automatic sorting untuk mempertahankan urutan HTML
     });
+
+    // Handle ketika ada perubahan pilihan
+    const selectElement = document.getElementById('choices-button');
+    selectElement.addEventListener('change', function(event) {
+        const selectedValues = Array.from(event.target.selectedOptions).map(option => option.value);
+        const allOptions = Array.from(selectElement.options);
+        const otherOptions = allOptions.filter(option => option.value !== 'all');
+
+        // Jika "Pilih Semua" (all) dipilih
+        if (selectedValues.includes('all')) {
+            // Disable semua option lain
+            otherOptions.forEach(option => {
+                option.disabled = true;
+            });
+        } else {
+            // Enable semua option lain
+            otherOptions.forEach(option => {
+                option.disabled = false;
+            });
+        }
+
+        // Refresh Choices untuk update tampilan
+        choices.setChoices(
+            allOptions.map(option => ({
+                value: option.value,
+                label: option.textContent,
+                disabled: option.disabled,
+                selected: option.selected
+            })),
+            'value',
+            'label',
+            true
+        );
+    });
 </script>
 
 @endsection
