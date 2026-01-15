@@ -55,7 +55,7 @@
 
                 <div class="mt-2">
                     <label for="penyewa" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Pilih Penyewa:</label>
-                    <select class="form-control" name="choices-button" id="choices-button" placeholder="Choose or enter something">
+                    <select class="form-control" name="choices-button" id="choices-button" placeholder="Choose or enter something" multiple>
                         <option value="Choice 1" selected>Brazil</option>
                         <option value="Choice 2">Bucharest</option>
                         <option value="Choice 3">London</option>
@@ -80,7 +80,7 @@
 </div>
 
 <script>
-    // Inisialisasi Choices.js untuk dropdown
+    // Inisialisasi Choices.js untuk dropdown dengan multiple pilihan
     const choices = new Choices('#choices-button', {
         removeItemButton: true, // Menambahkan tombol hapus pada tag
         duplicateItems: false, // Tidak memperbolehkan duplikat item
@@ -89,14 +89,18 @@
         delimiter: ', ', // Pembatas tag
         maxItemCount: -1, // Tidak membatasi jumlah tag
         addItems: true, // Memungkinkan menambah item baru dari input
+        itemSelectText: '' // Menghilangkan teks "Select"
     });
 
     // Mendengarkan event ketika ada item yang dipilih
     choices.passedElement.addEventListener('change', function(event) {
+        // Ambil semua nilai yang dipilih dalam dropdown
         const selectedValues = event.target.value;
-        // Menampilkan pilihan yang dipilih di input text
-        document.getElementById('choices-tags').value = selectedValues;
+
+        // Menampilkan nilai yang dipilih di input text sebagai tags
+        document.getElementById('choices-tags').value = selectedValues.join(', ');
     });
 </script>
+
 
 @endsection
