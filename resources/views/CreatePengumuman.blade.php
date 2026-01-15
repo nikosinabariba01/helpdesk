@@ -83,6 +83,10 @@
 
 <!-- Custom CSS untuk menimpa gaya Choices.js -->
 <style>
+    .form-control {
+        line-height: 2.2rem;
+    }
+
     .choices__inner {
         display: block;
         width: 100%;
