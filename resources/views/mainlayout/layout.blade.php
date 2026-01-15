@@ -41,8 +41,7 @@
   <link rel="stylesheet" href="{{ asset('style/assets/css/nucleo-svg.css') }}">
   <!-- CSS Files -->
   <link id="pagestyle" href="{{ asset('style/assets/css/argon-dashboard.css') }}" rel="stylesheet">
-  <!-- Choices.js JS -->
-  <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
 
 
 
