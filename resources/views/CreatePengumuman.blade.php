@@ -67,11 +67,6 @@
                 </div>
 
                 <div class="mt-3">
-                    <label for="choices-tags" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tags Penyewa:</label>
-                    <input class="form-control" id="choices-tags" type="text" placeholder="Enter something" />
-                </div>
-
-                <div class="mt-3">
                     <button type="submit" class="btn btn-primary">Kirim Pengumuman</button>
                 </div>
             </form>
