@@ -52,7 +52,7 @@
                     <div class="col-md-6">
                         <label for="penyewa" class="form-label">Pilih Penyewa:</label>
                         <select class="form-control" name="penyewa[]" id="choices-button" placeholder="search or choice" multiple>
-                            <option value="all" selected disabled>Pilih Semua</option>
+                            <option value="all">Pilih Semua</option>
                             @foreach($penyewa as $p)
                             <option value="{{ $p->id }}">{{ $p->name }}</option>
                             @endforeach
