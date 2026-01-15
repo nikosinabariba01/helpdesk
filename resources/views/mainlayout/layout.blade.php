@@ -42,7 +42,7 @@
   <!-- CSS Files -->
   <link id="pagestyle" href="{{ asset('style/assets/css/argon-dashboard.css') }}" rel="stylesheet">
 <!-- Choices.js CSS -->
-<link href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/base.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/choices.js@11.1.0/public/assets/styles/choices.min.css" rel="stylesheet">
 
 <!-- Choices.js JS -->
 <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
