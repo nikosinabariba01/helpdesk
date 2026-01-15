@@ -55,4 +55,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Ticket::class, 'ticket_assignees', 'user_id', 'ticket_id');
     }
+
+    public function pengumuman()
+    {
+        return $this->belongsToMany(Pengumuman::class, 'target_pengumuman', 'user_id', 'pengumuman_id');
+    }
 }
