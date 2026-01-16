@@ -71,11 +71,11 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/tickets/{id}/escalation', [TicketController::class, 'acceptEscalation'])->name('tickets.accept_escalation')->middleware('userAkses:pengurus,pemilik,admin');
     // Route untuk pengumuman
     Route::get('/managepengumuman', [PengumumanController::class, 'index'])->name('pengumuman.index')->middleware('userAkses:pengurus,pemilik,admin');
-    Route::get('/pengumuman/create', [PengumumanController::class, 'create'])->name('pengumuman.create')->middleware('userAkses:pengurus,pemilik,admin');
-    Route::post('/pengumuman/store', [PengumumanController::class, 'store'])->name('pengumuman.store')->middleware('userAkses:pengurus,pemilik,admin');
-    Route::get('/pengumuman/{id}/edit', [PengumumanController::class, 'edit'])->name('pengumuman.edit')->middleware('userAkses:pengurus,pemilik,admin');
-    Route::put('/pengumuman/{id}', [PengumumanController::class, 'update'])->name('pengumuman.update')->middleware('userAkses:pengurus,pemilik,admin');
-    Route::delete('/pengumuman/{id}', [PengumumanController::class, 'destroy'])->name('pengumuman.destroy')->middleware('userAkses:pengurus,pemilik,admin');
+    Route::get('/managepengumuman/create', [PengumumanController::class, 'create'])->name('pengumuman.create')->middleware('userAkses:pengurus,pemilik,admin');
+    Route::post('/managepengumuman/store', [PengumumanController::class, 'store'])->name('pengumuman.store')->middleware('userAkses:pengurus,pemilik,admin');
+    Route::get('/managepengumuman/{id}/edit', [PengumumanController::class, 'edit'])->name('pengumuman.edit')->middleware('userAkses:pengurus,pemilik,admin');
+    Route::put('/managepengumuman/{id}', [PengumumanController::class, 'update'])->name('pengumuman.update')->middleware('userAkses:pengurus,pemilik,admin');
+    Route::delete('/managepengumuman/{id}', [PengumumanController::class, 'destroy'])->name('pengumuman.destroy')->middleware('userAkses:pengurus,pemilik,admin');
 
 
 
