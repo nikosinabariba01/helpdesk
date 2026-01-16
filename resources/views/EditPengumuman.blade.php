@@ -100,35 +100,27 @@
         background-color: #fff;
         background-clip: padding-box;
         border: 1px solid #d2d6da;
-        border-radius: 0.25rem;
-        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        appearance: none;
+        border-radius: 0.5rem;
+        transition: box-shadow 0.15s ease, border-color 0.15s ease;
     }
-
-    .choices__inner:focus-within {
-        border-color: #80bdff;
-        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-    }
-
-    .choices__list--multiple .choices__item {
-        background-color: #007bff;
-        border: 1px solid #007bff;
-        color: #fff;
-        padding: 0.25rem 0.5rem;
-        border-radius: 0.25rem;
-    }
-
-    .choices__list--multiple .choices__item.is-highlighted {
-        background-color: #0062cc;
-        border-color: #0062cc;
-    }
-
-    .choices__list--dropdown .is-selected {
-        background-color: #007bff;
-        color: #fff;
-    }
-
-    .choices__list--dropdown .is-highlighted {
-        background-color: #e9ecef;
-    }
+    
+    /* Anda bisa menambahkan lebih banyak aturan untuk menimpa gaya lain dari Choices.js, jika diperlukan */
 </style>
+
+<script>
+    // Inisialisasi Choices.js untuk dropdown dengan multiple pilihan
+    const choices = new Choices('#choices-button', {
+        removeItemButton: true, // Menambahkan tombol hapus pada tag
+        duplicateItems: false, // Tidak memperbolehkan duplikat item
+        searchEnabled: true, // Mengaktifkan pencarian
+        placeholder: true, // Menampilkan placeholder
+        delimiter: ', ', // Pembatas tag
+        maxItemCount: -1, // Tidak membatasi jumlah tag
+        addItems: true, // Memungkinkan menambah item baru dari input
+        itemSelectText: '', // Menghilangkan teks "Select"
+        shouldSort: false // Disable automatic sorting untuk mempertahankan urutan HTML
+    });
+</script>
+
 @endsection
