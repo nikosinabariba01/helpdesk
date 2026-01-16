@@ -111,6 +111,79 @@ class PengumumanController extends Controller
             }
         }
 
-        return redirect()->back()->with('success', 'Pengumuman berhasil dibuat dan dikirim ke Telegram penyewa.');
+        return redirect()->route('pengumuman.index')->with('success', 'Pengumuman berhasil dibuat dan dikirim ke Telegram penyewa.');
+    }
+
+    // Menampilkan daftar semua pengumuman
+    public function index()
+    {
+        $pengumuman = Pengumuman::with('creator')->latest()->get();
+        
+        // Dapatkan komentar terbaru
+        $latestComments = $this->getLatestComments();
+
+        return view('ManagePengumuman', compact('pengumuman', 'latestComments'));
+    }
+
+    // Menampilkan form untuk edit pengumuman
+    public function edit($id)
+    {
+        $pengumuman = Pengumuman::findOrFail($id);
+        
+        // Mengambil semua penyewa yang memiliki telegram_chat_id
+        $penyewa = User::where('role', 'penyewa')
+            ->whereNotNull('telegram_chat_id')
+            ->get();
+
+        // Dapatkan komentar terbaru
+        $latestComments = $this->getLatestComments();
+
+        // Dapatkan penerima yang sudah dipilih
+        $selectedPenerima = $pengumuman->penerima()->pluck('user_id')->toArray();
+
+        return view('EditPengumuman', compact('pengumuman', 'penyewa', 'selectedPenerima', 'latestComments'));
+    }
+
+    // Method update untuk memperbarui pengumuman
+    public function update(Request $request, $id)
+    {
+        $pengumuman = Pengumuman::findOrFail($id);
+
+        $request->validate([
+            'judul' => 'required|string|max:255',
+            'deskripsi' => 'required|string',
+            'penyewa' => 'required|array',
+        ]);
+
+        $pengumuman->judul = $request->input('judul');
+        $pengumuman->deskripsi = $request->input('deskripsi');
+        $pengumuman->save();
+
+        // Update relasi pengumuman dengan penyewa
+        $penyewaIds = $request->input('penyewa');
+        if (in_array('all', $penyewaIds)) {
+            $penyewaIds = User::where('role', 'penyewa')
+                ->whereNotNull('telegram_chat_id')
+                ->pluck('id')
+                ->toArray();
+        } else {
+            $penyewaIds = array_filter($penyewaIds, function ($id) {
+                return User::where('id', $id)->where('role', 'penyewa')->whereNotNull('telegram_chat_id')->exists();
+            });
+        }
+
+        $pengumuman->penerima()->sync($penyewaIds);
+
+        return redirect()->route('pengumuman.index')->with('success', 'Pengumuman berhasil diperbarui.');
+    }
+
+    // Method destroy untuk menghapus pengumuman
+    public function destroy($id)
+    {
+        $pengumuman = Pengumuman::findOrFail($id);
+        $pengumuman->penerima()->detach(); // Hapus relasi
+        $pengumuman->delete();
+
+        return redirect()->route('pengumuman.index')->with('success', 'Pengumuman berhasil dihapus.');
     }
 }
