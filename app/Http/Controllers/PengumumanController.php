@@ -117,9 +117,7 @@ class PengumumanController extends Controller
     // Menampilkan daftar semua pengumuman
     public function managePengumuman()
     {
-        // Mengambil pengumuman beserta creator dan penerima
-        $pengumuman = Pengumuman::with(['creator', 'penerima'])->latest()->get();
-
+        $pengumuman = Pengumuman::with(['creator', 'penerima'])->latest()->get(); // Mengambil pengumuman beserta creator dan penerima
         // Menambahkan logika untuk menampilkan "everyone" jika semua penyewa memiliki pengumuman yang sama
         foreach ($pengumuman as $item) {
             // Ambil semua penyewa yang memiliki telegram_chat_id
@@ -139,14 +137,11 @@ class PengumumanController extends Controller
                 $item->penerima_text = $item->penerima->pluck('name')->implode(', ');
             }
         }
-
         // Dapatkan komentar terbaru
         $latestComments = $this->getLatestComments();
 
-        // Mengirim data ke view
-        return view('managePengumuman', compact('pengumuman', 'latestComments'));
+        return view('ManagePengumuman', compact('pengumuman', 'latestComments'));
     }
-
 
     // Menampilkan form untuk edit pengumuman
     public function edit($id)
