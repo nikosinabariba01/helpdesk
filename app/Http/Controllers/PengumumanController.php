@@ -117,16 +117,36 @@ class PengumumanController extends Controller
     // Menampilkan daftar semua pengumuman
     public function managePengumuman()
     {
-        $pengumuman = Pengumuman::with(['creator', 'penerima'])->latest()->get(); // Mengambil pengumuman beserta creator dan penerima
-        // Menambahkan logika untuk menampilkan "everyone" jika "Pilih Semua" dipilih
+        // Mengambil pengumuman beserta creator dan penerima
+        $pengumuman = Pengumuman::with(['creator', 'penerima'])->latest()->get();
+
+        // Menambahkan logika untuk menampilkan "everyone" jika semua penyewa memiliki pengumuman yang sama
         foreach ($pengumuman as $item) {
-            $item->penerima_text = $item->penerima->isEmpty() ? 'No receivers' : ($item->penerima->pluck('id')->contains('all') ? 'everyone' : $item->penerima->pluck('name')->implode(', '));
+            // Ambil semua penyewa yang memiliki telegram_chat_id
+            $allPenyewaWithTelegram = User::where('role', 'penyewa')
+                ->whereNotNull('telegram_chat_id')
+                ->pluck('id') // Ambil ID penyewa yang memiliki telegram_chat_id
+                ->toArray();
+
+            // Ambil ID penerima yang sudah terhubung dengan pengumuman ini
+            $penerimaIds = $item->penerima->pluck('id')->toArray();
+
+            // Cek apakah semua penyewa yang memiliki telegram_chat_id menerima pengumuman ini
+            if (empty(array_diff($allPenyewaWithTelegram, $penerimaIds))) {
+                $item->penerima_text = 'everyone'; // Jika semua penyewa memiliki pengumuman yang sama, set penerima_text menjadi "everyone"
+            } else {
+                // Jika tidak semua, tampilkan nama-nama penerima yang menerima pengumuman
+                $item->penerima_text = $item->penerima->pluck('name')->implode(', ');
+            }
         }
+
         // Dapatkan komentar terbaru
         $latestComments = $this->getLatestComments();
 
-        return view('ManagePengumuman', compact('pengumuman', 'latestComments'));
+        // Mengirim data ke view
+        return view('pengumuman.managePengumuman', compact('pengumuman', 'latestComments'));
     }
+
 
     // Menampilkan form untuk edit pengumuman
     public function edit($id)
