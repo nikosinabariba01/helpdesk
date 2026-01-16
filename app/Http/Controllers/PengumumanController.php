@@ -118,7 +118,10 @@ class PengumumanController extends Controller
     public function managePengumuman()
     {
         $pengumuman = Pengumuman::with(['creator', 'penerima'])->latest()->get(); // Mengambil pengumuman beserta creator dan penerima
-
+        // Menambahkan logika untuk menampilkan "everyone" jika "Pilih Semua" dipilih
+        foreach ($pengumuman as $item) {
+            $item->penerima_text = $item->penerima->isEmpty() ? 'No receivers' : ($item->penerima->pluck('id')->contains('all') ? 'everyone' : $item->penerima->pluck('name')->implode(', '));
+        }
         // Dapatkan komentar terbaru
         $latestComments = $this->getLatestComments();
 

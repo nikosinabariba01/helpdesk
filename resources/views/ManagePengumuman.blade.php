@@ -59,9 +59,14 @@
                             <span class="text-secondary text-xs font-weight-bold">{{ $item->creator->name }}</span>
                         </td>
                         <td class="align-middle text-center text-sm" style="padding: 10px;">
+                            <!-- Cek apakah penerima adalah "Pilih Semua" atau penerima lainnya -->
+                            @if($item->penerima->contains('id', 'all'))
+                            <span class="text-secondary text-xs font-weight-bold">everyone</span>
+                            @else
                             @foreach ($item->penerima as $penerima)
                             <span class="text-secondary text-xs font-weight-bold">{{ $penerima->name }}</span><br>
                             @endforeach
+                            @endif
                         </td>
                         <td class="align-middle text-center text-sm" style="padding: 10px;">
                             <div class="dropdown">
