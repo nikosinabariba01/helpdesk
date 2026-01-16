@@ -10,7 +10,7 @@
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="{{route('tickets.viewEscalation')}}">
+      <a class="nav-link {{ Route::currentRouteName() == 'tickets.viewEscalation' ? 'active' : '' }}" href="{{route('tickets.viewEscalation')}}">
         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
           <i class="ni ni-calendar-grid-58 text-warning text-sm opacity-10"></i>
         </div>
@@ -18,7 +18,7 @@
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="{{route('teknisi.viewasigne')}}">
+      <a class="nav-link {{ Route::currentRouteName() == 'teknisi.viewasigne' ? 'active' : '' }}" href="{{route('teknisi.viewasigne')}}">
         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
           <i class="ni ni-calendar-grid-58 text-warning text-sm opacity-10"></i>
         </div>
@@ -26,7 +26,7 @@
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link " href="{{route('teknisi.closeticket')}}">
+      <a class="nav-link {{ Route::currentRouteName() == 'teknisi.closeticket' ? 'active' : '' }}" href="{{route('teknisi.closeticket')}}">
         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
           <i class="ni ni-credit-card text-success text-sm opacity-10"></i>
         </div>
@@ -34,7 +34,7 @@
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link " href="{{route('teknisi.ListTicket')}}">
+      <a class="nav-link {{ Route::currentRouteName() == 'teknisi.ListTicket' ? 'active' : '' }}" href="{{route('teknisi.ListTicket')}}">
         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
           <i class="ni ni-app text-info text-sm opacity-10"></i>
         </div>
@@ -61,7 +61,7 @@
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link " href="{{route('teknisi.viewasigne')}}">
+      <a class="nav-link {{ Route::currentRouteName() == 'teknisi.viewasigne' ? 'active' : '' }}" href="{{route('teknisi.viewasigne')}}">
         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
           <i class="ni ni-calendar-grid-58 text-warning text-sm opacity-10"></i>
         </div>
@@ -69,7 +69,7 @@
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link " href="{{route('teknisi.closeticket')}}">
+      <a class="nav-link {{ Route::currentRouteName() == 'teknisi.closeticket' ? 'active' : '' }}" href="{{route('teknisi.closeticket')}}">
         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
           <i class="ni ni-credit-card text-success text-sm opacity-10"></i>
         </div>
@@ -77,7 +77,7 @@
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link " href="{{route('teknisi.ListTicket')}}">
+      <a class="nav-link {{ Route::currentRouteName() == 'teknisi.ListTicket' ? 'active' : '' }}" href="{{route('teknisi.ListTicket')}}">
         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
           <i class="ni ni-app text-info text-sm opacity-10"></i>
         </div>
