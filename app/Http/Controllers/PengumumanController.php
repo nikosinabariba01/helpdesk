@@ -144,7 +144,7 @@ class PengumumanController extends Controller
         $latestComments = $this->getLatestComments();
 
         // Mengirim data ke view
-        return view('pengumuman.managePengumuman', compact('pengumuman', 'latestComments'));
+        return view('managePengumuman', compact('pengumuman', 'latestComments'));
     }
 
 
