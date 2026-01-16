@@ -93,6 +93,59 @@
       </a>
     </li>
   </ul>
+  @elseif (Auth::user()->role == 'admin')
+  <ul class="navbar-nav"></ul>
+    <li class="nav-item">
+      <a class="nav-link {{ Route::currentRouteName() == 'admin.index' ? 'active' : '' }}" href="{{ route('admin.index') }}">
+        <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+          <i class="ni ni-tv-2 text-primary text-sm opacity-10"></i>
+        </div>
+        <span class="nav-link-text ms-1">Dashboard</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {{ Route::currentRouteName() == 'admin.manageuser' ? 'active' : '' }}" href="{{ route('admin.manageuser') }}">
+        <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+          <i class="ni ni-app text-info text-sm opacity-10"></i>
+        </div>
+        <span class="nav-link-text ms-1">Manage User</span>
+      </a>
+    </li>
+  @else
+  @elseif (Auth::user()->role == 'customer')
+  <ul class="navbar-nav"></ul>
+    <li class="nav-item">
+      <a class="nav-link {{ Route::currentRouteName() == 'customer.index' ? 'active' : '' }}" href="{{ route('customer.index') }}">
+        <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+          <i class="ni ni-tv-2 text-primary text-sm opacity-10"></i>
+        </div>
+        <span class="nav-link-text ms-1">Dashboard</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {{ Route::currentRouteName() == 'customer.createticket' ? 'active' : '' }}" href="{{ route('customer.createticket') }}">
+        <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+          <i class="ni ni-fat-add text-success text-sm opacity-10"></i>
+        </div>
+        <span class="nav-link-text ms-1">Create Ticket</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {{ Route::currentRouteName() == 'customer.myticket' ? 'active' : '' }}" href="{{ route('customer.myticket') }}">
+        <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+          <i class="ni ni-bullet-list-67 text-warning text-sm opacity-10"></i>
+        </div>
+        <span class="nav-link-text ms-1">My Ticket</span>
+      </a>
+    </li>
+    <li profile class="nav-item">
+      <a class="nav-link {{ Route::currentRouteName() == 'customer.profile' ? 'active' : '' }}" href="{{ route('customer.profile') }}">
+        <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+          <i class="ni ni-single-02 text-info text-sm opacity-10"></i>
+        </div>
+        <span class="nav-link-text ms-1">Profile</span>
+      </a>
+    </li>
   @else
   <p>User role not recognized.</p>
   @endif
