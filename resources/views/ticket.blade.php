@@ -1,6 +1,6 @@
 @extends('mainlayout.layout')
 @section('navbar')
-@include('mainlayout.navbar.nav2')
+@include('mainlayout.navbar.nav')
 @endsection
 @section('pages')
 <nav aria-label="breadcrumb">

@@ -1,6 +1,6 @@
 @extends('mainlayout.layout')
 @section('navbar')
-@include('mainlayout.navbar.teknav')
+@include('mainlayout.navbar.nav')
 @endsection
 
 @section('pages')

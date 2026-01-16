@@ -32,7 +32,7 @@
             </a>
         </div>
         <hr class="horizontal dark mt-0">
-        @include('mainlayout.navbar.teknav')
+        @include('mainlayout.navbar.nav')
     </aside>
     <div class="main-content position-relative max-height-vh-100 h-100">
         <!-- Navbar -->
