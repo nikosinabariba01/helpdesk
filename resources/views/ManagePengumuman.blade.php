@@ -39,6 +39,7 @@
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Judul Pengumuman</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Deskripsi</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Pembuat</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Penerima</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Actions</th>
                     </tr>
                 </thead>
@@ -56,6 +57,11 @@
                         </td>
                         <td class="align-middle text-center text-sm" style="padding: 10px;">
                             <span class="text-secondary text-xs font-weight-bold">{{ $item->creator->name }}</span>
+                        </td>
+                        <td class="align-middle text-center text-sm" style="padding: 10px;">
+                            @foreach ($item->penerima as $penerima)
+                            <span class="text-secondary text-xs font-weight-bold">{{ $penerima->name }}</span><br>
+                            @endforeach
                         </td>
                         <td class="align-middle text-center text-sm" style="padding: 10px;">
                             <div class="dropdown">

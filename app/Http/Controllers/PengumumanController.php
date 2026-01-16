@@ -60,7 +60,7 @@ class PengumumanController extends Controller
         $latestComments = $this->getLatestComments();
 
         // Mengarahkan ke view 'CreatePengumuman' dan membawa data penyewa
-        return view('CreatePengumuman', compact ('penyewa', 'latestComments'));
+        return view('CreatePengumuman', compact('penyewa', 'latestComments'));
     }
 
     // Method store untuk menyimpan pengumuman
@@ -115,10 +115,10 @@ class PengumumanController extends Controller
     }
 
     // Menampilkan daftar semua pengumuman
-    public function index()
+    public function managePengumuman()
     {
-        $pengumuman = Pengumuman::with('creator')->latest()->get();
-        
+        $pengumuman = Pengumuman::with(['creator', 'penerima'])->latest()->get(); // Mengambil pengumuman beserta creator dan penerima
+
         // Dapatkan komentar terbaru
         $latestComments = $this->getLatestComments();
 
@@ -129,7 +129,7 @@ class PengumumanController extends Controller
     public function edit($id)
     {
         $pengumuman = Pengumuman::findOrFail($id);
-        
+
         // Mengambil semua penyewa yang memiliki telegram_chat_id
         $penyewa = User::where('role', 'penyewa')
             ->whereNotNull('telegram_chat_id')

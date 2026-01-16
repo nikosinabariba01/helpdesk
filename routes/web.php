@@ -70,7 +70,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/tickets/escalation', [TeknisiController::class, 'viewEscalation'])->name('tickets.viewEscalation')->middleware('userAkses:pengurus,pemilik,admin');
     Route::put('/tickets/{id}/escalation', [TicketController::class, 'acceptEscalation'])->name('tickets.accept_escalation')->middleware('userAkses:pengurus,pemilik,admin');
     // Route untuk pengumuman
-    Route::get('/managepengumuman', [PengumumanController::class, 'index'])->name('pengumuman.index')->middleware('userAkses:pengurus,pemilik,admin');
+    Route::get('/managepengumuman', [PengumumanController::class, 'managePengumuman'])->name('pengumuman.index')->middleware('userAkses:pengurus,pemilik,admin');
     Route::get('/managepengumuman/create', [PengumumanController::class, 'create'])->name('pengumuman.create')->middleware('userAkses:pengurus,pemilik,admin');
     Route::post('/managepengumuman/store', [PengumumanController::class, 'store'])->name('pengumuman.store')->middleware('userAkses:pengurus,pemilik,admin');
     Route::get('/managepengumuman/{id}/edit', [PengumumanController::class, 'edit'])->name('pengumuman.edit')->middleware('userAkses:pengurus,pemilik,admin');
