@@ -251,9 +251,7 @@
       $.fn.dataTable.ext.search = [];
       $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
         var subject = data[0].toLowerCase();
-        var status = data[1].toLowerCase();
-        var description = data[2].toLowerCase();
-        return subject.includes(searchTerm) || status.includes(searchTerm) || description.includes(searchTerm);
+        return subject.includes(searchTerm);
       });
       table.draw();
       currentPage = 1;
@@ -269,14 +267,16 @@
     function sortTableByDate(direction) {
       var rows = $('#TicketTable tbody tr').get();
       rows.sort(function(a, b) {
-        var aDate = extractDateFromTicket($(a).find('li:first').text());
-        var bDate = extractDateFromTicket($(b).find('li:first').text());
+        var aText = $(a).find('li:first').text();
+        var bText = $(b).find('li:first').text();
+        var aDate = extractDateFromTicket(aText);
+        var bDate = extractDateFromTicket(bText);
         return direction === 'desc' ? new Date(bDate) - new Date(aDate) : new Date(aDate) - new Date(bDate);
       });
       $.each(rows, function(index, row) {$('#TicketTable tbody').append(row);});
     }
     function extractDateFromTicket(ticketText) {
-      var match = ticketText.match(/sp-(\\d{3})(\\d{6})/);
+      var match = ticketText.match(/sp-(\d{3})(\d{6})/);
       if (match) {
         var dateStr = match[2];
         return new Date('20' + dateStr.substring(4, 6), parseInt(dateStr.substring(2, 4)) - 1, dateStr.substring(0, 2));
