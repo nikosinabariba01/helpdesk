@@ -220,7 +220,6 @@
               <button id="prevPage" class="btn btn-sm btn-outline-secondary" style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;" title="Halaman Sebelumnya">
                 <i class="fa fa-chevron-left" style="font-size: 11px;"></i>
               </button>
-              <input type="text" id="pageInput" readonly style="width: 50px; text-align: center; border: 1px solid #dee2e6; padding: 6px 8px; font-size: 12px; border-radius: 4px; background-color: white; color: #495057;" value="1">
               <button id="nextPage" class="btn btn-sm btn-outline-secondary" style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;" title="Halaman Berikutnya">
                 <i class="fa fa-chevron-right" style="font-size: 11px;"></i>
               </button>
