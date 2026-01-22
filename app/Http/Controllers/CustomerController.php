@@ -51,7 +51,8 @@ class CustomerController extends Controller
     public function index()
     {
         $userId = Auth::id();
-        $totalTickets = Ticket::where('user_id', $userId)->count();
+        $data_ticket = Ticket::with('user')->where('user_id', $userId)->orderBy('created_at', 'desc')->get();
+        $totalTickets = $data_ticket->count();
 
         $OnProcessTickets = Ticket::where('user_id', $userId)
             ->where('status', 'on process')
@@ -75,35 +76,7 @@ class CustomerController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        // Ambil data tiket halaman pertama (10 data)
-        $data_ticket = Ticket::with('user')
-            ->where('user_id', $userId)
-            ->orderBy('created_at', 'desc')
-            ->take(10)
-            ->get();
-
         return view('customer', compact('data_ticket', 'totalTickets', 'OnProcessTickets', 'closedtic', 'OpenTic', 'latestComments', 'pengumuman'));
-    }
-
-    // API untuk infinite scroll
-    public function getTicketsInfiniteScroll(Request $request)
-    {
-        $userId = Auth::id();
-        $page = $request->query('page', 1);
-        $perPage = 4;
-        $skip = ($page - 1) * $perPage;
-
-        $tickets = Ticket::with('user')
-            ->where('user_id', $userId)
-            ->orderBy('created_at', 'desc')
-            ->skip($skip)
-            ->take($perPage)
-            ->get();
-
-        return response()->json([
-            'tickets' => $tickets,
-            'hasMore' => $tickets->count() === $perPage,
-        ]);
     }
 
     public function viewprocess()

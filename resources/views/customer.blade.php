@@ -124,8 +124,8 @@
           <a href="{{ route('customer.tickets') }}" class="btn btn-primary position-absolute top-50 start-50 translate-middle">Buat Tiket</a>
         </div>
         @else
-        <div class="table-responsive margin-right: 15px;" style="height: 400px; max-height: 400px; overflow-y: auto;" id="ticketScrollContainer">
-          <table class="table align-items-center mb-0" id="TicketTable">
+        <div class="table-responsive margin-right: 15px;" style="height: 400px; max-height: 400px; overflow-y: auto;">
+          <table class="table align-items-center mb-0 " id="TicketTable">
             <thead>
               <tr>
                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">subject</th>
@@ -134,7 +134,7 @@
                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">aksi</th>
               </tr>
             </thead>
-            <tbody id="ticketTableBody">
+            <tbody>
               @foreach($data_ticket as $dataticket)
               <tr>
                 <td class="align-middle text-sm border border-light">
@@ -190,14 +190,8 @@
               </tr>
               @endforeach
             </tbody>
+
           </table>
-        </div>
-        <!-- Loading Indicator -->
-        <div id="loadingIndicator" style="text-align: center; padding: 20px; display: none;">
-          <div class="spinner-border" role="status">
-            <span class="visually-hidden">Loading...</span>
-          </div>
-          <p class="mt-2">Memuat data...</p>
         </div>
         @endif
       </div>
@@ -343,111 +337,42 @@
 </div>
 <script>
   $(document).ready(function() {
-    let currentPage = 1;
-    let isLoading = false;
-    let hasMore = true;
-
-    // Handle infinite scroll
-    $('#ticketScrollContainer').on('scroll', function() {
-      // Cek apakah user sudah scroll ke bawah
-      if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight - 50) {
-        if (!isLoading && hasMore) {
-          loadMoreTickets();
-        }
-      }
+    var table = $('#TicketTable').DataTable({
+      searching: true,
+      ordering: false,
+      paging: false,
+      lengthChange: false,
+      info: false,
+      columnDefs: [{
+        targets: [2, 3],
+        orderable: false
+      }]
     });
 
-    function loadMoreTickets() {
-      isLoading = true;
-      currentPage++;
-      
-      $('#loadingIndicator').show();
+    // Menyembunyikan elemen pencarian bawaan
+    $('#TicketTable_filter').hide();
+    $('#TicketTable_length').hide();
+    $('#TicketTable_paginate').hide();
 
-      $.ajax({
-        url: "{{ route('customer.tickets.infinite') }}",
-        type: 'GET',
-        data: {
-          page: currentPage
-        },
-        success: function(response) {
-          if (response.tickets && response.tickets.length > 0) {
-            // Tambahkan tiket baru ke table
-            $.each(response.tickets, function(index, ticket) {
-              const ticketNumber = 'sp-' + ticket.id.substring(ticket.id.length - 3) + new Date(ticket.created_at).toLocaleDateString('en-GB', { year: '2-digit', month: '2-digit', day: '2-digit' }).replace(/\//g, '') + (ticket.Jenis_Pengaduan == 0 ? '0' : '1');
-              const detailUrl = "{{ route('viewtickets.index', ['id' => 'PLACEHOLDER']) }}".replace('PLACEHOLDER', ticket.id);
-              
-              const row = `
-                <tr>
-                  <td class="align-middle text-sm border border-light">
-                    <div class="d-flex px-2 py-1">
-                      <div class="d-flex flex-column justify-content-center">
-                        <h6 class="mb-0 text-s text-limit-35" title="Subject">
-                          <a href="${detailUrl}">
-                            ${ticket.subject}
-                          </a>
-                        </h6>
-                        <div class="d-flex list-inline">
-                          <li class="text-xs list-inline-item text-secondary"><i class="fa fa-circle fa-xs text-danger"></i>${ticketNumber}</li>
-                          <li class="text-xs list-inline-item text-secondary" title="type"><i class="fa fa-circle fa-xs text-primary"></i>${ticket.Jenis_Pengaduan}</li>
-                          <li class="text-xs list-inline-item text-secondary" title="Created Date"><i class="fa fa-circle fa-xs text-secondary"></i> ${new Date(ticket.created_at).toLocaleDateString('id-ID')}</li>
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="align-middle text-center text-sm border border-light">
-                    <span class="badge bg-${getStatusBadgeClass(ticket.status)}">${ticket.status}</span>
-                  </td>
-                  <td class="align-middle text-center text-limit-30 border border-light">
-                    <span class="text-secondary text-xs font-weight-bold">${ticket.Detail}</span>
-                  </td>
-                  <td class="align-middle text-center border border-light">
-                    <div class="dropdown">
-                      <a class="btn text-primary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class=""></i>
-                      </a>
-                      <ul class="dropdown-menu dropdown-menu-end">
-                        <li>
-                          <a class="dropdown-item text-info" href="${detailUrl}">
-                            <i class="fa fa-eye pe-2 text-info"></i>Detail
-                          </a>
-                        </li>
-                        <li>
-                          <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#exampleModalMessage" data-ticket-id="${ticket.id}" data-ticket-subject="${ticket.subject}" data-ticket-jenis="${ticket.Jenis_Pengaduan}" data-ticket-lokasi="${ticket.Lokasi}" data-ticket-detail="${ticket.Detail}">
-                            <i class="fa fa-pencil pe-2 text-success"></i>edit
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                  </td>
-                </tr>
-              `;
-              
-              $('#ticketTableBody').append(row);
-            });
+    // Custom search untuk kolom Subject dan Status
+    $('#search').on('keyup', function() {
+      var searchTerm = this.value.toLowerCase();
 
-            hasMore = response.hasMore;
-          }
+      $.fn.dataTable.ext.search.pop(); // Hapus filter sebelumnya jika ada
 
-          isLoading = false;
-          $('#loadingIndicator').hide();
-        },
-        error: function(error) {
-          console.error('Error:', error);
-          isLoading = false;
-          $('#loadingIndicator').hide();
+      $.fn.dataTable.ext.search.push(
+        function(settings, data, dataIndex) {
+          // Kolom subject (kolom 0) dan status (kolom 1)
+          var subject = data[0].toLowerCase(); // subject
+          var status = data[1].toLowerCase(); // status
+          var description = data[2].toLowerCase(); // description
+
+          return subject.includes(searchTerm) || status.includes(searchTerm) || description.includes(searchTerm);
         }
-      });
-    }
+      );
 
-    function getStatusBadgeClass(status) {
-      const statusMap = {
-        'open': 'primary',
-        'on process': 'warning',
-        'escalated': 'danger',
-        'close': 'success'
-      };
-      return statusMap[status] || 'secondary';
-    }
+      table.draw();
+    });
   });
 </script>
 @endsection
