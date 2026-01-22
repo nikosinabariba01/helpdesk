@@ -77,19 +77,23 @@ class TelegramWebhookController extends Controller {
         $data   = $callbackQuery['data'];                  // Ambil data yang dikirimkan saat memilih tiket, seperti "ticket_35"
 
         Log::info('Callback query diterima dengan data: ' . $data); // Debugging log
+        Log::info('Chat ID: ' . $chatId); // Debugging log
 
         if (strpos($data, 'ticket_') === 0) {
             $ticketId = substr($data, 7); // Mengambil ID tiket dari callback data
 
+            Log::info('Extracted Ticket ID: ' . $ticketId); // Debugging log
+
             $ticket = Ticket::find($ticketId);
             if ($ticket) {
-                                                                      // Simpan ticket_id yang dipilih ke dalam cache
+                // Simpan ticket_id yang dipilih ke dalam cache menggunakan chat_id sebagai key
                 Cache::put("user_ticket_{$chatId}", $ticketId, 3600); // Simpan selama 1 jam
-
+                
+                Log::info("Tiket berhasil disimpan ke cache. Chat ID: {$chatId}, Ticket ID: {$ticketId}");
                 Log::info("Tiket ditemukan: {$ticket->id} - {$ticket->subject}");
 
                 // Setelah memilih tiket, menunggu komentar dari pengguna
-                // Tidak perlu pesan permintaan komentar lagi karena itu sudah terjadi di handleMessage()
+                $this->sendTelegramMessage($chatId, "Tiket '{$ticket->subject}' telah dipilih. Silakan kirim komentar Anda.");
             } else {
                 Log::error("Tiket dengan ID {$ticketId} tidak ditemukan.");
                 $this->sendTelegramMessage($chatId, "Tiket yang Anda pilih tidak ditemukan.");
@@ -105,10 +109,15 @@ class TelegramWebhookController extends Controller {
 
     // Menyimpan komentar berdasarkan ticket_id yang dipilih
     protected function saveComment($user, $commentText) {
-        // Ambil ticket_id yang dipilih dari cache atau sesi
+        // Ambil ticket_id yang dipilih dari cache menggunakan telegram_chat_id sebagai key
         $ticketId = Cache::get("user_ticket_{$user->telegram_chat_id}");
 
+        Log::info("Mencoba menyimpan comment. User ID: {$user->id}, Telegram Chat ID: {$user->telegram_chat_id}");
+        Log::info("Ticket ID dari cache: " . ($ticketId ?? 'NOT FOUND'));
+
         if ($ticketId) {
+            Log::info("Tiket ditemukan, menyimpan comment untuk ticket_id: {$ticketId}");
+            
             // Simpan komentar ke database untuk tiket yang sesuai
             $comment            = new Comment();
             $comment->comment   = $commentText;
@@ -116,9 +125,18 @@ class TelegramWebhookController extends Controller {
             $comment->ticket_id = $ticketId; // ID tiket yang valid
             $comment->save();
 
+            Log::info("Comment berhasil disimpan. Comment ID: {$comment->id}");
+
             // Mengirimkan konfirmasi ke pengguna
-            $this->sendTelegramMessage($user->telegram_chat_id, "Komentar Anda telah berhasil disimpan untuk tiket #{$ticketId}.");
+            $this->sendTelegramMessage($user->telegram_chat_id, "✅ Komentar Anda telah berhasil disimpan untuk tiket #{$ticketId}.");
+            
+            // Clear cache setelah komentar disimpan
+            Cache::forget("user_ticket_{$user->telegram_chat_id}");
+            
             return true;
+        } else {
+            Log::warning("Ticket ID tidak ditemukan di cache untuk user {$user->id}");
+            $this->sendTelegramMessage($user->telegram_chat_id, "❌ Silakan pilih tiket terlebih dahulu sebelum mengirim komentar.");
         }
 
         return false;
