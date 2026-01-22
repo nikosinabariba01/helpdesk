@@ -374,6 +374,7 @@
             // Tambahkan tiket baru ke table
             $.each(response.tickets, function(index, ticket) {
               const ticketNumber = 'sp-' + ticket.id.substring(ticket.id.length - 3) + new Date(ticket.created_at).toLocaleDateString('en-GB', { year: '2-digit', month: '2-digit', day: '2-digit' }).replace(/\//g, '') + (ticket.Jenis_Pengaduan == 0 ? '0' : '1');
+              const detailUrl = "{{ route('viewtickets.index', ['id' => 'PLACEHOLDER']) }}".replace('PLACEHOLDER', ticket.id);
               
               const row = `
                 <tr>
@@ -381,7 +382,7 @@
                     <div class="d-flex px-2 py-1">
                       <div class="d-flex flex-column justify-content-center">
                         <h6 class="mb-0 text-s text-limit-35" title="Subject">
-                          <a href="{{ route('viewtickets.index', ['id' => '${ticket.id}']) }}">
+                          <a href="${detailUrl}">
                             ${ticket.subject}
                           </a>
                         </h6>
@@ -406,7 +407,7 @@
                       </a>
                       <ul class="dropdown-menu dropdown-menu-end">
                         <li>
-                          <a class="dropdown-item text-info" href="{{ route('viewtickets.index', ['id' => '${ticket.id}']) }}">
+                          <a class="dropdown-item text-info" href="${detailUrl}">
                             <i class="fa fa-eye pe-2 text-info"></i>Detail
                           </a>
                         </li>
