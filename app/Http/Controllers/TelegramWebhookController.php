@@ -145,6 +145,9 @@ class TelegramWebhookController extends Controller {
         if ($ticketId) {
             Log::info("Tiket ditemukan, menyimpan comment untuk ticket_id: {$ticketId}");
             
+            // Ambil data tiket untuk menampilkan format yang benar
+            $ticket = Ticket::find($ticketId);
+            
             // Simpan komentar ke database untuk tiket yang sesuai
             $comment            = new Comment();
             $comment->comment   = $commentText;
@@ -154,8 +157,11 @@ class TelegramWebhookController extends Controller {
 
             Log::info("Comment berhasil disimpan. Comment ID: {$comment->id}");
 
-            // Mengirimkan konfirmasi ke pengguna
-            $this->sendTelegramMessage($user->telegram_chat_id, "✅ Komentar Anda telah berhasil disimpan untuk tiket #{$ticketId}.");
+            // Format nomor tiket dengan format yang sama seperti di inline keyboard
+            $ticketNumber = "sp-" . substr(preg_replace('/[^0-9]/', '', $ticketId), -3) . \Carbon\Carbon::parse($ticket->created_at)->format('dmy') . ($ticket->Jenis_Pengaduan == 0 ? '0' : '1');
+
+            // Mengirimkan konfirmasi ke pengguna dengan format tiket yang benar
+            $this->sendTelegramMessage($user->telegram_chat_id, "✅ Komentar Anda telah berhasil disimpan untuk tiket <b>#" . $ticketNumber . "</b>.");
             
             // Clear cache setelah komentar disimpan
             Cache::forget("user_ticket_{$user->telegram_chat_id}");
