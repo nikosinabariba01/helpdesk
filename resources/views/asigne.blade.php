@@ -36,7 +36,7 @@
             </div>
             @else
             <div class="table-responsive margin-right: 15px;" style="height: 400px; max-height: 400px; overflow-y: auto;">
-                <table class="table align-items-center mb-0" id="AssignedTicketTable">
+                <table class="table align-items-center mb-0" id="TicketTable">
                     <thead>
                         <tr>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">subject</th>
@@ -138,22 +138,47 @@
 
                 </table>
             </div>
-        
-            <!-- Pagination and Sorting Controls -->
-            @include('components.table-pagination', [
-                'tableId' => 'AssignedTicketTable',
-                'totalRecords' => $teknisi_data_ticket->count(),
-                'sortable' => true
-            ])
             @endif
         </div>
     </div>
 </div>
 
-<script src="{{ asset('js/table-pagination.js') }}"></script>
 <script>
     $(document).ready(function() {
-        initTablePagination('AssignedTicketTable', 10);
+        var table = $('#TicketTable').DataTable({
+            searching: true,
+            ordering: false,
+            paging: false,
+            lengthChange: false,
+            info: false,
+            columnDefs: [{
+                targets: [2, 3, 4, 5],
+                orderable: false
+            }]
+        });
+
+        // Menyembunyikan elemen pencarian bawaan
+        $('#TicketTable_filter').hide();
+        $('#TicketTable_length').hide();
+        $('#TicketTable_paginate').hide();
+
+        // Custom search hanya kolom Subject dan User (kolom 0 dan 1)
+        $('#search').on('keyup', function() {
+            var searchTerm = this.value.toLowerCase();
+
+            $.fn.dataTable.ext.search = [];
+            $.fn.dataTable.ext.search.push(
+                function(settings, data, dataIndex) {
+                    // Kolom subject dan user (kolom ke-0 dan ke-1)
+                    var subject = data[0].toLowerCase(); // subject
+                    var user = data[1].toLowerCase(); // user
+
+                    return subject.includes(searchTerm) || user.includes(searchTerm);
+                }
+            );
+
+            table.draw();
+        });
     });
 </script>
 
