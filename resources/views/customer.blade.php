@@ -195,7 +195,7 @@
         </div>
         
         <!-- Pagination and Sorting Controls -->
-        <div style="padding: 15px 16px; border-top: 1px solid #e4e4e4; display: flex; justify-content: space-between; align-items: center; background-color: #f8f9fa;">
+        <div style="padding: 15px 16px; border-top: 1px solid #e4e4e4; display: flex; justify-content: space-between; align-items: center; background-color: #ffffff;">
           <div style="display: flex; gap: 12px; align-items: center;">
             <!-- Pagination Info as Dropdown -->
             <div class="dropdown" style="position: relative;">
@@ -217,7 +217,7 @@
           <div style="display: flex; gap: 12px; align-items: center;">
             <!-- Pagination Navigation -->
             <div style="display: flex; gap: 6px;">
-              <button id="prevPage" class="btn btn-sm btn-outline-secondary" style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;" title="Halaman Sebelumnya">
+              <button id="prevPage" class="btn btn-sm btn-outline-secondary" style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;" title="Halaman Sebelumnya">
                 <i class="fa fa-chevron-left" style="font-size: 11px;"></i>
               </button>
               <input type="text" id="pageInput" readonly style="width: 50px; text-align: center; border: 1px solid #dee2e6; padding: 6px 8px; font-size: 12px; border-radius: 4px; background-color: white; color: #495057;" value="1">
