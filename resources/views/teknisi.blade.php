@@ -184,8 +184,39 @@
             </tbody>
 
           </table>
-        </div>
-        @endif
+            </div>
+            <div style="padding: 15px 16px; border-top: 1px solid #e4e4e4; display: flex; justify-content: space-between; align-items: center; background-color: #ffffff;">
+              <div style="display: flex; gap: 12px; align-items: center;">
+                <!-- Pagination Info as Dropdown -->
+                <div class="dropdown" style="position: relative;">
+                  <button class="btn btn-sm btn-outline-secondary" style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span id="paginationDisplay">1-10 dari {{ $teknisi_data_ticket->count() }}</span>
+                    <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
+                  </button>
+                  <ul class="dropdown-menu" style="font-size: 13px; min-width: 150px;">
+                    <li><a class="dropdown-item page-sort-option" href="#" data-sort="desc" style="padding: 8px 16px;">
+                      <i class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru
+                    </a></li>
+                    <li><a class="dropdown-item page-sort-option" href="#" data-sort="asc" style="padding: 8px 16px;">
+                      <i class="fa fa-arrow-up me-2" style="color: #6c757d;"></i>Terlama
+                    </a></li>
+                  </ul>
+                </div>
+              </div>
+              
+              <div style="display: flex; gap: 12px; align-items: center;">
+                <!-- Pagination Navigation -->
+                <div style="display: flex; gap: 6px;">
+                  <button id="prevPage" class="btn btn-sm btn-outline-secondary" style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;" title="Halaman Sebelumnya">
+                    <i class="fa fa-chevron-left" style="font-size: 11px;"></i>
+                  </button>
+                  <button id="nextPage" class="btn btn-sm btn-outline-secondary" style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;" title="Halaman Berikutnya">
+                    <i class="fa fa-chevron-right" style="font-size: 11px;"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            @endif
       </div>
     </div>
 
@@ -298,6 +329,10 @@
 
 <script>
   $(document).ready(function() {
+    let currentSort = 'desc'; // Default: Terbaru
+    let currentPage = 1;
+    const itemsPerPage = 10;
+
     var table = $('#TicketTable').DataTable({
       searching: true,
       ordering: false,
@@ -315,6 +350,9 @@
     $('#TicketTable_length').hide();
     $('#TicketTable_paginate').hide();
 
+    // Initial pagination
+    updatePagination();
+
     // Custom search hanya kolom Subject dan User (kolom 0 dan 1)
     $('#search').on('keyup', function() {
       var searchTerm = this.value.toLowerCase();
@@ -331,6 +369,119 @@
       );
 
       table.draw();
+      currentPage = 1;
+      updatePagination();
+    });
+
+    // Handle pagination sort option clicks (from paginationInfo dropdown)
+    $(document).on('click', '.page-sort-option', function(e) {
+      e.preventDefault();
+      currentSort = $(this).data('sort');
+      
+      // Sort rows
+      sortTableByDate(currentSort);
+      currentPage = 1;
+      updatePagination();
+    });
+
+    // Function to sort table by date
+    function sortTableByDate(direction) {
+      var rows = $('#TicketTable tbody tr').get();
+      
+      rows.sort(function(a, b) {
+        // Ambil teks dari kolom pertama (yang berisi nomor tiket dengan tanggal)
+        var aText = $(a).find('li:first').text(); // sp-123012401
+        var bText = $(b).find('li:first').text(); // sp-456012402
+        
+        // Ekstrak tanggal dari format sp-xxxddmmyy
+        var aDate = extractDateFromTicket(aText);
+        var bDate = extractDateFromTicket(bText);
+        
+        if (direction === 'desc') {
+          return new Date(bDate) - new Date(aDate);
+        } else {
+          return new Date(aDate) - new Date(bDate);
+        }
+      });
+
+      $.each(rows, function(index, row) {
+        $('#TicketTable tbody').append(row);
+      });
+    }
+
+    // Function to extract date from ticket format
+    function extractDateFromTicket(ticketText) {
+      // Format: sp-xxxddmmyy
+      var match = ticketText.match(/sp-(\d{3})(\d{6})/);
+      if (match) {
+        var dateStr = match[2]; // ddmmyy
+        var day = dateStr.substring(0, 2);
+        var month = dateStr.substring(2, 4);
+        var year = '20' + dateStr.substring(4, 6);
+        return new Date(year, parseInt(month) - 1, day);
+      }
+      return new Date(0);
+    }
+
+    // Function to update pagination display
+    function updatePagination() {
+      var allRows = $('#TicketTable tbody tr');
+      var totalRows = allRows.length;
+      const totalPages = Math.ceil(totalRows / itemsPerPage);
+
+      // Batasi halaman
+      if (currentPage > totalPages) {
+        currentPage = totalPages || 1;
+      }
+
+      // Hide semua rows
+      allRows.hide();
+
+      // Show rows untuk halaman saat ini
+      var startIndex = (currentPage - 1) * itemsPerPage;
+      var endIndex = startIndex + itemsPerPage;
+      allRows.slice(startIndex, endIndex).show();
+
+      // Update pagination display berdasarkan sorting
+      var displayStart, displayEnd;
+      
+      if (currentSort === 'desc') {
+        // Terbaru: tampil normal (1-10, 11-20, dst)
+        displayStart = totalRows === 0 ? 0 : startIndex + 1;
+        displayEnd = Math.min(endIndex, totalRows);
+      } else {
+        // Terlama: tampil terbalik (100-90, 90-80, dst)
+        displayStart = totalRows - startIndex;
+        displayEnd = totalRows - endIndex + 1;
+        
+        // Pastikan displayEnd tidak kurang dari 1
+        if (displayEnd < 1) {
+          displayEnd = 1;
+        }
+      }
+      
+      $('#paginationDisplay').text(displayStart + '-' + displayEnd + ' dari ' + totalRows);
+
+      // Update button states
+      $('#prevPage').prop('disabled', currentPage === 1).css('opacity', currentPage === 1 ? '0.5' : '1').css('cursor', currentPage === 1 ? 'not-allowed' : 'pointer');
+      $('#nextPage').prop('disabled', currentPage === totalPages || totalPages === 0).css('opacity', currentPage === totalPages || totalPages === 0 ? '0.5' : '1').css('cursor', currentPage === totalPages || totalPages === 0 ? 'not-allowed' : 'pointer');
+    }
+
+    // Handle pagination buttons
+    $('#prevPage').on('click', function() {
+      if (currentPage > 1) {
+        currentPage--;
+        updatePagination();
+      }
+    });
+
+    $('#nextPage').on('click', function() {
+      var totalRows = $('#TicketTable tbody tr').length;
+      const totalPages = Math.ceil(totalRows / itemsPerPage);
+      if (currentPage < totalPages) {
+        currentPage++;
+        updatePagination();
+      }
     });
   });
 </script>
