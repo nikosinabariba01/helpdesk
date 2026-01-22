@@ -206,13 +206,26 @@
                                 </div>
                             </div>
 
-                            <div class="d-flex justify-content-center">
-                                <form action="{{ route('telegram.logout') }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="btn btn-danger" onclick="return confirm('Apakah Anda yakin ingin memutuskan koneksi Telegram?')">
-                                        <i class="fab fa-telegram me-2"></i>Logout Telegram
-                                    </button>
-                                </form>
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <div class="mb-3">
+                                        <label class="form-label">Chat ID</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" value="{{ Auth::user()->telegram_chat_id }}" readonly>
+                                            <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard('{{ Auth::user()->telegram_chat_id }}')">
+                                                <i class="fa fa-copy"></i> Copy
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <form action="{{ route('telegram.logout') }}" method="POST" style="display: inline;">
+                                        @csrf
+                                        <button type="submit" class="btn btn-danger w-100" onclick="return confirm('Apakah Anda yakin ingin memutuskan koneksi Telegram?')">
+                                            <i class="fab fa-telegram me-2"></i>Logout Telegram
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                             @else
                             <!-- Telegram Not Connected State -->
