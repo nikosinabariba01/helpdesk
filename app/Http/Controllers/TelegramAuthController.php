@@ -125,11 +125,10 @@ class TelegramAuthController extends Controller
                 return redirect()->route('customer.profile')
                     ->with('success', 'Telegram berhasil diputuskan!');
             } else {
-                return response()->json(['success' => false, 'message' => 'Role tidak dikenali'], 401);
+                return redirect()->route('home')->with('error', 'Role tidak dikenali.');
             }
         } else {
-            return redirect()->route('customer.profile')
-                ->with('error', 'User tidak ditemukan!');
+            return response()->json(['success' => false, 'message' => 'No authenticated user'], 401);
         }
     }
 
@@ -186,15 +185,18 @@ class TelegramAuthController extends Controller
             // Simpan perubahan ke database
             $user->save();
 
-            // Redirect ke halaman berdasarkan role user
-            if (in_array($user->role, ['teknisi', 'pemilik', 'admin'])) {
+        // Cek role user dan arahkan ke halaman yang sesuai
+            if (in_array($user->role, ['pengurus', 'pemilik', 'admin'])) {
+                // Jika pengurus, arahkan ke halaman teknisi
                 return redirect()->route('teknisi.profile')
-                    ->with('success', 'Akun Telegram berhasil terhubung!');
+                    ->with('success', 'Akun Telegram berhasil terhubung sebagai pengurus!');
             } elseif ($user->role == 'penyewa') {
+                // Jika penyewa, arahkan ke halaman customer
                 return redirect()->route('customer.profile')
-                    ->with('success', 'Akun Telegram berhasil terhubung!');
+                    ->with('success', 'Akun Telegram berhasil terhubung sebagai penyewa!');
             } else {
-                return response()->json(['success' => false, 'message' => 'Role tidak dikenali'], 401);
+                // Jika role selain pengurus atau penyewa, beri pesan error atau ke halaman default
+                return redirect()->route('home')->with('error', 'Role tidak dikenali.');
             }
         } else {
             return response()->json(['success' => false, 'message' => 'No authenticated user'], 401);
