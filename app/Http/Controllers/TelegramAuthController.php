@@ -110,16 +110,26 @@ class TelegramAuthController extends Controller
     {
         $user = Auth::user();
         if ($user) {
+            // Set telegram_chat_id to null to disconnect Telegram
             $user->telegram_chat_id = null;
             $user->save();
 
-            return redirect()->route('customer.profile')
-                ->with('success', 'Telegram berhasil diputuskan!');
+            // Redirect ke halaman berdasarkan role user
+            if (in_array($user->role, ['teknisi', 'pemilik', 'admin'])) {
+                return redirect()->route('teknisi.profile')
+                    ->with('success', 'Telegram berhasil diputuskan!');
+            } elseif ($user->role == 'penyewa') {
+                return redirect()->route('customer.profile')
+                    ->with('success', 'Telegram berhasil diputuskan!');
+            } else {
+                return response()->json(['success' => false, 'message' => 'Role tidak dikenali'], 401);
+            }
         } else {
             return redirect()->route('customer.profile')
                 ->with('error', 'User tidak ditemukan!');
         }
     }
+
 
     /**
      * Handle Telegram authorization from Profile page (without ticket redirect).
