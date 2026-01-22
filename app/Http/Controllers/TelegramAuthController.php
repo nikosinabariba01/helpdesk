@@ -6,8 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Route;
-
 
 
 class TelegramAuthController extends Controller
@@ -60,24 +58,26 @@ class TelegramAuthController extends Controller
 
             $user->save();
 
-            // Cek nama route yang disimpan di session
-            $redirectUrl = session('previous_url', route('home'));
-
-            // Cek role user dan arahkan ke halaman yang sesuai berdasarkan role atau rute yang sedang diakses
-            if (in_array($user->role, ['pengurus', 'pemilik']) && $currentRoute == 'viewticketteknisi.index') {
+            // Cek role user dan arahkan ke halaman yang sesuai
+            if (in_array($user->role, ['pengurus', 'pemilik'])) {
                 // Jika pengurus, arahkan ke halaman teknisi
                 return redirect(route('viewticketteknisi.index', ['id' => $ticket_id]))
                     ->with('success', 'Akun Telegram berhasil terhubung sebagai pengurus!');
-            } elseif ($user->role == 'penyewa' && $currentRoute == 'viewtickets.index') {
+            } elseif ($user->role == 'penyewa') {
                 // Jika penyewa, arahkan ke halaman customer
                 return redirect(route('viewtickets.index', ['id' => $ticket_id]))
                     ->with('success', 'Akun Telegram berhasil terhubung sebagai penyewa!');
             } else {
-                // Jika role selain pengurus atau penyewa, atau jika autentikasi tidak dilakukan di halaman tertentu, redirect ke URL sebelumnya
-                return redirect($redirectUrl)->with('success', 'Akun Telegram berhasil terhubung!');
+                // Jika role selain pengurus atau penyewa, beri pesan error atau ke halaman default
+                return redirect()->route('home')->with('error', 'Role tidak dikenali.');
             }
         } else {
             return response()->json(['success' => false, 'message' => 'No authenticated user'], 401);
+        }
+
+        // Check if current route is neither 'viewticketteknisi.index' nor 'viewtickets.index'
+        if (! request()->routeIs('viewticketteknisi.index') && ! request()->routeIs('viewtickets.index')) {
+            return redirect()->route('customer.profile');
         }
     }
 
