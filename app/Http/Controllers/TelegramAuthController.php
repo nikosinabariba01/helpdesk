@@ -60,9 +60,8 @@ class TelegramAuthController extends Controller
 
             $user->save();
 
-            // Cek nama route saat ini
-            $currentRoute = Route::currentRouteName();
-            $redirectUrl  = session('previous_url', route('home'));
+            // Cek nama route yang disimpan di session
+            $redirectUrl = session('previous_url', route('home'));
 
             // Cek role user dan arahkan ke halaman yang sesuai berdasarkan role atau rute yang sedang diakses
             if (in_array($user->role, ['pengurus', 'pemilik']) && $currentRoute == 'viewticketteknisi.index') {
