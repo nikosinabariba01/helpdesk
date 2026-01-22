@@ -147,24 +147,30 @@ class TelegramAuthController extends Controller
                     $photoContent = file_get_contents($photoUrl);
                     if ($photoContent !== false) {
                         // Buat nama file unik
-                        $filename = 'telegram_' . $user->id . '_' . time() . '.jpg';
+                        $fileName = 'telegram_' . $user->id . '_' . time() . '.jpg';
+                        $filePath = storage_path('app/profile_photos/' . $fileName);
 
-                        // Simpan foto ke storage public menggunakan disk 'public'
-                        $path = Storage::disk('public')->put('profile_photos/' . $filename, $photoContent);
-
-                        // Jika berhasil, update path foto profil di database
-                        if ($path) {
-                            $user->profile_photo = 'profile_photos/' . $filename;
+                        // Pastikan direktori ada
+                        if (! is_dir(storage_path('app/profile_photos'))) {
+                            mkdir(storage_path('app/profile_photos'), 0755, true);
                         }
+
+                        // Simpan foto ke storage
+                        file_put_contents($filePath, $photoContent);
+
+                        // Simpan path foto ke database
+                        $user->profile_photo = 'profile_photos/' . $fileName;
                     }
                 } catch (\Exception $e) {
-                    // Jika gagal download foto, tetap lanjut proses
+                    // Jika gagal download foto, tetap lanjut proses dan log error
                     Log::error('Failed to download Telegram photo: ' . $e->getMessage());
                 }
             }
 
+            // Simpan perubahan ke database
             $user->save();
 
+            // Redirect ke halaman profile customer dengan pesan sukses
             return redirect()->route('customer.profile')
                 ->with('success', 'Akun Telegram berhasil terhubung!');
         } else {
