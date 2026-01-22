@@ -40,35 +40,65 @@ class TelegramWebhookController extends Controller {
         $user = User::where('telegram_chat_id', $telegramUserId)->first();
 
         if ($user) {
-            // Cek apakah pengguna sudah memilih tiket sebelumnya
-            $ticketId = Cache::get("user_ticket_{$telegramChatId}");
-
-            if ($ticketId) {
-                // Jika tiket sudah dipilih, simpan komentar
-                $this->saveComment($user, $commentText);
+            // Cek apakah pesan adalah command untuk memilih tiket
+            if ($this->isTicketCommand($commentText)) {
+                // Tampilkan inline keyboard untuk memilih tiket
+                $this->showTicketKeyboard($telegramChatId, $user);
             } else {
-                // Jika tiket belum dipilih, buatkan inline keyboard dengan tiket yang dimiliki pengguna
-                $keyboard = [
-                    'inline_keyboard' => [],
-                ];
+                // Cek apakah pengguna sudah memilih tiket sebelumnya
+                $ticketId = Cache::get("user_ticket_{$telegramChatId}");
 
-                // Ambil tiket yang dimiliki oleh pengguna dan buat tombol untuk masing-masing tiket
-                $tickets = Ticket::where('user_id', $user->id)->get();
-                foreach ($tickets as $ticket) {
-                    $keyboard['inline_keyboard'][] = [
-                        [
-                            'text' => "Tiket #sp-" . substr(preg_replace('/[^0-9]/', '', $ticket->id), -3) . \Carbon\Carbon::parse($ticket->created_at)->format('dmy') . ($ticket->Jenis_Pengaduan == 0 ? '0' : '1') . " - {$ticket->subject}",
-                            'callback_data' => "ticket_{$ticket->id}", // Data yang dikirim saat memilih tiket
-                        ],
-                    ];
+                if ($ticketId) {
+                    // Jika tiket sudah dipilih, simpan komentar
+                    $this->saveComment($user, $commentText);
+                } else {
+                    // Jika tiket belum dipilih, buatkan inline keyboard dengan tiket yang dimiliki pengguna
+                    $this->showTicketKeyboard($telegramChatId, $user);
                 }
-
-                // Kirim pesan dengan inline keyboard berisi pilihan tiket
-                $this->sendTelegramMessage($telegramChatId, "Silakan pilih tiket yang ingin Anda komentari:", $keyboard);
             }
         }
 
         return response()->json(['ok' => true]);
+    }
+
+    // Fungsi untuk cek apakah pesan adalah command untuk memilih tiket
+    protected function isTicketCommand($text) {
+        $commands = ['/ticket', '/pilih', '/select', 'ticket', 'pilih'];
+        $text = strtolower(trim($text));
+        
+        foreach ($commands as $cmd) {
+            if ($text === $cmd) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Fungsi untuk menampilkan inline keyboard dengan daftar tiket
+    protected function showTicketKeyboard($telegramChatId, $user) {
+        $keyboard = [
+            'inline_keyboard' => [],
+        ];
+
+        // Ambil tiket yang dimiliki oleh pengguna dan buat tombol untuk masing-masing tiket
+        $tickets = Ticket::where('user_id', $user->id)->get();
+        
+        if ($tickets->isEmpty()) {
+            $this->sendTelegramMessage($telegramChatId, "Anda belum memiliki tiket apapun.");
+            return;
+        }
+
+        foreach ($tickets as $ticket) {
+            $keyboard['inline_keyboard'][] = [
+                [
+                    'text' => "Tiket #sp-" . substr(preg_replace('/[^0-9]/', '', $ticket->id), -3) . \Carbon\Carbon::parse($ticket->created_at)->format('dmy') . ($ticket->Jenis_Pengaduan == 0 ? '0' : '1') . " - {$ticket->subject}",
+                    'callback_data' => "ticket_{$ticket->id}", // Data yang dikirim saat memilih tiket
+                ],
+            ];
+        }
+
+        // Kirim pesan dengan inline keyboard berisi pilihan tiket
+        $this->sendTelegramMessage($telegramChatId, "📋 Silakan pilih tiket yang ingin Anda komentari:", $keyboard);
     }
 
     // Menangani callback query (setelah pengguna memilih tiket)
