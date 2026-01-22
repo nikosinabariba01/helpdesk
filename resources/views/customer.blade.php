@@ -507,8 +507,7 @@
       // Update pagination display
       var displayStart = totalRows === 0 ? 0 : startIndex + 1;
       var displayEnd = Math.min(endIndex, totalRows);
-      $('#paginationDisplay').text(displayStart + '-' + displayEnd + ' dari');
-      $('#totalRecordsDisplay').text(totalRows);
+      $('#paginationDisplay').text(displayStart + '-' + displayEnd + ' dari ' + totalRows);
 
       // Update page input
       $('#pageInput').val(totalPages === 0 ? '0/0' : currentPage + '/' + totalPages);
