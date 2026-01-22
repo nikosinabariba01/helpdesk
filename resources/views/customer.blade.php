@@ -215,7 +215,7 @@
           <div class="list-group-item shadow-sm mb-3" style="padding: 12px 16px; border: 1px solid #e4e4e4; border-radius: 6px;">
             <!-- Pengirim Info -->
             <div class="d-flex align-items-center mb-2">
-              <img src="{{ $item->creator->profile_photo ? asset('storage/' . $item->creator->profile_photo) : asset('img/profile_default.png') }}" 
+              <img src="{{ $item->creator && $item->creator->profile_photo ? route('profile.photo', ['filename' => basename($item->creator->profile_photo)]) : asset('default-profile.png') }}" 
                    alt="Profile" class="rounded-circle" style="width: 32px; height: 32px; object-fit: cover; margin-right: 10px;">
               <div class="flex-grow-1">
                 <h6 class="mb-0 text-dark" style="font-size: 14px; font-weight: 600;">{{ $item->creator->name }}</h6>
