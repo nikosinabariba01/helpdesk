@@ -182,7 +182,7 @@
             $.each(rows, function(index, row) {$('#TicketTable tbody').append(row);});
         }
         function extractDateFromTicket(ticketText) {
-            var match = ticketText.match(/sp-(\\d{3})(\\d{6})/);
+            var match = ticketText.match(/sp-(\d{3})(\d{6})/);
             if (match) {
                 var dateStr = match[2];
                 return new Date('20' + dateStr.substring(4, 6), parseInt(dateStr.substring(2, 4)) - 1, dateStr.substring(0, 2));
