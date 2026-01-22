@@ -96,4 +96,22 @@ class TelegramAuthController extends Controller
 
         return strcmp($hash, $check_hash) === 0;
     }
+
+    /**
+     * Handle Telegram logout and remove telegram_chat_id from user.
+     */
+    public function telegramLogout(Request $request)
+    {
+        $user = Auth::user();
+        if ($user) {
+            $user->telegram_chat_id = null;
+            $user->save();
+
+            return redirect()->route('customer.profile')
+                ->with('success', 'Telegram berhasil diputuskan!');
+        } else {
+            return redirect()->route('customer.profile')
+                ->with('error', 'User tidak ditemukan!');
+        }
+    }
 }

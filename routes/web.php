@@ -100,7 +100,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/tickets/{ticket}/comments', [TicketCommentController::class, 'store'])->name('comments.store')->middleware('userAkses:penyewa,admin');;
     Route::post('/tickets/{ticket}/teknisicomments', [TicketCommentController::class, 'teknisiComment'])->name('comments.teknisiComment')->middleware('userAkses:pengurus,pemilik,admin');
-    Route::match(['GET', 'POST'], '/telegram/auth/{ticket_id}', [TelegramAuthController::class, 'telegramAuthorize']);
+    Route::match(['GET', 'POST'], '/telegram/auth/{ticket_id}', [TelegramAuthController::class, 'telegramAuthorize'])->name('telegram.auth');
+    Route::post('/telegram/logout', [TelegramAuthController::class, 'telegramLogout'])->name('telegram.logout');
 
 
 
