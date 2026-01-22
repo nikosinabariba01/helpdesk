@@ -193,29 +193,27 @@
 
           </table>
         </div>
-        
+
         <!-- Pagination and Sorting Controls -->
         <div style="padding: 15px 16px; border-top: 1px solid #e4e4e4; display: flex; justify-content: space-between; align-items: center; background-color: #f8f9fa;">
           <div style="display: flex; gap: 12px; align-items: center;">
             <!-- Pagination Info as Dropdown -->
             <div class="dropdown" style="position: relative;">
               <button class="btn btn-sm btn-outline-secondary" style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;" data-bs-toggle="dropdown" aria-expanded="false">
-                <span id="paginationDisplay">1-10 dari</span>
+                <span id="paginationDisplay">1-10 dari <span id="totalRecordsDisplay" style="font-size: 13px; color: #6c757d; font-weight: 500;">{{ $data_ticket->count() }}</span> </span>
                 <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
               </button>
               <ul class="dropdown-menu" style="font-size: 13px; min-width: 150px;">
                 <li><a class="dropdown-item page-sort-option" href="#" data-sort="desc" style="padding: 8px 16px;">
-                  <i class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru
-                </a></li>
+                    <i class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru
+                  </a></li>
                 <li><a class="dropdown-item page-sort-option" href="#" data-sort="asc" style="padding: 8px 16px;">
-                  <i class="fa fa-arrow-up me-2" style="color: #6c757d;"></i>Terlama
-                </a></li>
+                    <i class="fa fa-arrow-up me-2" style="color: #6c757d;"></i>Terlama
+                  </a></li>
               </ul>
             </div>
-
-            <span id="totalRecordsDisplay" style="font-size: 13px; color: #6c757d; font-weight: 500;">{{ $data_ticket->count() }}</span>
           </div>
-          
+
           <div style="display: flex; gap: 12px; align-items: center;">
             <!-- Pagination Navigation -->
             <div style="display: flex; gap: 6px;">
@@ -251,18 +249,18 @@
           <div class="list-group-item shadow-sm mb-3" style="padding: 12px 16px; border: 1px solid #e4e4e4; border-radius: 6px;">
             <!-- Pengirim Info -->
             <div class="d-flex align-items-center mb-2">
-              <img src="{{ $item->creator && $item->creator->profile_photo ? route('profile.photo', ['filename' => basename($item->creator->profile_photo)]) : asset('default-profile.png') }}" 
-                   alt="Profile" class="rounded-circle" style="width: 32px; height: 32px; object-fit: cover; margin-right: 10px;">
+              <img src="{{ $item->creator && $item->creator->profile_photo ? route('profile.photo', ['filename' => basename($item->creator->profile_photo)]) : asset('default-profile.png') }}"
+                alt="Profile" class="rounded-circle" style="width: 32px; height: 32px; object-fit: cover; margin-right: 10px;">
               <div class="flex-grow-1">
                 <h6 class="mb-0 text-dark" style="font-size: 14px; font-weight: 600;">{{ $item->creator->name }}</h6>
                 <small class="text-muted" style="font-size: 11px;">{{ $item->creator->role }}</small>
               </div>
               <small class="text-muted" style="font-size: 11px;">{{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}</small>
             </div>
-            
+
             <!-- Judul Pengumuman -->
             <h5 class="mb-2 text-dark" style="font-size: 15px; font-weight: 600;">{{ $item->judul }}</h5>
-            
+
             <!-- Deskripsi Pengumuman -->
             <p class="mb-0 text-muted" style="font-size: 13px; line-height: 1.4;">{{ Str::limit($item->deskripsi, 100) }}</p>
           </div>
@@ -376,7 +374,7 @@
     let currentSort = 'desc'; // Default: Terbaru
     let currentPage = 1;
     const itemsPerPage = 10;
-    
+
     var table = $('#TicketTable').DataTable({
       searching: true,
       ordering: false,
@@ -422,11 +420,11 @@
     $(document).on('click', '.sort-option', function(e) {
       e.preventDefault();
       currentSort = $(this).data('sort');
-      
+
       // Update label
       const sortLabel = currentSort === 'desc' ? 'Terbaru' : 'Terlama';
       $('#sortLabel').text(sortLabel);
-      
+
       // Sort rows
       sortTableByDate(currentSort);
       currentPage = 1;
@@ -437,10 +435,10 @@
     $(document).on('click', '.page-sort-option', function(e) {
       e.preventDefault();
       currentSort = $(this).data('sort');
-      
+
       // Update dropdown display
       const sortLabel = currentSort === 'desc' ? 'Terbaru' : 'Terlama';
-      
+
       // Sort rows
       sortTableByDate(currentSort);
       currentPage = 1;
@@ -450,16 +448,16 @@
     // Function to sort table by date
     function sortTableByDate(direction) {
       var rows = $('#TicketTable tbody tr').get();
-      
+
       rows.sort(function(a, b) {
         // Ambil teks dari kolom pertama (yang berisi nomor tiket dengan tanggal)
         var aText = $(a).find('li:first').text(); // sp-123012401
         var bText = $(b).find('li:first').text(); // sp-456012402
-        
+
         // Ekstrak tanggal dari format sp-xxxddmmyy
         var aDate = extractDateFromTicket(aText);
         var bDate = extractDateFromTicket(bText);
-        
+
         if (direction === 'desc') {
           return new Date(bDate) - new Date(aDate);
         } else {
