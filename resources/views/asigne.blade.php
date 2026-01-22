@@ -135,7 +135,6 @@
                         </tr>
                         @endforeach
                     </tbody>
-
                 </table>
             </div>
             @endif
@@ -147,13 +146,14 @@
     $(document).ready(function() {
         var table = $('#TicketTable').DataTable({
             searching: true,
-            ordering: false,
-            paging: false,
-            lengthChange: false,
-            info: false,
+            ordering: true,  // Allow sorting
+            paging: true,  // Enable pagination
+            lengthChange: true,  // Allow changing number of rows per page
+            pageLength: 10,  // Default rows per page
+            info: true,
             columnDefs: [{
                 targets: [2, 3, 4, 5],
-                orderable: false
+                orderable: false  // Disable sorting on these columns
             }]
         });
 
