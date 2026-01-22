@@ -10,6 +10,18 @@
     @include make-container();
   }
 
+  // Mobile first - max-width 100% for screens below 576px
+  @include media-breakpoint-down(sm) {
+    .container,
+    .container-sm,
+    .container-md,
+    .container-lg,
+    .container-xl,
+    .container-xxl {
+      max-width: 100%;
+    }
+  }
+
   // Responsive containers that are 100% wide until a breakpoint
   @each $breakpoint, $container-max-width in $container-max-widths {
     .container-#{$breakpoint} {
