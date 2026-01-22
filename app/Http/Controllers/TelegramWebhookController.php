@@ -52,8 +52,8 @@ class TelegramWebhookController extends Controller {
                     // Jika tiket sudah dipilih, simpan komentar
                     $this->saveComment($user, $commentText);
                 } else {
-                    // Jika tiket belum dipilih, buatkan inline keyboard dengan tiket yang dimiliki pengguna
-                    $this->showTicketKeyboard($telegramChatId, $user);
+                    // Jika tiket belum dipilih dan bukan command, beri instruksi
+                    $this->sendTelegramMessage($telegramChatId, "❌ Anda belum memilih tiket.\n\nSilakan ketik <code>/ticket</code> atau <code>/pilih</code> untuk memilih tiket terlebih dahulu.");
                 }
             }
         }
@@ -63,15 +63,10 @@ class TelegramWebhookController extends Controller {
 
     // Fungsi untuk cek apakah pesan adalah command untuk memilih tiket
     protected function isTicketCommand($text) {
-        $commands = ['/ticket', '/pilih', '/select', 'ticket', 'pilih'];
         $text = strtolower(trim($text));
+        $commands = ['/ticket', '/pilih', '/select'];
         
-        foreach ($commands as $cmd) {
-            if ($text === $cmd) {
-                return true;
-            }
-        }
-        return false;
+        return in_array($text, $commands);
     }
 
     // Fungsi untuk menampilkan inline keyboard dengan daftar tiket
