@@ -13,68 +13,71 @@ class TelegramAuthController extends Controller
     /**
      * Handle Telegram authorization and save telegram_chat_id to user.
      */
-    // public function telegramAuthorize(Request $request, $ticket_id)
-    // {
-    //     $data = $request->all();
+    public function telegramAuthorize(Request $request, $ticket_id)
+    {
+        $data = $request->all();
 
-    //     // Validasi autentikasi data Telegram
-    //     if (! $this->isValidTelegramAuth($data)) {
-    //         return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
-    //     }
-    //     /** @var \App\Models\User $user */
-    //     $user = Auth::user();
-    //     if ($user) {
-    //         // Simpan telegram_chat_id ke user
-    //         $user->telegram_chat_id = $data['id'];
+        // Validasi autentikasi data Telegram
+        if (! $this->isValidTelegramAuth($data)) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
+        }
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        if ($user) {
+            // Simpan telegram_chat_id ke user
+            $user->telegram_chat_id = $data['id'];
 
-    //         // Jika user belum memiliki foto profil dan Telegram memiliki foto, simpan dari Telegram
-    //         if (!$user->profile_photo && isset($data['photo_url'])) {
-    //             $photoUrl = $data['photo_url'];
+            // Jika user belum memiliki foto profil dan Telegram memiliki foto, simpan dari Telegram
+            if (!$user->profile_photo && isset($data['photo_url'])) {
+                $photoUrl = $data['photo_url'];
 
-    //             // Download foto dari Telegram
-    //             try {
-    //                 $photoContent = file_get_contents($photoUrl);
-    //                 if ($photoContent !== false) {
-    //                     // Buat nama file unik
-    //                     $fileName = 'telegram_' . $user->id . '_' . time() . '.jpg';
-    //                     $filePath = storage_path('app/profile_photos/' . $fileName);
+                // Download foto dari Telegram
+                try {
+                    $photoContent = file_get_contents($photoUrl);
+                    if ($photoContent !== false) {
+                        // Buat nama file unik
+                        $fileName = 'telegram_' . $user->id . '_' . time() . '.jpg';
+                        $filePath = storage_path('app/profile_photos/' . $fileName);
 
-    //                     // Pastikan direktori ada
-    //                     if (!is_dir(storage_path('app/profile_photos'))) {
-    //                         mkdir(storage_path('app/profile_photos'), 0755, true);
-    //                     }
+                        // Pastikan direktori ada
+                        if (!is_dir(storage_path('app/profile_photos'))) {
+                            mkdir(storage_path('app/profile_photos'), 0755, true);
+                        }
 
-    //                     // Simpan foto ke storage
-    //                     file_put_contents($filePath, $photoContent);
+                        // Simpan foto ke storage
+                        file_put_contents($filePath, $photoContent);
 
-    //                     // Simpan path foto ke database
-    //                     $user->profile_photo = 'profile_photos/' . $fileName;
-    //                 }
-    //             } catch (\Exception $e) {
-    //                 // Jika gagal download foto, tetap lanjut proses
-    //                 Log::error('Failed to download Telegram photo: ' . $e->getMessage());
-    //             }
-    //         }
+                        // Simpan path foto ke database
+                        $user->profile_photo = 'profile_photos/' . $fileName;
+                    }
+                } catch (\Exception $e) {
+                    // Jika gagal download foto, tetap lanjut proses
+                    Log::error('Failed to download Telegram photo: ' . $e->getMessage());
+                }
+            }
 
-    //         $user->save();
+            $user->save();
 
-    //         // Cek role user dan arahkan ke halaman yang sesuai
-    //         if (in_array($user->role, ['pengurus', 'pemilik'])) {
-    //             // Jika pengurus, arahkan ke halaman teknisi
-    //             return redirect(route('viewticketteknisi.index', ['id' => $ticket_id]))
-    //                 ->with('success', 'Akun Telegram berhasil terhubung sebagai pengurus!');
-    //         } elseif ($user->role == 'penyewa') {
-    //             // Jika penyewa, arahkan ke halaman customer
-    //             return redirect(route('viewtickets.index', ['id' => $ticket_id]))
-    //                 ->with('success', 'Akun Telegram berhasil terhubung sebagai penyewa!');
-    //         } else {
-    //             // Jika role selain pengurus atau penyewa, beri pesan error atau ke halaman default
-    //             return redirect()->route('home')->with('error', 'Role tidak dikenali.');
-    //         }
-    //     } else {
-    //         return response()->json(['success' => false, 'message' => 'No authenticated user'], 401);
-    //     }
-    // }
+            // Redirect ke URL sebelumnya
+            $redirectUrl = session('previous_url', route('home'));
+
+            // Cek role user dan arahkan ke halaman yang sesuai
+            if (in_array($user->role, ['pengurus', 'pemilik'])) {
+                // Jika pengurus, arahkan ke halaman teknisi
+                return redirect($redirectUrl)
+                    ->with('success', 'Akun Telegram berhasil terhubung sebagai pengurus!');
+            } elseif ($user->role == 'penyewa') {
+                // Jika penyewa, arahkan ke halaman customer
+                return redirect($redirectUrl)
+                    ->with('success', 'Akun Telegram berhasil terhubung sebagai penyewa!');
+            } else {
+                // Jika role selain pengurus atau penyewa, beri pesan error atau ke halaman default
+                return redirect($redirectUrl)->with('error', 'Role tidak dikenali.');
+            }
+        } else {
+            return response()->json(['success' => false, 'message' => 'No authenticated user'], 401);
+        }
+    }
 
     /**
      * Validasi data dari Telegram sesuai dokumen resminya.
