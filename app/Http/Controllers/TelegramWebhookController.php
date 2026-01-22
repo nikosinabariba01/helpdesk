@@ -75,11 +75,13 @@ class TelegramWebhookController extends Controller {
             'inline_keyboard' => [],
         ];
 
-        // Ambil tiket yang dimiliki oleh pengguna dan buat tombol untuk masing-masing tiket
-        $tickets = Ticket::where('user_id', $user->id)->get();
+        // Ambil tiket yang dimiliki oleh pengguna dengan status selain 'close' dan buat tombol untuk masing-masing tiket
+        $tickets = Ticket::where('user_id', $user->id)
+            ->where('status', '!=', 'close')
+            ->get();
         
         if ($tickets->isEmpty()) {
-            $this->sendTelegramMessage($telegramChatId, "Anda belum memiliki tiket apapun.");
+            $this->sendTelegramMessage($telegramChatId, "Anda belum memiliki tiket aktif apapun.");
             return;
         }
 
