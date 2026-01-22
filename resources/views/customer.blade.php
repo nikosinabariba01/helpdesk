@@ -504,9 +504,24 @@
       var endIndex = startIndex + itemsPerPage;
       allRows.slice(startIndex, endIndex).show();
 
-      // Update pagination display
-      var displayStart = totalRows === 0 ? 0 : startIndex + 1;
-      var displayEnd = Math.min(endIndex, totalRows);
+      // Update pagination display berdasarkan sorting
+      var displayStart, displayEnd;
+      
+      if (currentSort === 'desc') {
+        // Terbaru: tampil normal (1-10, 11-20, dst)
+        displayStart = totalRows === 0 ? 0 : startIndex + 1;
+        displayEnd = Math.min(endIndex, totalRows);
+      } else {
+        // Terlama: tampil terbalik (100-90, 90-80, dst)
+        displayStart = totalRows - startIndex;
+        displayEnd = totalRows - endIndex + 1;
+        
+        // Pastikan displayEnd tidak kurang dari 1
+        if (displayEnd < 1) {
+          displayEnd = 1;
+        }
+      }
+      
       $('#paginationDisplay').text(displayStart + '-' + displayEnd + ' dari ' + totalRows);
 
       // Update page input
