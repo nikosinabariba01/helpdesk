@@ -111,7 +111,8 @@ class TelegramAuthController extends Controller
      */
     public function telegramLogout(Request $request)
     {
-        $user = Auth::user();
+        /** @var \App\Models\User $user */
+        $user = Auth::user(); // Ambil user yang sedang login
         if ($user) {
             // Set telegram_chat_id to null to disconnect Telegram
             $user->telegram_chat_id = null;
