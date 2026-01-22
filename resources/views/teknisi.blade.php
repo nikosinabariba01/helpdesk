@@ -17,88 +17,69 @@
 
 @section('container')
 
-<div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+<div class="col-xl-3 col-sm-6 col-6 mb-xl-0 mb-4">
   <div class="card">
-    <div class="card-body p-3">
-      <div class="row">
-        <div class="col-8">
-          <div class="numbers">
-            <p class="text-sm mb-0 text-uppercase font-weight-bold">Current Ticket</p>
-            <h5 class="font-weight-bolder">
-              {{ $totalTickets  }}
-            </h5>
-          </div>
-        </div>
-        <div class="col-4 text-end">
-          <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle">
-            <i class="fa fa-copy text-lg opacity-10" aria-hidden="true"></i>
-          </div>
+    <div class="card-body p-3" style="min-height: 120px; display: flex; align-items: center; justify-content: space-between;">
+      <div class="numbers" style="flex: 1;">
+        <p class="text-sm mb-2 text-uppercase font-weight-bold" style="font-size: 11px; letter-spacing: 0.5px;">Current Ticket</p>
+        <h5 class="font-weight-bolder mb-0" style="font-size: 28px; line-height: 1.2;">
+          {{ $totalTickets  }}
+        </h5>
+      </div>
+      <div class="d-flex align-items-center justify-content-center" style="flex: 0 0 auto; margin-left: 12px;">
+        <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
+          <i class="fa fa-copy text-lg opacity-10" aria-hidden="true"></i>
         </div>
       </div>
     </div>
   </div>
 </div>
-<div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+<div class="col-xl-3 col-sm-6 col-6 mb-xl-0 mb-4">
   <div class="card">
-    <div class="card-body p-3">
-      <div class="row">
-        <div class="col-8">
-          <div class="numbers">
-            <p class="text-sm mb-0 text-uppercase font-weight-bold">Assigned Ticket</p>
-            <h5 class="font-weight-bolder">
-              {{ $totalOnProcessTickets }}
-            </h5>
-
-          </div>
-        </div>
-        <div class="col-4 text-end">
-          <div class="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle">
-            <i class="fa fa-clipboard contact text-lg opacity-10" aria-hidden="true"></i>
-          </div>
+    <div class="card-body p-3" style="min-height: 120px; display: flex; align-items: center; justify-content: space-between;">
+      <div class="numbers" style="flex: 1;">
+        <p class="text-sm mb-2 text-uppercase font-weight-bold" style="font-size: 11px; letter-spacing: 0.5px;">Assigned Ticket</p>
+        <h5 class="font-weight-bolder mb-0" style="font-size: 28px; line-height: 1.2;">
+          {{ $totalOnProcessTickets }}
+        </h5>
+      </div>
+      <div class="d-flex align-items-center justify-content-center" style="flex: 0 0 auto; margin-left: 12px;">
+        <div class="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
+          <i class="fa fa-clipboard contact text-lg opacity-10" aria-hidden="true"></i>
         </div>
       </div>
     </div>
   </div>
 </div>
-<div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+<div class="col-xl-3 col-sm-6 col-6 mb-xl-0 mb-4">
   <div class="card">
-    <div class="card-body p-3">
-      <div class="row">
-        <div class="col-8">
-          <div class="numbers">
-            <p class="text-sm mb-0 text-uppercase font-weight-bold">Closed Ticket</p>
-            <h5 class="font-weight-bolder">
-              {{ $totalClosedTickets }}
-            </h5>
-
-          </div>
-        </div>
-        <div class="col-4 text-end">
-          <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle">
-            <i class="fa fa-minus round text-lg opacity-10" aria-hidden="true"></i>
-          </div>
+    <div class="card-body p-3" style="min-height: 120px; display: flex; align-items: center; justify-content: space-between;">
+      <div class="numbers" style="flex: 1;">
+        <p class="text-sm mb-2 text-uppercase font-weight-bold" style="font-size: 11px; letter-spacing: 0.5px;">Closed Ticket</p>
+        <h5 class="font-weight-bolder mb-0" style="font-size: 28px; line-height: 1.2;">
+          {{ $totalClosedTickets }}
+        </h5>
+      </div>
+      <div class="d-flex align-items-center justify-content-center" style="flex: 0 0 auto; margin-left: 12px;">
+        <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
+          <i class="fa fa-minus round text-lg opacity-10" aria-hidden="true"></i>
         </div>
       </div>
     </div>
   </div>
 </div>
-<div class="col-xl-3 col-sm-6">
+<div class="col-xl-3 col-sm-6 col-6">
   <div class="card">
-    <div class="card-body p-3">
-      <div class="row">
-        <div class="col-8">
-          <div class="numbers">
-            <p class="text-sm mb-0 text-uppercase font-weight-bold">All Ticket</p>
-            <h5 class="font-weight-bolder">
-              {{ $totalAllTickets }}
-            </h5>
-
-          </div>
-        </div>
-        <div class="col-4 text-end">
-          <div class="icon icon-shape bg-gradient-warning shadow-warning text-center rounded-circle">
-            <i class="fa fa-folder text-lg opacity-10" aria-hidden="true"></i>
-          </div>
+    <div class="card-body p-3" style="min-height: 120px; display: flex; align-items: center; justify-content: space-between;">
+      <div class="numbers" style="flex: 1;">
+        <p class="text-sm mb-2 text-uppercase font-weight-bold" style="font-size: 11px; letter-spacing: 0.5px;">All Ticket</p>
+        <h5 class="font-weight-bolder mb-0" style="font-size: 28px; line-height: 1.2;">
+          {{ $totalAllTickets }}
+        </h5>
+      </div>
+      <div class="d-flex align-items-center justify-content-center" style="flex: 0 0 auto; margin-left: 12px;">
+        <div class="icon icon-shape bg-gradient-warning shadow-warning text-center rounded-circle" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
+          <i class="fa fa-folder text-lg opacity-10" aria-hidden="true"></i>
         </div>
       </div>
     </div>
