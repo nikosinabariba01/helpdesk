@@ -20,18 +20,18 @@
 
 <div class="col-xl-3 col-sm-6 col-6 mb-xl-0 mb-4">
   <div class="card">
-    <div class="card-body p-3" style="min-height: 120px; display: flex; align-items: center;">
+    <div class="card-body p-4" style="min-height: 120px; display: flex; align-items: center;">
       <div class="row w-100">
         <div class="col-8">
           <div class="numbers">
-            <p class="text-sm mb-0 text-uppercase font-weight-bold">Open</p>
-            <h5 class="font-weight-bolder">
+            <p class="text-sm mb-2 text-uppercase font-weight-bold">Open</p>
+            <h5 class="font-weight-bolder mb-0" style="font-size: 28px;">
               {{ $OpenTic }}
             </h5>
           </div>
         </div>
         <div class="col-4 text-end d-flex align-items-center justify-content-end">
-          <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle">
+          <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle" style="width: 50px; height: 50px;">
             <i class="fa fa-copy text-lg opacity-10" aria-hidden="true"></i>
           </div>
         </div>
@@ -41,18 +41,18 @@
 </div>
 <div class="col-xl-3 col-sm-6 col-6 mb-xl-0 mb-4">
   <div class="card">
-    <div class="card-body p-3" style="min-height: 120px; display: flex; align-items: center;">
+    <div class="card-body p-4" style="min-height: 120px; display: flex; align-items: center;">
       <div class="row w-100">
         <div class="col-8">
           <div class="numbers">
-            <p class="text-sm mb-0 text-uppercase font-weight-bold">On Process</p>
-            <h5 class="font-weight-bolder">
+            <p class="text-sm mb-2 text-uppercase font-weight-bold">On Process</p>
+            <h5 class="font-weight-bolder mb-0" style="font-size: 28px;">
               {{ $OnProcessTickets }}
             </h5>
           </div>
         </div>
         <div class="col-4 text-end d-flex align-items-center justify-content-end">
-          <div class="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle">
+          <div class="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle" style="width: 50px; height: 50px;">
             <i class="fa fa-clipboard text-lg opacity-10" aria-hidden="true"></i>
           </div>
         </div>
@@ -62,18 +62,18 @@
 </div>
 <div class="col-xl-3 col-sm-6 col-6 mb-xl-0 mb-4">
   <div class="card">
-    <div class="card-body p-3" style="min-height: 120px; display: flex; align-items: center;">
+    <div class="card-body p-4" style="min-height: 120px; display: flex; align-items: center;">
       <div class="row w-100">
         <div class="col-8">
           <div class="numbers">
-            <p class="text-sm mb-0 text-uppercase font-weight-bold">Close</p>
-            <h5 class="font-weight-bolder">
+            <p class="text-sm mb-2 text-uppercase font-weight-bold">Close</p>
+            <h5 class="font-weight-bolder mb-0" style="font-size: 28px;">
               {{ $closedtic }}
             </h5>
           </div>
         </div>
         <div class="col-4 text-end d-flex align-items-center justify-content-end">
-          <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle">
+          <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle" style="width: 50px; height: 50px;">
             <i class="fa fa-minus text-lg opacity-10" aria-hidden="true"></i>
           </div>
         </div>
@@ -83,18 +83,18 @@
 </div>
 <div class="col-xl-3 col-sm-6 col-6">
   <div class="card">
-    <div class="card-body p-3" style="min-height: 120px; display: flex; align-items: center;">
+    <div class="card-body p-4" style="min-height: 120px; display: flex; align-items: center;">
       <div class="row w-100">
         <div class="col-8">
           <div class="numbers">
-            <p class="text-sm mb-0 text-uppercase font-weight-bold">Total Ticket</p>
-            <h5 class="font-weight-bolder">
+            <p class="text-sm mb-2 text-uppercase font-weight-bold">Total Ticket</p>
+            <h5 class="font-weight-bolder mb-0" style="font-size: 28px;">
               {{ $totalTickets }}
             </h5>
           </div>
         </div>
         <div class="col-4 text-end d-flex align-items-center justify-content-end">
-          <div class="icon icon-shape bg-gradient-warning shadow-warning text-center rounded-circle">
+          <div class="icon icon-shape bg-gradient-warning shadow-warning text-center rounded-circle" style="width: 50px; height: 50px;">
             <i class="fa fa-folder text-lg opacity-10" aria-hidden="true"></i>
           </div>
         </div>
