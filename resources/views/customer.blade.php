@@ -383,8 +383,14 @@
     // Initialize
     function initTable() {
       const table = $('#TicketTable tbody');
-      allRows = table.find('tr').detach();
-      renderTable();
+      // Clone semua row tanpa menghapusnya dari DOM
+      allRows = table.find('tr').map(function() {
+        return $(this).clone(true);
+      }).get();
+      
+      if (allRows.length > 0) {
+        renderTable();
+      }
     }
 
     // Render table based on current page and sort order
@@ -393,14 +399,17 @@
       table.empty();
 
       // Sort rows
-      let rowsToSort = allRows.clone();
+      let rowsToSort = allRows.slice(); // Copy array
       rowsToSort.sort(function(a, b) {
         // Extract date from the ticket number (format: sp-123012401 where dmy = last 6 digits after sp-)
         const getDate = (row) => {
           const ticketNum = $(row).find('li:first').text().trim();
-          // Extract date part
+          // Extract date part - looking for pattern sp-XXXDDMMYY
           const match = ticketNum.match(/sp-\d{3}(\d{6})/);
-          return match ? moment(match[1], 'DDMMYY').unix() : 0;
+          if (match) {
+            return moment(match[1], 'DDMMYY').unix();
+          }
+          return 0;
         };
 
         const dateA = getDate(a);
@@ -438,7 +447,7 @@
 
       // Append rows to table
       pageRows.forEach(row => {
-        table.append($(row).clone());
+        table.append($(row).clone(true));
       });
 
       // Update pagination info
@@ -489,7 +498,9 @@
     });
 
     // Initialize table on load
-    initTable();
+    setTimeout(function() {
+      initTable();
+    }, 100);
   });
 </script>
 @endsection
