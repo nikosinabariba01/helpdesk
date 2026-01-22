@@ -6,6 +6,7 @@ use App\Http\Requests\StoreTicketRequest;
 use App\Models\Comment;
 use App\Models\Ticket;
 use App\Models\User;
+use App\Services\TelegramService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -79,7 +80,29 @@ class TicketController extends Controller
         $ticket->status = 'escalated';
         $ticket->save();  // Simpan perubahan ke database
 
-        return redirect()->back()->with('success', 'Tiket berhasil di-escalated.');
+        // Ambil semua pemilik dengan telegram_chat_id
+        $owners = User::where('role', 'pemilik')
+            ->whereNotNull('telegram_chat_id')
+            ->get();
+
+        // Kirim pesan Telegram ke semua pemilik
+        $telegramService = new TelegramService();
+        $currentUser = Auth::user();
+        
+        foreach ($owners as $owner) {
+            $message = "<b>⚠️ Tiket Dieskalasi</b>\n\n";
+            $message .= "<b>ID Tiket:</b> sp-" . substr(preg_replace('/[^0-9]/', '', $ticket->id), -3) . \Carbon\Carbon::parse($ticket->created_at)->format('dmy') . "\n";
+            $message .= "<b>Subject:</b> {$ticket->subject}\n";
+            $message .= "<b>Pengguna:</b> {$ticket->user->name}\n";
+            $message .= "<b>Diminta oleh:</b> {$currentUser->name} ({$currentUser->role})\n";
+            $message .= "<b>Jenis Pengaduan:</b> {$ticket->Jenis_Pengaduan}\n";
+            $message .= "<b>Lokasi:</b> {$ticket->Lokasi}\n\n";
+            $message .= "<i>Tiket ini memerlukan perhatian dan bantuan Anda untuk penyelesaian.</i>";
+            
+            $telegramService->sendMessage($owner->telegram_chat_id, $message);
+        }
+
+        return redirect()->back()->with('success', 'Tiket berhasil di-escalated. Notifikasi Telegram telah dikirim ke semua pemilik.');
     }
 
 
@@ -91,7 +114,28 @@ class TicketController extends Controller
         $ticket->status = 'on process';
         $ticket->save();  // Simpan perubahan ke database
 
-        return redirect()->back()->with('success', 'Tiket berhasil dikembalikan ke status "on process"');
+        // Ambil semua pemilik dengan telegram_chat_id
+        $owners = User::where('role', 'pemilik')
+            ->whereNotNull('telegram_chat_id')
+            ->get();
+
+        // Kirim pesan Telegram ke semua pemilik
+        $telegramService = new TelegramService();
+        $currentUser = Auth::user();
+        
+        foreach ($owners as $owner) {
+            $message = "<b>✅ Pembatalan Eskalasi Tiket</b>\n\n";
+            $message .= "<b>ID Tiket:</b> sp-" . substr(preg_replace('/[^0-9]/', '', $ticket->id), -3) . \Carbon\Carbon::parse($ticket->created_at)->format('dmy') . "\n";
+            $message .= "<b>Subject:</b> {$ticket->subject}\n";
+            $message .= "<b>Pengguna:</b> {$ticket->user->name}\n";
+            $message .= "<b>Dibatalkan oleh:</b> {$currentUser->name} ({$currentUser->role})\n";
+            $message .= "<b>Status Baru:</b> On Process\n\n";
+            $message .= "<i>Permintaan eskalasi untuk tiket ini telah dibatalkan.</i>";
+            
+            $telegramService->sendMessage($owner->telegram_chat_id, $message);
+        }
+
+        return redirect()->back()->with('success', 'Tiket berhasil dikembalikan ke status "on process". Notifikasi Telegram telah dikirim ke semua pemilik.');
     }
 
     public function acceptEscalation($id)
