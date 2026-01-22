@@ -329,7 +329,7 @@
                 formData.append(key, user[key]);
             });
 
-            fetch('{{ route("telegram.auth.profile") }}', {
+            fetch('{{ route("telegram.from.profile") }}', {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
