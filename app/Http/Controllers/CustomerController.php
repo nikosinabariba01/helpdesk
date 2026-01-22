@@ -90,7 +90,7 @@ class CustomerController extends Controller
     {
         $userId = Auth::id();
         $page = $request->query('page', 1);
-        $perPage = 10;
+        $perPage = 4;
         $skip = ($page - 1) * $perPage;
 
         $tickets = Ticket::with('user')
