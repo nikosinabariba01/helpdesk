@@ -374,6 +374,8 @@
 <script>
   $(document).ready(function() {
     let currentSort = 'desc'; // Default: Terbaru
+    let currentPage = 1;
+    const itemsPerPage = 10;
     
     var table = $('#TicketTable').DataTable({
       searching: true,
@@ -392,6 +394,9 @@
     $('#TicketTable_length').hide();
     $('#TicketTable_paginate').hide();
 
+    // Initial pagination
+    updatePagination();
+
     // Custom search untuk kolom Subject dan Status
     $('#search').on('keyup', function() {
       var searchTerm = this.value.toLowerCase();
@@ -409,7 +414,8 @@
       );
 
       table.draw();
-      updatePaginationInfo();
+      currentPage = 1;
+      updatePagination();
     });
 
     // Handle sorting option clicks
@@ -423,6 +429,8 @@
       
       // Sort rows
       sortTableByDate(currentSort);
+      currentPage = 1;
+      updatePagination();
     });
 
     // Function to sort table by date
@@ -448,8 +456,6 @@
       $.each(rows, function(index, row) {
         $('#TicketTable tbody').append(row);
       });
-      
-      updatePaginationInfo();
     }
 
     // Function to extract date from ticket format
@@ -467,20 +473,54 @@
       return new Date(0);
     }
 
-    // Function to update pagination info
-    function updatePaginationInfo() {
-      var visibleRows = $('#TicketTable tbody tr:visible').length;
-      var totalRows = $('#TicketTable tbody tr').length;
-      $('#totalRecords').text(totalRows);
-      
-      // Update display range
-      if (visibleRows > 0) {
-        $('#paginationInfo').html('1-' + Math.min(50, visibleRows) + ' dari <span id="totalRecords">' + totalRows + '</span>');
+    // Function to update pagination display
+    function updatePagination() {
+      var allRows = $('#TicketTable tbody tr');
+      var totalRows = allRows.length;
+      const totalPages = Math.ceil(totalRows / itemsPerPage);
+
+      // Batasi halaman
+      if (currentPage > totalPages) {
+        currentPage = totalPages || 1;
       }
+
+      // Hide semua rows
+      allRows.hide();
+
+      // Show rows untuk halaman saat ini
+      var startIndex = (currentPage - 1) * itemsPerPage;
+      var endIndex = startIndex + itemsPerPage;
+      allRows.slice(startIndex, endIndex).show();
+
+      // Update pagination info
+      var displayStart = totalRows === 0 ? 0 : startIndex + 1;
+      var displayEnd = Math.min(endIndex, totalRows);
+      $('#paginationInfo').html(displayStart + '-' + displayEnd + ' dari <span id="totalRecords">' + totalRows + '</span>');
+
+      // Update page input
+      $('#pageInput').val(totalPages === 0 ? '0/0' : currentPage + '/' + totalPages);
+
+      // Update button states
+      $('#prevPage').prop('disabled', currentPage === 1).css('opacity', currentPage === 1 ? '0.5' : '1').css('cursor', currentPage === 1 ? 'not-allowed' : 'pointer');
+      $('#nextPage').prop('disabled', currentPage === totalPages || totalPages === 0).css('opacity', currentPage === totalPages || totalPages === 0 ? '0.5' : '1').css('cursor', currentPage === totalPages || totalPages === 0 ? 'not-allowed' : 'pointer');
     }
 
-    // Initialize pagination info
-    updatePaginationInfo();
+    // Handle pagination buttons
+    $('#prevPage').on('click', function() {
+      if (currentPage > 1) {
+        currentPage--;
+        updatePagination();
+      }
+    });
+
+    $('#nextPage').on('click', function() {
+      var totalRows = $('#TicketTable tbody tr').length;
+      const totalPages = Math.ceil(totalRows / itemsPerPage);
+      if (currentPage < totalPages) {
+        currentPage++;
+        updatePagination();
+      }
+    });
   });
 </script>
 @endsection
