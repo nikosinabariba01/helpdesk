@@ -22,6 +22,7 @@ class TelegramAuthController extends Controller
         if (! $this->isValidTelegramAuth($data)) {
             return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
         }
+
         /** @var \App\Models\User $user */
         $user = Auth::user();
         if ($user) {
@@ -29,30 +30,32 @@ class TelegramAuthController extends Controller
             $user->telegram_chat_id = $data['id'];
 
             // Jika user belum memiliki foto profil dan Telegram memiliki foto, simpan dari Telegram
-            if (!$user->profile_photo && isset($data['photo_url'])) {
+            if (! $user->profile_photo && isset($data['photo_url'])) {
                 $photoUrl = $data['photo_url'];
 
                 // Download foto dari Telegram
                 try {
                     $photoContent = file_get_contents($photoUrl);
                     if ($photoContent !== false) {
-                        // Buat nama file unik
-                        $fileName = 'telegram_' . $user->id . '_' . time() . '.jpg';
-                        $filePath = storage_path('app/profile_photos/' . $fileName);
+                        // Buat nama file unik menggunakan Str::random
+                        $filename = Str::random(40) . '.' . pathinfo($photoUrl, PATHINFO_EXTENSION);
+
+                        // Tentukan path penyimpanan foto di storage publik
+                        $path = storage_path('app/public/profile_photos/' . $filename);
 
                         // Pastikan direktori ada
-                        if (!is_dir(storage_path('app/profile_photos'))) {
-                            mkdir(storage_path('app/profile_photos'), 0755, true);
+                        if (! is_dir(storage_path('app/public/profile_photos'))) {
+                            mkdir(storage_path('app/public/profile_photos'), 0755, true);
                         }
 
-                        // Simpan foto ke storage
-                        file_put_contents($filePath, $photoContent);
+                        // Simpan foto ke storage publik
+                        file_put_contents($path, $photoContent);
 
-                        // Simpan path foto ke database
-                        $user->profile_photo = 'profile_photos/' . $fileName;
+                        // Update path foto di database dengan path publik
+                        $user->profile_photo = 'profile_photos/' . $filename;
                     }
                 } catch (\Exception $e) {
-                    // Jika gagal download foto, tetap lanjut proses
+                    // Jika gagal download foto, tetap lanjutkan proses dan log error
                     Log::error('Failed to download Telegram photo: ' . $e->getMessage());
                 }
             }
