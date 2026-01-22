@@ -173,9 +173,16 @@ class TelegramAuthController extends Controller
             // Simpan perubahan ke database
             $user->save();
 
-            // Redirect ke halaman profile customer dengan pesan sukses
-            return redirect()->route('customer.profile')
-                ->with('success', 'Akun Telegram berhasil terhubung!');
+            // Redirect ke halaman berdasarkan role user
+            if (in_array($user->role, ['teknisi', 'pemilik', 'admin'])) {
+                return redirect()->route('teknisi.profile')
+                    ->with('success', 'Akun Telegram berhasil terhubung!');
+            } elseif ($user->role == 'penyewa') {
+                return redirect()->route('customer.profile')
+                    ->with('success', 'Akun Telegram berhasil terhubung!');
+            } else {
+                return response()->json(['success' => false, 'message' => 'Role tidak dikenali'], 401);
+            }
         } else {
             return response()->json(['success' => false, 'message' => 'No authenticated user'], 401);
         }
