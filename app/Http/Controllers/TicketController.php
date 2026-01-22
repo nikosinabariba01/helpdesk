@@ -92,7 +92,6 @@ class TicketController extends Controller
         foreach ($owners as $owner) {
             $message = "<b>⚠️ Tiket Dieskalasi</b>\n\n";
             $message .= "<b>ID Tiket:</b> sp-" . substr(preg_replace('/[^0-9]/', '', $ticket->id), -3) . \Carbon\Carbon::parse($ticket->created_at)->format('dmy') . "\n";
-            $message .= "<b>Subject:</b> {$ticket->subject}\n";
             $message .= "<b>Pengguna:</b> {$ticket->user->name}\n";
             $message .= "<b>Diminta oleh:</b> {$currentUser->name} ({$currentUser->role})\n";
             $message .= "<b>Jenis Pengaduan:</b> {$ticket->Jenis_Pengaduan}\n";
