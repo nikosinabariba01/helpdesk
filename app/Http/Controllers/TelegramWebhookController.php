@@ -41,7 +41,7 @@ class TelegramWebhookController extends Controller {
 
         if ($user) {
             // Cek apakah pengguna mengetik kata kunci "!tiket"
-            if (trim($commentText) === '!tiket') {
+            if (trim($commentText) === 'aatiket') {
                 // Buatkan inline keyboard dengan tiket yang dimiliki pengguna
                 $keyboard = [
                     'inline_keyboard' => [],
