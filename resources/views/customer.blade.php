@@ -196,8 +196,24 @@
         
         <!-- Pagination and Sorting Controls -->
         <div style="padding: 15px 16px; border-top: 1px solid #e4e4e4; display: flex; justify-content: space-between; align-items: center; background-color: #f8f9fa;">
-          <div id="paginationInfo" style="font-size: 13px; color: #6c757d; font-weight: 500;">
-            1-10 dari <span id="totalRecords">{{ $data_ticket->count() }}</span>
+          <div style="display: flex; gap: 12px; align-items: center;">
+            <!-- Pagination Info as Dropdown -->
+            <div class="dropdown" style="position: relative;">
+              <button class="btn btn-sm btn-outline-secondary" style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;" data-bs-toggle="dropdown" aria-expanded="false">
+                <span id="paginationDisplay">1-10 dari</span>
+                <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
+              </button>
+              <ul class="dropdown-menu" style="font-size: 13px; min-width: 150px;">
+                <li><a class="dropdown-item page-sort-option" href="#" data-sort="desc" style="padding: 8px 16px;">
+                  <i class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru
+                </a></li>
+                <li><a class="dropdown-item page-sort-option" href="#" data-sort="asc" style="padding: 8px 16px;">
+                  <i class="fa fa-arrow-up me-2" style="color: #6c757d;"></i>Terlama
+                </a></li>
+              </ul>
+            </div>
+
+            <span id="totalRecordsDisplay" style="font-size: 13px; color: #6c757d; font-weight: 500;">{{ $data_ticket->count() }}</span>
           </div>
           
           <div style="display: flex; gap: 12px; align-items: center;">
@@ -210,22 +226,6 @@
               <button id="nextPage" class="btn btn-sm btn-outline-secondary" style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;" title="Halaman Berikutnya">
                 <i class="fa fa-chevron-right" style="font-size: 11px;"></i>
               </button>
-            </div>
-
-            <!-- Sorting Dropdown -->
-            <div class="dropdown" style="position: relative;">
-              <button class="btn btn-sm btn-outline-secondary" style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;" data-bs-toggle="dropdown" aria-expanded="false">
-                <span id="sortLabel">Terbaru</span>
-                <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
-              </button>
-              <ul class="dropdown-menu" style="font-size: 13px; min-width: 150px;">
-                <li><a class="dropdown-item sort-option" href="#" data-sort="desc" style="padding: 8px 16px;">
-                  <i class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru
-                </a></li>
-                <li><a class="dropdown-item sort-option" href="#" data-sort="asc" style="padding: 8px 16px;">
-                  <i class="fa fa-arrow-up me-2" style="color: #6c757d;"></i>Terlama
-                </a></li>
-              </ul>
             </div>
           </div>
         </div>
@@ -433,6 +433,20 @@
       updatePagination();
     });
 
+    // Handle pagination sort option clicks (from paginationInfo dropdown)
+    $(document).on('click', '.page-sort-option', function(e) {
+      e.preventDefault();
+      currentSort = $(this).data('sort');
+      
+      // Update dropdown display
+      const sortLabel = currentSort === 'desc' ? 'Terbaru' : 'Terlama';
+      
+      // Sort rows
+      sortTableByDate(currentSort);
+      currentPage = 1;
+      updatePagination();
+    });
+
     // Function to sort table by date
     function sortTableByDate(direction) {
       var rows = $('#TicketTable tbody tr').get();
@@ -492,10 +506,11 @@
       var endIndex = startIndex + itemsPerPage;
       allRows.slice(startIndex, endIndex).show();
 
-      // Update pagination info
+      // Update pagination display
       var displayStart = totalRows === 0 ? 0 : startIndex + 1;
       var displayEnd = Math.min(endIndex, totalRows);
-      $('#paginationInfo').html(displayStart + '-' + displayEnd + ' dari <span id="totalRecords">' + totalRows + '</span>');
+      $('#paginationDisplay').text(displayStart + '-' + displayEnd + ' dari');
+      $('#totalRecordsDisplay').text(totalRows);
 
       // Update page input
       $('#pageInput').val(totalPages === 0 ? '0/0' : currentPage + '/' + totalPages);
