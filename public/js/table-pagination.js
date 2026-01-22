@@ -130,19 +130,22 @@ function initTablePagination(tableId = 'DataTable', itemsPerPage = 10) {
     const endIndex = startIndex + itemsPerPage;
     allRows.slice(startIndex, endIndex).show();
 
-    // Update pagination display
-    let displayStart, displayEnd;
-    
-    if (currentSort === 'desc') {
-      displayStart = totalRows === 0 ? 0 : startIndex + 1;
-      displayEnd = Math.min(endIndex, totalRows);
-    } else {
-      displayStart = totalRows - startIndex;
-      displayEnd = totalRows - endIndex + 1;
-      if (displayEnd < 1) displayEnd = 1;
-    }
-    
-    $(`.paginationDisplay[data-table="${tableId}"]`).text(displayStart + '-' + displayEnd + ' dari ' + totalRows);
+    // Update pagination display for all elements with matching data-table
+    const displayElements = $(`.paginationDisplay[data-table="${tableId}"]`);
+    displayElements.each(function() {
+      let displayStart, displayEnd;
+      
+      if (currentSort === 'desc') {
+        displayStart = totalRows === 0 ? 0 : startIndex + 1;
+        displayEnd = Math.min(endIndex, totalRows);
+      } else {
+        displayStart = totalRows - startIndex;
+        displayEnd = totalRows - endIndex + 1;
+        if (displayEnd < 1) displayEnd = 1;
+      }
+      
+      $(this).text(displayStart + '-' + displayEnd + ' dari ' + totalRows);
+    });
 
     // Update page input
     $(`.pageInput[data-table="${tableId}"]`).val(totalPages === 0 ? '0/0' : currentPage + '/' + totalPages);

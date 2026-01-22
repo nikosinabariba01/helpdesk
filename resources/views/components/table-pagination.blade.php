@@ -2,13 +2,11 @@
 <!-- 
   Usage: @include('components.table-pagination', [
     'tableId' => 'TicketTable',
-    'totalRecords' => $data_ticket->count(),
+    'totalRecords' => 100,
     'sortable' => true
   ])
 -->
 
-@if($sortable ?? true)
-<!-- Pagination and Sorting Controls -->
 <div style="padding: 15px 16px; border-top: 1px solid #e4e4e4; display: flex; justify-content: space-between; align-items: center; background-color: #ffffff;">
   <div style="display: flex; gap: 12px; align-items: center;">
     <!-- Pagination Info as Dropdown -->
@@ -18,7 +16,7 @@
               data-bs-toggle="dropdown" 
               aria-expanded="false"
               data-table="{{ $tableId ?? 'DataTable' }}">
-        <span class="paginationDisplay">1-10 dari {{ $totalRecords ?? 0 }}</span>
+        <span class="paginationDisplay" data-table="{{ $tableId ?? 'DataTable' }}">1-10 dari {{ $totalRecords ?? 0 }}</span>
         <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
       </button>
       <ul class="dropdown-menu" style="font-size: 13px; min-width: 150px;">
@@ -51,4 +49,3 @@
     </div>
   </div>
 </div>
-@endif

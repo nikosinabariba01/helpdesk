@@ -35,7 +35,7 @@
             </div>
             @else
             <div class="table-responsive margin-right: 15px;" style="height: 400px; max-height: 400px; overflow-y: auto;">
-                <table class="table align-items-center mb-0" id="escalationTable">
+                <table class="table align-items-center mb-0" id="EscalationTable">
                     <thead>
                         <tr>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;" data-orderable="true">subject</th>
@@ -117,46 +117,22 @@
                     </tbody>
                 </table>
             </div>
+        
+            <!-- Pagination and Sorting Controls -->
+            @include('components.table-pagination', [
+                'tableId' => 'EscalationTable',
+                'totalRecords' => $teknisi_data_ticket->count(),
+                'sortable' => true
+            ])
             @endif
         </div>
     </div>
 </div>
 
+<script src="{{ asset('js/table-pagination.js') }}"></script>
 <script>
-    $(document).ready(function () {
-        var table = $('#escalationTable').DataTable({
-            searching: true,
-            ordering: false,
-            paging: false,
-            lengthChange: false,
-            info: false,
-            columnDefs: [
-                { targets: [2, 3, 4, 5], orderable: false }
-            ]
-        });
-
-        // Menyembunyikan elemen pencarian bawaan
-        $('#escalationTable_filter').hide();
-        $('#escalationTable_length').hide();
-        $('#escalationTable_paginate').hide();
-
-        // Custom search hanya kolom Subject dan User (kolom 0 dan 1)
-        $('#search').on('keyup', function () {
-            var searchTerm = this.value.toLowerCase();
-
-            $.fn.dataTable.ext.search = [];
-            $.fn.dataTable.ext.search.push(
-                function (settings, data, dataIndex) {
-                    // Kolom subject dan user (kolom ke-0 dan ke-1)
-                    var subject = data[0].toLowerCase(); // subject
-                    var user = data[1].toLowerCase(); // user
-
-                    return subject.includes(searchTerm) || user.includes(searchTerm);
-                }
-            );
-
-            table.draw();
-        });
+    $(document).ready(function() {
+        initTablePagination('EscalationTable', 10);
     });
 </script>
 
