@@ -4,8 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
-use App\Models\Ticket;
+use Illuminate\Support\Facades\Log;
 
 
 class TelegramAuthController extends Controller
@@ -52,7 +51,7 @@ class TelegramAuthController extends Controller
                     }
                 } catch (\Exception $e) {
                     // Jika gagal download foto, tetap lanjut proses
-                    \Log::error('Failed to download Telegram photo: ' . $e->getMessage());
+                    Log::error('Failed to download Telegram photo: ' . $e->getMessage());
                 }
             }
             
@@ -112,6 +111,61 @@ class TelegramAuthController extends Controller
         } else {
             return redirect()->route('customer.profile')
                 ->with('error', 'User tidak ditemukan!');
+        }
+    }
+
+    /**
+     * Handle Telegram authorization from Profile page (without ticket redirect).
+     */
+    public function telegramAuthorizeFromProfile(Request $request)
+    {
+        $data = $request->all();
+
+        // Validasi autentikasi data Telegram
+        if (! $this->isValidTelegramAuth($data)) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
+        }
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        if ($user) {
+            // Simpan telegram_chat_id ke user
+            $user->telegram_chat_id = $data['id'];
+            
+            // Jika user belum memiliki foto profil dan Telegram memiliki foto, simpan dari Telegram
+            if (!$user->profile_photo && isset($data['photo_url'])) {
+                $photoUrl = $data['photo_url'];
+                
+                // Download foto dari Telegram
+                try {
+                    $photoContent = file_get_contents($photoUrl);
+                    if ($photoContent !== false) {
+                        // Buat nama file unik
+                        $fileName = 'telegram_' . $user->id . '_' . time() . '.jpg';
+                        $filePath = storage_path('app/profile_photos/' . $fileName);
+                        
+                        // Pastikan direktori ada
+                        if (!is_dir(storage_path('app/profile_photos'))) {
+                            mkdir(storage_path('app/profile_photos'), 0755, true);
+                        }
+                        
+                        // Simpan foto ke storage
+                        file_put_contents($filePath, $photoContent);
+                        
+                        // Simpan path foto ke database
+                        $user->profile_photo = 'profile_photos/' . $fileName;
+                    }
+                } catch (\Exception $e) {
+                    // Jika gagal download foto, tetap lanjut proses
+                    Log::error('Failed to download Telegram photo: ' . $e->getMessage());
+                }
+            }
+            
+            $user->save();
+
+            return redirect()->route('customer.profile')
+                ->with('success', 'Akun Telegram berhasil terhubung!');
+        } else {
+            return response()->json(['success' => false, 'message' => 'No authenticated user'], 401);
         }
     }
 }

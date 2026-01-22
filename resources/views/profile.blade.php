@@ -240,9 +240,9 @@
                             </div>
 
                             <div class="text-center">
-                                <p class="text-muted mb-4">Klik tombol di bawah untuk login dengan Telegram:</p>
-                                <div id="telegram-widget-container" class="d-flex justify-content-center py-3">
-                                    <script async src="https://telegram.org/js/telegram-widget.js?22" data-telegram-login="{{ config('services.telegram.bot_name') }}" data-size="large" data-userpic="false" data-onauth="onTelegramAuth(user)" data-request-access="write"></script>
+                                <p class="text-muted mb-3">Klik tombol di bawah untuk login dengan Telegram:</p>
+                                <div id="telegram-widget-container" class="d-flex justify-content-center">
+                                    <script async src="https://telegram.org/js/telegram-widget.js?22" data-telegram-login="kos74_bot" data-size="large" data-userpic="false" data-onauth="onTelegramAuth(user)" data-request-access="write"></script>
                                 </div>
                             </div>
 
@@ -342,24 +342,24 @@
                 formData.append(key, user[key]);
             });
 
-            fetch('{{ route("telegram.auth", ["ticket_id" => request()->route("ticket_id") ?? "0"]) }}', {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: formData
-                })
-                .then(response => {
-                    if (response.redirected) {
-                        window.location.href = response.url;
-                    } else if (response.ok) {
-                        location.reload();
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Terjadi kesalahan saat menghubungkan Telegram');
-                });
+            fetch('{{ route("telegram.auth.profile") }}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: formData
+            })
+            .then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url;
+                } else if (response.ok) {
+                    location.reload();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat menghubungkan Telegram');
+            });
         }
 
         // Copy to Clipboard Function
@@ -371,5 +371,6 @@
             });
         }
     </script>
+</body>
 
 </html>
