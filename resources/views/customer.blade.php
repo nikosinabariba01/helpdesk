@@ -245,7 +245,16 @@
           </div>
           @else
           @foreach($pengumuman as $item)
-          <div class="list-group-item shadow-sm mb-3" style="padding: 12px 16px; border: 1px solid #e4e4e4; border-radius: 6px;">
+          <div class="list-group-item shadow-sm mb-3" style="padding: 12px 16px; border: 1px solid #e4e4e4; border-radius: 6px; cursor: pointer; transition: all 0.2s ease;" 
+               data-bs-toggle="modal" 
+               data-bs-target="#announcementModal" 
+               data-pengumuman-id="{{ $item->id }}"
+               data-pengumuman-judul="{{ $item->judul }}"
+               data-pengumuman-deskripsi="{{ $item->deskripsi }}"
+               data-creator-name="{{ $item->creator->name }}"
+               data-creator-role="{{ $item->creator->role }}"
+               data-creator-photo="{{ $item->creator && $item->creator->profile_photo ? route('profile.photo', ['filename' => basename($item->creator->profile_photo)]) : asset('default-profile.png') }}"
+               data-created-at="{{ $item->created_at }}">
             <!-- Pengirim Info -->
             <div class="d-flex align-items-center mb-2">
               <img src="{{ $item->creator && $item->creator->profile_photo ? route('profile.photo', ['filename' => basename($item->creator->profile_photo)]) : asset('default-profile.png') }}" 
@@ -269,6 +278,35 @@
       </div>
     </div>
 
+  </div>
+
+  <!-- Announcement Modal -->
+  <div class="modal fade" id="announcementModal" tabindex="-1" role="dialog" aria-labelledby="announcementModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <div class="d-flex align-items-center w-100">
+            <img id="modalCreatorPhoto" src="" alt="Profile" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover; margin-right: 12px;">
+            <div class="flex-grow-1">
+              <h6 id="modalCreatorName" class="mb-0 text-dark" style="font-size: 14px; font-weight: 600;"></h6>
+              <small id="modalCreatorRole" class="text-muted" style="font-size: 11px;"></small>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        </div>
+        <div class="modal-body pt-2">
+          <h5 id="modalJudul" class="text-dark mb-3" style="font-size: 18px; font-weight: 600;"></h5>
+          <small id="modalCreatedAt" class="text-muted d-block mb-3" style="font-size: 12px;"></small>
+          <p id="modalDeskripsi" class="text-muted" style="font-size: 14px; line-height: 1.6;"></p>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+          <small id="modalTimeAgo" class="text-muted me-auto" style="font-size: 12px;"></small>
+          <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Tutup</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Modal -->
@@ -593,5 +631,33 @@
       form.querySelector('#Lokasi').value = ticketLokasi;
       form.querySelector('#Detail').value = ticketDetail;
     });
+
+    // Handle announcement modal
+    const announcementModal = document.getElementById('announcementModal');
+    announcementModal.addEventListener('show.bs.modal', function(event) {
+      const button = event.relatedTarget;
+      const judul = button.getAttribute('data-pengumuman-judul');
+      const deskripsi = button.getAttribute('data-pengumuman-deskripsi');
+      const creatorName = button.getAttribute('data-creator-name');
+      const creatorRole = button.getAttribute('data-creator-role');
+      const creatorPhoto = button.getAttribute('data-creator-photo');
+      const createdAt = button.getAttribute('data-created-at');
+
+      document.getElementById('modalJudul').textContent = judul;
+      document.getElementById('modalDeskripsi').textContent = deskripsi;
+      document.getElementById('modalCreatorName').textContent = creatorName;
+      document.getElementById('modalCreatorRole').textContent = creatorRole;
+      document.getElementById('modalCreatorPhoto').src = creatorPhoto;
+      document.getElementById('modalCreatedAt').textContent = new Date(createdAt).toLocaleDateString('id-ID', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+      document.getElementById('modalTimeAgo').textContent = moment(createdAt).fromNow();
+    });
   });
+
 </script>
