@@ -170,7 +170,86 @@
             </div>
         </div>
 
+        <!-- Telegram Section -->
+        <div class="container-fluid py-4">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header pb-0">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <h5 class="mb-0">
+                                    <i class="fab fa-telegram me-2" style="color: #0088cc;"></i>Telegram Integration
+                                </h5>
+                                @if(Auth::user()->telegram_chat_id)
+                                <span class="badge bg-success">
+                                    <i class="fa fa-check me-1"></i>Connected
+                                </span>
+                                @else
+                                <span class="badge bg-secondary">
+                                    <i class="fa fa-times me-1"></i>Not Connected
+                                </span>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            @if(Auth::user()->telegram_chat_id)
+                            <!-- Telegram Connected State -->
+                            <div class="alert alert-info mb-4">
+                                <div class="d-flex align-items-center">
+                                    <i class="fa fa-info-circle me-3" style="font-size: 20px;"></i>
+                                    <div>
+                                        <strong>Telegram sudah terhubung!</strong>
+                                        <p class="mb-0 mt-1">Anda akan menerima notifikasi untuk setiap update tiket langsung di Telegram.</p>
+                                    </div>
+                                </div>
+                            </div>
 
+                            <div class="d-flex justify-content-center">
+                                <form action="{{ route('telegram.logout') }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="btn btn-danger" onclick="return confirm('Apakah Anda yakin ingin memutuskan koneksi Telegram?')">
+                                        <i class="fab fa-telegram me-2"></i>Logout Telegram
+                                    </button>
+                                </form>
+                            </div>
+                            @else
+                            <!-- Telegram Not Connected State -->
+                            <div class="alert alert-warning mb-4">
+                                <div class="d-flex align-items-center">
+                                    <i class="fa fa-exclamation-triangle me-3" style="font-size: 20px;"></i>
+                                    <div>
+                                        <strong>Telegram belum terhubung.</strong>
+                                        <p class="mb-0 mt-1">Hubungkan akun Telegram Anda untuk menerima notifikasi tiket secara real-time.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="text-center">
+                                <p class="text-muted mb-3">Klik tombol di bawah untuk login dengan Telegram:</p>
+                                <div id="telegram-widget-container" class="d-flex justify-content-center">
+                                    <script async src="https://telegram.org/js/telegram-widget.js?22" data-telegram-login="kos74_bot" data-size="large" data-userpic="false" data-onauth="onTelegramAuth(user)" data-request-access="write"></script>
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <div class="alert alert-light border">
+                                <h6 class="alert-heading mb-3">
+                                    <i class="fa fa-lightbulb me-2"></i>Mengapa perlu Telegram?
+                                </h6>
+                                <ul class="mb-0">
+                                    <li>Menerima notifikasi tiket secara real-time</li>
+                                    <li>Mendapatkan update status tiket dengan cepat</li>
+                                    <li>Memudahkan komunikasi dengan tim support</li>
+                                    <li>Akses informasi tiket kapan saja</li>
+                                </ul>
+                            </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- Edit Profile Card -->
         <div class="container-fluid py-4">
             <div class="row">
@@ -239,6 +318,44 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="{{ asset('style/assets/js/argon-dashboard.min.js') }}"></script>
+    <script>
+        // Handle Telegram Auth Callback
+        function onTelegramAuth(user) {
+            // Kirim data ke server
+            const formData = new FormData();
+            Object.keys(user).forEach(key => {
+                formData.append(key, user[key]);
+            });
+
+            fetch('{{ route("telegram.from.profile") }}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: formData
+                })
+                .then(response => {
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                    } else if (response.ok) {
+                        location.reload();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan saat menghubungkan Telegram');
+                });
+        }
+
+        // Copy to Clipboard Function
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Chat ID berhasil disalin ke clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+            });
+        }
+    </script>
 </body>
 
 </html>
