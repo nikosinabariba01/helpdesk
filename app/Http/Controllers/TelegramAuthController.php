@@ -118,7 +118,7 @@ class TelegramAuthController extends Controller
             $user->save();
 
             // Redirect ke halaman berdasarkan role user
-            if (in_array($user->role, ['teknisi', 'pemilik', 'admin'])) {
+            if (in_array($user->role, ['pengurus', 'pemilik', 'admin'])) {
                 return redirect()->route('teknisi.profile')
                     ->with('success', 'Telegram berhasil diputuskan!');
             } elseif ($user->role == 'penyewa') {
