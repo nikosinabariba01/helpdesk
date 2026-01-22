@@ -80,6 +80,7 @@ Route::middleware(['auth'])->group(function () {
 
 
     Route::get('/customer', [CustomerController::class, 'index'])->name('customer.index')->middleware('userAkses:penyewa,admin');
+    Route::get('/customer/tickets-infinite-scroll', [CustomerController::class, 'getTicketsInfiniteScroll'])->name('customer.tickets.infinite')->middleware('userAkses:penyewa,admin');
     Route::get('/Active', [CustomerController::class, 'viewprocess'])->name('customer.viewprocess')->middleware('userAkses:penyewa,admin');
     Route::get('/Profile/edit', [ProfileController::class, 'index'])->name('customer.profile')->middleware('userAkses:penyewa,admin');
 
