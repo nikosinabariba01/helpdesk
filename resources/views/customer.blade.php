@@ -205,15 +205,33 @@
       </div>
       <div class="card-body p-4" style="height: 500px; overflow-y: auto;">
         <div class="list-group">
-          @foreach($data_ticket as $dataticket)
-          <a href="{{ route('viewtickets.index', ['id' => $dataticket->id]) }}" class="list-group-item list-group-item-action shadow-sm mb-3" style="padding: 12px 16px;">
-            <div class="d-flex w-100 justify-content-between">
-              <h5 class="mb-1 text-dark" style="font-size: 16px;">{{ $dataticket->subject }}</h5>
-              <small class="text-muted" style="font-size: 12px;">{{ \Carbon\Carbon::parse($dataticket->created_at)->diffForHumans() }}</small>
+          @if($pengumuman->isEmpty())
+          <div class="text-center text-muted py-5">
+            <i class="fa fa-inbox fa-3x mb-3 opacity-5"></i>
+            <p>Tidak ada pengumuman</p>
+          </div>
+          @else
+          @foreach($pengumuman as $item)
+          <div class="list-group-item shadow-sm mb-3" style="padding: 12px 16px; border: 1px solid #e4e4e4; border-radius: 6px;">
+            <!-- Pengirim Info -->
+            <div class="d-flex align-items-center mb-2">
+              <img src="{{ $item->creator->profile_photo ? asset('storage/' . $item->creator->profile_photo) : asset('img/profile_default.png') }}" 
+                   alt="Profile" class="rounded-circle" style="width: 32px; height: 32px; object-fit: cover; margin-right: 10px;">
+              <div class="flex-grow-1">
+                <h6 class="mb-0 text-dark" style="font-size: 14px; font-weight: 600;">{{ $item->creator->name }}</h6>
+                <small class="text-muted" style="font-size: 11px;">{{ $item->creator->role }}</small>
+              </div>
+              <small class="text-muted" style="font-size: 11px;">{{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}</small>
             </div>
-            <p class="mb-1 text-muted" style="font-size: 14px;">{{ Str::limit($dataticket->Detail, 100) }}</p>
-          </a>
+            
+            <!-- Judul Pengumuman -->
+            <h5 class="mb-2 text-dark" style="font-size: 15px; font-weight: 600;">{{ $item->judul }}</h5>
+            
+            <!-- Deskripsi Pengumuman -->
+            <p class="mb-0 text-muted" style="font-size: 13px; line-height: 1.4;">{{ Str::limit($item->deskripsi, 100) }}</p>
+          </div>
           @endforeach
+          @endif
         </div>
       </div>
     </div>

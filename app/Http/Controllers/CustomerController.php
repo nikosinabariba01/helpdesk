@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Ticket;
 use App\Models\Comment;
 use App\Models\User;
+use App\Models\Pengumuman;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -53,7 +54,6 @@ class CustomerController extends Controller
         $data_ticket = Ticket::with('user')->where('user_id', $userId)->orderBy('created_at', 'desc')->get();
         $totalTickets = $data_ticket->count();
 
-
         $OnProcessTickets = Ticket::where('user_id', $userId)
             ->where('status', 'on process')
             ->count();
@@ -68,7 +68,15 @@ class CustomerController extends Controller
 
         $latestComments = $this->getLatestCommentsfromteknisi();
 
-        return view('customer', compact('data_ticket', 'totalTickets', 'OnProcessTickets', 'closedtic', 'OpenTic', 'latestComments'));
+        // Ambil pengumuman untuk user yang login
+        $pengumuman = Pengumuman::with('creator')
+            ->whereHas('penerima', function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('customer', compact('data_ticket', 'totalTickets', 'OnProcessTickets', 'closedtic', 'OpenTic', 'latestComments', 'pengumuman'));
     }
 
     public function viewprocess()
@@ -102,6 +110,14 @@ class CustomerController extends Controller
 
         $latestComments = $this->getLatestCommentsfromteknisi();
 
-        return view('process', compact('data_ticket', 'totalTickets', 'OnProcessTickets', 'closedtic', 'OpenTic', 'latestComments'));
+        // Ambil pengumuman untuk user yang login
+        $pengumuman = Pengumuman::with('creator')
+            ->whereHas('penerima', function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('process', compact('data_ticket', 'totalTickets', 'OnProcessTickets', 'closedtic', 'OpenTic', 'latestComments', 'pengumuman'));
     }
 }
