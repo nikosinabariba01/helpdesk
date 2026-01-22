@@ -240,9 +240,9 @@
                             </div>
 
                             <div class="text-center">
-                                <p class="text-muted mb-3">Klik tombol di bawah untuk login dengan Telegram:</p>
-                                <div id="telegram-widget-container" class="d-flex justify-content-center">
-                                    <script async src="https://telegram.org/js/telegram-widget.js?15" data-telegram-login="{{ config('services.telegram.bot_name') }}" data-size="large" data-userpic="false" data-onauth="onTelegramAuth(user)" data-request-access="write"></script>
+                                <p class="text-muted mb-4">Klik tombol di bawah untuk login dengan Telegram:</p>
+                                <div id="telegram-widget-container" class="d-flex justify-content-center py-3">
+                                    <script async src="https://telegram.org/js/telegram-widget.js?22" data-telegram-login="{{ config('services.telegram.bot_name') }}" data-size="large" data-userpic="false" data-onauth="onTelegramAuth(user)" data-request-access="write"></script>
                                 </div>
                             </div>
 
