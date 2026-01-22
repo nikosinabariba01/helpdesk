@@ -2,9 +2,6 @@
 @section('navbar')
 @include('mainlayout.navbar.nav')
 @endsection
-@push('scripts')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
-@endpush
 @section('pages')
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
@@ -197,37 +194,25 @@
           </table>
         </div>
         
-        <!-- Custom Pagination and Sorting Controls -->
-        <div class="d-flex justify-content-between align-items-center px-3 py-3" style="border-top: 1px solid #e4e4e4;">
-          <!-- Pagination Info -->
-          <div class="pagination-info">
-            <small class="text-muted">
-              Menampilkan <span id="pagingInfo">1-10</span> dari <span id="totalInfo">{{ $data_ticket->count() }}</span>
-            </small>
+        <!-- Pagination and Sorting Controls -->
+        <div style="padding: 15px 16px; border-top: 1px solid #e4e4e4; display: flex; justify-content: space-between; align-items: center; background-color: #f8f9fa;">
+          <div id="paginationInfo" style="font-size: 13px; color: #6c757d; font-weight: 500;">
+            1-50 dari <span id="totalRecords">{{ $data_ticket->count() }}</span>
           </div>
           
-          <!-- Sorting and Pagination Buttons -->
-          <div class="d-flex gap-2">
-            <!-- Sort Button -->
-            <div class="btn-group" role="group">
-              <button type="button" class="btn btn-sm btn-outline-secondary" id="sortBtn" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="fa fa-sort-amount-down pe-1"></i> Tanggal
-              </button>
-              <ul class="dropdown-menu dropdown-menu-end" id="sortDropdown">
-                <li><a class="dropdown-item" href="#" data-sort="desc"><i class="fa fa-arrow-down pe-2"></i>Terbaru</a></li>
-                <li><a class="dropdown-item" href="#" data-sort="asc"><i class="fa fa-arrow-up pe-2"></i>Terlama</a></li>
-              </ul>
-            </div>
-            
-            <!-- Pagination Buttons -->
-            <div class="d-flex gap-1">
-              <button class="btn btn-sm btn-outline-secondary" id="prevBtn" title="Halaman Sebelumnya">
-                <i class="fa fa-chevron-left"></i>
-              </button>
-              <button class="btn btn-sm btn-outline-secondary" id="nextBtn" title="Halaman Berikutnya">
-                <i class="fa fa-chevron-right"></i>
-              </button>
-            </div>
+          <div class="dropdown" style="position: relative;">
+            <button class="btn btn-sm btn-outline-secondary" style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;" data-bs-toggle="dropdown" aria-expanded="false">
+              <span id="sortLabel">Terbaru</span>
+              <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
+            </button>
+            <ul class="dropdown-menu" style="font-size: 13px; min-width: 150px;">
+              <li><a class="dropdown-item sort-option" href="#" data-sort="desc" style="padding: 8px 16px;">
+                <i class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru
+              </a></li>
+              <li><a class="dropdown-item sort-option" href="#" data-sort="asc" style="padding: 8px 16px;">
+                <i class="fa fa-arrow-up me-2" style="color: #6c757d;"></i>Terlama
+              </a></li>
+            </ul>
           </div>
         </div>
         @endif
@@ -374,133 +359,114 @@
 </div>
 <script>
   $(document).ready(function() {
-    const itemsPerPage = 5;
-    let currentPage = 1;
-    let allRows = [];
-    let sortOrder = 'desc'; // 'desc' = terbaru, 'asc' = terlama
-    let searchTerm = '';
+    let currentSort = 'desc'; // Default: Terbaru
+    
+    var table = $('#TicketTable').DataTable({
+      searching: true,
+      ordering: false,
+      paging: false,
+      lengthChange: false,
+      info: false,
+      columnDefs: [{
+        targets: [2, 3],
+        orderable: false
+      }]
+    });
 
-    // Initialize
-    function initTable() {
-      const table = $('#TicketTable tbody');
-      // Clone semua row tanpa menghapusnya dari DOM
-      allRows = table.find('tr').map(function() {
-        return $(this).clone(true);
-      }).get();
+    // Menyembunyikan elemen pencarian bawaan
+    $('#TicketTable_filter').hide();
+    $('#TicketTable_length').hide();
+    $('#TicketTable_paginate').hide();
+
+    // Custom search untuk kolom Subject dan Status
+    $('#search').on('keyup', function() {
+      var searchTerm = this.value.toLowerCase();
+
+      $.fn.dataTable.ext.search = [];
+      $.fn.dataTable.ext.search.push(
+        function(settings, data, dataIndex) {
+          // Kolom subject (kolom 0) dan status (kolom 1)
+          var subject = data[0].toLowerCase(); // subject
+          var status = data[1].toLowerCase(); // status
+          var description = data[2].toLowerCase(); // description
+
+          return subject.includes(searchTerm) || status.includes(searchTerm) || description.includes(searchTerm);
+        }
+      );
+
+      table.draw();
+      updatePaginationInfo();
+    });
+
+    // Handle sorting option clicks
+    $(document).on('click', '.sort-option', function(e) {
+      e.preventDefault();
+      currentSort = $(this).data('sort');
       
-      if (allRows.length > 0) {
-        renderTable();
-      }
-    }
-
-    // Render table based on current page and sort order
-    function renderTable() {
-      const table = $('#TicketTable tbody');
-      table.empty();
-
+      // Update label
+      const sortLabel = currentSort === 'desc' ? 'Terbaru' : 'Terlama';
+      $('#sortLabel').text(sortLabel);
+      
       // Sort rows
-      let rowsToSort = allRows.slice(); // Copy array
-      rowsToSort.sort(function(a, b) {
-        // Extract date from the ticket number (format: sp-123012401 where dmy = last 6 digits after sp-)
-        const getDate = (row) => {
-          const ticketNum = $(row).find('li:first').text().trim();
-          // Extract date part - looking for pattern sp-XXXDDMMYY
-          const match = ticketNum.match(/sp-\d{3}(\d{6})/);
-          if (match) {
-            return moment(match[1], 'DDMMYY').unix();
-          }
-          return 0;
-        };
+      sortTableByDate(currentSort);
+    });
 
-        const dateA = getDate(a);
-        const dateB = getDate(b);
-
-        if (sortOrder === 'desc') {
-          return dateB - dateA; // Terbaru dulu
+    // Function to sort table by date
+    function sortTableByDate(direction) {
+      var rows = $('#TicketTable tbody tr').get();
+      
+      rows.sort(function(a, b) {
+        // Ambil teks dari kolom pertama (yang berisi nomor tiket dengan tanggal)
+        var aText = $(a).find('li:first').text(); // sp-123012401
+        var bText = $(b).find('li:first').text(); // sp-456012402
+        
+        // Ekstrak tanggal dari format sp-xxxddmmyy
+        var aDate = extractDateFromTicket(aText);
+        var bDate = extractDateFromTicket(bText);
+        
+        if (direction === 'desc') {
+          return new Date(bDate) - new Date(aDate);
         } else {
-          return dateA - dateB; // Terlama dulu
+          return new Date(aDate) - new Date(bDate);
         }
       });
 
-      // Filter by search term
-      let filteredRows = rowsToSort.filter(function() {
-        const text = $(this).text().toLowerCase();
-        return text.includes(searchTerm);
+      $.each(rows, function(index, row) {
+        $('#TicketTable tbody').append(row);
       });
-
-      // Calculate pagination
-      const totalItems = filteredRows.length;
-      const totalPages = Math.ceil(totalItems / itemsPerPage);
       
-      // Validate current page
-      if (currentPage > totalPages && totalPages > 0) {
-        currentPage = totalPages;
-      }
-      if (currentPage < 1) {
-        currentPage = 1;
-      }
-
-      // Get rows for current page
-      const startIdx = (currentPage - 1) * itemsPerPage;
-      const endIdx = startIdx + itemsPerPage;
-      const pageRows = filteredRows.slice(startIdx, endIdx);
-
-      // Append rows to table
-      pageRows.forEach(row => {
-        table.append($(row).clone(true));
-      });
-
-      // Update pagination info
-      if (totalItems === 0) {
-        $('#pagingInfo').text('0-0');
-      } else {
-        const displayStart = startIdx + 1;
-        const displayEnd = Math.min(endIdx, totalItems);
-        $('#pagingInfo').text(displayStart + '-' + displayEnd);
-      }
-      $('#totalInfo').text(totalItems);
-
-      // Update button states
-      $('#prevBtn').prop('disabled', currentPage === 1);
-      $('#nextBtn').prop('disabled', currentPage >= totalPages || totalItems === 0);
+      updatePaginationInfo();
     }
 
-    // Pagination controls
-    $('#prevBtn').on('click', function() {
-      if (currentPage > 1) {
-        currentPage--;
-        renderTable();
+    // Function to extract date from ticket format
+    function extractDateFromTicket(ticketText) {
+      // Format: sp-xxxddmmyy
+      // Ambil 6 karakter terakhir: ddmmyy
+      var match = ticketText.match(/sp-(\d{3})(\d{6})/);
+      if (match) {
+        var dateStr = match[2]; // ddmmyy
+        var day = dateStr.substring(0, 2);
+        var month = dateStr.substring(2, 4);
+        var year = '20' + dateStr.substring(4, 6);
+        return new Date(year, parseInt(month) - 1, day);
       }
-    });
+      return new Date(0);
+    }
 
-    $('#nextBtn').on('click', function() {
-      const totalItems = $('#TicketTable tbody tr').length;
-      const totalPages = Math.ceil(totalItems / itemsPerPage);
-      if (currentPage < totalPages) {
-        currentPage++;
-        renderTable();
+    // Function to update pagination info
+    function updatePaginationInfo() {
+      var visibleRows = $('#TicketTable tbody tr:visible').length;
+      var totalRows = $('#TicketTable tbody tr').length;
+      $('#totalRecords').text(totalRows);
+      
+      // Update display range
+      if (visibleRows > 0) {
+        $('#paginationInfo').html('1-' + Math.min(50, visibleRows) + ' dari <span id="totalRecords">' + totalRows + '</span>');
       }
-    });
+    }
 
-    // Sorting
-    $('#sortDropdown a').on('click', function(e) {
-      e.preventDefault();
-      sortOrder = $(this).data('sort');
-      currentPage = 1; // Reset to first page
-      renderTable();
-    });
-
-    // Search functionality
-    $('#search').on('keyup', function() {
-      searchTerm = this.value.toLowerCase();
-      currentPage = 1; // Reset to first page
-      renderTable();
-    });
-
-    // Initialize table on load
-    setTimeout(function() {
-      initTable();
-    }, 100);
+    // Initialize pagination info
+    updatePaginationInfo();
   });
 </script>
 @endsection
