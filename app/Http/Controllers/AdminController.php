@@ -139,13 +139,19 @@ class AdminController extends Controller
      */
     public function destroyUser(User $user)
     {
-        // Mutasi email supaya unique index kebuka
+        // 1. Mutasi email supaya unique index kebuka
         $user->email = 'deleted_' . $user->id . '_' . $user->email;
+
+        // 2. Null-kan kolom telegram_chat_id untuk menjaga privasi dan data tetap bersih
+        $user->telegram_chat_id = null;
+
+        // 3. Simpan perubahan
         $user->save();
 
-        // Soft delete
+        // 4. Soft delete (hapus user tapi tidak benar-benar menghapusnya)
         $user->delete();
 
+        // 5. Redirect ke halaman manage user dengan pesan sukses
         return redirect()
             ->route('admin.manageuser')
             ->with('success', 'User berhasil dinonaktifkan.');
