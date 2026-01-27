@@ -11,7 +11,7 @@ class Comment extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->withTrashed(); // Menggunakan withTrashed untuk mengambil data user yang sudah dihapus
     }
 
     // Relasi dengan Ticket

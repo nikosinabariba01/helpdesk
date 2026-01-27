@@ -20,6 +20,6 @@ class TargetPengumuman extends Model
     // Relasi dengan pengguna yang menerima pengumuman (Many-to-One)
     public function pengguna()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->withTrashed();
     }
 }

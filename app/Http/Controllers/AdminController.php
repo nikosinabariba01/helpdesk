@@ -139,8 +139,15 @@ class AdminController extends Controller
      */
     public function destroyUser(User $user)
     {
+        // Mutasi email supaya unique index kebuka
+        $user->email = 'deleted_' . $user->id . '_' . $user->email;
+        $user->save();
+
+        // Soft delete
         $user->delete();
 
-        return redirect()->route('admin.manageuser')->with('success', 'User berhasil dihapus.');
+        return redirect()
+            ->route('admin.manageuser')
+            ->with('success', 'User berhasil dinonaktifkan.');
     }
 }

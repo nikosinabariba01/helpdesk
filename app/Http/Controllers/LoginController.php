@@ -29,20 +29,26 @@ class LoginController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
-            if (Auth::attempt($credentials)) {
-                if (Auth::user()->role == 'admin') {
-                    return redirect('/admin');
-                } elseif (Auth::user()->role == 'pengurus' || Auth::user()->role == 'pemilik') {
-                    return redirect('/teknisi');  // Ganti dengan URL yang sesuai untuk pengurus dan pemilik
-                } elseif (Auth::user()->role == 'penyewa') {
-                    return redirect('/customer');
-                }
+            // Cek apakah user sudah di-soft delete
+            $user = Auth::user();
+
+            if ($user->deleted_at !== null) {
+                Auth::logout(); // Logout user yang sudah di-soft delete
+                return back()->withErrors(['email' => 'Akun Anda telah dinonaktifkan.'])->withInput();
+            }
+
+            // Role-based redirect
+            if ($user->role == 'admin') {
+                return redirect('/admin');
+            } elseif ($user->role == 'pengurus' || $user->role == 'pemilik') {
+                return redirect('/teknisi');  // Ganti dengan URL yang sesuai untuk pengurus dan pemilik
+            } elseif ($user->role == 'penyewa') {
+                return redirect('/customer');
             }
         } else {
             return back()->withErrors(['email' => 'Email atau password salah'])->withInput();
         }
     }
-
 
     function logout()
     {

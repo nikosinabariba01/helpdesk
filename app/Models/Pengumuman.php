@@ -20,12 +20,13 @@ class Pengumuman extends Model
     // Relasi dengan pengguna yang membuat pengumuman (One-to-Many)
     public function creator()
     {
-        return $this->belongsTo(User::class, 'creator_id');
+        return $this->belongsTo(User::class, 'creator_id')->withTrashed();
     }
 
     // Relasi dengan penerima pengumuman (Many-to-Many via pivot table `target_pengumuman`)
     public function penerima()
     {
-        return $this->belongsToMany(User::class, 'target_pengumuman', 'pengumuman_id', 'user_id');
+        return $this->belongsToMany(User::class, 'target_pengumuman', 'pengumuman_id', 'user_id')
+            ->withTrashed();
     }
 }
