@@ -66,8 +66,9 @@ class TicketCommentController extends Controller
         // Mengirim pesan ke Telegram
         $telegram = new TelegramService();
         $userName = auth()->user()->name;
+        $ticketNumber = "sp-" . substr(preg_replace('/[^0-9]/', '', $ticket->id), -3) . \Carbon\Carbon::parse($ticket->created_at)->format('dmy') . ($ticket->Jenis_Pengaduan == 0 ? '0' : '1');
         $userRole = auth()->user()->role;
-        $message  = "<b>Ticket #{$ticket->id}</b>\nKomentar teknisi <b>{$userName} ({$userRole})</b>:\n{$comment->comment}";
+        $message  = "<b>Ticket #{$ticketNumber}</b>\nKomentar teknisi <b>{$userName} ({$userRole})</b>:\n{$comment->comment}";
 
         // 1. Kirim ke pemilik tiket
         if ($ticket->user && $ticket->user->telegram_chat_id) {
