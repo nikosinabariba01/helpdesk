@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
@@ -7,10 +8,12 @@ use App\Models\User;
 use App\Services\TelegramService;
 use Illuminate\Http\Request;
 
-class TicketCommentController extends Controller {
+class TicketCommentController extends Controller
+{
 
     // Fungsi untuk komentar dari penyewa
-    public function store(Request $request, Ticket $ticket) {
+    public function store(Request $request, Ticket $ticket)
+    {
         $request->validate([
             'commentText' => 'required|string',
         ]);
@@ -25,7 +28,8 @@ class TicketCommentController extends Controller {
         // Mengirim pesan ke Telegram
         $telegram = new TelegramService();
         $userName = auth()->user()->name;
-        $message  = "<b>Ticket #{$ticket->id}</b>\nKomentar oleh <b>{$userName} (anda)</b>:\n{$comment->comment}";
+        $ticketNumber = "sp-" . substr(preg_replace('/[^0-9]/', '', $ticket->id), -3) . \Carbon\Carbon::parse($ticket->created_at)->format('dmy') . ($ticket->Jenis_Pengaduan == 0 ? '0' : '1');
+        $message = "<b>Ticket {$ticketNumber}</b>\nKomentar oleh <b>{$userName} (anda)</b>:\n{$comment->comment}";
 
         // 1. Kirim ke pemilik tiket
         if ($ticket->user && $ticket->user->telegram_chat_id) {
@@ -46,7 +50,8 @@ class TicketCommentController extends Controller {
     }
 
     // Fungsi untuk komentar dari teknisi
-    public function teknisiComment(Request $request, Ticket $ticket) {
+    public function teknisiComment(Request $request, Ticket $ticket)
+    {
         $request->validate([
             'commentText' => 'required|string',
         ]);
