@@ -81,17 +81,15 @@ class TelegramWebhookController extends Controller
             'inline_keyboard' => [],
         ];
 
-        // Cek role pengguna yang sedang login
-        $userRole = $user->role;
-
-        if ($userRole == 'penghuni') {
-            // Penghuni hanya bisa melihat tiket yang dimiliki (user_id)
+        // Tentukan query tiket berdasarkan peran pengguna
+        if ($user->role === 'penghuni') {
+            // Untuk penghuni, ambil tiket yang dimiliki
             $tickets = Ticket::where('user_id', $user->id)
                 ->where('status', '!=', 'close')
                 ->get();
-        } else {
-            // Teknisi, Pengelola, dan Admin dapat melihat tiket yang di-assign ke mereka
-            $tickets = Ticket::whereHas('asignees', function ($query) use ($user) {
+        } elseif ($user->role === 'pemilik' || $user->role === 'pengelola') {
+            // Untuk pemilik atau pengelola, ambil tiket yang ditugaskan ke mereka
+            $tickets = Ticket::whereHas('assignees', function ($query) use ($user) {
                 $query->where('user_id', $user->id);
             })
                 ->where('status', '!=', 'close')
