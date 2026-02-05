@@ -130,7 +130,8 @@ class TelegramWebhookController extends Controller
         $this->sendTelegramMessage($chatId, $message, $keyboard);
     }
 
-        protected function showEskalasiTickets($chatId)
+        // Fungsi untuk menampilkan tiket dengan status 'escalated' (bukan inline keyboard, hanya teks)
+    protected function showEskalasiTickets($chatId)
     {
         // Ambil tiket dengan status 'escalated'
         $tickets = Ticket::where('status', 'escalated')->get();
@@ -140,25 +141,22 @@ class TelegramWebhookController extends Controller
             return;
         }
 
-        // Membuat inline keyboard untuk tiket escalated
-        $keyboard = [
-            'inline_keyboard' => [],
-        ];
+        // Membuat pesan teks dengan daftar tiket escalated
+        $message = "📋 Berikut adalah tiket dengan status escalated:\n\n";
 
-        // Menambahkan tombol inline untuk setiap tiket escalated
+        // Menambahkan detail tiket ke pesan
         foreach ($tickets as $ticket) {
-            $ticketText = "Tiket #sp-" . substr(preg_replace('/[^0-9]/', '', $ticket->id), -3) . \Carbon\Carbon::parse($ticket->created_at)->format('dmy') . ($ticket->Jenis_Pengaduan == 0 ? '0' : '1') . " - {$ticket->subject}";
-
-            $keyboard['inline_keyboard'][] = [
-                [
-                    'text'          => $ticketText,            // Nama tombol sesuai dengan tiket
-                    'callback_data' => "ticket_{$ticket->id}", // Callback data yang akan diproses saat tombol dipilih
-                ],
-            ];
+            $ticketText = "Tiket #sp-" . substr(preg_replace('/[^0-9]/', '', $ticket->id), -3) . 
+                          \Carbon\Carbon::parse($ticket->created_at)->format('dmy') . 
+                          ($ticket->Jenis_Pengaduan == 0 ? '0' : '1') . " - {$ticket->subject}\n";
+            $ticketText .= "Status: Escalated\n";
+            $ticketText .= "Detail: {$ticket->detail}\n\n";
+            
+            $message .= $ticketText;
         }
 
-        // Kirimkan pesan dengan inline keyboard berisi tiket escalated
-        $this->sendTelegramMessage($chatId, "📋 Berikut adalah tiket dengan status escalated. Silakan pilih tiket yang ingin Anda komentari:", $keyboard);
+        // Kirimkan pesan dengan detail tiket escalated
+        $this->sendTelegramMessage($chatId, $message);
     }
 
     // Fungsi untuk menangani callback query (setelah pengguna memilih tiket)
