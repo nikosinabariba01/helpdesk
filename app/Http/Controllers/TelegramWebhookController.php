@@ -46,13 +46,19 @@ class TelegramWebhookController extends Controller
         $user = User::where('telegram_chat_id', $chatId)->first();
 
         if ($user) {
-            // Cek apakah pesan yang diterima adalah /pilih
-            if ($text === '/pilih') {
+            // Cek apakah pesan yang diterima adalah /eskalasi
+            if ($text === '/eskalasi') {
+                // Cek apakah user memiliki role pemilik atau pengurus
+                if ($user->role == 'pemilik' || $user->role == 'pengurus') {
+                    // Jika role pemilik atau pengurus, tampilkan tiket dengan status escalated
+                    $this->showEskalasiTickets($chatId);
+                } else {
+                    // Jika role tidak sesuai, tidak memberikan balasan apapun
+                    Log::info("User dengan telegram_chat_id {$chatId} tidak memiliki akses ke perintah /eskalasi.");
+                }
+            } elseif ($text === '/pilih') {
                 // Ambil tiket yang dimiliki pengguna dan tampilkan inline keyboard
                 $this->showTicketInlineKeyboard($chatId, "Silahkan pilih tiket:");
-            } elseif ($text === '/eskalasi') {
-                // Jika pesan adalah /eskalasi, tampilkan tiket dengan status escalated
-                $this->showEskalasiTickets($chatId);
             } else {
                 // Jika bukan /pilih dan /eskalasi, kirimkan pesan instruksi
                 // Cek apakah pengguna sudah memilih tiket sebelumnya
