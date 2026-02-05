@@ -130,7 +130,7 @@ class TelegramWebhookController extends Controller
         $this->sendTelegramMessage($chatId, $message, $keyboard);
     }
 
-        // Fungsi untuk menampilkan tiket dengan status 'escalated' (bukan inline keyboard, hanya teks)
+    // Fungsi untuk menampilkan tiket dengan status 'escalated' (bukan inline keyboard, hanya teks)
     protected function showEskalasiTickets($chatId)
     {
         // Ambil tiket dengan status 'escalated'
@@ -146,18 +146,24 @@ class TelegramWebhookController extends Controller
 
         // Menambahkan detail tiket ke pesan
         foreach ($tickets as $ticket) {
+            // Ambil nama assignee (yang meng-assign tiket)
             $assigneeName = $ticket->asignees->pluck('name')->implode(', '); // Mengambil nama assignee
-            // Menghitung waktu sejak tiket di-eskalasi
-        $escalatedAt = \Carbon\Carbon::parse($ticket->updated_at);
-        $timeSinceEscalated = $escalatedAt->diffForHumans(); // Format: "X minutes ago", "1 hour ago", etc.
 
-            $ticketText = "Tiket #sp-" . substr(preg_replace('/[^0-9]/', '', $ticket->id), -3) . 
-                          \Carbon\Carbon::parse($ticket->created_at)->format('dmy') . 
-                          ($ticket->Jenis_Pengaduan == 0 ? '0' : '1') . " - {$ticket->subject}\n";
-            $ticketText .= "Status: Escalated\n"; 
-            $ticketText .= "Waktu Eskalasi: {$timeSinceEscalated}\n"; // Menambahkan waktu eskalasi
-            $ticketText .= "Diminta oleh: {$assigneeName}\n\n"; // Menambahkan nama assignee
-            
+            // Menghitung waktu sejak tiket di-eskalasi
+            $escalatedAt = \Carbon\Carbon::parse($ticket->updated_at);
+            $timeSinceEscalated = $escalatedAt->diffForHumans(); // Format: "X minutes ago", "1 hour ago", etc.
+
+            // Format teks tiket
+            $ticketText = "🔖 *Tiket #sp-" . substr(preg_replace('/[^0-9]/', '', $ticket->id), -3) . \Carbon\Carbon::parse($ticket->created_at)->format('dmy') . ($ticket->Jenis_Pengaduan == 0 ? '0' : '1') . "*\n";
+            $ticketText .= "📄 *Subjek:* {$ticket->subject}\n";
+            $ticketText .= "📅 *Status:* Escalated\n";
+            $ticketText .= "⏰ *Waktu Eskalasi:* {$timeSinceEscalated}\n"; // Menambahkan waktu eskalasi
+            $ticketText .= "👤 *Diminta oleh:* {$assigneeName}\n"; // Menambahkan nama assignee
+
+            // Tambahkan pemisah antar tiket
+            $ticketText .= "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+
+            // Gabungkan tiket ke pesan utama
             $message .= $ticketText;
         }
 
