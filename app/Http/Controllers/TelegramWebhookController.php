@@ -89,12 +89,12 @@ class TelegramWebhookController extends Controller
         }
 
         // Logika berdasarkan role pengguna
-        if ($user->role == 'penghuni') {
+        if ($user->role == 'penyewa') {
             // Jika role adalah penghuni, ambil tiket yang dimiliki oleh pengguna
             $tickets = Ticket::where('user_id', $user->id)
                 ->where('status', '!=', 'close')
                 ->get();
-        } elseif ($user->role == 'teknisi' || $user->role == 'pengelola') {
+        } elseif ($user->role == 'pemilik' || $user->role == 'pengurus') {
             // Jika role adalah teknisi atau pengelola, ambil tiket yang di-assign ke mereka
             $tickets = Ticket::whereHas('asignees', function ($query) use ($user) {
                 $query->where('user_id', $user->id);
