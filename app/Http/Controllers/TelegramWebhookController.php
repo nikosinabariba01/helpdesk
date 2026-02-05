@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
@@ -11,10 +10,8 @@ use Illuminate\Support\Facades\Cache; // Pastikan TelegramService sudah ada
 use Illuminate\Support\Facades\Log;
 // Pastikan Cache digunakan
 
-class TelegramWebhookController extends Controller
-{
-    public function handle(Request $request)
-    {
+class TelegramWebhookController extends Controller {
+    public function handle(Request $request) {
         $update = $request->all(); // Ambil semua data dari Telegram
 
         // Log update yang diterima untuk debugging
@@ -34,8 +31,7 @@ class TelegramWebhookController extends Controller
     }
 
     // Fungsi untuk menangani pesan
-    public function handleMessage($message)
-    {
+    public function handleMessage($message) {
         // Ambil chat_id untuk balas pesan
         $chatId = $message['chat']['id'];
         $text   = $message['text']; // Teks pesan yang dikirim pengguna
@@ -49,39 +45,37 @@ class TelegramWebhookController extends Controller
         if ($user) {
             // Cek apakah pesan yang diterima adalah /pilih
             if ($text === '/pilih') {
-                // Ambil tiket yang dimiliki pengguna dan tampilkan inline keyboard
-                $this->showTicketInlineKeyboard($chatId, "Silahkan pilih tiket:");
+                // Ambil tiket yang sesuai berdasarkan role pengguna dan tampilkan inline keyboard
+                if ($user->role == 'penghuni') {
+                    // Jika role adalah penghuni, ambil tiket yang dimiliki oleh pengguna
+                    $this->showTicketInlineKeyboard($chatId, "Silahkan pilih tiket Anda:");
+                } elseif ($user->role == 'teknisi' || $user->role == 'pengelola') {
+                    // Jika role adalah teknisi atau pengelola, ambil tiket yang di-assign ke mereka
+                    $this->showTicketInlineKeyboard($chatId, "Silahkan pilih tiket yang di-assign kepada Anda:");
+                } else {
+                    // Role tidak dikenali, kirim pesan kesalahan
+                    $this->sendTelegramMessage($chatId, "Role pengguna tidak dikenali.");
+                }
             } else {
                 // Jika bukan /pilih, kirimkan pesan instruksi
-                // Cek apakah pengguna sudah memilih tiket sebelumnya
-                $ticketId = Cache::get("user_ticket_{$chatId}");
-
-                if ($ticketId) {
-                    // Menyimpan komentar pengguna
-                    $this->saveComment($user, $text);
-                } else {
-                    // Kirimkan pesan instruksi jika tiket belum dipilih
-                    $this->sendTelegramMessage($chatId, "Silahkan ketik /pilih untuk memilih tiket.");
-                }
+                $this->sendTelegramMessage($chatId, "Silahkan ketik /pilih untuk memilih tiket.");
             }
         } else {
+            // Jika pengguna tidak ditemukan berdasarkan telegram_chat_id
             $this->sendTelegramMessage($chatId, "Pengguna tidak terdaftar.");
         }
     }
 
     // Fungsi untuk mengirim pesan ke Telegram
-    protected function sendTelegramMessage($chatId, $message, $keyboard = null)
-    {
+    protected function sendTelegramMessage($chatId, $message, $keyboard = null) {
         // Pastikan TelegramService sudah diimplementasikan
         $telegram = new TelegramService();
         $telegram->sendMessage($chatId, $message, $keyboard);
     }
 
-
     // Fungsi untuk menampilkan inline keyboard dengan daftar tiket berdasarkan role pengguna
-    protected function showTicketInlineKeyboard($chatId, $message)
-    {
-        // Ambil user berdasarkan telegram_chat_id
+    protected function showTicketInlineKeyboard($chatId, $message) {
+        // Cari user berdasarkan telegram_chat_id
         $user = User::where('telegram_chat_id', $chatId)->first();
 
         if (! $user) {
@@ -136,8 +130,7 @@ class TelegramWebhookController extends Controller
     }
 
     // Fungsi untuk menangani callback query (setelah pengguna memilih tiket)
-    public function handleCallbackQuery($callbackQuery)
-    {
+    public function handleCallbackQuery($callbackQuery) {
         $chatId = $callbackQuery['message']['chat']['id']; // Ambil chat_id dari callback query
         $data   = $callbackQuery['data'];                  // Ambil data yang dikirimkan saat memilih tombol, seperti "ticket_35"
 
@@ -151,7 +144,7 @@ class TelegramWebhookController extends Controller
             // Ambil tiket berdasarkan ID
             $ticket = Ticket::find($ticketId);
             if ($ticket) {
-                // Simpan ticket_id yang dipilih ke dalam cache menggunakan chat_id sebagai key
+                                                                      // Simpan ticket_id yang dipilih ke dalam cache menggunakan chat_id sebagai key
                 Cache::put("user_ticket_{$chatId}", $ticketId, 3600); // Simpan selama 1 jam
 
                 // Kirim balasan dengan pesan instruksi untuk komentar
@@ -163,8 +156,7 @@ class TelegramWebhookController extends Controller
     }
 
     // Menyimpan komentar berdasarkan ticket_id yang dipilih
-    protected function saveComment($user, $commentText)
-    {
+    protected function saveComment($user, $commentText) {
         // Ambil ticket_id yang dipilih dari cache menggunakan telegram_chat_id sebagai key
         $ticketId = Cache::get("user_ticket_{$user->telegram_chat_id}");
 
