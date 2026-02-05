@@ -1,12 +1,14 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\Comment;
 use App\Models\Ticket;
 use App\Models\User;
 use App\Services\TelegramService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache; // Pastikan TelegramService sudah ada
 use Illuminate\Support\Facades\Log;
-// Pastikan TelegramService sudah ada
+// Pastikan Cache digunakan
 
 class TelegramWebhookController extends Controller {
     public function handle(Request $request) {
@@ -47,7 +49,16 @@ class TelegramWebhookController extends Controller {
                 $this->showTicketInlineKeyboard($chatId, "Silahkan pilih tiket:");
             } else {
                 // Jika bukan /pilih, kirimkan pesan instruksi
-                $this->sendTelegramMessage($chatId, "Silahkan ketik /pilih untuk memilih tiket.");
+                // Cek apakah pengguna sudah memilih tiket sebelumnya
+                $ticketId = Cache::get("user_ticket_{$chatId}");
+
+                if ($ticketId) {
+                    // Menyimpan komentar pengguna
+                    $this->saveComment($user, $text);
+                } else {
+                    // Kirimkan pesan instruksi jika tiket belum dipilih
+                    $this->sendTelegramMessage($chatId, "Silahkan ketik /pilih untuk memilih tiket.");
+                }
             }
         } else {
             $this->sendTelegramMessage($chatId, "Pengguna tidak terdaftar.");
@@ -61,9 +72,9 @@ class TelegramWebhookController extends Controller {
         $telegram->sendMessage($chatId, $message, $keyboard);
     }
 
-    // Fungsi untuk menampilkan inline keyboard dengan daftar tiket milik pengguna
+    // Fungsi untuk menampilkan inline keyboard dengan daftar tiket
     protected function showTicketInlineKeyboard($chatId, $message) {
-        // Ambil tiket yang dimiliki oleh pengguna berdasarkan user_id
+        // Ambil tiket yang dimiliki oleh pengguna dan statusnya bukan 'close'
         $user = User::where('telegram_chat_id', $chatId)->first();
 
         if (! $user) {
@@ -117,20 +128,55 @@ class TelegramWebhookController extends Controller {
             // Ambil tiket berdasarkan ID
             $ticket = Ticket::find($ticketId);
             if ($ticket) {
-                // Kirim balasan dengan informasi tiket
-                $this->sendTelegramMessage($chatId, $this->formatTicketResponse($ticket));
+                                                                      // Simpan ticket_id yang dipilih ke dalam cache menggunakan chat_id sebagai key
+                Cache::put("user_ticket_{$chatId}", $ticketId, 3600); // Simpan selama 1 jam
+
+                // Kirim balasan dengan pesan instruksi untuk komentar
+                $this->sendTelegramMessage($chatId, "Silahkan kirim komentar Anda untuk tiket {$ticket->subject}.");
             } else {
                 $this->sendTelegramMessage($chatId, "Tiket tidak ditemukan.");
             }
         }
     }
 
-    // Format balasan detail tiket
-    protected function formatTicketResponse($ticket) {
-        return "Detail Tiket:\n" .
-        "Nomor Tiket: #sp-" . substr(preg_replace('/[^0-9]/', '', $ticket->id), -3) . \Carbon\Carbon::parse($ticket->created_at)->format('dmy') . ($ticket->Jenis_Pengaduan == 0 ? '0' : '1') . "\n" .
-            "Subjek: {$ticket->subject}\n" .
-            "Status: {$ticket->status}\n" .
-            "Deskripsi: {$ticket->Detail}";
+    // Menyimpan komentar berdasarkan ticket_id yang dipilih
+    protected function saveComment($user, $commentText) {
+        // Ambil ticket_id yang dipilih dari cache menggunakan telegram_chat_id sebagai key
+        $ticketId = Cache::get("user_ticket_{$user->telegram_chat_id}");
+
+        Log::info("Mencoba menyimpan comment. User ID: {$user->id}, Telegram Chat ID: {$user->telegram_chat_id}");
+        Log::info("Ticket ID dari cache: " . ($ticketId ?? 'NOT FOUND'));
+
+        if ($ticketId) {
+            Log::info("Tiket ditemukan, menyimpan comment untuk ticket_id: {$ticketId}");
+
+            // Ambil data tiket untuk menampilkan format yang benar
+            $ticket = Ticket::find($ticketId);
+
+            // Simpan komentar ke database untuk tiket yang sesuai
+            $comment            = new Comment();
+            $comment->comment   = $commentText;
+            $comment->user_id   = $user->id;
+            $comment->ticket_id = $ticketId; // ID tiket yang valid
+            $comment->save();
+
+            Log::info("Comment berhasil disimpan. Comment ID: {$comment->id}");
+
+            // Format nomor tiket dengan format yang sama seperti di inline keyboard
+            $ticketNumber = "sp-" . substr(preg_replace('/[^0-9]/', '', $ticketId), -3) . \Carbon\Carbon::parse($ticket->created_at)->format('dmy') . ($ticket->Jenis_Pengaduan == 0 ? '0' : '1');
+
+            // Mengirimkan konfirmasi ke pengguna dengan format tiket yang benar
+            $this->sendTelegramMessage($user->telegram_chat_id, "✅ Komentar Anda telah berhasil disimpan untuk tiket <b>#" . $ticketNumber . "</b>.");
+
+            // Clear cache setelah komentar disimpan
+            Cache::forget("user_ticket_{$user->telegram_chat_id}");
+
+            return true;
+        } else {
+            Log::warning("Ticket ID tidak ditemukan di cache untuk user {$user->id}");
+            $this->sendTelegramMessage($user->telegram_chat_id, "❌ Silakan pilih tiket terlebih dahulu sebelum mengirim komentar.");
+        }
+
+        return false;
     }
 }
