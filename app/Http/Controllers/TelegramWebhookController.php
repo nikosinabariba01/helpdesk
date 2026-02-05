@@ -146,11 +146,14 @@ class TelegramWebhookController extends Controller
 
         // Menambahkan detail tiket ke pesan
         foreach ($tickets as $ticket) {
-            $ticketText = "Tiket #sp-" . substr(preg_replace('/[^0-9]/', '', $ticket->id), -3) . 
-                          \Carbon\Carbon::parse($ticket->created_at)->format('dmy') . 
-                          ($ticket->Jenis_Pengaduan == 0 ? '0' : '1') . " - {$ticket->subject}\n";
+            $currentUser = $ticket->asignees()->with('user')->first()->user; // Ambil user yang menugaskan tiket
             $ticketText .= "Status: Escalated\n";
-            $ticketText .= "Detail: {$ticket->detail}\n\n";
+            $ticketText .= "<b>ID Tiket:</b> sp-" . substr(preg_replace('/[^0-9]/', '', $ticket->id), -3) . \Carbon\Carbon::parse($ticket->created_at)->format('dmy') . "\n";
+            $ticketText .= "Detail: {$ticket->Detail}\n";
+            $ticketText .= "<b>Pengguna:</b> {$ticket->user->name}\n";
+            $ticketText .= "<b>Diminta oleh:</b> {$currentUser->name} ({$currentUser->role})\n";
+            $ticketText .= "<b>Jenis Pengaduan:</b> {$ticket->Jenis_Pengaduan}\n";
+            $ticketText .= "<b>Lokasi:</b> {$ticket->Lokasi}\n\n";
             
             $message .= $ticketText;
         }
