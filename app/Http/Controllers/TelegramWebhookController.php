@@ -7,9 +7,8 @@ use App\Models\Ticket;
 use App\Models\User;
 use App\Services\TelegramService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache; // Pastikan TelegramService sudah ada
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-// Pastikan Cache digunakan
 
 class TelegramWebhookController extends Controller
 {
