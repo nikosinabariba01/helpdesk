@@ -46,22 +46,12 @@ class TelegramWebhookController extends Controller {
             // Cek apakah pesan yang diterima adalah /pilih
             if ($text === '/pilih') {
                 // Ambil tiket yang sesuai berdasarkan role pengguna dan tampilkan inline keyboard
-                if ($user->role == 'penyewa') {
-                    // Jika role adalah penghuni, ambil tiket yang dimiliki oleh pengguna
-                    $this->showTicketInlineKeyboard($chatId, "Silahkan pilih tiket Anda:");
-                } elseif ($user->role == 'pemilik' || $user->role == 'pengurus') {
-                    // Jika role adalah teknisi atau pengelola, ambil tiket yang di-assign ke mereka
-                    $this->showTicketInlineKeyboard($chatId, "Silahkan pilih tiket yang di-assign kepada Anda:");
-                } else {
-                    // Role tidak dikenali, kirim pesan kesalahan
-                    $this->sendTelegramMessage($chatId, "Role pengguna tidak dikenali.");
-                }
+                $this->showTicketInlineKeyboard($chatId, "Silahkan pilih tiket:");
             } else {
                 // Jika bukan /pilih, kirimkan pesan instruksi
                 $this->sendTelegramMessage($chatId, "Silahkan ketik /pilih untuk memilih tiket.");
             }
         } else {
-            // Jika pengguna tidak ditemukan berdasarkan telegram_chat_id
             $this->sendTelegramMessage($chatId, "Pengguna tidak terdaftar.");
         }
     }
@@ -75,7 +65,7 @@ class TelegramWebhookController extends Controller {
 
     // Fungsi untuk menampilkan inline keyboard dengan daftar tiket berdasarkan role pengguna
     protected function showTicketInlineKeyboard($chatId, $message) {
-        // Cari user berdasarkan telegram_chat_id
+        // Ambil user berdasarkan telegram_chat_id
         $user = User::where('telegram_chat_id', $chatId)->first();
 
         if (! $user) {
@@ -85,12 +75,12 @@ class TelegramWebhookController extends Controller {
 
         // Logika berdasarkan role pengguna
         if ($user->role == 'penyewa') {
-            // Jika role adalah penghuni, ambil tiket yang dimiliki oleh pengguna
+            // Jika role adalah penyewa, ambil tiket yang dimiliki oleh pengguna
             $tickets = Ticket::where('user_id', $user->id)
                 ->where('status', '!=', 'close')
                 ->get();
         } elseif ($user->role == 'pemilik' || $user->role == 'pengurus') {
-            // Jika role adalah teknisi atau pengelola, ambil tiket yang di-assign ke mereka
+            // Jika role adalah pemilik atau pengurus, ambil tiket yang di-assign ke mereka
             $tickets = Ticket::whereHas('asignees', function ($query) use ($user) {
                 $query->where('user_id', $user->id);
             })
