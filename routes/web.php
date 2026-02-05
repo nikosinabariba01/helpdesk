@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-Route::match(['GET', 'POST'], [TelegramWebhookController::class, 'handle']);
+Route::match(['GET', 'POST'], '/telegram/webhook', [TelegramWebhookController::class, 'handle']);
 Route::get('/', [LoginController::class, 'index'])->name('login');
 Route::post('/', [LoginController::class, 'Login']);
 Route::get('/photo/{filename}', [ProfileController::class, 'servePhoto'])->name('profile.photo');
