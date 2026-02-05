@@ -46,10 +46,10 @@ class TelegramWebhookController extends Controller {
             // Cek apakah pesan yang diterima adalah /pilih
             if ($text === '/pilih') {
                 // Ambil tiket yang sesuai berdasarkan role pengguna dan tampilkan inline keyboard
-                if ($user->role == 'penghuni') {
+                if ($user->role == 'penyewa') {
                     // Jika role adalah penghuni, ambil tiket yang dimiliki oleh pengguna
                     $this->showTicketInlineKeyboard($chatId, "Silahkan pilih tiket Anda:");
-                } elseif ($user->role == 'teknisi' || $user->role == 'pengelola') {
+                } elseif ($user->role == 'pemilik' || $user->role == 'pengurus') {
                     // Jika role adalah teknisi atau pengelola, ambil tiket yang di-assign ke mereka
                     $this->showTicketInlineKeyboard($chatId, "Silahkan pilih tiket yang di-assign kepada Anda:");
                 } else {
@@ -89,7 +89,7 @@ class TelegramWebhookController extends Controller {
             $tickets = Ticket::where('user_id', $user->id)
                 ->where('status', '!=', 'close')
                 ->get();
-        } elseif ($user->role == 'pemilik' || $user->role == 'pengelola') {
+        } elseif ($user->role == 'pemilik' || $user->role == 'pengurus') {
             // Jika role adalah teknisi atau pengelola, ambil tiket yang di-assign ke mereka
             $tickets = Ticket::whereHas('asignees', function ($query) use ($user) {
                 $query->where('user_id', $user->id);
