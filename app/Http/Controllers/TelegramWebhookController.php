@@ -45,20 +45,17 @@ class TelegramWebhookController extends Controller {
         if ($user) {
             // Cek apakah pesan yang diterima adalah /pilih
             if ($text === '/pilih') {
-                // Ambil tiket yang dimiliki pengguna dan tampilkan inline keyboard
-                $this->showTicketInlineKeyboard($chatId, "Silahkan pilih tiket:");
+                // Menangani tiket berdasarkan role pengguna
+                if ($user->role === 'penghuni') {
+                    $this->showUserTickets($chatId, $user); // Penghuni melihat tiket yang dimiliki
+                } elseif ($user->role === 'teknisi' || $user->role === 'pengelola') {
+                    $this->showAssignedTickets($chatId, $user); // Teknisi/Pengelola melihat tiket yang di-assign
+                } else {
+                    $this->sendTelegramMessage($chatId, "Role pengguna tidak dikenali.");
+                }
             } else {
                 // Jika bukan /pilih, kirimkan pesan instruksi
-                // Cek apakah pengguna sudah memilih tiket sebelumnya
-                $ticketId = Cache::get("user_ticket_{$chatId}");
-
-                if ($ticketId) {
-                    // Menyimpan komentar pengguna
-                    $this->saveComment($user, $text);
-                } else {
-                    // Kirimkan pesan instruksi jika tiket belum dipilih
-                    $this->sendTelegramMessage($chatId, "Silahkan ketik /pilih untuk memilih tiket.");
-                }
+                $this->sendTelegramMessage($chatId, "Silahkan ketik /pilih untuk memilih tiket.");
             }
         } else {
             $this->sendTelegramMessage($chatId, "Pengguna tidak terdaftar.");
@@ -72,17 +69,9 @@ class TelegramWebhookController extends Controller {
         $telegram->sendMessage($chatId, $message, $keyboard);
     }
 
-    // Fungsi untuk menampilkan inline keyboard dengan daftar tiket
-    protected function showTicketInlineKeyboard($chatId, $message) {
-        // Ambil tiket yang dimiliki oleh pengguna dan statusnya bukan 'close'
-        $user = User::where('telegram_chat_id', $chatId)->first();
-
-        if (! $user) {
-            $this->sendTelegramMessage($chatId, "Pengguna tidak terdaftar.");
-            return;
-        }
-
-                                                       // Ambil tiket yang dimiliki oleh pengguna dengan status selain 'close'
+    // Fungsi untuk menampilkan tiket yang dimiliki pengguna (untuk role 'penghuni')
+    protected function showUserTickets($chatId, $user) {
+                                                       // Ambil tiket yang dimiliki oleh pengguna dan statusnya bukan 'close'
         $tickets = Ticket::where('user_id', $user->id) // Mengambil tiket berdasarkan user_id
             ->where('status', '!=', 'close')               // Hanya tiket yang belum ditutup
             ->get();
@@ -110,7 +99,42 @@ class TelegramWebhookController extends Controller {
         }
 
         // Kirimkan pesan dengan inline keyboard
-        $this->sendTelegramMessage($chatId, $message, $keyboard);
+        $this->sendTelegramMessage($chatId, "Silahkan pilih tiket:", $keyboard);
+    }
+
+    // Fungsi untuk menampilkan tiket yang di-assign ke teknisi atau pengelola
+    protected function showAssignedTickets($chatId, $user) {
+        // Teknisi, Pengelola dapat melihat tiket yang di-assign ke mereka
+        $tickets = Ticket::whereHas('asignees', function ($query) use ($user) {
+            $query->where('user_id', $user->id); // Hanya tiket yang di-assign ke user
+        })
+            ->where('status', '!=', 'close') // Hanya tiket yang belum ditutup
+            ->get();
+
+        if ($tickets->isEmpty()) {
+            $this->sendTelegramMessage($chatId, "Tidak ada tiket yang di-assign ke Anda.");
+            return;
+        }
+
+        // Membuat inline keyboard
+        $keyboard = [
+            'inline_keyboard' => [],
+        ];
+
+        // Menambahkan tombol inline untuk setiap tiket yang ditemukan
+        foreach ($tickets as $ticket) {
+            $ticketText = "Tiket #sp-" . substr(preg_replace('/[^0-9]/', '', $ticket->id), -3) . \Carbon\Carbon::parse($ticket->created_at)->format('dmy') . ($ticket->Jenis_Pengaduan == 0 ? '0' : '1') . " - {$ticket->subject}";
+
+            $keyboard['inline_keyboard'][] = [
+                [
+                    'text'          => $ticketText,            // Nama tombol sesuai dengan tiket
+                    'callback_data' => "ticket_{$ticket->id}", // Callback data yang akan diproses saat tombol dipilih
+                ],
+            ];
+        }
+
+        // Kirimkan pesan dengan inline keyboard
+        $this->sendTelegramMessage($chatId, "Silahkan pilih tiket:", $keyboard);
     }
 
     // Fungsi untuk menangani callback query (setelah pengguna memilih tiket)
