@@ -146,17 +146,16 @@ class TelegramWebhookController extends Controller
 
         // Menambahkan detail tiket ke pesan
         foreach ($tickets as $ticket) {
-            $currentUser = $ticket->asignees()->with('user')->first()->user; // Ambil user yang menugaskan tiket
-            $ticketText .= "Status: Escalated\n";
-            $ticketText .= "<b>ID Tiket:</b> sp-" . substr(preg_replace('/[^0-9]/', '', $ticket->id), -3) . \Carbon\Carbon::parse($ticket->created_at)->format('dmy') . "\n";
-            $ticketText .= "Detail: {$ticket->Detail}\n";
-            $ticketText .= "<b>Pengguna:</b> {$ticket->user->name}\n";
-            $ticketText .= "<b>Diminta oleh:</b> {$currentUser->name} ({$currentUser->role})\n";
-            $ticketText .= "<b>Jenis Pengaduan:</b> {$ticket->Jenis_Pengaduan}\n";
-            $ticketText .= "<b>Lokasi:</b> {$ticket->Lokasi}\n\n";
+            $assigneeName = $ticket->asignees->pluck('name')->implode(', '); // Mengambil nama assignee
+            $ticketText = "Tiket #sp-" . substr(preg_replace('/[^0-9]/', '', $ticket->id), -3) . 
+                          \Carbon\Carbon::parse($ticket->created_at)->format('dmy') . 
+                          ($ticket->Jenis_Pengaduan == 0 ? '0' : '1') . " - {$ticket->subject}\n";
+            $ticketText .= "Status: Escalated\n"; 
+            $ticketText .= "Diminta oleh: {$assigneeName}\n\n"; // Menambahkan nama assignee
             
             $message .= $ticketText;
         }
+
 
         // Kirimkan pesan dengan detail tiket escalated
         $this->sendTelegramMessage($chatId, $message);
