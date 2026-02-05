@@ -60,7 +60,7 @@ class TelegramWebhookController extends Controller
                     $this->saveComment($user, $text);
                 } else {
                     // Kirimkan pesan instruksi jika tiket belum dipilih
-                    $this->sendTelegramMessage($chatId, "❌ Anda belum memilih tiket.\n\nSilakan ketik <code>/ticket</code> atau <code>/pilih</code> untuk memilih tiket terlebih dahulu.");
+                    $this->sendTelegramMessage($chatId, "❌ Anda belum memilih tiket.\n\nSilakan ketik <code>/pilih</code> untuk memilih tiket terlebih dahulu.");
                 }
             }
         } else {
