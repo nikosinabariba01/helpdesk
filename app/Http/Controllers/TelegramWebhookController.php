@@ -18,6 +18,11 @@ class TelegramWebhookController extends Controller {
             $this->handleMessage($update['message']);
         }
 
+        // Cek jika ada callback query (tombol ditekan)
+        if (isset($update['callback_query'])) {
+            $this->handleCallbackQuery($update['callback_query']);
+        }
+
         return response()->json(['ok' => true]);
     }
 
@@ -33,7 +38,7 @@ class TelegramWebhookController extends Controller {
         // Cek apakah pesan yang diterima adalah /pilih
         if ($text === '/pilih') {
             // Tampilkan inline keyboard jika pesan adalah /pilih
-            $this->showInlineKeyboard($chatId, "Silahkan pilih");
+            $this->showInlineKeyboard($chatId, "Silahkan pilih:");
         } else {
             // Jika bukan /pilih, kirimkan pesan instruksi
             $this->sendTelegramMessage($chatId, "Silahkan ketik /pilih");
@@ -41,10 +46,10 @@ class TelegramWebhookController extends Controller {
     }
 
     // Fungsi untuk mengirim pesan ke Telegram
-    protected function sendTelegramMessage($chatId, $message) {
+    protected function sendTelegramMessage($chatId, $message, $keyboard = null) {
         // Pastikan TelegramService sudah diimplementasikan
         $telegram = new TelegramService();
-        $telegram->sendMessage($chatId, $message);
+        $telegram->sendMessage($chatId, $message, $keyboard);
     }
 
     // Fungsi untuk menampilkan inline keyboard
@@ -52,13 +57,29 @@ class TelegramWebhookController extends Controller {
         $keyboard = [
             'inline_keyboard' => [
                 [
-                    ['text' => 'Option 1', 'callback_data' => 'option_1'],
-                    ['text' => 'Option 2', 'callback_data' => 'option_2'],
+                    ['text' => 'Halo Bro', 'callback_data' => 'halo_bro'],
+                    ['text' => 'Halo Mas', 'callback_data' => 'halo_mas'],
                 ],
             ],
         ];
 
         // Kirim pesan dengan inline keyboard
         $this->sendTelegramMessage($chatId, $message, $keyboard);
+    }
+
+    // Fungsi untuk menangani callback query (setelah pengguna memilih opsi di inline keyboard)
+    public function handleCallbackQuery($callbackQuery) {
+        $chatId = $callbackQuery['message']['chat']['id']; // Ambil chat_id dari callback query
+        $data   = $callbackQuery['data'];                  // Ambil data yang dikirimkan saat memilih tombol, seperti "halo_bro" atau "halo_mas"
+
+        // Log callback query yang diterima
+        Log::info('Callback query diterima dengan data: ' . $data);
+
+        // Mengirimkan pesan balasan berdasarkan pilihan pengguna
+        if ($data === 'halo_bro') {
+            $this->sendTelegramMessage($chatId, "Pesan dari bot: Halo Bro!");
+        } elseif ($data === 'halo_mas') {
+            $this->sendTelegramMessage($chatId, "Pesan dari bot: Halo Mas!");
+        }
     }
 }
