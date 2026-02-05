@@ -147,10 +147,15 @@ class TelegramWebhookController extends Controller
         // Menambahkan detail tiket ke pesan
         foreach ($tickets as $ticket) {
             $assigneeName = $ticket->asignees->pluck('name')->implode(', '); // Mengambil nama assignee
+            // Menghitung waktu sejak tiket di-eskalasi
+        $escalatedAt = \Carbon\Carbon::parse($ticket->updated_at);
+        $timeSinceEscalated = $escalatedAt->diffForHumans(); // Format: "X minutes ago", "1 hour ago", etc.
+
             $ticketText = "Tiket #sp-" . substr(preg_replace('/[^0-9]/', '', $ticket->id), -3) . 
                           \Carbon\Carbon::parse($ticket->created_at)->format('dmy') . 
                           ($ticket->Jenis_Pengaduan == 0 ? '0' : '1') . " - {$ticket->subject}\n";
             $ticketText .= "Status: Escalated\n"; 
+            $ticketText .= "Waktu Eskalasi: {$timeSinceEscalated}\n"; // Menambahkan waktu eskalasi
             $ticketText .= "Diminta oleh: {$assigneeName}\n\n"; // Menambahkan nama assignee
             
             $message .= $ticketText;
