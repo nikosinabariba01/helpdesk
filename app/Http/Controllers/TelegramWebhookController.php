@@ -49,8 +49,7 @@ class TelegramWebhookController extends Controller
             // Cek apakah pesan yang diterima adalah /pilih
             if ($text === '/pilih') {
                 // Ambil tiket yang dimiliki pengguna dan tampilkan inline keyboard
-                $this->showTicketInlineKeyboard($chatId, "❌ Anda belum memilih tiket.\n\nSilakan ketik <code>/ticket</code> atau <code>/pilih</code> untuk memilih tiket terlebih dahulu.");
-                
+                $this->showTicketInlineKeyboard($chatId, "Silahkan pilih tiket:");
             } else {
                 // Jika bukan /pilih, kirimkan pesan instruksi
                 // Cek apakah pengguna sudah memilih tiket sebelumnya
@@ -61,7 +60,7 @@ class TelegramWebhookController extends Controller
                     $this->saveComment($user, $text);
                 } else {
                     // Kirimkan pesan instruksi jika tiket belum dipilih
-                    $this->sendTelegramMessage($chatId, "Silahkan ketik /pilih untuk memilih tiket.");
+                    $this->sendTelegramMessage($chatId, "❌ Anda belum memilih tiket.\n\nSilakan ketik <code>/ticket</code> atau <code>/pilih</code> untuk memilih tiket terlebih dahulu.");
                 }
             }
         } else {
