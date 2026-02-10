@@ -144,50 +144,18 @@
                                         <i class="fa fa-ellipsis-v fa-sm"></i>
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
-                                        <!-- Detail Ticket -->
+                                        <li>
                                         <li>
                                             <a class="dropdown-item text-info" href="{{ route('viewticketteknisi.index', ['id' => $teknisidataticket->id]) }}">
                                                 <i class="fa fa-eye pe-2 text-info"></i>Detail
                                             </a>
                                         </li>
-
-                                        <!-- Re-assign or Close Button -->
                                         <li>
-                                            <!-- Tombol untuk memunculkan modal Close -->
-                                            <button type="button" class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#modal-close-{{ $teknisidataticket->id }}">
+                                            <a class="dropdown-item text-danger" href="#" data-bs-toggle="modal" data-bs-target="#modal-notification-{{ $teknisidataticket->id }}">
                                                 <i class="fa fa-minus pe-2 text-danger"></i>Close
-                                            </button>
+                                            </a>
                                         </li>
                                     </ul>
-                                </div>
-
-                                <!-- Modal untuk Close -->
-                                <div class="modal fade" id="modal-close-{{ $teknisidataticket->id }}" tabindex="-1" role="dialog" aria-labelledby="modal-close-{{ $teknisidataticket->id }}" aria-hidden="true">
-                                    <div class="modal-dialog modal-danger modal-dialog-centered" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h6 class="modal-title" id="modal-title-notification">Confirm Ticket Closure</h6>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="py-3 text-center">
-                                                    <i class="fa fa-exclamation-circle fa-3x text-danger"></i>
-                                                    <h4 class="text-gradient text-danger mt-4">Are you sure you want to close this ticket?</h4>
-                                                    <p>Please confirm to close this ticket and mark it as resolved.</p>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <!-- Form untuk menutup tiket -->
-                                                <form method="POST" action="{{ route('ticketsteknisi.close', $teknisidataticket->id) }}">
-                                                    @method('PUT')
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-danger">Yes, Close Ticket</button>
-                                                </form>
-                                                <!-- Tombol untuk membatalkan dan menutup modal -->
-                                                <button type="button" class="btn btn-link text-dark" data-bs-dismiss="modal">Cancel</button>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </td>
                         </tr>
@@ -231,6 +199,36 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Konfirmasi Close untuk tiap tiket -->
+<div class="modal fade" id="modal-notification-{{ $teknisidataticket->id }}" tabindex="-1" role="dialog" aria-labelledby="modal-notification-{{ $teknisidataticket->id }}" aria-hidden="true">
+    <div class="modal-dialog modal-danger modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="py-3 text-center">
+                    <i class="fa fa-exclamation-circle fa-3x text-danger"></i>
+                    <h4 class="text-gradient text-danger mt-4">Are you sure you want to close this ticket?</h4>
+                    <p>Please confirm to close this ticket and mark it as resolved.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <!-- Form untuk menutup tiket -->
+                <form method="POST" action="{{ route('ticketsteknisi.close', $teknisidataticket->id) }}">
+                    @method('PUT')
+                    @csrf
+                    <button type="submit" class="btn btn-danger">Yes, Close Ticket</button>
+                </form>
+                <!-- Tombol untuk membatalkan dan menutup modal -->
+                <button type="button" class="btn btn-link text-dark" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <script>
     $(document).ready(function() {
