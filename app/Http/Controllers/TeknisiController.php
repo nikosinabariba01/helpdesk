@@ -78,11 +78,12 @@ class TeknisiController extends Controller
         // Mengambil komentar terbaru
         $latestComments = $this->getLatestComments(); // Panggil fungsi untuk mendapatkan komentar terbaru
 
-        // Mengambil jumlah tiket per hari untuk Line Chart (jumlah tiket berdasarkan tanggal pengaduan)
-        $ticketsPerDay = Ticket::selectRaw('DATE(Tanggal_Pengaduan) as date, COUNT(*) as count')
-            ->whereNotNull('Tanggal_Pengaduan')  // Pastikan Tanggal_Pengaduan tidak null
-            ->groupBy('date')
-            ->orderBy('date', 'asc')
+        $ticketsPerMonth = Ticket::selectRaw('YEAR(Tanggal_Pengaduan) as year, MONTH(Tanggal_Pengaduan) as month, 
+                                        COUNT(*) as count, Jenis_Pengaduan')
+            ->whereNotNull('Tanggal_Pengaduan') // Pastikan Tanggal_Pengaduan tidak null
+            ->groupBy('year', 'month', 'Jenis_Pengaduan')
+            ->orderBy('year', 'asc')
+            ->orderBy('month', 'asc')
             ->get();
 
         // Mengambil status tiket dan menghitung jumlah per status untuk Pie Chart
@@ -97,7 +98,7 @@ class TeknisiController extends Controller
             'totalClosedTickets',
             'totalAllTickets',
             'latestComments', // Mengirimkan komentar terbaru ke view
-            'ticketsPerDay',
+            'ticketsPerMonth',
             'statusData'
         ));
     }

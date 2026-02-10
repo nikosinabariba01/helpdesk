@@ -538,15 +538,30 @@
   document.addEventListener('DOMContentLoaded', function() {
     // Line Chart: Tren Jumlah Tiket Berdasarkan Waktu
     const lineData = {
-      labels: @json($ticketsPerDay -> pluck('date')), // Data tanggal tiket
+      labels: @json($ticketsPerMonth -> groupBy('month') -> keys() -> map(function($month) {
+        return Carbon\ Carbon::create() -> month($month) -> format('F'); // Mengubah angka bulan menjadi nama bulan
+      })),
       datasets: [{
-        label: 'Jumlah Tiket',
-        data: @json($ticketsPerDay -> pluck('count')), // Data jumlah tiket per tanggal
-        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-        borderColor: 'rgba(54, 162, 235, 1)',
-        borderWidth: 1,
-        tension: 0.4, // Untuk membuat garis lebih mulus
-      }]
+          label: 'Permintaan',
+          data: @json($ticketsPerMonth -> where('Jenis_Pengaduan', 'permintaan') -> groupBy('month') -> map(function($tickets) {
+            return $tickets -> sum('count');
+          })),
+          backgroundColor: 'rgba(54, 162, 235, 0.2)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 1,
+          tension: 0.4
+        },
+        {
+          label: 'Perbaikan',
+          data: @json($ticketsPerMonth -> where('Jenis_Pengaduan', 'perbaikan') -> groupBy('month') -> map(function($tickets) {
+            return $tickets -> sum('count');
+          })),
+          backgroundColor: 'rgba(255, 99, 132, 0.2)',
+          borderColor: 'rgba(255, 99, 132, 1)',
+          borderWidth: 1,
+          tension: 0.4
+        }
+      ]
     };
 
     const lineChartConfig = {
@@ -571,7 +586,7 @@
           x: {
             title: {
               display: true,
-              text: 'Tanggal'
+              text: 'Bulan'
             }
           },
           y: {
