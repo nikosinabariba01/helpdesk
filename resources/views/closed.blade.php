@@ -79,7 +79,7 @@
                                             </li>
                                             <li class="text-xs list-inline-item text-secondary" title="Time Taken to Close">
                                                 <i class="fa fa-circle fa-xs text-info"></i>
-                                                {{ \Carbon\Carbon::parse($teknisidataticket->created_at)->diffForHumans(\Carbon\Carbon::parse($teknisidataticket->Tanggal_Selesai)) }}
+                                                {{ \Carbon\Carbon::parse($teknisidataticket->created_at)->diffForHumans(\Carbon\Carbon::parse($teknisidataticket->Tanggal_Selesai), true) }}
                                             </li>
                                             @elseif ($teknisidataticket->status === 'on process' || $teknisidataticket->status === 'escalated')
                                             <li class="text-xs list-inline-item text-secondary" title="Processing Time">
