@@ -60,9 +60,38 @@
                                         </h6>
 
                                         <div class="d-flex list-inline">
-                                            <li class="text-xs list-inline-item text-secondary"><i class="fa fa-circle fa-xs text-danger"></i>{{'sp-' . substr(preg_replace('/[^0-9]/', '', $teknisidataticket->id), -3) . \Carbon\Carbon::parse($teknisidataticket->created_at)->format('dmy') . ($teknisidataticket->Jenis_Pengaduan == 0 ? '0' : '1');}}</li>
-                                            <li class="text-xs list-inline-item text-secondary" title="type"><i class="fa fa-circle fa-xs text-primary"></i>{{ $teknisidataticket->Jenis_Pengaduan }}</li>
-                                            <li class="text-xs list-inline-item text-secondary" title="Created Date"><i class="fa fa-circle fa-xs text-secondary"></i></i> {{ $teknisidataticket->formattedTanggalPengaduan }}</li>
+                                            <li class="text-xs list-inline-item text-secondary">
+                                                <i class="fa fa-circle fa-xs text-danger"></i>
+                                                {{ 'sp-' . substr(preg_replace('/[^0-9]/', '', $teknisidataticket->id), -3) . \Carbon\Carbon::parse($teknisidataticket->created_at)->format('dmy') . ($teknisidataticket->Jenis_Pengaduan == 0 ? '0' : '1') }}
+                                            </li>
+                                            <li class="text-xs list-inline-item text-secondary" title="type">
+                                                <i class="fa fa-circle fa-xs text-primary"></i>{{ $teknisidataticket->Jenis_Pengaduan }}
+                                            </li>
+                                            <li class="text-xs list-inline-item text-secondary" title="Created Date">
+                                                <i class="fa fa-circle fa-xs text-secondary"></i>
+                                                {{ \Carbon\Carbon::parse($teknisidataticket->created_at)->format('d-m-Y H:i') }}
+                                            </li>
+
+                                            @if ($teknisidataticket->status === 'on process' || $teknisidataticket->status === 'escalated')
+                                            <li class="text-xs list-inline-item text-secondary" title="Processing Time">
+                                                <i class="fa fa-circle fa-xs text-warning"></i>
+                                                {{ \Carbon\Carbon::parse($teknisidataticket->updated_at)->diffForHumans() }}
+                                            </li>
+                                            @elseif ($teknisidataticket->Tanggal_Selesai)
+                                            <li class="text-xs list-inline-item text-secondary" title="Completed Date">
+                                                <i class="fa fa-circle fa-xs text-success"></i>
+                                                {{ \Carbon\Carbon::parse($teknisidataticket->Tanggal_Selesai)->format('d-m-Y H:i') }}
+                                            </li>
+                                            <li class="text-xs list-inline-item text-secondary" title="Time Taken">
+                                                <i class="fa fa-circle fa-xs text-info"></i>
+                                                {{ \Carbon\Carbon::parse($teknisidataticket->created_at)->diffForHumans(\Carbon\Carbon::parse($teknisidataticket->Tanggal_Selesai)) }}
+                                            </li>
+                                            @else
+                                            <li class="text-xs list-inline-item text-secondary" title="Processing Time">
+                                                <i class="fa fa-circle fa-xs text-warning"></i>
+                                                {{ 'Pending...' }}
+                                            </li>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -139,35 +168,35 @@
                 </table>
             </div>
             <div style="padding: 15px 16px; border-top: 1px solid #e4e4e4; display: flex; justify-content: space-between; align-items: center; background-color: #ffffff;">
-              <div style="display: flex; gap: 12px; align-items: center;">
-                <!-- Pagination Info as Dropdown -->
-                <div class="dropdown" style="position: relative;">
-                  <button class="btn btn-sm btn-outline-secondary" style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;" data-bs-toggle="dropdown" aria-expanded="false">
-                    <span id="paginationDisplay">1-10 dari {{ $teknisi_data_ticket->count() }}</span>
-                    <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
-                  </button>
-                  <ul class="dropdown-menu" style="font-size: 13px; min-width: 150px;">
-                    <li><a class="dropdown-item page-sort-option" href="#" data-sort="desc" style="padding: 8px 16px;">
-                      <i class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru
-                    </a></li>
-                    <li><a class="dropdown-item page-sort-option" href="#" data-sort="asc" style="padding: 8px 16px;">
-                      <i class="fa fa-arrow-up me-2" style="color: #6c757d;"></i>Terlama
-                    </a></li>
-                  </ul>
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <!-- Pagination Info as Dropdown -->
+                    <div class="dropdown" style="position: relative;">
+                        <button class="btn btn-sm btn-outline-secondary" style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span id="paginationDisplay">1-10 dari {{ $teknisi_data_ticket->count() }}</span>
+                            <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
+                        </button>
+                        <ul class="dropdown-menu" style="font-size: 13px; min-width: 150px;">
+                            <li><a class="dropdown-item page-sort-option" href="#" data-sort="desc" style="padding: 8px 16px;">
+                                    <i class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru
+                                </a></li>
+                            <li><a class="dropdown-item page-sort-option" href="#" data-sort="asc" style="padding: 8px 16px;">
+                                    <i class="fa fa-arrow-up me-2" style="color: #6c757d;"></i>Terlama
+                                </a></li>
+                        </ul>
+                    </div>
                 </div>
-              </div>
-              
-              <div style="display: flex; gap: 12px; align-items: center;">
-                <!-- Pagination Navigation -->
-                <div style="display: flex; gap: 6px;">
-                  <button id="prevPage" class="btn btn-sm btn-outline-secondary" style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;" title="Halaman Sebelumnya">
-                    <i class="fa fa-chevron-left" style="font-size: 11px;"></i>
-                  </button>
-                  <button id="nextPage" class="btn btn-sm btn-outline-secondary" style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;" title="Halaman Berikutnya">
-                    <i class="fa fa-chevron-right" style="font-size: 11px;"></i>
-                  </button>
+
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <!-- Pagination Navigation -->
+                    <div style="display: flex; gap: 6px;">
+                        <button id="prevPage" class="btn btn-sm btn-outline-secondary" style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;" title="Halaman Sebelumnya">
+                            <i class="fa fa-chevron-left" style="font-size: 11px;"></i>
+                        </button>
+                        <button id="nextPage" class="btn btn-sm btn-outline-secondary" style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;" title="Halaman Berikutnya">
+                            <i class="fa fa-chevron-right" style="font-size: 11px;"></i>
+                        </button>
+                    </div>
                 </div>
-              </div>
             </div>
             @endif
         </div>
@@ -224,7 +253,7 @@
         $(document).on('click', '.page-sort-option', function(e) {
             e.preventDefault();
             currentSort = $(this).data('sort');
-            
+
             // Sort rows
             sortTableByDate(currentSort);
             currentPage = 1;
@@ -234,16 +263,16 @@
         // Function to sort table by date
         function sortTableByDate(direction) {
             var rows = $('#TicketTable tbody tr').get();
-            
+
             rows.sort(function(a, b) {
                 // Ambil teks dari kolom pertama (yang berisi nomor tiket dengan tanggal)
                 var aText = $(a).find('li:first').text(); // sp-123012401
                 var bText = $(b).find('li:first').text(); // sp-456012402
-                
+
                 // Ekstrak tanggal dari format sp-xxxddmmyy
                 var aDate = extractDateFromTicket(aText);
                 var bDate = extractDateFromTicket(bText);
-                
+
                 if (direction === 'desc') {
                     return new Date(bDate) - new Date(aDate);
                 } else {
@@ -291,7 +320,7 @@
 
             // Update pagination display berdasarkan sorting
             var displayStart, displayEnd;
-            
+
             if (currentSort === 'desc') {
                 // Terbaru: tampil normal (1-10, 11-20, dst)
                 displayStart = totalRows === 0 ? 0 : startIndex + 1;
@@ -300,13 +329,13 @@
                 // Terlama: tampil terbalik (100-90, 90-80, dst)
                 displayStart = totalRows - startIndex;
                 displayEnd = totalRows - endIndex + 1;
-                
+
                 // Pastikan displayEnd tidak kurang dari 1
                 if (displayEnd < 1) {
                     displayEnd = 1;
                 }
             }
-            
+
             $('#paginationDisplay').text(displayStart + '-' + displayEnd + ' dari ' + totalRows);
 
             // Update button states
