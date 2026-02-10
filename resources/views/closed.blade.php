@@ -72,7 +72,7 @@
                                                 {{ \Carbon\Carbon::parse($teknisidataticket->created_at)->format('d-m-Y H:i') }}
                                             </li>
 
-                                            @if ($teknisidataticket->status === 'closed' && $teknisidataticket->Tanggal_Selesai)
+                                            @if ($teknisidataticket->status === 'close' && $teknisidataticket->Tanggal_Selesai)
                                             <li class="text-xs list-inline-item text-secondary" title="Closed Date">
                                                 <i class="fa fa-circle fa-xs text-success"></i>
                                                 {{ \Carbon\Carbon::parse($teknisidataticket->Tanggal_Selesai)->format('d-m-Y H:i') }}
