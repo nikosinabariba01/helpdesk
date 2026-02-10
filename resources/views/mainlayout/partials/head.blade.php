@@ -28,3 +28,5 @@
 
 <!-- Choices.js JS -->
 <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
+<script src="{{ asset('style/assets/js/plugins/chartjs.min.js') }}"></script>
