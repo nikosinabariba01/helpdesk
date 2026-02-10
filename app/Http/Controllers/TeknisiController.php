@@ -106,6 +106,7 @@ class TeknisiController extends Controller
             'totalAllTickets',
             'latestComments', // Mengirimkan komentar terbaru ke view
             'ticketsPerMonth',
+            'monthLabels',
             'statusData'
         ));
     }
