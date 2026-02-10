@@ -151,9 +151,13 @@
                                             </a>
                                         </li>
                                         <li>
-                                            <a class="dropdown-item text-danger" href="#" data-bs-toggle="modal" data-bs-target="#modal-notification-{{ $teknisidataticket->id }}">
-                                                <i class="fa fa-minus pe-2 text-danger"></i>Close
-                                            </a>
+                                            <form method="POST" action="{{ route('ticketsteknisi.close', $teknisidataticket->id) }}" id="closeTicketForm">
+                                                @method('PUT')
+                                                @csrf
+                                                <button type="button" class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#modal-confirmation">
+                                                    <i class="fa fa-minus pe-2 text-danger"></i>close
+                                                </button>
+                                            </form>
                                         </li>
                                     </ul>
                                 </div>
@@ -200,35 +204,30 @@
     </div>
 </div>
 
-<!-- Modal Konfirmasi Close untuk tiap tiket -->
-<div class="modal fade" id="modal-notification-{{ $teknisidataticket->id }}" tabindex="-1" role="dialog" aria-labelledby="modal-notification-{{ $teknisidataticket->id }}" aria-hidden="true">
+<!-- Modal Confirmation -->
+<div class="modal fade" id="modal-confirmation" tabindex="-1" role="dialog" aria-labelledby="modal-confirmation" aria-hidden="true">
     <div class="modal-dialog modal-danger modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h6 class="modal-title" id="modal-title-confirmation">Are you sure?</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
             </div>
             <div class="modal-body">
                 <div class="py-3 text-center">
-                    <i class="fa fa-exclamation-circle fa-3x text-danger"></i>
-                    <h4 class="text-gradient text-danger mt-4">Are you sure you want to close this ticket?</h4>
-                    <p>Please confirm to close this ticket and mark it as resolved.</p>
+                    <i class="ni ni-bell-55 ni-3x"></i>
+                    <h4 class="text-gradient text-danger mt-4">Closing this ticket will mark it as resolved</h4>
+                    <p>Are you sure you want to close this ticket? This action cannot be undone.</p>
                 </div>
             </div>
             <div class="modal-footer">
-                <!-- Form untuk menutup tiket -->
-                <form method="POST" action="{{ route('ticketsteknisi.close', $teknisidataticket->id) }}">
-                    @method('PUT')
-                    @csrf
-                    <button type="submit" class="btn btn-danger">Yes, Close Ticket</button>
-                </form>
-                <!-- Tombol untuk membatalkan dan menutup modal -->
-                <button type="button" class="btn btn-link text-dark" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-white" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-danger" onclick="document.getElementById('closeTicketForm').submit();">Yes, close it</button>
             </div>
         </div>
     </div>
 </div>
-
 
 <script>
     $(document).ready(function() {
