@@ -217,8 +217,8 @@
             <div class="modal-body">
                 <div class="py-3 text-center">
                     <i class="ni ni-bell-55 ni-3x"></i>
-                    <h4 class="text-gradient text-danger mt-4">Closing this ticket will mark it as resolved</h4>
-                    <p>Are you sure you want to close this ticket? This action cannot be undone.</p>
+                    <h4 class="text-gradient text-danger mt-4">Tindakan ini akan menandai tiket sebagai ditutup</h4>
+                    <p>Apakah Anda yakin ingin menutup tiket ini ?</p>
                 </div>
             </div>
             <div class="modal-footer">
