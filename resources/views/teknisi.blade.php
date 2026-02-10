@@ -536,11 +536,13 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
+
     // Line Chart: Tren Jumlah Tiket Berdasarkan Waktu
     const lineData = {
       labels: @json($ticketsPerMonth -> groupBy('month') -> keys() -> map(function($month) {
-        return Carbon\ Carbon::create() -> month($month) -> format('F'); // Mengubah angka bulan menjadi nama bulan
+        return Carbon::create() -> month($month) -> format('F'); // Mengubah angka bulan menjadi nama bulan
       })),
+
       datasets: [{
           label: 'Permintaan',
           data: @json($ticketsPerMonth -> where('Jenis_Pengaduan', 'permintaan') -> groupBy('month') -> map(function($tickets) {
