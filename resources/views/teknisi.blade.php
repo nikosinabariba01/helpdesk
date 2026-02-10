@@ -585,40 +585,5 @@
 
     // Membuat chart menggunakan konfigurasi
     new Chart(document.getElementById('line-chart-gradient'), lineChartConfig);
-
-    // Pie Chart: Prosentase Status Tiket
-    const pieData = {
-      labels: ['Open', 'On Process', 'Closed', 'Escalated'],
-      datasets: [{
-        data: @json($statusData - > pluck('count')), // Data jumlah tiket berdasarkan status
-        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#FF5733'],
-        borderColor: '#fff',
-        borderWidth: 1
-      }]
-    };
-
-    const pieChartConfig = {
-      type: 'pie',
-      data: pieData,
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            position: 'top',
-          },
-          tooltip: {
-            callbacks: {
-              label: function(tooltipItem) {
-                return tooltipItem.label + ': ' + tooltipItem.raw + ' Tiket';
-              }
-            }
-          }
-        }
-      }
-    };
-
-    // Membuat chart pie
-    new Chart(document.getElementById('pie-chart'), pieChartConfig);
   });
 </script>
