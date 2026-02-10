@@ -169,7 +169,7 @@ class TicketController extends Controller
         $ticket = Ticket::findOrFail($id);
 
         // Ubah status tiket menjadi 'closed'
-        $ticket->status = 'closed';
+        $ticket->status = 'close';
 
         // Set Tanggal_Selesai ke waktu saat ini menggunakan Carbon
         $ticket->Tanggal_Selesai = \Carbon\Carbon::now();
