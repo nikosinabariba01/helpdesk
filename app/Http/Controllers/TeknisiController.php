@@ -75,7 +75,10 @@ class TeknisiController extends Controller
         $totalAllTickets = Ticket::count();               // Total tiket keseluruhan
         $totalTickets    = $teknisi_data_ticket->count(); // Total tiket yang belum memiliki asignees
 
-        // Mengambil jumlah tiket per hari untuk Line Chart
+        // Mengambil komentar terbaru
+        $latestComments = $this->getLatestComments(); // Panggil fungsi untuk mendapatkan komentar terbaru
+
+        // Mengambil jumlah tiket per hari untuk Line Chart (jumlah tiket berdasarkan tanggal pengaduan)
         $ticketsPerDay = Ticket::selectRaw('DATE(Tanggal_Pengaduan) as date, COUNT(*) as count')
             ->groupBy('date')
             ->orderBy('date', 'asc')
@@ -86,22 +89,17 @@ class TeknisiController extends Controller
             ->groupBy('status')
             ->get();
 
-        // Mengambil komentar terbaru
-        $latestComments = $this->getLatestComments(); // Panggil fungsi untuk mendapatkan komentar terbaru
-
-        // Kirimkan data untuk chart dan lainnya ke view
         return view('teknisi', compact(
             'teknisi_data_ticket',
             'totalTickets',
             'totalOnProcessTickets',
             'totalClosedTickets',
             'totalAllTickets',
-            'ticketsPerDay', // Kirim data untuk Line Chart
-            'statusData',    // Kirim data untuk Pie Chart
-            'latestComments' // Mengirimkan komentar terbaru ke view
+            'latestComments', // Mengirimkan komentar terbaru ke view
+            'ticketsPerDay',
+            'statusData'
         ));
     }
-
 
     // Fungsi untuk menampilkan tiket yang sudah ditugaskan
     public function viewasigne()

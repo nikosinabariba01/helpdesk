@@ -87,25 +87,27 @@
 </div>
 </div>
 
-<!-- Line Chart: Tren Jumlah Tiket Berdasarkan Waktu -->
-<div class="col-xl-6 col-sm-6 mb-xl-0 mb-4">
-  <div class="card">
-    <div class="card-body p-3">
-      <h6 class="font-weight-bolder mb-3">Tren Jumlah Tiket Berdasarkan Waktu</h6>
-      <div class="chart">
-        <canvas id="line-chart-gradient" class="chart-canvas" height="300px"></canvas>
+<div class="row mt-4">
+  <!-- Line Chart: Tren Jumlah Tiket Berdasarkan Waktu (Kiri) -->
+  <div class="col-xl-6 col-sm-6 mb-xl-0 mb-4">
+    <div class="card">
+      <div class="card-body p-3">
+        <h6 class="font-weight-bolder mb-3">Tren Jumlah Tiket Berdasarkan Waktu</h6>
+        <div class="chart">
+          <canvas id="line-chart-gradient" class="chart-canvas" height="300px"></canvas>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- Pie Chart: Prosentase Status Tiket -->
-<div class="col-xl-6 col-sm-6 mb-xl-0 mb-4">
-  <div class="card">
-    <div class="card-body p-3">
-      <h6 class="font-weight-bolder mb-3">Prosentase Status Tiket</h6>
-      <div class="chart">
-        <canvas id="pie-chart" class="chart-canvas" height="300px"></canvas>
+  <!-- Pie Chart: Prosentase Status Tiket (Kanan) -->
+  <div class="col-xl-6 col-sm-6 mb-xl-0 mb-4">
+    <div class="card">
+      <div class="card-body p-3">
+        <h6 class="font-weight-bolder mb-3">Prosentase Status Tiket</h6>
+        <div class="chart">
+          <canvas id="pie-chart" class="chart-canvas" height="300px"></canvas>
+        </div>
       </div>
     </div>
   </div>
@@ -536,14 +538,14 @@
   document.addEventListener('DOMContentLoaded', function() {
     // Data Line Chart: Tren Jumlah Tiket Berdasarkan Waktu
     const lineData = {
-      labels: @json($ticketsPerDay -> pluck('date')), // Data tanggal tiket
+      labels: @json($ticketsPerDay->pluck('date')),  // Data tanggal tiket
       datasets: [{
         label: 'Jumlah Tiket',
-        data: @json($ticketsPerDay -> pluck('count')), // Data jumlah tiket per tanggal
+        data: @json($ticketsPerDay->pluck('count')),  // Data jumlah tiket per tanggal
         backgroundColor: 'rgba(54, 162, 235, 0.2)',
         borderColor: 'rgba(54, 162, 235, 1)',
         borderWidth: 1,
-        tension: 0.4, // Untuk membuat garis lebih mulus
+        tension: 0.4,  // Untuk membuat garis lebih mulus
       }]
     };
 
@@ -585,5 +587,40 @@
 
     // Membuat chart menggunakan konfigurasi
     new Chart(document.getElementById('line-chart-gradient'), lineChartConfig);
+
+    // Data Pie Chart: Prosentase Status Tiket
+    const pieData = {
+      labels: ['Open', 'On Process', 'Closed', 'Escalated'],
+      datasets: [{
+        data: @json($statusData->pluck('count')),  // Data jumlah tiket berdasarkan status
+        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#FF5733'], // Warna untuk tiap status
+        borderColor: '#fff',
+        borderWidth: 1
+      }]
+    };
+
+    const pieChartConfig = {
+      type: 'pie',
+      data: pieData,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          tooltip: {
+            callbacks: {
+              label: function(tooltipItem) {
+                return tooltipItem.label + ': ' + tooltipItem.raw + ' Tiket'; // Format label tooltip
+              }
+            }
+          }
+        }
+      }
+    };
+
+    // Membuat chart pie
+    new Chart(document.getElementById('pie-chart'), pieChartConfig);
   });
 </script>
