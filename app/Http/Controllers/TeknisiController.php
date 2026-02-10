@@ -90,7 +90,7 @@ class TeknisiController extends Controller
 
         // Menggunakan Carbon untuk mengubah angka bulan menjadi nama bulan
         $monthLabels = $ticketsPerMonth->groupBy('month')->keys()->map(function ($month) {
-            return Carbon\Carbon::create()->month($month)->format('F'); // Mengubah angka bulan menjadi nama bulan
+            return Carbon::create()->month($month)->format('F'); // Mengubah angka bulan menjadi nama bulan
         });
 
         // Mengambil status tiket dan menghitung jumlah per status untuk Pie Chart
