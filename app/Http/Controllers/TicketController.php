@@ -37,13 +37,20 @@ class TicketController extends Controller
         // Jika tidak ada, tambahkan pengurus yang sedang login
         $ticket->asignees()->syncWithoutDetaching([Auth::id()]);
 
-        $ticket->status = 'on process';  // Ubah status menjadi 'on process'
+        // Ubah status menjadi 'on process'
+        $ticket->status = 'on process';
+
+        // Kosongkan Tanggal_Selesai saat status tiket menjadi 'on process'
+        if ($ticket->status === 'on process') {
+            $ticket->Tanggal_Selesai = null;
+        }
 
         // Simpan perubahan ke database
         $ticket->save();
 
         return redirect(route('teknisi.index'))->with('success', 'Tiket berhasil di-assign.');
     }
+
 
 
 
@@ -88,7 +95,7 @@ class TicketController extends Controller
         // Kirim pesan Telegram ke semua pemilik
         $telegramService = new TelegramService();
         $currentUser = Auth::user();
-        
+
         foreach ($owners as $owner) {
             $message = "<b>⚠️ Tiket Dieskalasi</b>\n\n";
             $message .= "<b>ID Tiket:</b> sp-" . substr(preg_replace('/[^0-9]/', '', $ticket->id), -3) . \Carbon\Carbon::parse($ticket->created_at)->format('dmy') . "\n";
@@ -97,7 +104,7 @@ class TicketController extends Controller
             $message .= "<b>Jenis Pengaduan:</b> {$ticket->Jenis_Pengaduan}\n";
             $message .= "<b>Lokasi:</b> {$ticket->Lokasi}\n\n";
             $message .= "<i>Tiket ini memerlukan perhatian dan bantuan Anda untuk penyelesaian.</i>";
-            
+
             $telegramService->sendMessage($owner->telegram_chat_id, $message);
         }
 
@@ -121,7 +128,7 @@ class TicketController extends Controller
         // Kirim pesan Telegram ke semua pemilik
         $telegramService = new TelegramService();
         $currentUser = Auth::user();
-        
+
         foreach ($owners as $owner) {
             $message = "<b>✅ Pembatalan Eskalasi Tiket</b>\n\n";
             $message .= "<b>ID Tiket:</b> sp-" . substr(preg_replace('/[^0-9]/', '', $ticket->id), -3) . \Carbon\Carbon::parse($ticket->created_at)->format('dmy') . "\n";
@@ -130,7 +137,7 @@ class TicketController extends Controller
             $message .= "<b>Dibatalkan oleh:</b> {$currentUser->name} ({$currentUser->role})\n";
             $message .= "<b>Status Baru:</b> On Process\n\n";
             $message .= "<i>Permintaan eskalasi untuk tiket ini telah dibatalkan.</i>";
-            
+
             $telegramService->sendMessage($owner->telegram_chat_id, $message);
         }
 
@@ -160,10 +167,17 @@ class TicketController extends Controller
     {
         // Temukan tiket berdasarkan ID
         $ticket = Ticket::findOrFail($id);
-        $ticket->status = 'close';
+
+        // Ubah status tiket menjadi 'closed'
+        $ticket->status = 'closed';
+
+        // Set Tanggal_Selesai ke waktu saat ini menggunakan Carbon
+        $ticket->Tanggal_Selesai = \Carbon\Carbon::now();
+
         // Simpan perubahan ke database
         $ticket->save();
 
+        // Redirect dengan pesan sukses
         return redirect(route('teknisi.closeticket'))->with('success', 'Data Tiket Berhasil diupdate');
     }
 
