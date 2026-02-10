@@ -80,6 +80,7 @@ class TeknisiController extends Controller
 
         // Mengambil jumlah tiket per hari untuk Line Chart (jumlah tiket berdasarkan tanggal pengaduan)
         $ticketsPerDay = Ticket::selectRaw('DATE(Tanggal_Pengaduan) as date, COUNT(*) as count')
+            ->whereNotNull('Tanggal_Pengaduan')  // Pastikan Tanggal_Pengaduan tidak null
             ->groupBy('date')
             ->orderBy('date', 'asc')
             ->get();

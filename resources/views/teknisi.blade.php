@@ -536,16 +536,16 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    // Data Line Chart: Tren Jumlah Tiket Berdasarkan Waktu
+    // Line Chart: Tren Jumlah Tiket Berdasarkan Waktu
     const lineData = {
-      labels: @json($ticketsPerDay->pluck('date')),  // Data tanggal tiket
+      labels: @json($ticketsPerDay -> pluck('date')), // Data tanggal tiket
       datasets: [{
         label: 'Jumlah Tiket',
-        data: @json($ticketsPerDay->pluck('count')),  // Data jumlah tiket per tanggal
+        data: @json($ticketsPerDay -> pluck('count')), // Data jumlah tiket per tanggal
         backgroundColor: 'rgba(54, 162, 235, 0.2)',
         borderColor: 'rgba(54, 162, 235, 1)',
         borderWidth: 1,
-        tension: 0.4,  // Untuk membuat garis lebih mulus
+        tension: 0.4, // Untuk membuat garis lebih mulus
       }]
     };
 
@@ -588,11 +588,11 @@
     // Membuat chart menggunakan konfigurasi
     new Chart(document.getElementById('line-chart-gradient'), lineChartConfig);
 
-    // Data Pie Chart: Prosentase Status Tiket
+    // Pie Chart: Prosentase Status Tiket
     const pieData = {
       labels: ['Open', 'On Process', 'Closed', 'Escalated'],
       datasets: [{
-        data: @json($statusData->pluck('count')),  // Data jumlah tiket berdasarkan status
+        data: @json($statusData -> pluck('count')), // Data jumlah tiket berdasarkan status
         backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#FF5733'], // Warna untuk tiap status
         borderColor: '#fff',
         borderWidth: 1
