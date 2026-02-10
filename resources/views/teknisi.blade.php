@@ -536,17 +536,14 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-
     // Line Chart: Tren Jumlah Tiket Berdasarkan Waktu
     const lineData = {
-      labels: @json($ticketsPerMonth -> groupBy('month') -> keys() -> map(function($month) {
-        return Carbon::create() -> month($month) -> format('F'); // Mengubah angka bulan menjadi nama bulan
-      })),
-
-      datasets: [{
+      labels: @json($monthLabels),  // Menggunakan nama bulan yang sudah diformat di controller
+      datasets: [
+        {
           label: 'Permintaan',
-          data: @json($ticketsPerMonth -> where('Jenis_Pengaduan', 'permintaan') -> groupBy('month') -> map(function($tickets) {
-            return $tickets -> sum('count');
+          data: @json($ticketsPerMonth->where('Jenis_Pengaduan', 'permintaan')->groupBy('month')->map(function($tickets) {
+            return $tickets->sum('count');
           })),
           backgroundColor: 'rgba(54, 162, 235, 0.2)',
           borderColor: 'rgba(54, 162, 235, 1)',
@@ -555,8 +552,8 @@
         },
         {
           label: 'Perbaikan',
-          data: @json($ticketsPerMonth -> where('Jenis_Pengaduan', 'perbaikan') -> groupBy('month') -> map(function($tickets) {
-            return $tickets -> sum('count');
+          data: @json($ticketsPerMonth->where('Jenis_Pengaduan', 'perbaikan')->groupBy('month')->map(function($tickets) {
+            return $tickets->sum('count');
           })),
           backgroundColor: 'rgba(255, 99, 132, 0.2)',
           borderColor: 'rgba(255, 99, 132, 1)',
@@ -609,7 +606,7 @@
     const pieData = {
       labels: ['Open', 'On Process', 'Closed', 'Escalated'],
       datasets: [{
-        data: @json($statusData -> pluck('count')), // Data jumlah tiket berdasarkan status
+        data: @json($statusData->pluck('count')),  // Data jumlah tiket berdasarkan status
         backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#FF5733'], // Warna untuk tiap status
         borderColor: '#fff',
         borderWidth: 1

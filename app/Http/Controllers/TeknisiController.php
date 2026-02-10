@@ -88,7 +88,7 @@ class TeknisiController extends Controller
             ->orderBy('month', 'asc')
             ->get();
 
-        // Menggunakan Carbon untuk mengubah angka bulan menjadi nama bulan
+        // Menggunakan Carbon untuk mengubah angka bulan menjadi nama bulan (January, February, dll.)
         $monthLabels = $ticketsPerMonth->groupBy('month')->keys()->map(function ($month) {
             return Carbon::create()->month($month)->format('F'); // Mengubah angka bulan menjadi nama bulan
         });
