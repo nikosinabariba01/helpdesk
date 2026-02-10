@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Comment;
 use App\Models\Ticket;
 use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
 
 class TeknisiController extends Controller
 {
@@ -79,35 +78,13 @@ class TeknisiController extends Controller
         // Mengambil komentar terbaru
         $latestComments = $this->getLatestComments(); // Panggil fungsi untuk mendapatkan komentar terbaru
 
-        // Mengambil jumlah tiket per bulan (per tahun dan bulan) untuk Line Chart
-        $ticketsPerMonth = Ticket::selectRaw('YEAR(Tanggal_Pengaduan) as year, MONTH(Tanggal_Pengaduan) as month,
-                                        COUNT(*) as count, Jenis_Pengaduan')
-            ->whereNotNull('Tanggal_Pengaduan') // Pastikan Tanggal_Pengaduan tidak null
-            ->groupBy('year', 'month', 'Jenis_Pengaduan')
-            ->orderBy('year', 'asc')
-            ->orderBy('month', 'asc')
-            ->get();
-
-        // Menggunakan Carbon untuk mengubah angka bulan menjadi nama bulan (January, February, dll.)
-        $monthLabels = $ticketsPerMonth->groupBy('month')->keys()->map(function ($month) {
-            return Carbon::create()->month($month)->format('F'); // Mengubah angka bulan menjadi nama bulan
-        });
-
-        // Mengambil status tiket dan menghitung jumlah per status untuk Pie Chart
-        $statusData = Ticket::selectRaw('status, COUNT(*) as count')
-            ->groupBy('status')
-            ->get();
-
         return view('teknisi', compact(
             'teknisi_data_ticket',
             'totalTickets',
             'totalOnProcessTickets',
             'totalClosedTickets',
             'totalAllTickets',
-            'latestComments', // Mengirimkan komentar terbaru ke view
-            'ticketsPerMonth',
-            'monthLabels',
-            'statusData'
+            'latestComments' // Mengirimkan komentar terbaru ke view
         ));
     }
 

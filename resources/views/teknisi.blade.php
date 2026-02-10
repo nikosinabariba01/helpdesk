@@ -86,33 +86,6 @@
   </div>
 </div>
 </div>
-
-<div class="row mt-4">
-  <!-- Line Chart: Tren Jumlah Tiket Berdasarkan Waktu (Kiri) -->
-  <div class="col-xl-6 col-sm-6 mb-xl-0 mb-4">
-    <div class="card">
-      <div class="card-body p-3">
-        <h6 class="font-weight-bolder mb-3">Tren Jumlah Tiket Berdasarkan Waktu</h6>
-        <div class="chart">
-          <canvas id="line-chart-gradient" class="chart-canvas" height="300px"></canvas>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Pie Chart: Prosentase Status Tiket (Kanan) -->
-  <div class="col-xl-6 col-sm-6 mb-xl-0 mb-4">
-    <div class="card">
-      <div class="card-body p-3">
-        <h6 class="font-weight-bolder mb-3">Prosentase Status Tiket</h6>
-        <div class="chart">
-          <canvas id="pie-chart" class="chart-canvas" height="300px"></canvas>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
 <div class="row mt-4">
   <div class="col-lg-12 mb-lg-0 mb-4 ">
     <div class="card z-index-2 h-100 d-flex flex-column shadow-lg" style="border: 1px solid #e4e4e4;">
@@ -192,39 +165,39 @@
             </tbody>
 
           </table>
-        </div>
-        <div style="padding: 15px 16px; border-top: 1px solid #e4e4e4; display: flex; justify-content: space-between; align-items: center; background-color: #ffffff;">
-          <div style="display: flex; gap: 12px; align-items: center;">
-            <!-- Pagination Info as Dropdown -->
-            <div class="dropdown" style="position: relative;">
-              <button class="btn btn-sm btn-outline-secondary" style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;" data-bs-toggle="dropdown" aria-expanded="false">
-                <span id="paginationDisplay">1-10 dari {{ $teknisi_data_ticket->count() }}</span>
-                <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
-              </button>
-              <ul class="dropdown-menu" style="font-size: 13px; min-width: 150px;">
-                <li><a class="dropdown-item page-sort-option" href="#" data-sort="desc" style="padding: 8px 16px;">
-                    <i class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru
-                  </a></li>
-                <li><a class="dropdown-item page-sort-option" href="#" data-sort="asc" style="padding: 8px 16px;">
-                    <i class="fa fa-arrow-up me-2" style="color: #6c757d;"></i>Terlama
-                  </a></li>
-              </ul>
             </div>
-          </div>
-
-          <div style="display: flex; gap: 12px; align-items: center;">
-            <!-- Pagination Navigation -->
-            <div style="display: flex; gap: 6px;">
-              <button id="prevPage" class="btn btn-sm btn-outline-secondary" style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;" title="Halaman Sebelumnya">
-                <i class="fa fa-chevron-left" style="font-size: 11px;"></i>
-              </button>
-              <button id="nextPage" class="btn btn-sm btn-outline-secondary" style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;" title="Halaman Berikutnya">
-                <i class="fa fa-chevron-right" style="font-size: 11px;"></i>
-              </button>
+            <div style="padding: 15px 16px; border-top: 1px solid #e4e4e4; display: flex; justify-content: space-between; align-items: center; background-color: #ffffff;">
+              <div style="display: flex; gap: 12px; align-items: center;">
+                <!-- Pagination Info as Dropdown -->
+                <div class="dropdown" style="position: relative;">
+                  <button class="btn btn-sm btn-outline-secondary" style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span id="paginationDisplay">1-10 dari {{ $teknisi_data_ticket->count() }}</span>
+                    <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
+                  </button>
+                  <ul class="dropdown-menu" style="font-size: 13px; min-width: 150px;">
+                    <li><a class="dropdown-item page-sort-option" href="#" data-sort="desc" style="padding: 8px 16px;">
+                      <i class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru
+                    </a></li>
+                    <li><a class="dropdown-item page-sort-option" href="#" data-sort="asc" style="padding: 8px 16px;">
+                      <i class="fa fa-arrow-up me-2" style="color: #6c757d;"></i>Terlama
+                    </a></li>
+                  </ul>
+                </div>
+              </div>
+              
+              <div style="display: flex; gap: 12px; align-items: center;">
+                <!-- Pagination Navigation -->
+                <div style="display: flex; gap: 6px;">
+                  <button id="prevPage" class="btn btn-sm btn-outline-secondary" style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;" title="Halaman Sebelumnya">
+                    <i class="fa fa-chevron-left" style="font-size: 11px;"></i>
+                  </button>
+                  <button id="nextPage" class="btn btn-sm btn-outline-secondary" style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;" title="Halaman Berikutnya">
+                    <i class="fa fa-chevron-right" style="font-size: 11px;"></i>
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        @endif
+            @endif
       </div>
     </div>
 
@@ -385,7 +358,7 @@
     $(document).on('click', '.page-sort-option', function(e) {
       e.preventDefault();
       currentSort = $(this).data('sort');
-
+      
       // Sort rows
       sortTableByDate(currentSort);
       currentPage = 1;
@@ -395,16 +368,16 @@
     // Function to sort table by date
     function sortTableByDate(direction) {
       var rows = $('#TicketTable tbody tr').get();
-
+      
       rows.sort(function(a, b) {
         // Ambil teks dari kolom pertama (yang berisi nomor tiket dengan tanggal)
         var aText = $(a).find('li:first').text(); // sp-123012401
         var bText = $(b).find('li:first').text(); // sp-456012402
-
+        
         // Ekstrak tanggal dari format sp-xxxddmmyy
         var aDate = extractDateFromTicket(aText);
         var bDate = extractDateFromTicket(bText);
-
+        
         if (direction === 'desc') {
           return new Date(bDate) - new Date(aDate);
         } else {
@@ -452,7 +425,7 @@
 
       // Update pagination display berdasarkan sorting
       var displayStart, displayEnd;
-
+      
       if (currentSort === 'desc') {
         // Terbaru: tampil normal (1-10, 11-20, dst)
         displayStart = totalRows === 0 ? 0 : startIndex + 1;
@@ -461,13 +434,13 @@
         // Terlama: tampil terbalik (100-90, 90-80, dst)
         displayStart = totalRows - startIndex;
         displayEnd = totalRows - endIndex + 1;
-
+        
         // Pastikan displayEnd tidak kurang dari 1
         if (displayEnd < 1) {
           displayEnd = 1;
         }
       }
-
+      
       $('#paginationDisplay').text(displayStart + '-' + displayEnd + ' dari ' + totalRows);
 
       // Update button states
@@ -531,110 +504,5 @@
       modal.querySelector('#Lokasi').value = ticketLokasi;
       modal.querySelector('#Detail').value = ticketDetail;
     });
-  });
-</script>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // Line Chart: Tren Jumlah Tiket Berdasarkan Waktu
-    const lineData = {
-      labels: @json($monthLabels),  // Menggunakan nama bulan yang sudah diformat di controller
-      datasets: [
-        {
-          label: 'Permintaan',
-          data: @json($ticketsPerMonth->where('Jenis_Pengaduan', 'permintaan')->groupBy('month')->map(function($tickets) {
-            return $tickets->sum('count');
-          })),
-          backgroundColor: 'rgba(54, 162, 235, 0.2)',
-          borderColor: 'rgba(54, 162, 235, 1)',
-          borderWidth: 1,
-          tension: 0.4
-        },
-        {
-          label: 'Perbaikan',
-          data: @json($ticketsPerMonth->where('Jenis_Pengaduan', 'perbaikan')->groupBy('month')->map(function($tickets) {
-            return $tickets->sum('count');
-          })),
-          backgroundColor: 'rgba(255, 99, 132, 0.2)',
-          borderColor: 'rgba(255, 99, 132, 1)',
-          borderWidth: 1,
-          tension: 0.4
-        }
-      ]
-    };
-
-    const lineChartConfig = {
-      type: 'line',
-      data: lineData,
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            position: 'top',
-          },
-          tooltip: {
-            callbacks: {
-              label: function(tooltipItem) {
-                return 'Jumlah Tiket: ' + tooltipItem.raw;
-              }
-            }
-          }
-        },
-        scales: {
-          x: {
-            title: {
-              display: true,
-              text: 'Bulan'
-            }
-          },
-          y: {
-            title: {
-              display: true,
-              text: 'Jumlah Tiket'
-            },
-            beginAtZero: true
-          }
-        }
-      }
-    };
-
-    // Membuat chart menggunakan konfigurasi
-    new Chart(document.getElementById('line-chart-gradient'), lineChartConfig);
-
-    // Pie Chart: Prosentase Status Tiket
-    const pieData = {
-      labels: ['Open', 'On Process', 'Closed', 'Escalated'],
-      datasets: [{
-        data: @json($statusData->pluck('count')),  // Data jumlah tiket berdasarkan status
-        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#FF5733'], // Warna untuk tiap status
-        borderColor: '#fff',
-        borderWidth: 1
-      }]
-    };
-
-    const pieChartConfig = {
-      type: 'pie',
-      data: pieData,
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            position: 'top',
-          },
-          tooltip: {
-            callbacks: {
-              label: function(tooltipItem) {
-                return tooltipItem.label + ': ' + tooltipItem.raw + ' Tiket'; // Format label tooltip
-              }
-            }
-          }
-        }
-      }
-    };
-
-    // Membuat chart pie
-    new Chart(document.getElementById('pie-chart'), pieChartConfig);
   });
 </script>
