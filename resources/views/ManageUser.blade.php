@@ -101,6 +101,7 @@
         </div>
     </div>
 </div>
+@endsection
 
 <script>
     $(document).ready(function() {
@@ -108,11 +109,11 @@
             searching: true,
             ordering: false,
             paging: true,
-            pageLength: 10,  // Set items per page
+            pageLength: 10, // Set items per page
             lengthChange: false,
             info: false,
             columnDefs: [{
-                targets: [4],  // Disable ordering for the "Actions" column
+                targets: [4], // Disable ordering for the "Actions" column
                 orderable: false
             }]
         });
@@ -125,13 +126,12 @@
             var searchTerm = this.value.toLowerCase();
             $.fn.dataTable.ext.search = [];
             $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
-                return data[0].toLowerCase().includes(searchTerm) || 
-                       data[1].toLowerCase().includes(searchTerm) ||
-                       data[2].toLowerCase().includes(searchTerm) ||
-                       data[3].toLowerCase().includes(searchTerm);
+                return data[0].toLowerCase().includes(searchTerm) ||
+                    data[1].toLowerCase().includes(searchTerm) ||
+                    data[2].toLowerCase().includes(searchTerm) ||
+                    data[3].toLowerCase().includes(searchTerm);
             });
             table.draw();
         });
     });
 </script>
-@endsection
