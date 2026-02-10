@@ -223,7 +223,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-white" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-danger" onclick="document.getElementById('closeTicketForm').submit();">Yes, close it</button>
+                <button type="submit" class="btn btn-danger" onclick="document.getElementById('closeTicketForm').submit();">Ya, close tiket</button>
             </div>
         </div>
     </div>
