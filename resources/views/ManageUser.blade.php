@@ -29,13 +29,6 @@
                     <a href="{{ route('user.create') }}" class="btn btn-primary">Create User</a>
                 </div>
             </div>
-            <!-- Kolom Pencarian dengan input-group -->
-            <div class="d-flex">
-                <div class="input-group input-group-sm">
-                    <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
-                    <input type="text" id="search" class="form-control" placeholder="Search" onfocus="focused(this)" onfocusout="defocused(this)">
-                </div>
-            </div>
         </div>
         <div class="card-body px-0 pt-0 pb-2 h-500">
             @if($users->isEmpty())
@@ -44,7 +37,7 @@
             </div>
             @else
             <div class="table-responsive" style="height: 400px; max-height: 400px; overflow-y: auto;">
-                <table class="table align-items-center mb-0" id="UserTable">
+                <table class="table align-items-center mb-0">
                     <thead>
                         <tr>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">ID</th>
@@ -97,41 +90,9 @@
                     </tbody>
                 </table>
             </div>
+
             @endif
         </div>
     </div>
 </div>
 @endsection
-
-<script>
-    $(document).ready(function() {
-        var table = $('#UserTable').DataTable({
-            searching: true,
-            ordering: false,
-            paging: true,
-            pageLength: 10, // Set items per page
-            lengthChange: false,
-            info: false,
-            columnDefs: [{
-                targets: [4], // Disable ordering for the "Actions" column
-                orderable: false
-            }]
-        });
-
-        $('#UserTable_filter').hide();
-        $('#UserTable_length').hide();
-        $('#UserTable_paginate').hide();
-
-        $('#search').on('keyup', function() {
-            var searchTerm = this.value.toLowerCase();
-            $.fn.dataTable.ext.search = [];
-            $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
-                return data[0].toLowerCase().includes(searchTerm) ||
-                    data[1].toLowerCase().includes(searchTerm) ||
-                    data[2].toLowerCase().includes(searchTerm) ||
-                    data[3].toLowerCase().includes(searchTerm);
-            });
-            table.draw();
-        });
-    });
-</script>
