@@ -536,10 +536,10 @@
   document.addEventListener('DOMContentLoaded', function() {
     // Data Line Chart: Tren Jumlah Tiket Berdasarkan Waktu
     const lineData = {
-      labels: @json($ticketsPerDay - > pluck('date')), // Data tanggal tiket
+      labels: @json($ticketsPerDay -> pluck('date')), // Data tanggal tiket
       datasets: [{
         label: 'Jumlah Tiket',
-        data: @json($ticketsPerDay - > pluck('count')), // Data jumlah tiket per tanggal
+        data: @json($ticketsPerDay -> pluck('count')), // Data jumlah tiket per tanggal
         backgroundColor: 'rgba(54, 162, 235, 0.2)',
         borderColor: 'rgba(54, 162, 235, 1)',
         borderWidth: 1,
