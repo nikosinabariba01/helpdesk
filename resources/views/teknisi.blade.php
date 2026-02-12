@@ -93,7 +93,20 @@
     <div class="card z-index-2 h-100 shadow-lg" style="border: 1px solid #e4e4e4;">
       <div class="card-header pb-0 d-flex align-items-center justify-content-between">
         <h6 class="mb-0">Tickets per Bulan (By Status)</h6>
-        <span class="text-xs text-secondary">Tahun: <span id="chartYear"></span></span>
+
+        <div class="d-flex align-items-center gap-2">
+          <select id="yearSelect" class="form-select form-select-sm" style="width: 110px;">
+            @foreach($years as $y)
+            <option value="{{ $y }}" {{ (int)$selectedYear === (int)$y ? 'selected' : '' }}>
+              {{ $y }}
+            </option>
+            @endforeach
+          </select>
+
+          <span class="text-xs text-secondary">
+            Tahun: <span id="chartYear"></span>
+          </span>
+        </div>
       </div>
       <div class="card-body">
         <div style="height: 330px;">
@@ -559,6 +572,23 @@
   document.addEventListener('DOMContentLoaded', () => {
     const chartData = @json($chartData);
 
+    // =========================
+    // ✅ YEAR SELECT + LABEL TAHUN
+    // (taruh di sini, sebelum chart dibuat)
+    // =========================
+    const chartYearEl = document.getElementById('chartYear');
+    if (chartYearEl) chartYearEl.textContent = chartData.year;
+
+    const yearSelect = document.getElementById('yearSelect');
+    if (yearSelect) {
+      yearSelect.addEventListener('change', (e) => {
+        const y = e.target.value;
+        const url = new URL(window.location.href);
+        url.searchParams.set('year', y);
+        window.location.href = url.toString(); // reload dengan year baru
+      });
+    }
+
     const labels = chartData.labels; // Jan..Des
     const statuses = chartData.statuses; // ["open","on process","close","escalated"]
 
@@ -674,14 +704,13 @@
       label: s,
       data: chartData.monthlyByStatus[s] || Array(12).fill(0),
       borderColor: colorMap[s].stroke,
-      // gradient fill (lebih “premium”)
       backgroundColor: (context) => {
         const chart = context.chart;
         const {
           ctx,
           chartArea
         } = chart;
-        if (!chartArea) return colorMap[s].fillTop; // saat initial render
+        if (!chartArea) return colorMap[s].fillTop;
 
         const g = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
         g.addColorStop(0, colorMap[s].fillTop);
@@ -691,7 +720,6 @@
       fill: true,
       tension: 0.38,
       borderWidth: 2,
-
       pointRadius: 2.5,
       pointHoverRadius: 5,
       pointHitRadius: 10,
@@ -739,7 +767,6 @@
             left: 6
           }
         },
-
         animation: {
           duration: 900,
           easing: 'easeOutQuart',
@@ -761,7 +788,6 @@
             to: 0.38
           }
         },
-
         scales: {
           x: {
             grid: {
@@ -797,7 +823,6 @@
 
     function getPieData(monthValue) {
       if (monthValue === 0) {
-        // total setahun
         return statuses.map(s => (chartData.monthlyByStatus[s] || []).reduce((a, b) => a + b, 0));
       }
       const idx = Math.max(0, Math.min(11, monthValue - 1));
@@ -805,7 +830,8 @@
     }
 
     function pieTopText(m) {
-      return m === 0 ? `Komposisi Status (${chartData.year})` : `Komposisi Status (${MONTHS_FULL[m-1]} ${chartData.year})`;
+      return m === 0 ? `Komposisi Status (${chartData.year})` :
+        `Komposisi Status (${MONTHS_FULL[m-1]} ${chartData.year})`;
     }
 
     const doughnutChart = new Chart(pieCtx, {
@@ -818,8 +844,6 @@
           borderColor: 'rgba(255,255,255,.85)',
           borderWidth: 2,
           hoverOffset: 10,
-
-          // bikin slice lebih modern
           borderRadius: 10,
           spacing: 3
         }]
@@ -848,7 +872,6 @@
               }
             }
           },
-          // center text plugin options
           centerText: {
             topText: pieTopText(0),
             midText: fmt(getPieData(0).reduce((a, b) => a + b, 0)),
@@ -864,7 +887,6 @@
       }
     });
 
-    // update doughnut saat pilih bulan
     if (pieMonthSelect) {
       pieMonthSelect.addEventListener('change', () => {
         const m = Number(pieMonthSelect.value);
@@ -872,7 +894,6 @@
 
         doughnutChart.data.datasets[0].data = data;
 
-        // update center text (top/mid/bot)
         const total = data.reduce((a, b) => a + b, 0);
         const closeIndex = statuses.indexOf('close');
         const closed = closeIndex >= 0 ? (data[closeIndex] || 0) : 0;
