@@ -102,7 +102,7 @@
     </div>
   </div>
 </div>
-  <div class="col-6 col-sm-6 col-xl-4">
+  <div class="col-6 col-sm-6 col-xl-2">
     <div class="card">
       <div class="card-body p-3 card-stat">
         <div class="numbers">
