@@ -117,7 +117,7 @@
         </div>
       </div>
       <div class="card-body">
-        <div style="height: 330px;">
+        <div class="chart-pop" style="height: 330px;">
           <canvas id="ticketsLineChart"></canvas>
         </div>
       </div>
@@ -147,7 +147,7 @@
         </select>
       </div>
       <div class="card-body">
-        <div style="height: 330px;">
+        <div divclass="chart-pop" style="height: 330px;">
           <canvas id="ticketsPieChart"></canvas>
         </div>
       </div>
@@ -579,15 +579,20 @@
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     // LINE (jenis) + DOUGHNUT (status)
-    const chartLine = @json($chartLine); // permintaan vs perbaikan (scope+year sudah difilter di controller)
-    const chartData = @json($chartData); // status untuk doughnut (per tahun)
+    const chartLine = @json($chartLine);
+    const chartData = @json($chartData);
 
     const fmt = (n) => new Intl.NumberFormat('id-ID').format(n);
 
-    // ✅ animasi ringan & aman performa (ikut preferensi reduced motion)
+    // ✅ animasi “muncul” tapi aman performa
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const ANIM_MS = prefersReducedMotion ? 0 : 650;
-    const EASING = 'easeOutCubic';
+    const ANIM_MS = prefersReducedMotion ? 0 : 900;
+    const EASING = 'easeOutQuart';
+
+    // ✅ trigger CSS anim wrapper chart
+    document.querySelectorAll('.chart-pop').forEach(el => {
+      requestAnimationFrame(() => el.classList.add('is-ready'));
+    });
 
     // =========================
     // YEAR + SCOPE SELECT (reload)
@@ -695,8 +700,8 @@
     if (lineEl) {
       const lineCtx = lineEl.getContext('2d');
 
-      const lineLabels = chartLine.labels; // Jan..Des
-      const types = chartLine.types; // ['perbaikan','permintaan']
+      const lineLabels = chartLine.labels;
+      const types = chartLine.types;
 
       const typeColors = {
         perbaikan: {
@@ -754,7 +759,7 @@
             legend: {
               position: 'bottom',
               labels: {
-                usePointStyle: false, // kotak warna
+                usePointStyle: false,
                 boxWidth: 14,
                 boxHeight: 10,
                 padding: 16,
@@ -763,15 +768,13 @@
                   size: 12,
                   weight: '600'
                 },
-
-                // ✅ bikin legend jelas (warna kotak = warna garis + label rapi)
                 generateLabels: (chart) => {
                   const original = Chart.defaults.plugins.legend.labels.generateLabels(chart);
                   return original.map((item) => {
                     const text = (item.text || '').toLowerCase();
                     if (text === 'permintaan') item.text = 'Permintaan';
                     if (text === 'perbaikan') item.text = 'Perbaikan';
-                    item.fillStyle = item.strokeStyle; // kotak pakai warna garis
+                    item.fillStyle = item.strokeStyle;
                     item.lineWidth = 0;
                     return item;
                   });
@@ -798,16 +801,24 @@
             }
           },
 
-          // ✅ animasi ringan (tanpa delay per titik)
+          // ✅ animasi “muncul”: naik dari 0 + titik pop
           animation: {
             duration: ANIM_MS,
             easing: EASING
           },
           animations: {
+            y: {
+              from: 0
+            },
+            radius: {
+              from: 0,
+              duration: prefersReducedMotion ? 0 : Math.round(ANIM_MS * 0.8),
+              easing: EASING
+            },
             tension: {
-              duration: prefersReducedMotion ? 0 : 450,
+              duration: prefersReducedMotion ? 0 : 500,
               easing: EASING,
-              from: 0.25,
+              from: 0.2,
               to: 0.38
             }
           },
@@ -846,7 +857,7 @@
       const pieCtx = pieEl.getContext('2d');
       const pieMonthSelect = document.getElementById('pieMonthSelect');
 
-      const statuses = chartData.statuses; // ["open","on process","close","escalated"]
+      const statuses = chartData.statuses;
 
       const statusColors = {
         "open": {
@@ -871,7 +882,7 @@
       };
 
       const MONTHS_FULL = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-      const currentMonth = new Date().getMonth() + 1; // 1..12
+      const currentMonth = new Date().getMonth() + 1;
 
       function getPieData(monthValue) {
         if (monthValue === 0) {
@@ -895,7 +906,6 @@
         return `Close rate ${rate.toFixed(1)}%`;
       }
 
-      // default dropdown bulan ke bulan sekarang
       if (pieMonthSelect) pieMonthSelect.value = String(currentMonth);
 
       const initialMonth = pieMonthSelect ? Number(pieMonthSelect.value) : currentMonth;
@@ -947,7 +957,7 @@
             }
           },
 
-          // ✅ animasi ringan
+          // ✅ animasi “muncul”
           animation: {
             duration: ANIM_MS,
             easing: EASING,
@@ -973,3 +983,16 @@
     }
   });
 </script>
+
+<style>
+  .chart-pop {
+    opacity: 0;
+    transform: translateY(10px) scale(.985);
+    transition: opacity .35s ease, transform .35s ease;
+  }
+
+  .chart-pop.is-ready {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+</style>
