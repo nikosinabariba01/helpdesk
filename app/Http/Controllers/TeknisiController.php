@@ -45,15 +45,31 @@ class TeknisiController extends Controller
         return $latestComments;
     }
 
-    // Fungsi untuk menampilkan data teknisi (tiket yang belum ditugaskan)
     public function index()
     {
         $userId = Auth::id();
 
-        // ... kode kamu yang lain tetap ...
+        $teknisi_data_ticket = Ticket::with('user')
+            ->whereDoesntHave('asignees')
+            ->where('status', 'open')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $totalOnProcessTickets = Ticket::whereHas('asignees', function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        })->where('status', 'on process')->count();
+
+        $totalClosedTickets = Ticket::whereHas('asignees', function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        })->where('status', 'close')->count();
+
+        $totalAllTickets = Ticket::count();
+        $totalTickets    = $teknisi_data_ticket->count();
+
+        $latestComments = $this->getLatestComments();
 
         // =========================
-        // CHART DATA (Line + Doughnut)
+        // CHART DATA (Line + Pie)
         // =========================
         $selectedYear = (int) request('year', now()->year);
 
