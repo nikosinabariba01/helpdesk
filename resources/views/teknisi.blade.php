@@ -591,18 +591,19 @@
     if (chartYearEl) chartYearEl.textContent = chartLine?.year ?? '';
 
     const yearSelect = document.getElementById('yearSelect');
-    if (yearSelect) {
-      yearSelect.addEventListener('change', (e) => {
-        const url = new URL(window.location.href);
-        url.searchParams.set('year', e.target.value);
+    const scopeSelect = document.getElementById('scopeSelect');
 
-        // pertahankan scope yang sedang dipakai (open/close/all)
-        const currentScope = url.searchParams.get('scope') || chartLine.scope || 'all';
-        url.searchParams.set('scope', currentScope);
+    function reloadWithParams() {
+      const url = new URL(window.location.href);
 
-        window.location.href = url.toString();
-      });
+      if (yearSelect) url.searchParams.set('year', yearSelect.value);
+      if (scopeSelect) url.searchParams.set('scope', scopeSelect.value);
+
+      window.location.href = url.toString();
     }
+
+    if (yearSelect) yearSelect.addEventListener('change', reloadWithParams);
+    if (scopeSelect) scopeSelect.addEventListener('change', reloadWithParams);
 
     // =========================
     // PLUGIN: hover crosshair line (line chart)
