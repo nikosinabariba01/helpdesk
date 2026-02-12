@@ -87,12 +87,12 @@
 </div>
 </div>
 
-<div class="row mt-4">
+<div class="row mt-4 g-3">
   <!-- LINE CHART (KIRI) -->
-  <div class="col-lg-8 mb-4">
+  <div class="col-12 col-lg-8">
     <div class="card z-index-2 h-100 shadow-lg" style="border: 1px solid #e4e4e4;">
-      <div class="card-header pb-0 d-flex align-items-center justify-content-between">
-        <div>
+      <div class="card-header pb-0 d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div class="me-2">
           <h6 class="mb-0">Tickets per Bulan (Permintaan vs Perbaikan)</h6>
           <small class="text-secondary">
             Tahun: {{ $selectedYear }} • Scope:
@@ -100,38 +100,41 @@
           </small>
         </div>
 
-        <div class="d-flex align-items-center gap-2">
+        <div class="d-flex align-items-center gap-2 flex-wrap chart-controls">
           <!-- Dropdown scope -->
-          <select id="scopeSelect" class="form-select form-select-sm" style="width: 165px;">
+          <select id="scopeSelect" class="form-select form-select-sm">
             <option value="all" {{ $scope==='all' ? 'selected' : '' }}>All (Open+Close)</option>
             <option value="open" {{ $scope==='open' ? 'selected' : '' }}>Open</option>
             <option value="close" {{ $scope==='close' ? 'selected' : '' }}>Close</option>
           </select>
 
           <!-- Dropdown tahun -->
-          <select id="yearSelect" class="form-select form-select-sm" style="width: 110px;">
+          <select id="yearSelect" class="form-select form-select-sm">
             @foreach($years as $y)
-            <option value="{{ $y }}" {{ (int)$selectedYear === (int)$y ? 'selected' : '' }}>{{ $y }}</option>
+            <option value="{{ $y }}" {{ (int)$selectedYear === (int)$y ? 'selected' : '' }}>
+              {{ $y }}
+            </option>
             @endforeach
           </select>
         </div>
       </div>
+
       <div class="card-body">
-        <div class="chart-pop" style="height: 330px;">
+        <div class="chart-pop chart-wrap">
           <canvas id="ticketsLineChart"></canvas>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- PIE CHART (KANAN) -->
-  <div class="col-lg-4 mb-4">
+  <!-- PIE / DOUGHNUT (KANAN) -->
+  <div class="col-12 col-lg-4">
     <div class="card z-index-2 h-100 shadow-lg" style="border: 1px solid #e4e4e4;">
-      <div class="card-header pb-0 d-flex align-items-center justify-content-between">
+      <div class="card-header pb-0 d-flex align-items-center justify-content-between flex-wrap gap-2">
         <h6 class="mb-0">Komposisi Status</h6>
 
-        <select id="pieMonthSelect" class="form-select form-select-sm" style="width: 140px;">
-          <option value="0" selected>All Year</option>
+        <select id="pieMonthSelect" class="form-select form-select-sm pie-month">
+          <option value="0">All Year</option>
           <option value="1">Januari</option>
           <option value="2">Februari</option>
           <option value="3">Maret</option>
@@ -146,8 +149,9 @@
           <option value="12">Desember</option>
         </select>
       </div>
+
       <div class="card-body">
-        <div divclass="chart-pop" style="height: 330px;">
+        <div class="chart-pop chart-wrap chart-wrap--pie">
           <canvas id="ticketsPieChart"></canvas>
         </div>
       </div>
@@ -1011,5 +1015,80 @@
   .chart-pop.is-ready {
     opacity: 1;
     transform: translateY(0) scaleY(1);
+  }
+</style>
+
+<style>
+  /* default desktop */
+  .chart-wrap {
+    height: 330px;
+  }
+
+  .chart-wrap--pie {
+    height: 330px;
+  }
+
+  /* controls width desktop */
+  .chart-controls #scopeSelect {
+    width: 165px;
+  }
+
+  .chart-controls #yearSelect {
+    width: 110px;
+  }
+
+  .pie-month {
+    width: 140px;
+  }
+
+  /* anim wrapper (muncul dari bawah) */
+  .chart-pop {
+    opacity: 0;
+    transform: translateY(16px) scaleY(.92);
+    transform-origin: bottom;
+    transition: opacity .35s ease, transform .35s ease;
+  }
+
+  .chart-pop.is-ready {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+  }
+
+  /* ===== MOBILE ===== */
+  @media (max-width: 576px) {
+    .chart-wrap {
+      height: 260px;
+    }
+
+    .chart-wrap--pie {
+      height: 280px;
+    }
+
+    /* biar header ga kepotong */
+    .card-header {
+      flex-wrap: wrap !important;
+      gap: 10px !important;
+      padding-bottom: .75rem;
+    }
+
+    /* dropdown jadi full width dan turun rapi */
+    .chart-controls,
+    .chart-controls #scopeSelect,
+    .chart-controls #yearSelect,
+    .pie-month {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    /* judul lebih rapih di hp */
+    .card-header h6 {
+      font-size: 14px;
+    }
+
+    .card-header small {
+      display: block;
+      margin-top: 2px;
+      line-height: 1.2;
+    }
   }
 </style>
