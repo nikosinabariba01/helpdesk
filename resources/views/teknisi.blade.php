@@ -578,18 +578,16 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    // LINE (jenis) + DOUGHNUT (status)
     const chartLine = @json($chartLine);
     const chartData = @json($chartData);
 
     const fmt = (n) => new Intl.NumberFormat('id-ID').format(n);
 
-    // ✅ animasi “muncul” tapi aman performa
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const ANIM_MS = prefersReducedMotion ? 0 : 900;
     const EASING = 'easeOutQuart';
 
-    // ✅ trigger CSS anim wrapper chart
+    // ✅ CSS appear
     document.querySelectorAll('.chart-pop').forEach(el => {
       requestAnimationFrame(() => el.classList.add('is-ready'));
     });
@@ -609,12 +607,11 @@
       if (scopeSelect) url.searchParams.set('scope', scopeSelect.value);
       window.location.href = url.toString();
     }
-
     if (yearSelect) yearSelect.addEventListener('change', reloadWithParams);
     if (scopeSelect) scopeSelect.addEventListener('change', reloadWithParams);
 
     // =========================
-    // PLUGIN: hover crosshair line (line chart)
+    // PLUGIN: hover crosshair (line)
     // =========================
     const hoverLinePlugin = {
       id: 'hoverLine',
@@ -694,7 +691,7 @@
     Chart.register(hoverLinePlugin, centerTextPlugin);
 
     // ==========================================================
-    // ✅ LINE CHART: Permintaan vs Perbaikan (Jan–Des)
+    // ✅ LINE CHART
     // ==========================================================
     const lineEl = document.getElementById('ticketsLineChart');
     if (lineEl) {
@@ -801,7 +798,7 @@
             }
           },
 
-          // ✅ animasi “muncul”: naik dari 0 + titik pop
+          // ✅ muncul dari BAWAH (baseline y=0)
           animation: {
             duration: ANIM_MS,
             easing: EASING
@@ -810,16 +807,16 @@
             y: {
               from: (ctx) => {
                 const yScale = ctx.chart?.scales?.y;
-                return yScale ? yScale.getPixelForValue(0) : 0;
+                return yScale ? yScale.getPixelForValue(0) : 0; // baseline pixel
               }
             },
             radius: {
               from: 0,
-              duration: prefersReducedMotion ? 0 : Math.round(ANIM_MS * 0.8),
+              duration: prefersReducedMotion ? 0 : Math.round(ANIM_MS * 0.85),
               easing: EASING
             },
             tension: {
-              duration: prefersReducedMotion ? 0 : 500,
+              duration: prefersReducedMotion ? 0 : 550,
               easing: EASING,
               from: 0.2,
               to: 0.38
@@ -853,7 +850,7 @@
     }
 
     // ==========================================================
-    // ✅ DOUGHNUT: Komposisi Status - default bulan sekarang
+    // ✅ DOUGHNUT CHART (animasi dipaksa tampil)
     // ==========================================================
     const pieEl = document.getElementById('ticketsPieChart');
     if (pieEl) {
@@ -914,75 +911,91 @@
       const initialMonth = pieMonthSelect ? Number(pieMonthSelect.value) : currentMonth;
       const initialData = getPieData(initialMonth);
 
-      const doughnutChart = new Chart(pieCtx, {
-        type: 'doughnut',
-        data: {
-          labels: statuses,
-          datasets: [{
-            data: initialData,
-            backgroundColor: statuses.map(s => statusColors[s]?.stroke || 'rgba(0,0,0,.4)'),
-            borderColor: 'rgba(255,255,255,.85)',
-            borderWidth: 2,
-            hoverOffset: 10,
-            borderRadius: 10,
-            spacing: 3
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          cutout: '68%',
-          plugins: {
-            legend: {
-              position: 'bottom',
-              labels: {
-                usePointStyle: true,
-                boxWidth: 10,
-                padding: 14
-              }
-            },
-            tooltip: {
-              padding: 12,
-              callbacks: {
-                label: (ctx) => {
-                  const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
-                  const val = ctx.parsed || 0;
-                  const pct = total ? (val / total * 100) : 0;
-                  const nice = labelMap[ctx.label] || ctx.label;
-                  return ` ${nice}: ${fmt(val)} (${pct.toFixed(1)}%)`;
-                }
-              }
-            },
-            centerText: {
-              topText: pieTopText(initialMonth),
-              midText: fmt(initialData.reduce((a, b) => a + b, 0)),
-              botText: closeRateText(initialData)
-            }
+      // ✅ render setelah 1 frame biar animasi “keliatan”
+      requestAnimationFrame(() => {
+        const doughnutChart = new Chart(pieCtx, {
+          type: 'doughnut',
+          data: {
+            labels: statuses,
+            datasets: [{
+              data: initialData,
+              backgroundColor: statuses.map(s => statusColors[s]?.stroke || 'rgba(0,0,0,.4)'),
+              borderColor: 'rgba(255,255,255,.85)',
+              borderWidth: 2,
+              hoverOffset: 10,
+              borderRadius: 10,
+              spacing: 3
+            }]
           },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '68%',
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: {
+                  usePointStyle: true,
+                  boxWidth: 10,
+                  padding: 14
+                }
+              },
+              tooltip: {
+                padding: 12,
+                callbacks: {
+                  label: (ctx) => {
+                    const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                    const val = ctx.parsed || 0;
+                    const pct = total ? (val / total * 100) : 0;
+                    const nice = labelMap[ctx.label] || ctx.label;
+                    return ` ${nice}: ${fmt(val)} (${pct.toFixed(1)}%)`;
+                  }
+                }
+              },
+              centerText: {
+                topText: pieTopText(initialMonth),
+                midText: fmt(initialData.reduce((a, b) => a + b, 0)),
+                botText: closeRateText(initialData)
+              }
+            },
 
-          // ✅ animasi “muncul”
-          animation: {
-            duration: ANIM_MS,
-            easing: EASING,
-            animateRotate: true,
-            animateScale: true
+            // ✅ animasi “muncul” yang kerasa
+            animation: {
+              duration: ANIM_MS,
+              easing: EASING,
+              animateRotate: true,
+              animateScale: true
+            },
+            animations: {
+              radius: {
+                from: 0,
+                duration: prefersReducedMotion ? 0 : ANIM_MS,
+                easing: EASING
+              },
+              circumference: {
+                from: 0,
+                duration: prefersReducedMotion ? 0 : ANIM_MS,
+                easing: EASING
+              }
+            }
           }
+        });
+
+        // ✅ update bulan dengan animasi yang kerasa
+        if (pieMonthSelect) {
+          pieMonthSelect.addEventListener('change', () => {
+            const m = Number(pieMonthSelect.value);
+            const data = getPieData(m);
+
+            doughnutChart.data.datasets[0].data = data;
+            doughnutChart.options.plugins.centerText.topText = pieTopText(m);
+            doughnutChart.options.plugins.centerText.midText = fmt(data.reduce((a, b) => a + b, 0));
+            doughnutChart.options.plugins.centerText.botText = closeRateText(data);
+
+            doughnutChart.update('active'); // 🔥 anim lebih kerasa
+          });
         }
       });
-
-      if (pieMonthSelect) {
-        pieMonthSelect.addEventListener('change', () => {
-          const m = Number(pieMonthSelect.value);
-          const data = getPieData(m);
-
-          doughnutChart.data.datasets[0].data = data;
-          doughnutChart.options.plugins.centerText.topText = pieTopText(m);
-          doughnutChart.options.plugins.centerText.midText = fmt(data.reduce((a, b) => a + b, 0));
-          doughnutChart.options.plugins.centerText.botText = closeRateText(data);
-
-          doughnutChart.update();
-        });
-      }
     }
   });
 </script>
