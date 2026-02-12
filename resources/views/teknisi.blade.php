@@ -95,22 +95,18 @@
         <div>
           <h6 class="mb-0">Tickets per Bulan (Permintaan vs Perbaikan)</h6>
           <small class="text-secondary">
-            Filter: <b>{{ $scope === 'all' ? 'All (Open+Close)' : strtoupper($scope) }}</b>
+            Tahun: {{ $selectedYear }} • Scope:
+            <b>{{ $scope === 'all' ? 'All (Open+Close)' : strtoupper($scope) }}</b>
           </small>
         </div>
 
         <div class="d-flex align-items-center gap-2">
-          <!-- Toggle status -->
-          <div class="btn-group btn-group-sm" role="group" aria-label="Scope">
-            <a class="btn {{ $scope==='all' ? 'btn-primary' : 'btn-outline-primary' }}"
-              href="{{ request()->fullUrlWithQuery(['scope'=>'all']) }}">All</a>
-
-            <a class="btn {{ $scope==='open' ? 'btn-primary' : 'btn-outline-primary' }}"
-              href="{{ request()->fullUrlWithQuery(['scope'=>'open']) }}">Open</a>
-
-            <a class="btn {{ $scope==='close' ? 'btn-primary' : 'btn-outline-primary' }}"
-              href="{{ request()->fullUrlWithQuery(['scope'=>'close']) }}">Close</a>
-          </div>
+          <!-- Dropdown scope -->
+          <select id="scopeSelect" class="form-select form-select-sm" style="width: 165px;">
+            <option value="all" {{ $scope==='all' ? 'selected' : '' }}>All (Open+Close)</option>
+            <option value="open" {{ $scope==='open' ? 'selected' : '' }}>Open</option>
+            <option value="close" {{ $scope==='close' ? 'selected' : '' }}>Close</option>
+          </select>
 
           <!-- Dropdown tahun -->
           <select id="yearSelect" class="form-select form-select-sm" style="width: 110px;">
