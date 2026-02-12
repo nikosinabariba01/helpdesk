@@ -17,7 +17,7 @@
 
 @section('container')
 
-<div class="row g-3">
+<div class="row g-1">
   <!-- Current Ticket -->
   <div class="col-6 col-sm-6 col-xl-2">
     <div class="card">
