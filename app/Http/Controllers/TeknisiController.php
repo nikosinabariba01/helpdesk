@@ -69,7 +69,7 @@ class TeknisiController extends Controller
         $latestComments = $this->getLatestComments();
 
         // =========================
-        // CHART FILTER
+        // CHART FILTER (Line)
         // =========================
         $selectedYear = (int) request('year', now()->year);
         $scope        = request('scope', 'all'); // open | close | all
@@ -79,6 +79,7 @@ class TeknisiController extends Controller
 
         // daftar tahun dari DB untuk dropdown
         $years = Ticket::selectRaw('YEAR(created_at) as year')
+            ->whereNotNull('created_at')
             ->distinct()
             ->orderByDesc('year')
             ->pluck('year');
@@ -88,47 +89,37 @@ class TeknisiController extends Controller
         }
 
         // =========================
-        // LINE CHART: Permintaan vs Perbaikan per bulan
+        // LINE CHART: Permintaan vs Perbaikan per bulan (berdasarkan scope)
         // =========================
         $labels = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
         $types  = ['perbaikan', 'permintaan'];
 
-        // init 12 bulan = 0
         $monthlyByType = [
             'perbaikan'  => array_fill(0, 12, 0),
             'permintaan' => array_fill(0, 12, 0),
         ];
 
-        // query agregasi
         $q = Ticket::selectRaw('MONTH(created_at) AS bulan, Jenis_Pengaduan AS jenis, COUNT(*) AS total')
             ->whereYear('created_at', $selectedYear)
             ->whereIn('Jenis_Pengaduan', $types);
 
-        // filter scope status (sesuai request kamu)
         if ($scope === 'open') {
             $q->where('status', 'open');
         } elseif ($scope === 'close') {
             $q->where('status', 'close');
         } else {
-            // all = open + close (bukan on process / escalated)
             $q->whereIn('status', ['open', 'close']);
         }
 
         $rows = $q->groupBy('bulan', 'jenis')->get();
 
-        // isi array bulanan
         foreach ($rows as $r) {
-            $idx = (int) $r->bulan - 1; // 0..11
+            $idx = (int) $r->bulan - 1;
             if ($idx >= 0 && $idx < 12 && isset($monthlyByType[$r->jenis])) {
                 $monthlyByType[$r->jenis][$idx] = (int) $r->total;
             }
         }
 
-        // =========================
-        // (Opsional) Doughnut kamu tetap pakai chartData.monthlyByStatus
-        // kalau kamu sudah punya chartData untuk doughnut, biarkan.
-        // Yang penting: kirim data line baru ke view.
-        // =========================
         $chartLine = [
             'year'          => $selectedYear,
             'scope'         => $scope,
@@ -137,7 +128,36 @@ class TeknisiController extends Controller
             'monthlyByType' => $monthlyByType,
         ];
 
-        // pastikan dikirim ke view
+        // =========================
+        // ✅ DOUGHNUT DATA: Status per bulan (untuk doughnut chart)
+        // pakai tahun yang sama biar konsisten dengan dropdown year
+        // =========================
+        $statuses = ['open', 'on process', 'close', 'escalated'];
+
+        $monthlyByStatus = [];
+        foreach ($statuses as $s) {
+            $monthlyByStatus[$s] = array_fill(0, 12, 0);
+        }
+
+        $statusRows = Ticket::selectRaw('MONTH(created_at) AS bulan, status, COUNT(*) AS total')
+            ->whereYear('created_at', $selectedYear)
+            ->groupBy('bulan', 'status')
+            ->get();
+
+        foreach ($statusRows as $r) {
+            $idx = (int) $r->bulan - 1;
+            if ($idx >= 0 && $idx < 12 && isset($monthlyByStatus[$r->status])) {
+                $monthlyByStatus[$r->status][$idx] = (int) $r->total;
+            }
+        }
+
+        $chartData = [
+            'year'            => $selectedYear,
+            'labels'          => $labels,
+            'statuses'        => $statuses,
+            'monthlyByStatus' => $monthlyByStatus,
+        ];
+
         return view('teknisi', compact(
             'teknisi_data_ticket',
             'totalTickets',
@@ -149,9 +169,10 @@ class TeknisiController extends Controller
             'selectedYear',
             'scope',
             'chartLine',
-            'chartData' // <- kalau doughnut kamu masih pakai ini
+            'chartData'
         ));
     }
+
 
 
     // Fungsi untuk menampilkan tiket yang sudah ditugaskan
