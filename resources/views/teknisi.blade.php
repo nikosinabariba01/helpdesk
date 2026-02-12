@@ -102,23 +102,21 @@
     </div>
   </div>
 </div>
-<div class="col-xl-2 col-sm-6 col-6">
-  <div class="card">
-    <div class="card-body p-3" style="min-height: 120px; display: flex; align-items: center; justify-content: space-between;">
-      <div class="numbers" style="flex: 1;">
-        <p class="text-sm mb-2 text-uppercase font-weight-bold" style="font-size: 11px; letter-spacing: 0.5px;">All Ticket</p>
-        <h5 class="font-weight-bolder mb-0" style="font-size: 28px; line-height: 1.2;">
-          {{ $totalAllTickets }}
-        </h5>
-      </div>
-      <div class="d-flex align-items-center justify-content-center" style="flex: 0 0 auto; margin-left: 12px;">
-        <div class="icon icon-shape bg-gradient-warning shadow-warning text-center rounded-circle" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
-          <i class="fa fa-folder text-lg opacity-10" aria-hidden="true"></i>
+  <div class="col-6 col-sm-6 col-xl-4">
+    <div class="card">
+      <div class="card-body p-3 card-stat">
+        <div class="numbers">
+          <p class="text-sm mb-2 text-uppercase font-weight-bold card-stat-title">All Ticket</p>
+          <h5 class="font-weight-bolder mb-0 card-stat-value">{{ $totalAllTickets }}</h5>
+        </div>
+        <div class="card-stat-icon">
+          <div class="icon icon-shape bg-gradient-warning shadow-warning text-center rounded-circle icon-48">
+            <i class="fa fa-folder text-lg opacity-10"></i>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 </div>
 
 <div class="row mt-4 g-3">
