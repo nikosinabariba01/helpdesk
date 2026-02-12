@@ -17,110 +17,108 @@
 
 @section('container')
 
-<div class="row g-3">
-  <!-- Current Ticket -->
-  <div class="col-6 col-sm-6 col-xl-4">
-    <div class="card">
-      <div class="card-body p-3 card-stat">
-        <div class="numbers">
-          <p class="text-sm mb-2 text-uppercase font-weight-bold card-stat-title">Current Ticket</p>
-          <h5 class="font-weight-bolder mb-0 card-stat-value">{{ $totalTickets }}</h5>
-        </div>
-        <div class="card-stat-icon">
-          <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle icon-48">
-            <i class="fa fa-copy text-lg opacity-10"></i>
-          </div>
-        </div>
+<div class="col-xl-2 col-sm-6 col-6 mb-xl-0 mb-4">
+  <div class="card">
+    <div class="card-body p-3" style="min-height: 120px; display: flex; align-items: center; justify-content: space-between;">
+      <div class="numbers" style="flex: 1;">
+        <p class="text-sm mb-2 text-uppercase font-weight-bold" style="font-size: 11px; letter-spacing: 0.5px;">Current Ticket</p>
+        <h5 class="font-weight-bolder mb-0" style="font-size: 28px; line-height: 1.2;">
+          {{ $totalTickets  }}
+        </h5>
       </div>
-    </div>
-  </div>
-
-  <!-- Assigned Ticket (On Process) -->
-  <div class="col-6 col-sm-6 col-xl-4">
-    <div class="card">
-      <div class="card-body p-3 card-stat">
-        <div class="numbers">
-          <p class="text-sm mb-2 text-uppercase font-weight-bold card-stat-title">Assigned Ticket</p>
-          <h5 class="font-weight-bolder mb-0 card-stat-value">{{ $totalOnProcessTickets }}</h5>
-        </div>
-        <div class="card-stat-icon">
-          <div class="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle icon-48">
-            <i class="fa fa-clipboard text-lg opacity-10"></i>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Closed Ticket -->
-  <div class="col-6 col-sm-6 col-xl-4">
-    <div class="card">
-      <div class="card-body p-3 card-stat">
-        <div class="numbers">
-          <p class="text-sm mb-2 text-uppercase font-weight-bold card-stat-title">Closed Ticket</p>
-          <h5 class="font-weight-bolder mb-0 card-stat-value">{{ $totalClosedTickets }}</h5>
-        </div>
-        <div class="card-stat-icon">
-          <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle icon-48">
-            <i class="fa fa-check text-lg opacity-10"></i>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Escalated Ticket -->
-  <div class="col-6 col-sm-6 col-xl-4">
-    <div class="card">
-      <div class="card-body p-3 card-stat">
-        <div class="numbers">
-          <p class="text-sm mb-2 text-uppercase font-weight-bold card-stat-title">Escalated Ticket</p>
-          <h5 class="font-weight-bolder mb-0 card-stat-value">{{ $totalEscalatedTickets }}</h5>
-        </div>
-        <div class="card-stat-icon">
-          <div class="icon icon-shape bg-gradient-dark shadow-dark text-center rounded-circle icon-48">
-            <i class="fa fa-exclamation-triangle text-lg opacity-10"></i>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Unfinished Ticket (Not Close) -->
-  <div class="col-6 col-sm-6 col-xl-4">
-    <div class="card">
-      <div class="card-body p-3 card-stat">
-        <div class="numbers">
-          <p class="text-sm mb-2 text-uppercase font-weight-bold card-stat-title">Unfinished Ticket</p>
-          <h5 class="font-weight-bolder mb-0 card-stat-value">{{ $totalUnfinishedTickets }}</h5>
-        </div>
-        <div class="card-stat-icon">
-          <div class="icon icon-shape bg-gradient-info shadow-info text-center rounded-circle icon-48">
-            <i class="fa fa-hourglass-half text-lg opacity-10"></i>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- All Ticket -->
-  <div class="col-6 col-sm-6 col-xl-4">
-    <div class="card">
-      <div class="card-body p-3 card-stat">
-        <div class="numbers">
-          <p class="text-sm mb-2 text-uppercase font-weight-bold card-stat-title">All Ticket</p>
-          <h5 class="font-weight-bolder mb-0 card-stat-value">{{ $totalAllTickets }}</h5>
-        </div>
-        <div class="card-stat-icon">
-          <div class="icon icon-shape bg-gradient-warning shadow-warning text-center rounded-circle icon-48">
-            <i class="fa fa-folder text-lg opacity-10"></i>
-          </div>
+      <div class="d-flex align-items-center justify-content-center" style="flex: 0 0 auto; margin-left: 12px;">
+        <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
+          <i class="fa fa-copy text-lg opacity-10" aria-hidden="true"></i>
         </div>
       </div>
     </div>
   </div>
 </div>
-
+<div class="col-xl-2 col-sm-6 col-6 mb-xl-0 mb-4">
+  <div class="card">
+    <div class="card-body p-3" style="min-height: 120px; display: flex; align-items: center; justify-content: space-between;">
+      <div class="numbers" style="flex: 1;">
+        <p class="text-sm mb-2 text-uppercase font-weight-bold" style="font-size: 11px; letter-spacing: 0.5px;">Assigned Ticket</p>
+        <h5 class="font-weight-bolder mb-0" style="font-size: 28px; line-height: 1.2;">
+          {{ $totalOnProcessTickets }}
+        </h5>
+      </div>
+      <div class="d-flex align-items-center justify-content-center" style="flex: 0 0 auto; margin-left: 12px;">
+        <div class="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
+          <i class="fa fa-clipboard contact text-lg opacity-10" aria-hidden="true"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col-xl-2 col-sm-6 col-6 mb-xl-0 mb-4">
+  <div class="card">
+    <div class="card-body p-3" style="min-height: 120px; display: flex; align-items: center; justify-content: space-between;">
+      <div class="numbers" style="flex: 1;">
+        <p class="text-sm mb-2 text-uppercase font-weight-bold" style="font-size: 11px; letter-spacing: 0.5px;">Closed Ticket</p>
+        <h5 class="font-weight-bolder mb-0" style="font-size: 28px; line-height: 1.2;">
+          {{ $totalClosedTickets }}
+        </h5>
+      </div>
+      <div class="d-flex align-items-center justify-content-center" style="flex: 0 0 auto; margin-left: 12px;">
+        <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
+          <i class="fa fa-minus round text-lg opacity-10" aria-hidden="true"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col-xl-2 col-sm-6 col-6">
+  <div class="card">
+    <div class="card-body p-3" style="min-height: 120px; display: flex; align-items: center; justify-content: space-between;">
+      <div class="numbers" style="flex: 1;">
+        <p class="text-sm mb-2 text-uppercase font-weight-bold" style="font-size: 11px; letter-spacing: 0.5px;">All Ticket</p>
+        <h5 class="font-weight-bolder mb-0" style="font-size: 28px; line-height: 1.2;">
+          {{ $totalEscalatedTickets }}
+        </h5>
+      </div>
+      <div class="d-flex align-items-center justify-content-center" style="flex: 0 0 auto; margin-left: 12px;">
+        <div class="icon icon-shape bg-gradient-warining shadow-dark text-center rounded-circle icon-48" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
+          <i class="fa fa-exclamation-triangle text-lg opacity-10" aria-hidden="true"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col-xl-2 col-sm-6 col-6">
+  <div class="card">
+    <div class="card-body p-3" style="min-height: 120px; display: flex; align-items: center; justify-content: space-between;">
+      <div class="numbers" style="flex: 1;">
+        <p class="text-sm mb-2 text-uppercase font-weight-bold" style="font-size: 11px; letter-spacing: 0.5px;">All Ticket</p>
+        <h5 class="font-weight-bolder mb-0" style="font-size: 28px; line-height: 1.2;">
+          {{ $totalUnfinishedTickets }}
+        </h5>
+      </div>
+      <div class="d-flex align-items-center justify-content-center" style="flex: 0 0 auto; margin-left: 12px;">
+        <div class="icon icon-shape bg-gradient-info shadow-info text-center rounded-circle icon-48" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
+          <i class="fa fa-hourglass-half text-lg opacity-10" aria-hidden="true"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col-xl-2 col-sm-6 col-6">
+  <div class="card">
+    <div class="card-body p-3" style="min-height: 120px; display: flex; align-items: center; justify-content: space-between;">
+      <div class="numbers" style="flex: 1;">
+        <p class="text-sm mb-2 text-uppercase font-weight-bold" style="font-size: 11px; letter-spacing: 0.5px;">All Ticket</p>
+        <h5 class="font-weight-bolder mb-0" style="font-size: 28px; line-height: 1.2;">
+          {{ $totalAllTickets }}
+        </h5>
+      </div>
+      <div class="d-flex align-items-center justify-content-center" style="flex: 0 0 auto; margin-left: 12px;">
+        <div class="icon icon-shape bg-gradient-warning shadow-warning text-center rounded-circle" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
+          <i class="fa fa-folder text-lg opacity-10" aria-hidden="true"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 </div>
 
 <div class="row mt-4 g-3">
