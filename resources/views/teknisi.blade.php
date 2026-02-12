@@ -672,32 +672,32 @@
         const midText = opts?.midText ?? fmt(total);
         const botText = opts?.botText ?? `Close rate ${closeRate.toFixed(1)}%`;
 
-        // ✅ deteksi HP
         const isPhone = window.matchMedia('(max-width: 576px)').matches;
 
-        // ✅ font size beda untuk HP vs PC
-        const topSize = opts?.topSize ?? (isPhone ? 10 : 12);
-        const midSize = opts?.midSize ?? (isPhone ? 18 : 22);
-        const botSize = opts?.botSize ?? (isPhone ? 10 : 12);
+        // ✅ lebih kecil lagi di HP
+        const topSize = opts?.topSize ?? (isPhone ? 8 : 12);
+        const midSize = opts?.midSize ?? (isPhone ? 14 : 22);
+        const botSize = opts?.botSize ?? (isPhone ? 8 : 12);
+
+        // jarak antar teks juga diperkecil di HP
+        const topOffset = isPhone ? 12 : 18;
+        const botOffset = isPhone ? 14 : 22;
 
         ctx.save();
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
 
-        // top
         ctx.fillStyle = 'rgba(52,71,103,.70)';
         ctx.font = `600 ${topSize}px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial`;
-        ctx.fillText(topText, x, y - (isPhone ? 15 : 18));
+        ctx.fillText(topText, x, y - topOffset);
 
-        // middle
         ctx.fillStyle = 'rgba(52,71,103,.95)';
         ctx.font = `800 ${midSize}px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial`;
-        ctx.fillText(midText, x, y + 2);
+        ctx.fillText(midText, x, y + 1);
 
-        // bottom
         ctx.fillStyle = 'rgba(52,71,103,.70)';
         ctx.font = `600 ${botSize}px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial`;
-        ctx.fillText(botText, x, y + (isPhone ? 18 : 22));
+        ctx.fillText(botText, x, y + botOffset);
 
         ctx.restore();
       }
