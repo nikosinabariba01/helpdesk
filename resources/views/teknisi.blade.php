@@ -579,13 +579,18 @@
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     // LINE (jenis) + DOUGHNUT (status)
-    const chartLine = @json($chartLine); // <-- permintaan vs perbaikan (open/close/all)
-    const chartData = @json($chartData); // <-- status untuk doughnut
+    const chartLine = @json($chartLine); // permintaan vs perbaikan (scope+year sudah difilter di controller)
+    const chartData = @json($chartData); // status untuk doughnut (per tahun)
 
     const fmt = (n) => new Intl.NumberFormat('id-ID').format(n);
 
+    // ✅ animasi ringan & aman performa (ikut preferensi reduced motion)
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const ANIM_MS = prefersReducedMotion ? 0 : 650;
+    const EASING = 'easeOutCubic';
+
     // =========================
-    // YEAR SELECT (untuk LINE)
+    // YEAR + SCOPE SELECT (reload)
     // =========================
     const chartYearEl = document.getElementById('chartYear');
     if (chartYearEl) chartYearEl.textContent = chartLine?.year ?? '';
@@ -595,10 +600,8 @@
 
     function reloadWithParams() {
       const url = new URL(window.location.href);
-
       if (yearSelect) url.searchParams.set('year', yearSelect.value);
       if (scopeSelect) url.searchParams.set('scope', scopeSelect.value);
-
       window.location.href = url.toString();
     }
 
@@ -655,7 +658,6 @@
         const data = chart.data.datasets[0].data || [];
         const total = data.reduce((a, b) => a + b, 0);
 
-        // close rate
         const closeIndex = chart.data.labels.indexOf('close');
         const closed = closeIndex >= 0 ? (data[closeIndex] || 0) : 0;
         const closeRate = total ? (closed / total * 100) : 0;
@@ -687,282 +689,287 @@
     Chart.register(hoverLinePlugin, centerTextPlugin);
 
     // ==========================================================
-    // ✅ LINE CHART: Permintaan vs Perbaikan (Jan–Des) + scope
+    // ✅ LINE CHART: Permintaan vs Perbaikan (Jan–Des)
     // ==========================================================
-    const lineCtx = document.getElementById('ticketsLineChart');
-    let lineDelayed = false;
+    const lineEl = document.getElementById('ticketsLineChart');
+    if (lineEl) {
+      const lineCtx = lineEl.getContext('2d');
 
-    const lineLabels = chartLine.labels; // Jan..Des
-    const types = chartLine.types; // ['perbaikan','permintaan']
+      const lineLabels = chartLine.labels; // Jan..Des
+      const types = chartLine.types; // ['perbaikan','permintaan']
 
-    // warna 2 garis (dashboard look)
-    const typeColors = {
-      perbaikan: {
-        stroke: "rgba(94,114,228,1)",
-        fillTop: "rgba(94,114,228,.20)"
-      },
-      permintaan: {
-        stroke: "rgba(245,158,11,1)",
-        fillTop: "rgba(245,158,11,.18)"
-      },
-    };
-
-    const lineDatasets = types.map((t) => ({
-      label: t,
-      data: chartLine.monthlyByType[t] || Array(12).fill(0), // ✅ bulan kosong tetap 0
-      borderColor: typeColors[t].stroke,
-      backgroundColor: (context) => {
-        const chart = context.chart;
-        const {
-          ctx,
-          chartArea
-        } = chart;
-        if (!chartArea) return typeColors[t].fillTop;
-
-        const g = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-        g.addColorStop(0, typeColors[t].fillTop);
-        g.addColorStop(1, 'rgba(255,255,255,0)');
-        return g;
-      },
-      fill: true,
-      tension: 0.38,
-      borderWidth: 2,
-      pointRadius: 2.8,
-      pointHoverRadius: 6,
-      pointHitRadius: 12,
-      pointBorderWidth: 0,
-    }));
-
-    new Chart(lineCtx, {
-      type: 'line',
-      data: {
-        labels: lineLabels,
-        datasets: lineDatasets
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        interaction: {
-          mode: 'index',
-          intersect: false
+      const typeColors = {
+        perbaikan: {
+          stroke: "rgba(94,114,228,1)",
+          fillTop: "rgba(94,114,228,.20)"
         },
-        plugins: {
-          legend: {
-            position: 'bottom',
-            labels: {
-              usePointStyle: false, // pakai kotak (lebih jelas)
-              boxWidth: 14,
-              boxHeight: 10,
-              padding: 16,
-              color: 'rgba(52,71,103,.85)',
-              font: {
-                size: 12,
-                weight: '600'
+        permintaan: {
+          stroke: "rgba(245,158,11,1)",
+          fillTop: "rgba(245,158,11,.18)"
+        },
+      };
+
+      const niceTypeLabel = (t) => (t === 'permintaan' ? 'Permintaan' : 'Perbaikan');
+
+      const lineDatasets = types.map((t) => ({
+        label: t,
+        data: chartLine.monthlyByType[t] || Array(12).fill(0),
+        borderColor: typeColors[t].stroke,
+        backgroundColor: (context) => {
+          const chart = context.chart;
+          const {
+            ctx,
+            chartArea
+          } = chart;
+          if (!chartArea) return typeColors[t].fillTop;
+
+          const g = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+          g.addColorStop(0, typeColors[t].fillTop);
+          g.addColorStop(1, 'rgba(255,255,255,0)');
+          return g;
+        },
+        fill: true,
+        tension: 0.38,
+        borderWidth: 2,
+        pointRadius: 2.8,
+        pointHoverRadius: 6,
+        pointHitRadius: 12,
+        pointBorderWidth: 0,
+      }));
+
+      new Chart(lineCtx, {
+        type: 'line',
+        data: {
+          labels: lineLabels,
+          datasets: lineDatasets
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            mode: 'index',
+            intersect: false
+          },
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                usePointStyle: false, // kotak warna
+                boxWidth: 14,
+                boxHeight: 10,
+                padding: 16,
+                color: 'rgba(52,71,103,.85)',
+                font: {
+                  size: 12,
+                  weight: '600'
+                },
+
+                // ✅ bikin legend jelas (warna kotak = warna garis + label rapi)
+                generateLabels: (chart) => {
+                  const original = Chart.defaults.plugins.legend.labels.generateLabels(chart);
+                  return original.map((item) => {
+                    const text = (item.text || '').toLowerCase();
+                    if (text === 'permintaan') item.text = 'Permintaan';
+                    if (text === 'perbaikan') item.text = 'Perbaikan';
+                    item.fillStyle = item.strokeStyle; // kotak pakai warna garis
+                    item.lineWidth = 0;
+                    return item;
+                  });
+                }
+              }
+            },
+            tooltip: {
+              padding: 12,
+              callbacks: {
+                label: (ctx) => ` ${niceTypeLabel(ctx.dataset.label)}: ${fmt(ctx.parsed.y)}`,
+                footer: (items) => {
+                  const total = items.reduce((sum, it) => sum + (it.parsed.y || 0), 0);
+                  return `Total bulan ini: ${fmt(total)}`;
+                }
+              }
+            }
+          },
+          layout: {
+            padding: {
+              top: 6,
+              right: 10,
+              bottom: 0,
+              left: 6
+            }
+          },
+
+          // ✅ animasi ringan (tanpa delay per titik)
+          animation: {
+            duration: ANIM_MS,
+            easing: EASING
+          },
+          animations: {
+            tension: {
+              duration: prefersReducedMotion ? 0 : 450,
+              easing: EASING,
+              from: 0.25,
+              to: 0.38
+            }
+          },
+
+          scales: {
+            x: {
+              grid: {
+                display: false
               },
-
-              // ✅ bikin teks legend lebih rapi + tetap pakai warna dataset
-              generateLabels: (chart) => {
-                const original = Chart.defaults.plugins.legend.labels.generateLabels(chart);
-
-                return original.map((item) => {
-                  const text = (item.text || '').toLowerCase();
-
-                  if (text === 'permintaan') item.text = 'Permintaan';
-                  if (text === 'perbaikan') item.text = 'Perbaikan';
-
-                  // ✅ pastikan kotak legend mengikuti warna garis dataset
-                  item.fillStyle = item.strokeStyle; // kotak diisi warna garis
-                  item.lineWidth = 0;
-
-                  return item;
-                });
+              ticks: {
+                color: 'rgba(52,71,103,.65)'
               }
-            }
-          },
-          tooltip: {
-            padding: 12,
-            callbacks: {
-              label: (ctx) => ` ${ctx.dataset.label}: ${fmt(ctx.parsed.y)}`,
-              footer: (items) => {
-                const total = items.reduce((sum, it) => sum + (it.parsed.y || 0), 0);
-                return `Total bulan ini: ${fmt(total)}`;
+            },
+            y: {
+              beginAtZero: true,
+              ticks: {
+                precision: 0,
+                color: 'rgba(52,71,103,.65)',
+                callback: (v) => fmt(v)
+              },
+              grid: {
+                color: 'rgba(0,0,0,.06)',
+                borderDash: [6, 4]
               }
-            }
-          }
-        },
-        layout: {
-          padding: {
-            top: 6,
-            right: 10,
-            bottom: 0,
-            left: 6
-          }
-        },
-        animation: {
-          duration: 900,
-          easing: 'easeOutQuart',
-          onComplete: () => {
-            lineDelayed = true;
-          },
-          delay: (ctx) => {
-            if (ctx.type === 'data' && ctx.mode === 'default' && !lineDelayed) {
-              return ctx.dataIndex * 45 + ctx.datasetIndex * 80;
-            }
-            return 0;
-          }
-        },
-        animations: {
-          tension: {
-            duration: 650,
-            easing: 'easeOutQuart',
-            from: 0.2,
-            to: 0.38
-          }
-        },
-        scales: {
-          x: {
-            grid: {
-              display: false
-            },
-            ticks: {
-              color: 'rgba(52,71,103,.65)'
-            }
-          },
-          y: {
-            beginAtZero: true,
-            ticks: {
-              precision: 0,
-              color: 'rgba(52,71,103,.65)',
-              callback: (v) => fmt(v)
-            },
-            grid: {
-              color: 'rgba(0,0,0,.06)',
-              borderDash: [6, 4]
             }
           }
         }
-      }
-    });
+      });
+    }
 
     // ==========================================================
     // ✅ DOUGHNUT: Komposisi Status - default bulan sekarang
     // ==========================================================
-    const pieCtx = document.getElementById('ticketsPieChart');
-    const pieMonthSelect = document.getElementById('pieMonthSelect');
+    const pieEl = document.getElementById('ticketsPieChart');
+    if (pieEl) {
+      const pieCtx = pieEl.getContext('2d');
+      const pieMonthSelect = document.getElementById('pieMonthSelect');
 
-    const statuses = chartData.statuses; // ["open","on process","close","escalated"]
+      const statuses = chartData.statuses; // ["open","on process","close","escalated"]
 
-    const statusColors = {
-      "open": {
-        stroke: "rgba(94,114,228,1)"
-      },
-      "on process": {
-        stroke: "rgba(245,158,11,1)"
-      },
-      "close": {
-        stroke: "rgba(46,204,113,1)"
-      },
-      "escalated": {
-        stroke: "rgba(231,76,60,1)"
-      }
-    };
-
-    const MONTHS_FULL = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-    const currentMonth = new Date().getMonth() + 1; // 1..12
-
-    function getPieData(monthValue) {
-      if (monthValue === 0) {
-        // total setahun
-        return statuses.map(s => (chartData.monthlyByStatus[s] || []).reduce((a, b) => a + b, 0));
-      }
-      const idx = Math.max(0, Math.min(11, monthValue - 1));
-      return statuses.map(s => (chartData.monthlyByStatus[s] || [])[idx] || 0);
-    }
-
-    function pieTopText(m) {
-      return m === 0 ?
-        `Komposisi Status (${chartData.year})` :
-        `Komposisi Status (${MONTHS_FULL[m - 1]} ${chartData.year})`;
-    }
-
-    function closeRateText(dataArr) {
-      const total = dataArr.reduce((a, b) => a + b, 0);
-      const closeIndex = statuses.indexOf('close');
-      const closed = closeIndex >= 0 ? (dataArr[closeIndex] || 0) : 0;
-      const rate = total ? (closed / total * 100) : 0;
-      return `Close rate ${rate.toFixed(1)}%`;
-    }
-
-    if (pieMonthSelect) pieMonthSelect.value = String(currentMonth);
-
-    const initialMonth = pieMonthSelect ? Number(pieMonthSelect.value) : currentMonth;
-    const initialData = getPieData(initialMonth);
-
-    const doughnutChart = new Chart(pieCtx, {
-      type: 'doughnut',
-      data: {
-        labels: statuses,
-        datasets: [{
-          data: initialData,
-          backgroundColor: statuses.map(s => statusColors[s]?.stroke || 'rgba(0,0,0,.4)'),
-          borderColor: 'rgba(255,255,255,.85)',
-          borderWidth: 2,
-          hoverOffset: 10,
-          borderRadius: 10,
-          spacing: 3
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        cutout: '68%',
-        plugins: {
-          legend: {
-            position: 'bottom',
-            labels: {
-              usePointStyle: true,
-              boxWidth: 10,
-              padding: 14
-            }
-          },
-          tooltip: {
-            padding: 12,
-            callbacks: {
-              label: (ctx) => {
-                const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
-                const val = ctx.parsed || 0;
-                const pct = total ? (val / total * 100) : 0;
-                return ` ${ctx.label}: ${fmt(val)} (${pct.toFixed(1)}%)`;
-              }
-            }
-          },
-          centerText: {
-            topText: pieTopText(initialMonth),
-            midText: fmt(initialData.reduce((a, b) => a + b, 0)),
-            botText: closeRateText(initialData)
-          }
+      const statusColors = {
+        "open": {
+          stroke: "rgba(94,114,228,1)"
         },
-        animation: {
-          duration: 900,
-          easing: 'easeOutQuart',
-          animateRotate: true,
-          animateScale: true
+        "on process": {
+          stroke: "rgba(245,158,11,1)"
+        },
+        "close": {
+          stroke: "rgba(46,204,113,1)"
+        },
+        "escalated": {
+          stroke: "rgba(231,76,60,1)"
         }
+      };
+
+      const labelMap = {
+        "open": "Open",
+        "on process": "On Process",
+        "close": "Close",
+        "escalated": "Escalated"
+      };
+
+      const MONTHS_FULL = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+      const currentMonth = new Date().getMonth() + 1; // 1..12
+
+      function getPieData(monthValue) {
+        if (monthValue === 0) {
+          return statuses.map(s => (chartData.monthlyByStatus[s] || []).reduce((a, b) => a + b, 0));
+        }
+        const idx = Math.max(0, Math.min(11, monthValue - 1));
+        return statuses.map(s => (chartData.monthlyByStatus[s] || [])[idx] || 0);
       }
-    });
 
-    if (pieMonthSelect) {
-      pieMonthSelect.addEventListener('change', () => {
-        const m = Number(pieMonthSelect.value);
-        const data = getPieData(m);
+      function pieTopText(m) {
+        return m === 0 ?
+          `Komposisi Status (${chartData.year})` :
+          `Komposisi Status (${MONTHS_FULL[m - 1]} ${chartData.year})`;
+      }
 
-        doughnutChart.data.datasets[0].data = data;
-        doughnutChart.options.plugins.centerText.topText = pieTopText(m);
-        doughnutChart.options.plugins.centerText.midText = fmt(data.reduce((a, b) => a + b, 0));
-        doughnutChart.options.plugins.centerText.botText = closeRateText(data);
+      function closeRateText(dataArr) {
+        const total = dataArr.reduce((a, b) => a + b, 0);
+        const closeIndex = statuses.indexOf('close');
+        const closed = closeIndex >= 0 ? (dataArr[closeIndex] || 0) : 0;
+        const rate = total ? (closed / total * 100) : 0;
+        return `Close rate ${rate.toFixed(1)}%`;
+      }
 
-        doughnutChart.update();
+      // default dropdown bulan ke bulan sekarang
+      if (pieMonthSelect) pieMonthSelect.value = String(currentMonth);
+
+      const initialMonth = pieMonthSelect ? Number(pieMonthSelect.value) : currentMonth;
+      const initialData = getPieData(initialMonth);
+
+      const doughnutChart = new Chart(pieCtx, {
+        type: 'doughnut',
+        data: {
+          labels: statuses,
+          datasets: [{
+            data: initialData,
+            backgroundColor: statuses.map(s => statusColors[s]?.stroke || 'rgba(0,0,0,.4)'),
+            borderColor: 'rgba(255,255,255,.85)',
+            borderWidth: 2,
+            hoverOffset: 10,
+            borderRadius: 10,
+            spacing: 3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '68%',
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                usePointStyle: true,
+                boxWidth: 10,
+                padding: 14
+              }
+            },
+            tooltip: {
+              padding: 12,
+              callbacks: {
+                label: (ctx) => {
+                  const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                  const val = ctx.parsed || 0;
+                  const pct = total ? (val / total * 100) : 0;
+                  const nice = labelMap[ctx.label] || ctx.label;
+                  return ` ${nice}: ${fmt(val)} (${pct.toFixed(1)}%)`;
+                }
+              }
+            },
+            centerText: {
+              topText: pieTopText(initialMonth),
+              midText: fmt(initialData.reduce((a, b) => a + b, 0)),
+              botText: closeRateText(initialData)
+            }
+          },
+
+          // ✅ animasi ringan
+          animation: {
+            duration: ANIM_MS,
+            easing: EASING,
+            animateRotate: true,
+            animateScale: true
+          }
+        }
       });
+
+      if (pieMonthSelect) {
+        pieMonthSelect.addEventListener('change', () => {
+          const m = Number(pieMonthSelect.value);
+          const data = getPieData(m);
+
+          doughnutChart.data.datasets[0].data = data;
+          doughnutChart.options.plugins.centerText.topText = pieTopText(m);
+          doughnutChart.options.plugins.centerText.midText = fmt(data.reduce((a, b) => a + b, 0));
+          doughnutChart.options.plugins.centerText.botText = closeRateText(data);
+
+          doughnutChart.update();
+        });
+      }
     }
   });
 </script>
