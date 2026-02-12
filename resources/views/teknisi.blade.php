@@ -86,6 +86,54 @@
   </div>
 </div>
 </div>
+
+<div class="row mt-4">
+  <!-- LINE CHART (KIRI) -->
+  <div class="col-lg-8 mb-4">
+    <div class="card z-index-2 h-100 shadow-lg" style="border: 1px solid #e4e4e4;">
+      <div class="card-header pb-0 d-flex align-items-center justify-content-between">
+        <h6 class="mb-0">Tickets per Bulan (By Status)</h6>
+        <span class="text-xs text-secondary">Tahun: <span id="chartYear"></span></span>
+      </div>
+      <div class="card-body">
+        <div style="height: 330px;">
+          <canvas id="ticketsLineChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PIE CHART (KANAN) -->
+  <div class="col-lg-4 mb-4">
+    <div class="card z-index-2 h-100 shadow-lg" style="border: 1px solid #e4e4e4;">
+      <div class="card-header pb-0 d-flex align-items-center justify-content-between">
+        <h6 class="mb-0">Komposisi Status</h6>
+
+        <select id="pieMonthSelect" class="form-select form-select-sm" style="width: 140px;">
+          <option value="0" selected>All Year</option>
+          <option value="1">Januari</option>
+          <option value="2">Februari</option>
+          <option value="3">Maret</option>
+          <option value="4">April</option>
+          <option value="5">Mei</option>
+          <option value="6">Juni</option>
+          <option value="7">Juli</option>
+          <option value="8">Agustus</option>
+          <option value="9">September</option>
+          <option value="10">Oktober</option>
+          <option value="11">November</option>
+          <option value="12">Desember</option>
+        </select>
+      </div>
+      <div class="card-body">
+        <div style="height: 330px;">
+          <canvas id="ticketsPieChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="row mt-4">
   <div class="col-lg-12 mb-lg-0 mb-4 ">
     <div class="card z-index-2 h-100 d-flex flex-column shadow-lg" style="border: 1px solid #e4e4e4;">
@@ -165,39 +213,39 @@
             </tbody>
 
           </table>
+        </div>
+        <div style="padding: 15px 16px; border-top: 1px solid #e4e4e4; display: flex; justify-content: space-between; align-items: center; background-color: #ffffff;">
+          <div style="display: flex; gap: 12px; align-items: center;">
+            <!-- Pagination Info as Dropdown -->
+            <div class="dropdown" style="position: relative;">
+              <button class="btn btn-sm btn-outline-secondary" style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;" data-bs-toggle="dropdown" aria-expanded="false">
+                <span id="paginationDisplay">1-10 dari {{ $teknisi_data_ticket->count() }}</span>
+                <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
+              </button>
+              <ul class="dropdown-menu" style="font-size: 13px; min-width: 150px;">
+                <li><a class="dropdown-item page-sort-option" href="#" data-sort="desc" style="padding: 8px 16px;">
+                    <i class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru
+                  </a></li>
+                <li><a class="dropdown-item page-sort-option" href="#" data-sort="asc" style="padding: 8px 16px;">
+                    <i class="fa fa-arrow-up me-2" style="color: #6c757d;"></i>Terlama
+                  </a></li>
+              </ul>
             </div>
-            <div style="padding: 15px 16px; border-top: 1px solid #e4e4e4; display: flex; justify-content: space-between; align-items: center; background-color: #ffffff;">
-              <div style="display: flex; gap: 12px; align-items: center;">
-                <!-- Pagination Info as Dropdown -->
-                <div class="dropdown" style="position: relative;">
-                  <button class="btn btn-sm btn-outline-secondary" style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;" data-bs-toggle="dropdown" aria-expanded="false">
-                    <span id="paginationDisplay">1-10 dari {{ $teknisi_data_ticket->count() }}</span>
-                    <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
-                  </button>
-                  <ul class="dropdown-menu" style="font-size: 13px; min-width: 150px;">
-                    <li><a class="dropdown-item page-sort-option" href="#" data-sort="desc" style="padding: 8px 16px;">
-                      <i class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru
-                    </a></li>
-                    <li><a class="dropdown-item page-sort-option" href="#" data-sort="asc" style="padding: 8px 16px;">
-                      <i class="fa fa-arrow-up me-2" style="color: #6c757d;"></i>Terlama
-                    </a></li>
-                  </ul>
-                </div>
-              </div>
-              
-              <div style="display: flex; gap: 12px; align-items: center;">
-                <!-- Pagination Navigation -->
-                <div style="display: flex; gap: 6px;">
-                  <button id="prevPage" class="btn btn-sm btn-outline-secondary" style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;" title="Halaman Sebelumnya">
-                    <i class="fa fa-chevron-left" style="font-size: 11px;"></i>
-                  </button>
-                  <button id="nextPage" class="btn btn-sm btn-outline-secondary" style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;" title="Halaman Berikutnya">
-                    <i class="fa fa-chevron-right" style="font-size: 11px;"></i>
-                  </button>
-                </div>
-              </div>
+          </div>
+
+          <div style="display: flex; gap: 12px; align-items: center;">
+            <!-- Pagination Navigation -->
+            <div style="display: flex; gap: 6px;">
+              <button id="prevPage" class="btn btn-sm btn-outline-secondary" style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;" title="Halaman Sebelumnya">
+                <i class="fa fa-chevron-left" style="font-size: 11px;"></i>
+              </button>
+              <button id="nextPage" class="btn btn-sm btn-outline-secondary" style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;" title="Halaman Berikutnya">
+                <i class="fa fa-chevron-right" style="font-size: 11px;"></i>
+              </button>
             </div>
-            @endif
+          </div>
+        </div>
+        @endif
       </div>
     </div>
 
@@ -358,7 +406,7 @@
     $(document).on('click', '.page-sort-option', function(e) {
       e.preventDefault();
       currentSort = $(this).data('sort');
-      
+
       // Sort rows
       sortTableByDate(currentSort);
       currentPage = 1;
@@ -368,16 +416,16 @@
     // Function to sort table by date
     function sortTableByDate(direction) {
       var rows = $('#TicketTable tbody tr').get();
-      
+
       rows.sort(function(a, b) {
         // Ambil teks dari kolom pertama (yang berisi nomor tiket dengan tanggal)
         var aText = $(a).find('li:first').text(); // sp-123012401
         var bText = $(b).find('li:first').text(); // sp-456012402
-        
+
         // Ekstrak tanggal dari format sp-xxxddmmyy
         var aDate = extractDateFromTicket(aText);
         var bDate = extractDateFromTicket(bText);
-        
+
         if (direction === 'desc') {
           return new Date(bDate) - new Date(aDate);
         } else {
@@ -425,7 +473,7 @@
 
       // Update pagination display berdasarkan sorting
       var displayStart, displayEnd;
-      
+
       if (currentSort === 'desc') {
         // Terbaru: tampil normal (1-10, 11-20, dst)
         displayStart = totalRows === 0 ? 0 : startIndex + 1;
@@ -434,13 +482,13 @@
         // Terlama: tampil terbalik (100-90, 90-80, dst)
         displayStart = totalRows - startIndex;
         displayEnd = totalRows - endIndex + 1;
-        
+
         // Pastikan displayEnd tidak kurang dari 1
         if (displayEnd < 1) {
           displayEnd = 1;
         }
       }
-      
+
       $('#paginationDisplay').text(displayStart + '-' + displayEnd + ' dari ' + totalRows);
 
       // Update button states
@@ -505,4 +553,156 @@
       modal.querySelector('#Detail').value = ticketDetail;
     });
   });
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const chartData = @json($chartData);
+
+  // tampilkan tahun
+  const chartYearEl = document.getElementById('chartYear');
+  if (chartYearEl) chartYearEl.textContent = chartData.year;
+
+  const labels = chartData.labels; // Jan..Des
+  const statuses = chartData.statuses;
+
+  // warna yang enak dibaca (selaras dengan tema bootstrap)
+  const colorMap = {
+    "open":       { stroke: "rgba(94,114,228,1)", fill: "rgba(94,114,228,.15)" }, // primary-ish
+    "on process": { stroke: "rgba(245,158,11,1)", fill: "rgba(245,158,11,.14)" }, // warning-ish
+    "close":      { stroke: "rgba(46,204,113,1)", fill: "rgba(46,204,113,.12)" }, // success-ish
+    "escalated":  { stroke: "rgba(231,76,60,1)",  fill: "rgba(231,76,60,.12)" },  // danger-ish
+  };
+
+  const fmt = (n) => new Intl.NumberFormat('id-ID').format(n);
+
+  // -----------------------
+  // LINE CHART (By Status)
+  // -----------------------
+  const lineCtx = document.getElementById('ticketsLineChart');
+  let lineDelayed = false;
+
+  const lineDatasets = statuses.map((s) => ({
+    label: s,
+    data: chartData.monthlyByStatus[s] || Array(12).fill(0),
+    borderColor: colorMap[s].stroke,
+    backgroundColor: colorMap[s].fill,
+    fill: true,
+    tension: 0.38,
+    borderWidth: 2,
+    pointRadius: 3,
+    pointHoverRadius: 5,
+    pointBorderWidth: 0,
+  }));
+
+  const lineChart = new Chart(lineCtx, {
+    type: 'line',
+    data: { labels, datasets: lineDatasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { usePointStyle: true, boxWidth: 10, padding: 14 }
+        },
+        tooltip: {
+          padding: 12,
+          callbacks: {
+            label: (ctx) => ` ${ctx.dataset.label}: ${fmt(ctx.parsed.y)}`
+          }
+        }
+      },
+      animation: {
+        duration: 900,
+        easing: 'easeOutQuart',
+        onComplete: () => { lineDelayed = true; },
+        delay: (context) => {
+          if (context.type === 'data' && context.mode === 'default' && !lineDelayed) {
+            return context.dataIndex * 35 + context.datasetIndex * 45;
+          }
+          return 0;
+        }
+      },
+      animations: {
+        tension: { duration: 650, easing: 'easeOutQuart', from: 0.2, to: 0.38 }
+      },
+      scales: {
+        x: { grid: { display: false } },
+        y: {
+          beginAtZero: true,
+          ticks: { precision: 0 },
+          grid: { color: 'rgba(0,0,0,.06)' }
+        }
+      }
+    }
+  });
+
+  // -----------------------
+  // PIE CHART (Composition)
+  // -----------------------
+  const pieCtx = document.getElementById('ticketsPieChart');
+  const pieMonthSelect = document.getElementById('pieMonthSelect');
+
+  function getPieData(monthValue) {
+    // monthValue: 0=all year, 1..12=bulan tertentu
+    if (monthValue === 0) {
+      // total setahun: sum 12 bulan
+      return statuses.map(s => (chartData.monthlyByStatus[s] || []).reduce((a,b)=>a+b,0));
+    }
+    const idx = Math.max(0, Math.min(11, monthValue - 1));
+    return statuses.map(s => (chartData.monthlyByStatus[s] || [])[idx] || 0);
+  }
+
+  const pieChart = new Chart(pieCtx, {
+    type: 'pie',
+    data: {
+      labels: statuses,
+      datasets: [{
+        data: getPieData(0),
+        backgroundColor: statuses.map(s => colorMap[s].stroke),
+        borderColor: 'rgba(255,255,255,.65)',
+        borderWidth: 1,
+        hoverOffset: 10,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { usePointStyle: true, boxWidth: 10, padding: 14 }
+        },
+        tooltip: {
+          padding: 12,
+          callbacks: {
+            label: (ctx) => {
+              const total = ctx.dataset.data.reduce((a,b)=>a+b,0);
+              const val = ctx.parsed || 0;
+              const pct = total ? (val / total * 100) : 0;
+              return ` ${ctx.label}: ${fmt(val)} (${pct.toFixed(1)}%)`;
+            }
+          }
+        }
+      },
+      animation: {
+        duration: 900,
+        easing: 'easeOutQuart',
+        animateRotate: true,
+        animateScale: true
+      }
+    }
+  });
+
+  // ganti pie saat pilih bulan
+  if (pieMonthSelect) {
+    pieMonthSelect.addEventListener('change', () => {
+      const m = Number(pieMonthSelect.value);
+      pieChart.data.datasets[0].data = getPieData(m);
+      pieChart.update();
+    });
+  }
+});
 </script>

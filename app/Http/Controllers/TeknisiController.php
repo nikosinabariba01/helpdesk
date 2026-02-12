@@ -48,35 +48,60 @@ class TeknisiController extends Controller
     // Fungsi untuk menampilkan data teknisi (tiket yang belum ditugaskan)
     public function index()
     {
-        // Dapatkan ID pengguna yang sedang login
         $userId = Auth::id();
 
-        // Mengambil tiket yang belum memiliki asignees (belum ada yang meng-assign) dan status 'open'
         $teknisi_data_ticket = Ticket::with('user')
-            ->whereDoesntHave('asignees') // Mengambil tiket yang belum memiliki asignees
+            ->whereDoesntHave('asignees')
             ->where('status', 'open')
             ->orderBy('created_at', 'desc')
             ->get();
 
-        // Hitung total tiket yang sedang dalam proses (on process) berdasarkan asignee yang memiliki user_id yang sedang login
         $totalOnProcessTickets = Ticket::whereHas('asignees', function ($query) use ($userId) {
             $query->where('user_id', $userId);
-        })
-            ->where('status', 'on process')
-            ->count();
+        })->where('status', 'on process')->count();
 
-        // Hitung total tiket yang berstatus 'close' berdasarkan asignee yang memiliki user_id yang sedang login
         $totalClosedTickets = Ticket::whereHas('asignees', function ($query) use ($userId) {
             $query->where('user_id', $userId);
-        })
-            ->where('status', 'close')
-            ->count();
+        })->where('status', 'close')->count();
 
-        $totalAllTickets = Ticket::count();               // Total tiket keseluruhan
-        $totalTickets    = $teknisi_data_ticket->count(); // Total tiket yang belum memiliki asignees
+        $totalAllTickets = Ticket::count();
+        $totalTickets    = $teknisi_data_ticket->count();
 
-        // Mengambil komentar terbaru
-        $latestComments = $this->getLatestComments(); // Panggil fungsi untuk mendapatkan komentar terbaru
+        $latestComments = $this->getLatestComments();
+
+        // =========================
+        // CHART DATA (Line + Pie)
+        // =========================
+        $year = now()->year;
+
+        $labels   = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+        $statuses = ['open', 'on process', 'close', 'escalated'];
+
+        // init 12 bulan (0)
+        $monthlyByStatus = [];
+        foreach ($statuses as $s) {
+            $monthlyByStatus[$s] = array_fill(0, 12, 0);
+        }
+
+        // ambil count per bulan per status
+        $rows = Ticket::selectRaw('MONTH(created_at) AS bulan, status, COUNT(*) AS total')
+            ->whereYear('created_at', $year)
+            ->groupBy('bulan', 'status')
+            ->get();
+
+        foreach ($rows as $r) {
+            $idx = (int) $r->bulan - 1; // 0..11
+            if ($idx >= 0 && $idx < 12) {
+                $monthlyByStatus[$r->status][$idx] = (int) $r->total;
+            }
+        }
+
+        $chartData = [
+            'year'            => $year,
+            'labels'          => $labels,
+            'statuses'        => $statuses,
+            'monthlyByStatus' => $monthlyByStatus,
+        ];
 
         return view('teknisi', compact(
             'teknisi_data_ticket',
@@ -84,7 +109,8 @@ class TeknisiController extends Controller
             'totalOnProcessTickets',
             'totalClosedTickets',
             'totalAllTickets',
-            'latestComments' // Mengirimkan komentar terbaru ke view
+            'latestComments',
+            'chartData' // <= kirim ke blade
         ));
     }
 
