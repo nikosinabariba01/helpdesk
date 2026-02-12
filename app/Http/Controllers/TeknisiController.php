@@ -69,49 +69,75 @@ class TeknisiController extends Controller
         $latestComments = $this->getLatestComments();
 
         // =========================
-        // CHART DATA (Line + Pie)
+        // CHART FILTER
         // =========================
         $selectedYear = (int) request('year', now()->year);
+        $scope        = request('scope', 'all'); // open | close | all
+        if (! in_array($scope, ['open', 'close', 'all'], true)) {
+            $scope = 'all';
+        }
 
-        // daftar tahun yang ada di DB (buat dropdown)
+        // daftar tahun dari DB untuk dropdown
         $years = Ticket::selectRaw('YEAR(created_at) as year')
-            ->whereNotNull('created_at')
             ->distinct()
             ->orderByDesc('year')
             ->pluck('year');
 
-        // fallback kalau user ngirim year yg ga ada
-        if ($years->isNotEmpty() && !$years->contains($selectedYear)) {
+        if ($years->isNotEmpty() && ! $years->contains($selectedYear)) {
             $selectedYear = (int) $years->first();
         }
 
+        // =========================
+        // LINE CHART: Permintaan vs Perbaikan per bulan
+        // =========================
         $labels = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-        $statuses = ['open', 'on process', 'close', 'escalated'];
+        $types  = ['perbaikan', 'permintaan'];
 
-        $monthlyByStatus = [];
-        foreach ($statuses as $s) {
-            $monthlyByStatus[$s] = array_fill(0, 12, 0);
+        // init 12 bulan = 0
+        $monthlyByType = [
+            'perbaikan'  => array_fill(0, 12, 0),
+            'permintaan' => array_fill(0, 12, 0),
+        ];
+
+        // query agregasi
+        $q = Ticket::selectRaw('MONTH(created_at) AS bulan, Jenis_Pengaduan AS jenis, COUNT(*) AS total')
+            ->whereYear('created_at', $selectedYear)
+            ->whereIn('Jenis_Pengaduan', $types);
+
+        // filter scope status (sesuai request kamu)
+        if ($scope === 'open') {
+            $q->where('status', 'open');
+        } elseif ($scope === 'close') {
+            $q->where('status', 'close');
+        } else {
+            // all = open + close (bukan on process / escalated)
+            $q->whereIn('status', ['open', 'close']);
         }
 
-        $rows = Ticket::selectRaw('MONTH(created_at) AS bulan, status, COUNT(*) AS total')
-            ->whereYear('created_at', $selectedYear)
-            ->groupBy('bulan', 'status')
-            ->get();
+        $rows = $q->groupBy('bulan', 'jenis')->get();
 
+        // isi array bulanan
         foreach ($rows as $r) {
-            $idx = (int)$r->bulan - 1;
-            if ($idx >= 0 && $idx < 12) {
-                $monthlyByStatus[$r->status][$idx] = (int)$r->total;
+            $idx = (int) $r->bulan - 1; // 0..11
+            if ($idx >= 0 && $idx < 12 && isset($monthlyByType[$r->jenis])) {
+                $monthlyByType[$r->jenis][$idx] = (int) $r->total;
             }
         }
 
-        $chartData = [
-            'year' => $selectedYear,
-            'labels' => $labels,
-            'statuses' => $statuses,
-            'monthlyByStatus' => $monthlyByStatus,
+        // =========================
+        // (Opsional) Doughnut kamu tetap pakai chartData.monthlyByStatus
+        // kalau kamu sudah punya chartData untuk doughnut, biarkan.
+        // Yang penting: kirim data line baru ke view.
+        // =========================
+        $chartLine = [
+            'year'          => $selectedYear,
+            'scope'         => $scope,
+            'labels'        => $labels,
+            'types'         => $types,
+            'monthlyByType' => $monthlyByType,
         ];
 
+        // pastikan dikirim ke view
         return view('teknisi', compact(
             'teknisi_data_ticket',
             'totalTickets',
@@ -119,9 +145,11 @@ class TeknisiController extends Controller
             'totalClosedTickets',
             'totalAllTickets',
             'latestComments',
-            'chartData',
             'years',
-            'selectedYear'
+            'selectedYear',
+            'scope',
+            'chartLine',
+            'chartData' // <- kalau doughnut kamu masih pakai ini
         ));
     }
 

@@ -92,20 +92,32 @@
   <div class="col-lg-8 mb-4">
     <div class="card z-index-2 h-100 shadow-lg" style="border: 1px solid #e4e4e4;">
       <div class="card-header pb-0 d-flex align-items-center justify-content-between">
-        <h6 class="mb-0">Tickets per Bulan (By Status)</h6>
+        <div>
+          <h6 class="mb-0">Tickets per Bulan (Permintaan vs Perbaikan)</h6>
+          <small class="text-secondary">
+            Filter: <b>{{ $scope === 'all' ? 'All (Open+Close)' : strtoupper($scope) }}</b>
+          </small>
+        </div>
 
         <div class="d-flex align-items-center gap-2">
+          <!-- Toggle status -->
+          <div class="btn-group btn-group-sm" role="group" aria-label="Scope">
+            <a class="btn {{ $scope==='all' ? 'btn-primary' : 'btn-outline-primary' }}"
+              href="{{ request()->fullUrlWithQuery(['scope'=>'all']) }}">All</a>
+
+            <a class="btn {{ $scope==='open' ? 'btn-primary' : 'btn-outline-primary' }}"
+              href="{{ request()->fullUrlWithQuery(['scope'=>'open']) }}">Open</a>
+
+            <a class="btn {{ $scope==='close' ? 'btn-primary' : 'btn-outline-primary' }}"
+              href="{{ request()->fullUrlWithQuery(['scope'=>'close']) }}">Close</a>
+          </div>
+
+          <!-- Dropdown tahun -->
           <select id="yearSelect" class="form-select form-select-sm" style="width: 110px;">
             @foreach($years as $y)
-            <option value="{{ $y }}" {{ (int)$selectedYear === (int)$y ? 'selected' : '' }}>
-              {{ $y }}
-            </option>
+            <option value="{{ $y }}" {{ (int)$selectedYear === (int)$y ? 'selected' : '' }}>{{ $y }}</option>
             @endforeach
           </select>
-
-          <span class="text-xs text-secondary">
-            Tahun: <span id="chartYear"></span>
-          </span>
         </div>
       </div>
       <div class="card-body">
@@ -570,51 +582,35 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    const chartData = @json($chartData);
+    // LINE (jenis) + DOUGHNUT (status)
+    const chartLine = @json($chartLine); // <-- permintaan vs perbaikan (open/close/all)
+    const chartData = @json($chartData); // <-- status untuk doughnut
+
+    const fmt = (n) => new Intl.NumberFormat('id-ID').format(n);
 
     // =========================
-    // ✅ YEAR SELECT + LABEL TAHUN
-    // (taruh di sini, sebelum chart dibuat)
+    // YEAR SELECT (untuk LINE)
     // =========================
     const chartYearEl = document.getElementById('chartYear');
-    if (chartYearEl) chartYearEl.textContent = chartData.year;
+    if (chartYearEl) chartYearEl.textContent = chartLine?.year ?? '';
 
     const yearSelect = document.getElementById('yearSelect');
     if (yearSelect) {
       yearSelect.addEventListener('change', (e) => {
-        const y = e.target.value;
         const url = new URL(window.location.href);
-        url.searchParams.set('year', y);
-        window.location.href = url.toString(); // reload dengan year baru
+        url.searchParams.set('year', e.target.value);
+
+        // pertahankan scope yang sedang dipakai (open/close/all)
+        const currentScope = url.searchParams.get('scope') || chartLine.scope || 'all';
+        url.searchParams.set('scope', currentScope);
+
+        window.location.href = url.toString();
       });
     }
 
-    const labels = chartData.labels; // Jan..Des
-    const statuses = chartData.statuses; // ["open","on process","close","escalated"]
-
-    const fmt = (n) => new Intl.NumberFormat('id-ID').format(n);
-
-    // === Palette (selaras bootstrap/argon-ish) ===
-    const colorMap = {
-      "open": {
-        stroke: "rgba(94,114,228,1)",
-        fillTop: "rgba(94,114,228,.20)"
-      },
-      "on process": {
-        stroke: "rgba(245,158,11,1)",
-        fillTop: "rgba(245,158,11,.18)"
-      },
-      "close": {
-        stroke: "rgba(46,204,113,1)",
-        fillTop: "rgba(46,204,113,.16)"
-      },
-      "escalated": {
-        stroke: "rgba(231,76,60,1)",
-        fillTop: "rgba(231,76,60,.16)"
-      },
-    };
-
-    // === Plugin: crosshair line saat hover (buat line chart) ===
+    // =========================
+    // PLUGIN: hover crosshair line (line chart)
+    // =========================
     const hoverLinePlugin = {
       id: 'hoverLine',
       afterDatasetsDraw(chart) {
@@ -642,7 +638,9 @@
       }
     };
 
-    // === Plugin: Center text untuk doughnut ===
+    // =========================
+    // PLUGIN: center text (doughnut)
+    // =========================
     const centerTextPlugin = {
       id: 'centerText',
       afterDraw(chart, args, opts) {
@@ -673,17 +671,14 @@
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
 
-        // top
         ctx.fillStyle = 'rgba(52,71,103,.70)';
         ctx.font = '600 12px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial';
         ctx.fillText(topText, x, y - 18);
 
-        // middle
         ctx.fillStyle = 'rgba(52,71,103,.95)';
         ctx.font = '800 22px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial';
         ctx.fillText(midText, x, y + 2);
 
-        // bottom
         ctx.fillStyle = 'rgba(52,71,103,.70)';
         ctx.font = '600 12px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial';
         ctx.fillText(botText, x, y + 22);
@@ -694,42 +689,57 @@
 
     Chart.register(hoverLinePlugin, centerTextPlugin);
 
-    // =========================
-    // LINE CHART (By Status)
-    // =========================
+    // ==========================================================
+    // ✅ LINE CHART: Permintaan vs Perbaikan (Jan–Des) + scope
+    // ==========================================================
     const lineCtx = document.getElementById('ticketsLineChart');
     let lineDelayed = false;
 
-    const lineDatasets = statuses.map((s) => ({
-      label: s,
-      data: chartData.monthlyByStatus[s] || Array(12).fill(0),
-      borderColor: colorMap[s].stroke,
+    const lineLabels = chartLine.labels; // Jan..Des
+    const types = chartLine.types; // ['perbaikan','permintaan']
+
+    // warna 2 garis (dashboard look)
+    const typeColors = {
+      perbaikan: {
+        stroke: "rgba(94,114,228,1)",
+        fillTop: "rgba(94,114,228,.20)"
+      },
+      permintaan: {
+        stroke: "rgba(245,158,11,1)",
+        fillTop: "rgba(245,158,11,.18)"
+      },
+    };
+
+    const lineDatasets = types.map((t) => ({
+      label: t,
+      data: chartLine.monthlyByType[t] || Array(12).fill(0), // ✅ bulan kosong tetap 0
+      borderColor: typeColors[t].stroke,
       backgroundColor: (context) => {
         const chart = context.chart;
         const {
           ctx,
           chartArea
         } = chart;
-        if (!chartArea) return colorMap[s].fillTop;
+        if (!chartArea) return typeColors[t].fillTop;
 
         const g = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-        g.addColorStop(0, colorMap[s].fillTop);
+        g.addColorStop(0, typeColors[t].fillTop);
         g.addColorStop(1, 'rgba(255,255,255,0)');
         return g;
       },
       fill: true,
       tension: 0.38,
       borderWidth: 2,
-      pointRadius: 2.5,
-      pointHoverRadius: 5,
-      pointHitRadius: 10,
+      pointRadius: 2.8,
+      pointHoverRadius: 6,
+      pointHitRadius: 12,
       pointBorderWidth: 0,
     }));
 
-    const lineChart = new Chart(lineCtx, {
+    new Chart(lineCtx, {
       type: 'line',
       data: {
-        labels,
+        labels: lineLabels,
         datasets: lineDatasets
       },
       options: {
@@ -775,7 +785,7 @@
           },
           delay: (ctx) => {
             if (ctx.type === 'data' && ctx.mode === 'default' && !lineDelayed) {
-              return ctx.dataIndex * 35 + ctx.datasetIndex * 45;
+              return ctx.dataIndex * 45 + ctx.datasetIndex * 80;
             }
             return 0;
           }
@@ -812,15 +822,31 @@
         }
       }
     });
-    // =========================
-    // DOUGHNUT (Komposisi Status) - default bulan sekarang
-    // =========================
+
+    // ==========================================================
+    // ✅ DOUGHNUT: Komposisi Status - default bulan sekarang
+    // ==========================================================
     const pieCtx = document.getElementById('ticketsPieChart');
     const pieMonthSelect = document.getElementById('pieMonthSelect');
 
-    const MONTHS_FULL = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+    const statuses = chartData.statuses; // ["open","on process","close","escalated"]
 
-    // ✅ bulan sekarang (real time dari browser)
+    const statusColors = {
+      "open": {
+        stroke: "rgba(94,114,228,1)"
+      },
+      "on process": {
+        stroke: "rgba(245,158,11,1)"
+      },
+      "close": {
+        stroke: "rgba(46,204,113,1)"
+      },
+      "escalated": {
+        stroke: "rgba(231,76,60,1)"
+      }
+    };
+
+    const MONTHS_FULL = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
     const currentMonth = new Date().getMonth() + 1; // 1..12
 
     function getPieData(monthValue) {
@@ -846,10 +872,7 @@
       return `Close rate ${rate.toFixed(1)}%`;
     }
 
-    // ✅ set dropdown default ke bulan sekarang
-    if (pieMonthSelect) {
-      pieMonthSelect.value = String(currentMonth);
-    }
+    if (pieMonthSelect) pieMonthSelect.value = String(currentMonth);
 
     const initialMonth = pieMonthSelect ? Number(pieMonthSelect.value) : currentMonth;
     const initialData = getPieData(initialMonth);
@@ -859,8 +882,8 @@
       data: {
         labels: statuses,
         datasets: [{
-          data: initialData, // ✅ default bulan sekarang
-          backgroundColor: statuses.map(s => colorMap[s].stroke),
+          data: initialData,
+          backgroundColor: statuses.map(s => statusColors[s]?.stroke || 'rgba(0,0,0,.4)'),
           borderColor: 'rgba(255,255,255,.85)',
           borderWidth: 2,
           hoverOffset: 10,
@@ -907,14 +930,12 @@
       }
     });
 
-    // update doughnut saat pilih bulan
     if (pieMonthSelect) {
       pieMonthSelect.addEventListener('change', () => {
         const m = Number(pieMonthSelect.value);
         const data = getPieData(m);
 
         doughnutChart.data.datasets[0].data = data;
-
         doughnutChart.options.plugins.centerText.topText = pieTopText(m);
         doughnutChart.options.plugins.centerText.midText = fmt(data.reduce((a, b) => a + b, 0));
         doughnutChart.options.plugins.centerText.botText = closeRateText(data);
