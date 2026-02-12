@@ -47,14 +47,22 @@ class TeknisiController extends Controller
 
     public function index()
     {
-        $userId = Auth::id();
+        $user   = Auth::user();
+        $userId = $user->id;
+        $role   = $user->role;
 
+        // =========================
+        // LIST TABEL: tiket open yg belum di-assign (global)
+        // =========================
         $teknisi_data_ticket = Ticket::with('user')
             ->whereDoesntHave('asignees')
             ->where('status', 'open')
             ->orderBy('created_at', 'desc')
             ->get();
 
+        // =========================
+        // CARD: Assigned & Closed (khusus user login)
+        // =========================
         $totalOnProcessTickets = Ticket::whereHas('asignees', function ($query) use ($userId) {
             $query->where('user_id', $userId);
         })->where('status', 'on process')->count();
@@ -63,17 +71,40 @@ class TeknisiController extends Controller
             $query->where('user_id', $userId);
         })->where('status', 'close')->count();
 
+        // =========================
+        // CARD: Total global
+        // =========================
         $totalAllTickets = Ticket::count();
         $totalTickets    = $teknisi_data_ticket->count();
 
         $latestComments = $this->getLatestComments();
 
         // =========================
-        // CHART FILTER (Line)
+        // ✅ CARD BARU 1: Unfinished (GLOBAL)
+        // =========================
+        $totalUnfinishedTickets = Ticket::whereIn('status', ['open', 'on process', 'escalated'])->count();
+
+        // =========================
+        // ✅ CARD BARU 2: Escalated (conditional)
+        // pemilik => global
+        // admin/pengurus => escalated yg assigned ke dia
+        // =========================
+        if ($role === 'pemilik') {
+            $totalEscalatedTickets = Ticket::where('status', 'escalated')->count();
+        } elseif (in_array($role, ['admin', 'pengurus'], true)) {
+            $totalEscalatedTickets = Ticket::whereHas('asignees', function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            })->where('status', 'escalated')->count();
+        } else {
+            $totalEscalatedTickets = Ticket::where('status', 'escalated')->count();
+        }
+
+        // =========================
+        // CHART FILTER (Line & Doughnut) - tahun sama
         // =========================
         $selectedYear = (int) request('year', now()->year);
         $scope        = request('scope', 'all'); // open | close | all
-        if (! in_array($scope, ['open', 'close', 'all'], true)) {
+        if (!in_array($scope, ['open', 'close', 'all'], true)) {
             $scope = 'all';
         }
 
@@ -84,7 +115,7 @@ class TeknisiController extends Controller
             ->orderByDesc('year')
             ->pluck('year');
 
-        if ($years->isNotEmpty() && ! $years->contains($selectedYear)) {
+        if ($years->isNotEmpty() && !$years->contains($selectedYear)) {
             $selectedYear = (int) $years->first();
         }
 
@@ -108,6 +139,7 @@ class TeknisiController extends Controller
         } elseif ($scope === 'close') {
             $q->where('status', 'close');
         } else {
+            // all = open + close saja
             $q->whereIn('status', ['open', 'close']);
         }
 
@@ -129,8 +161,7 @@ class TeknisiController extends Controller
         ];
 
         // =========================
-        // ✅ DOUGHNUT DATA: Status per bulan (untuk doughnut chart)
-        // pakai tahun yang sama biar konsisten dengan dropdown year
+        // DOUGHNUT DATA: Status per bulan (tahun sama)
         // =========================
         $statuses = ['open', 'on process', 'close', 'escalated'];
 
@@ -164,6 +195,8 @@ class TeknisiController extends Controller
             'totalOnProcessTickets',
             'totalClosedTickets',
             'totalAllTickets',
+            'totalEscalatedTickets',
+            'totalUnfinishedTickets',
             'latestComments',
             'years',
             'selectedYear',
@@ -172,6 +205,7 @@ class TeknisiController extends Controller
             'chartData'
         ));
     }
+
 
 
 
