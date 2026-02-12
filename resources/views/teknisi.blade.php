@@ -556,153 +556,334 @@
 </script>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-  const chartData = @json($chartData);
+  document.addEventListener('DOMContentLoaded', () => {
+    const chartData = @json($chartData);
 
-  // tampilkan tahun
-  const chartYearEl = document.getElementById('chartYear');
-  if (chartYearEl) chartYearEl.textContent = chartData.year;
+    const labels = chartData.labels; // Jan..Des
+    const statuses = chartData.statuses; // ["open","on process","close","escalated"]
 
-  const labels = chartData.labels; // Jan..Des
-  const statuses = chartData.statuses;
+    const fmt = (n) => new Intl.NumberFormat('id-ID').format(n);
 
-  // warna yang enak dibaca (selaras dengan tema bootstrap)
-  const colorMap = {
-    "open":       { stroke: "rgba(94,114,228,1)", fill: "rgba(94,114,228,.15)" }, // primary-ish
-    "on process": { stroke: "rgba(245,158,11,1)", fill: "rgba(245,158,11,.14)" }, // warning-ish
-    "close":      { stroke: "rgba(46,204,113,1)", fill: "rgba(46,204,113,.12)" }, // success-ish
-    "escalated":  { stroke: "rgba(231,76,60,1)",  fill: "rgba(231,76,60,.12)" },  // danger-ish
-  };
+    // === Palette (selaras bootstrap/argon-ish) ===
+    const colorMap = {
+      "open": {
+        stroke: "rgba(94,114,228,1)",
+        fillTop: "rgba(94,114,228,.20)"
+      },
+      "on process": {
+        stroke: "rgba(245,158,11,1)",
+        fillTop: "rgba(245,158,11,.18)"
+      },
+      "close": {
+        stroke: "rgba(46,204,113,1)",
+        fillTop: "rgba(46,204,113,.16)"
+      },
+      "escalated": {
+        stroke: "rgba(231,76,60,1)",
+        fillTop: "rgba(231,76,60,.16)"
+      },
+    };
 
-  const fmt = (n) => new Intl.NumberFormat('id-ID').format(n);
+    // === Plugin: crosshair line saat hover (buat line chart) ===
+    const hoverLinePlugin = {
+      id: 'hoverLine',
+      afterDatasetsDraw(chart) {
+        const active = chart.tooltip?.getActiveElements?.() || [];
+        if (!active.length) return;
 
-  // -----------------------
-  // LINE CHART (By Status)
-  // -----------------------
-  const lineCtx = document.getElementById('ticketsLineChart');
-  let lineDelayed = false;
-
-  const lineDatasets = statuses.map((s) => ({
-    label: s,
-    data: chartData.monthlyByStatus[s] || Array(12).fill(0),
-    borderColor: colorMap[s].stroke,
-    backgroundColor: colorMap[s].fill,
-    fill: true,
-    tension: 0.38,
-    borderWidth: 2,
-    pointRadius: 3,
-    pointHoverRadius: 5,
-    pointBorderWidth: 0,
-  }));
-
-  const lineChart = new Chart(lineCtx, {
-    type: 'line',
-    data: { labels, datasets: lineDatasets },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: { mode: 'index', intersect: false },
-      plugins: {
-        legend: {
-          position: 'bottom',
-          labels: { usePointStyle: true, boxWidth: 10, padding: 14 }
-        },
-        tooltip: {
-          padding: 12,
-          callbacks: {
-            label: (ctx) => ` ${ctx.dataset.label}: ${fmt(ctx.parsed.y)}`
+        const {
+          ctx,
+          chartArea: {
+            top,
+            bottom
           }
-        }
-      },
-      animation: {
-        duration: 900,
-        easing: 'easeOutQuart',
-        onComplete: () => { lineDelayed = true; },
-        delay: (context) => {
-          if (context.type === 'data' && context.mode === 'default' && !lineDelayed) {
-            return context.dataIndex * 35 + context.datasetIndex * 45;
-          }
-          return 0;
-        }
-      },
-      animations: {
-        tension: { duration: 650, easing: 'easeOutQuart', from: 0.2, to: 0.38 }
-      },
-      scales: {
-        x: { grid: { display: false } },
-        y: {
-          beginAtZero: true,
-          ticks: { precision: 0 },
-          grid: { color: 'rgba(0,0,0,.06)' }
-        }
+        } = chart;
+        const x = active[0].element.x;
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(x, top);
+        ctx.lineTo(x, bottom);
+        ctx.setLineDash([4, 4]);
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = 'rgba(0,0,0,.12)';
+        ctx.stroke();
+        ctx.restore();
       }
-    }
-  });
+    };
 
-  // -----------------------
-  // PIE CHART (Composition)
-  // -----------------------
-  const pieCtx = document.getElementById('ticketsPieChart');
-  const pieMonthSelect = document.getElementById('pieMonthSelect');
+    // === Plugin: Center text untuk doughnut ===
+    const centerTextPlugin = {
+      id: 'centerText',
+      afterDraw(chart, args, opts) {
+        if (chart.config.type !== 'doughnut') return;
 
-  function getPieData(monthValue) {
-    // monthValue: 0=all year, 1..12=bulan tertentu
-    if (monthValue === 0) {
-      // total setahun: sum 12 bulan
-      return statuses.map(s => (chartData.monthlyByStatus[s] || []).reduce((a,b)=>a+b,0));
-    }
-    const idx = Math.max(0, Math.min(11, monthValue - 1));
-    return statuses.map(s => (chartData.monthlyByStatus[s] || [])[idx] || 0);
-  }
+        const {
+          ctx
+        } = chart;
+        const meta = chart.getDatasetMeta(0);
+        if (!meta?.data?.length) return;
 
-  const pieChart = new Chart(pieCtx, {
-    type: 'pie',
-    data: {
-      labels: statuses,
-      datasets: [{
-        data: getPieData(0),
-        backgroundColor: statuses.map(s => colorMap[s].stroke),
-        borderColor: 'rgba(255,255,255,.65)',
-        borderWidth: 1,
-        hoverOffset: 10,
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          position: 'bottom',
-          labels: { usePointStyle: true, boxWidth: 10, padding: 14 }
+        const x = meta.data[0].x;
+        const y = meta.data[0].y;
+
+        const data = chart.data.datasets[0].data || [];
+        const total = data.reduce((a, b) => a + b, 0);
+
+        // close rate
+        const closeIndex = chart.data.labels.indexOf('close');
+        const closed = closeIndex >= 0 ? (data[closeIndex] || 0) : 0;
+        const closeRate = total ? (closed / total * 100) : 0;
+
+        const topText = opts?.topText ?? 'Total Ticket';
+        const midText = opts?.midText ?? fmt(total);
+        const botText = opts?.botText ?? `Close rate ${closeRate.toFixed(1)}%`;
+
+        ctx.save();
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        // top
+        ctx.fillStyle = 'rgba(52,71,103,.70)';
+        ctx.font = '600 12px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial';
+        ctx.fillText(topText, x, y - 18);
+
+        // middle
+        ctx.fillStyle = 'rgba(52,71,103,.95)';
+        ctx.font = '800 22px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial';
+        ctx.fillText(midText, x, y + 2);
+
+        // bottom
+        ctx.fillStyle = 'rgba(52,71,103,.70)';
+        ctx.font = '600 12px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial';
+        ctx.fillText(botText, x, y + 22);
+
+        ctx.restore();
+      }
+    };
+
+    Chart.register(hoverLinePlugin, centerTextPlugin);
+
+    // =========================
+    // LINE CHART (By Status)
+    // =========================
+    const lineCtx = document.getElementById('ticketsLineChart');
+    let lineDelayed = false;
+
+    const lineDatasets = statuses.map((s) => ({
+      label: s,
+      data: chartData.monthlyByStatus[s] || Array(12).fill(0),
+      borderColor: colorMap[s].stroke,
+      // gradient fill (lebih “premium”)
+      backgroundColor: (context) => {
+        const chart = context.chart;
+        const {
+          ctx,
+          chartArea
+        } = chart;
+        if (!chartArea) return colorMap[s].fillTop; // saat initial render
+
+        const g = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+        g.addColorStop(0, colorMap[s].fillTop);
+        g.addColorStop(1, 'rgba(255,255,255,0)');
+        return g;
+      },
+      fill: true,
+      tension: 0.38,
+      borderWidth: 2,
+
+      pointRadius: 2.5,
+      pointHoverRadius: 5,
+      pointHitRadius: 10,
+      pointBorderWidth: 0,
+    }));
+
+    const lineChart = new Chart(lineCtx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: lineDatasets
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: {
+          mode: 'index',
+          intersect: false
         },
-        tooltip: {
-          padding: 12,
-          callbacks: {
-            label: (ctx) => {
-              const total = ctx.dataset.data.reduce((a,b)=>a+b,0);
-              const val = ctx.parsed || 0;
-              const pct = total ? (val / total * 100) : 0;
-              return ` ${ctx.label}: ${fmt(val)} (${pct.toFixed(1)}%)`;
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              usePointStyle: true,
+              boxWidth: 10,
+              padding: 14
+            }
+          },
+          tooltip: {
+            padding: 12,
+            callbacks: {
+              label: (ctx) => ` ${ctx.dataset.label}: ${fmt(ctx.parsed.y)}`,
+              footer: (items) => {
+                const total = items.reduce((sum, it) => sum + (it.parsed.y || 0), 0);
+                return `Total bulan ini: ${fmt(total)}`;
+              }
+            }
+          }
+        },
+        layout: {
+          padding: {
+            top: 6,
+            right: 10,
+            bottom: 0,
+            left: 6
+          }
+        },
+
+        animation: {
+          duration: 900,
+          easing: 'easeOutQuart',
+          onComplete: () => {
+            lineDelayed = true;
+          },
+          delay: (ctx) => {
+            if (ctx.type === 'data' && ctx.mode === 'default' && !lineDelayed) {
+              return ctx.dataIndex * 35 + ctx.datasetIndex * 45;
+            }
+            return 0;
+          }
+        },
+        animations: {
+          tension: {
+            duration: 650,
+            easing: 'easeOutQuart',
+            from: 0.2,
+            to: 0.38
+          }
+        },
+
+        scales: {
+          x: {
+            grid: {
+              display: false
+            },
+            ticks: {
+              color: 'rgba(52,71,103,.65)'
+            }
+          },
+          y: {
+            beginAtZero: true,
+            ticks: {
+              precision: 0,
+              color: 'rgba(52,71,103,.65)',
+              callback: (v) => fmt(v)
+            },
+            grid: {
+              color: 'rgba(0,0,0,.06)',
+              borderDash: [6, 4]
             }
           }
         }
-      },
-      animation: {
-        duration: 900,
-        easing: 'easeOutQuart',
-        animateRotate: true,
-        animateScale: true
       }
+    });
+
+    // =========================
+    // DOUGHNUT (Komposisi Status)
+    // =========================
+    const pieCtx = document.getElementById('ticketsPieChart');
+    const pieMonthSelect = document.getElementById('pieMonthSelect');
+
+    const MONTHS_FULL = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+
+    function getPieData(monthValue) {
+      if (monthValue === 0) {
+        // total setahun
+        return statuses.map(s => (chartData.monthlyByStatus[s] || []).reduce((a, b) => a + b, 0));
+      }
+      const idx = Math.max(0, Math.min(11, monthValue - 1));
+      return statuses.map(s => (chartData.monthlyByStatus[s] || [])[idx] || 0);
+    }
+
+    function pieTopText(m) {
+      return m === 0 ? `Komposisi Status (${chartData.year})` : `Komposisi Status (${MONTHS_FULL[m-1]} ${chartData.year})`;
+    }
+
+    const doughnutChart = new Chart(pieCtx, {
+      type: 'doughnut',
+      data: {
+        labels: statuses,
+        datasets: [{
+          data: getPieData(0),
+          backgroundColor: statuses.map(s => colorMap[s].stroke),
+          borderColor: 'rgba(255,255,255,.85)',
+          borderWidth: 2,
+          hoverOffset: 10,
+
+          // bikin slice lebih modern
+          borderRadius: 10,
+          spacing: 3
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '68%',
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              usePointStyle: true,
+              boxWidth: 10,
+              padding: 14
+            }
+          },
+          tooltip: {
+            padding: 12,
+            callbacks: {
+              label: (ctx) => {
+                const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                const val = ctx.parsed || 0;
+                const pct = total ? (val / total * 100) : 0;
+                return ` ${ctx.label}: ${fmt(val)} (${pct.toFixed(1)}%)`;
+              }
+            }
+          },
+          // center text plugin options
+          centerText: {
+            topText: pieTopText(0),
+            midText: fmt(getPieData(0).reduce((a, b) => a + b, 0)),
+            botText: 'Close rate…'
+          }
+        },
+        animation: {
+          duration: 900,
+          easing: 'easeOutQuart',
+          animateRotate: true,
+          animateScale: true
+        }
+      }
+    });
+
+    // update doughnut saat pilih bulan
+    if (pieMonthSelect) {
+      pieMonthSelect.addEventListener('change', () => {
+        const m = Number(pieMonthSelect.value);
+        const data = getPieData(m);
+
+        doughnutChart.data.datasets[0].data = data;
+
+        // update center text (top/mid/bot)
+        const total = data.reduce((a, b) => a + b, 0);
+        const closeIndex = statuses.indexOf('close');
+        const closed = closeIndex >= 0 ? (data[closeIndex] || 0) : 0;
+        const closeRate = total ? (closed / total * 100) : 0;
+
+        doughnutChart.options.plugins.centerText.topText = pieTopText(m);
+        doughnutChart.options.plugins.centerText.midText = fmt(total);
+        doughnutChart.options.plugins.centerText.botText = `Close rate ${closeRate.toFixed(1)}%`;
+
+        doughnutChart.update();
+      });
     }
   });
-
-  // ganti pie saat pilih bulan
-  if (pieMonthSelect) {
-    pieMonthSelect.addEventListener('change', () => {
-      const m = Number(pieMonthSelect.value);
-      pieChart.data.datasets[0].data = getPieData(m);
-      pieChart.update();
-    });
-  }
-});
 </script>
