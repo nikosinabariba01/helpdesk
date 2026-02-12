@@ -896,9 +896,33 @@
           legend: {
             position: 'bottom',
             labels: {
-              usePointStyle: true,
-              boxWidth: 10,
-              padding: 14
+              usePointStyle: false, // pakai kotak (lebih jelas)
+              boxWidth: 14,
+              boxHeight: 10,
+              padding: 16,
+              color: 'rgba(52,71,103,.85)',
+              font: {
+                size: 12,
+                weight: '600'
+              },
+
+              // ✅ bikin teks legend lebih rapi + tetap pakai warna dataset
+              generateLabels: (chart) => {
+                const original = Chart.defaults.plugins.legend.labels.generateLabels(chart);
+
+                return original.map((item) => {
+                  const text = (item.text || '').toLowerCase();
+
+                  if (text === 'permintaan') item.text = 'Permintaan';
+                  if (text === 'perbaikan') item.text = 'Perbaikan';
+
+                  // ✅ pastikan kotak legend mengikuti warna garis dataset
+                  item.fillStyle = item.strokeStyle; // kotak diisi warna garis
+                  item.lineWidth = 0;
+
+                  return item;
+                });
+              }
             }
           },
           tooltip: {
