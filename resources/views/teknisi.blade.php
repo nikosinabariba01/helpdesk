@@ -808,7 +808,10 @@
           },
           animations: {
             y: {
-              from: 0
+              from: (ctx) => {
+                const yScale = ctx.chart?.scales?.y;
+                return yScale ? yScale.getPixelForValue(0) : 0;
+              }
             },
             radius: {
               from: 0,
@@ -987,12 +990,13 @@
 <style>
   .chart-pop {
     opacity: 0;
-    transform: translateY(10px) scale(.985);
+    transform: translateY(16px) scaleY(.92);
+    transform-origin: bottom;
     transition: opacity .35s ease, transform .35s ease;
   }
 
   .chart-pop.is-ready {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateY(0) scaleY(1);
   }
 </style>
