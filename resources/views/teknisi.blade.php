@@ -812,17 +812,20 @@
         }
       }
     });
-
     // =========================
-    // DOUGHNUT (Komposisi Status)
+    // DOUGHNUT (Komposisi Status) - default bulan sekarang
     // =========================
     const pieCtx = document.getElementById('ticketsPieChart');
     const pieMonthSelect = document.getElementById('pieMonthSelect');
 
     const MONTHS_FULL = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
 
+    // ✅ bulan sekarang (real time dari browser)
+    const currentMonth = new Date().getMonth() + 1; // 1..12
+
     function getPieData(monthValue) {
       if (monthValue === 0) {
+        // total setahun
         return statuses.map(s => (chartData.monthlyByStatus[s] || []).reduce((a, b) => a + b, 0));
       }
       const idx = Math.max(0, Math.min(11, monthValue - 1));
@@ -830,16 +833,33 @@
     }
 
     function pieTopText(m) {
-      return m === 0 ? `Komposisi Status (${chartData.year})` :
-        `Komposisi Status (${MONTHS_FULL[m-1]} ${chartData.year})`;
+      return m === 0 ?
+        `Komposisi Status (${chartData.year})` :
+        `Komposisi Status (${MONTHS_FULL[m - 1]} ${chartData.year})`;
     }
+
+    function closeRateText(dataArr) {
+      const total = dataArr.reduce((a, b) => a + b, 0);
+      const closeIndex = statuses.indexOf('close');
+      const closed = closeIndex >= 0 ? (dataArr[closeIndex] || 0) : 0;
+      const rate = total ? (closed / total * 100) : 0;
+      return `Close rate ${rate.toFixed(1)}%`;
+    }
+
+    // ✅ set dropdown default ke bulan sekarang
+    if (pieMonthSelect) {
+      pieMonthSelect.value = String(currentMonth);
+    }
+
+    const initialMonth = pieMonthSelect ? Number(pieMonthSelect.value) : currentMonth;
+    const initialData = getPieData(initialMonth);
 
     const doughnutChart = new Chart(pieCtx, {
       type: 'doughnut',
       data: {
         labels: statuses,
         datasets: [{
-          data: getPieData(0),
+          data: initialData, // ✅ default bulan sekarang
           backgroundColor: statuses.map(s => colorMap[s].stroke),
           borderColor: 'rgba(255,255,255,.85)',
           borderWidth: 2,
@@ -873,9 +893,9 @@
             }
           },
           centerText: {
-            topText: pieTopText(0),
-            midText: fmt(getPieData(0).reduce((a, b) => a + b, 0)),
-            botText: 'Close rate…'
+            topText: pieTopText(initialMonth),
+            midText: fmt(initialData.reduce((a, b) => a + b, 0)),
+            botText: closeRateText(initialData)
           }
         },
         animation: {
@@ -887,6 +907,7 @@
       }
     });
 
+    // update doughnut saat pilih bulan
     if (pieMonthSelect) {
       pieMonthSelect.addEventListener('change', () => {
         const m = Number(pieMonthSelect.value);
@@ -894,14 +915,9 @@
 
         doughnutChart.data.datasets[0].data = data;
 
-        const total = data.reduce((a, b) => a + b, 0);
-        const closeIndex = statuses.indexOf('close');
-        const closed = closeIndex >= 0 ? (data[closeIndex] || 0) : 0;
-        const closeRate = total ? (closed / total * 100) : 0;
-
         doughnutChart.options.plugins.centerText.topText = pieTopText(m);
-        doughnutChart.options.plugins.centerText.midText = fmt(total);
-        doughnutChart.options.plugins.centerText.botText = `Close rate ${closeRate.toFixed(1)}%`;
+        doughnutChart.options.plugins.centerText.midText = fmt(data.reduce((a, b) => a + b, 0));
+        doughnutChart.options.plugins.centerText.botText = closeRateText(data);
 
         doughnutChart.update();
       });
