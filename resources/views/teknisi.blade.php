@@ -1139,3 +1139,35 @@
     }
   }
 </style>
+
+<style>
+  .card-stat{
+    min-height: 120px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+  }
+  .card-stat-title{
+    font-size: 11px;
+    letter-spacing: .5px;
+    line-height: 1.15;
+  }
+  .card-stat-value{
+    font-size: 28px;
+    line-height: 1.2;
+  }
+  .card-stat-icon{ flex: 0 0 auto; }
+  .icon-48{
+    width:48px;height:48px;
+    display:flex;align-items:center;justify-content:center;
+  }
+
+  /* HP: kecilin sedikit biar muat */
+  @media (max-width: 576px){
+    .card-stat{ min-height: 108px; }
+    .card-stat-title{ font-size: 10px; }
+    .card-stat-value{ font-size: 24px; }
+    .icon-48{ width:42px;height:42px; }
+  }
+</style>
