@@ -50,56 +50,49 @@ class TeknisiController extends Controller
     {
         $userId = Auth::id();
 
-        $teknisi_data_ticket = Ticket::with('user')
-            ->whereDoesntHave('asignees')
-            ->where('status', 'open')
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        $totalOnProcessTickets = Ticket::whereHas('asignees', function ($query) use ($userId) {
-            $query->where('user_id', $userId);
-        })->where('status', 'on process')->count();
-
-        $totalClosedTickets = Ticket::whereHas('asignees', function ($query) use ($userId) {
-            $query->where('user_id', $userId);
-        })->where('status', 'close')->count();
-
-        $totalAllTickets = Ticket::count();
-        $totalTickets    = $teknisi_data_ticket->count();
-
-        $latestComments = $this->getLatestComments();
+        // ... kode kamu yang lain tetap ...
 
         // =========================
-        // CHART DATA (Line + Pie)
+        // CHART DATA (Line + Doughnut)
         // =========================
-        $year = now()->year;
+        $selectedYear = (int) request('year', now()->year);
 
-        $labels   = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+        // daftar tahun yang ada di DB (buat dropdown)
+        $years = Ticket::selectRaw('YEAR(created_at) as year')
+            ->whereNotNull('created_at')
+            ->distinct()
+            ->orderByDesc('year')
+            ->pluck('year');
+
+        // fallback kalau user ngirim year yg ga ada
+        if ($years->isNotEmpty() && !$years->contains($selectedYear)) {
+            $selectedYear = (int) $years->first();
+        }
+
+        $labels = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
         $statuses = ['open', 'on process', 'close', 'escalated'];
 
-        // init 12 bulan (0)
         $monthlyByStatus = [];
         foreach ($statuses as $s) {
             $monthlyByStatus[$s] = array_fill(0, 12, 0);
         }
 
-        // ambil count per bulan per status
         $rows = Ticket::selectRaw('MONTH(created_at) AS bulan, status, COUNT(*) AS total')
-            ->whereYear('created_at', $year)
+            ->whereYear('created_at', $selectedYear)
             ->groupBy('bulan', 'status')
             ->get();
 
         foreach ($rows as $r) {
-            $idx = (int) $r->bulan - 1; // 0..11
+            $idx = (int)$r->bulan - 1;
             if ($idx >= 0 && $idx < 12) {
-                $monthlyByStatus[$r->status][$idx] = (int) $r->total;
+                $monthlyByStatus[$r->status][$idx] = (int)$r->total;
             }
         }
 
         $chartData = [
-            'year'            => $year,
-            'labels'          => $labels,
-            'statuses'        => $statuses,
+            'year' => $selectedYear,
+            'labels' => $labels,
+            'statuses' => $statuses,
             'monthlyByStatus' => $monthlyByStatus,
         ];
 
@@ -110,9 +103,12 @@ class TeknisiController extends Controller
             'totalClosedTickets',
             'totalAllTickets',
             'latestComments',
-            'chartData' // <= kirim ke blade
+            'chartData',
+            'years',
+            'selectedYear'
         ));
     }
+
 
     // Fungsi untuk menampilkan tiket yang sudah ditugaskan
     public function viewasigne()
