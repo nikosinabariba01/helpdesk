@@ -92,3 +92,15 @@
 </body>
 
 </html>
+
+<style>
+  @media (max-width: 1199.98px) {
+    body > .min-height-300.bg-dark.position-absolute.w-100 {
+      min-height: 400px !important;
+      /* opsional: biar lebih solid di mobile */
+      top: 0;
+      left: 0;
+      right: 0;
+    }
+  }
+</style>
