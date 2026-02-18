@@ -168,6 +168,7 @@ class TeknisiController extends Controller
             'performance',
             'tickets'
         ))->setPaper('a4', 'portrait');
+
         return $pdf->download('laporan-keluhan-' . $start->format('Y-m') . '.pdf');
     }
 
