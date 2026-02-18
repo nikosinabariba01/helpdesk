@@ -159,7 +159,7 @@ class TeknisiController extends Controller
             'dominant_type' => $dominantType,
         ];
 
-        $pdf = Pdf::loadView('tickets-monthly.blade', compact(
+        $pdf = Pdf::loadView('reports.tickets-monthly', compact(
             'meta',
             'summary',
             'byStatus',
