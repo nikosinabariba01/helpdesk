@@ -295,7 +295,7 @@
                         </select>
                     </div>
 
-                    <div class="field-wrap actions-wrap">
+                    <div class="field-wrap">
                         {{-- label kosong biar sejajar tinggi --}}
                         <label class="form-label mb-1 d-none d-md-block">&nbsp;</label>
 
@@ -1449,7 +1449,7 @@
     .report-grid-2 {
         display: grid;
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) max-content;
-        gap: 9px;
+        gap: 12px;
         align-items: end;
         margin-top: 12px;
     }
