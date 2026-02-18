@@ -295,8 +295,6 @@
                         </select>
                     </div>
 
-                    <div></div> {{-- spacer biar actions tetap di kolom kanan --}}
-
                     <div class="field-wrap">
                         <div class="report-actions">
                             <a href="{{ url()->current() }}" class="btn btn-soft btn-sm">
@@ -307,6 +305,8 @@
                             </button>
                         </div>
                     </div>
+
+                    <div></div> {{-- spacer biar actions tetap di kolom kanan --}}
 
                 </div>
 
