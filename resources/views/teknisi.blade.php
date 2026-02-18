@@ -262,7 +262,8 @@
                         @endphp
                         <select name="month" id="monthSelectReport" class="form-select form-select-sm">
                             @foreach ($months as $num => $name)
-                                <option value="{{ $num }}" {{ $selectedMonth === (int) $num ? 'selected' : '' }}>
+                                <option value="{{ $num }}"
+                                    {{ $selectedMonth === (int) $num ? 'selected' : '' }}>
                                     {{ $name }}
                                 </option>
                             @endforeach
@@ -279,7 +280,8 @@
                         <select name="status" class="form-select form-select-sm">
                             <option value="all" {{ $status === 'all' ? 'selected' : '' }}>Semua Status</option>
                             <option value="open" {{ $status === 'open' ? 'selected' : '' }}>Open</option>
-                            <option value="on process" {{ $status === 'on process' ? 'selected' : '' }}>On Process</option>
+                            <option value="on process" {{ $status === 'on process' ? 'selected' : '' }}>On Process
+                            </option>
                             <option value="close" {{ $status === 'close' ? 'selected' : '' }}>Close</option>
                             <option value="escalated" {{ $status === 'escalated' ? 'selected' : '' }}>Escalated</option>
                         </select>
@@ -754,6 +756,47 @@
                 }
             });
         });
+    </script>
+
+    <script>
+        (function() {
+            const periodEl = document.getElementById('periodSelect');
+            const yearWrap = document.getElementById('yearWrap');
+            const monthWrap = document.getElementById('monthWrap');
+            const yearSelect = document.getElementById('yearSelectReport');
+            const monthSelect = document.getElementById('monthSelectReport');
+
+            function applyPeriod() {
+                const p = periodEl.value;
+
+                // reset
+                yearWrap.classList.remove('hidden');
+                monthWrap.classList.remove('hidden');
+                yearSelect.disabled = false;
+                monthSelect.disabled = false;
+
+                // all: sembunyikan tahun & bulan
+                if (p === 'all') {
+                    yearWrap.classList.add('hidden');
+                    monthWrap.classList.add('hidden');
+                    yearSelect.disabled = true;
+                    monthSelect.disabled = true;
+                    return;
+                }
+
+                // yearly: sembunyikan bulan
+                if (p === 'yearly') {
+                    monthWrap.classList.add('hidden');
+                    monthSelect.disabled = true;
+                    return;
+                }
+
+                // monthly: tampil semua
+            }
+
+            periodEl.addEventListener('change', applyPeriod);
+            applyPeriod();
+        })();
     </script>
 @endsection
 
@@ -1240,47 +1283,6 @@
             });
         }
     });
-</script>
-
-<script>
-    (function() {
-        const periodEl = document.getElementById('periodSelect');
-        const yearWrap = document.getElementById('yearWrap');
-        const monthWrap = document.getElementById('monthWrap');
-        const yearSelect = document.getElementById('yearSelectReport');
-        const monthSelect = document.getElementById('monthSelectReport');
-
-        function applyPeriod() {
-            const p = periodEl.value;
-
-            // reset
-            yearWrap.classList.remove('hidden');
-            monthWrap.classList.remove('hidden');
-            yearSelect.disabled = false;
-            monthSelect.disabled = false;
-
-            // all: sembunyikan tahun & bulan
-            if (p === 'all') {
-                yearWrap.classList.add('hidden');
-                monthWrap.classList.add('hidden');
-                yearSelect.disabled = true;
-                monthSelect.disabled = true;
-                return;
-            }
-
-            // yearly: sembunyikan bulan
-            if (p === 'yearly') {
-                monthWrap.classList.add('hidden');
-                monthSelect.disabled = true;
-                return;
-            }
-
-            // monthly: tampil semua
-        }
-
-        periodEl.addEventListener('change', applyPeriod);
-        applyPeriod();
-    })();
 </script>
 
 
