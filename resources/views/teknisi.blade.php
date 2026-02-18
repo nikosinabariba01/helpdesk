@@ -197,17 +197,17 @@
     </div>
 
     <div class="card report-card shadow-sm">
+        {{-- HEADER (bersih, tanpa badge & quick actions) --}}
         <div class="card-header px-3 py-3">
             <h6 class="report-title">Download Laporan PDF</h6>
-            <p class="report-subtitle mb-0">
-                Rekap keluhan kos: ringkasan, close rate, top lokasi/subject, dan daftar tiket.
+            <p class="report-subtitle mb-0">Rekap keluhan kos: ringkasan, close rate, top lokasi/subject, dan daftar tiket.
             </p>
         </div>
 
         <div class="card-body px-3 py-3">
+            {{-- FORM FILTER --}}
             <form action="{{ route('teknisi.report.monthly') }}" method="GET">
-
-                {{-- ROW 1: Periode - Tahun - Bulan --}}
+                {{-- ROW 1 --}}
                 <div class="row g-3 align-items-end">
                     <div class="col-12 col-md-4 col-lg-3">
                         <label class="form-label mb-1">Periode</label>
@@ -265,7 +265,7 @@
                     </div>
                 </div>
 
-                {{-- ROW 2: Status - Jenis - Actions (tombol nempel ke awal) --}}
+                {{-- ROW 2 --}}
                 <div class="row g-3 align-items-end mt-1">
                     <div class="col-12 col-md-4">
                         <label class="form-label mb-1">Status (opsional)</label>
@@ -291,11 +291,7 @@
                     </div>
 
                     <div class="col-12 col-md-4">
-                        {{-- label kosong supaya tinggi sejajar --}}
-                        <label class="form-label mb-1 d-none d-md-block">&nbsp;</label>
-
-                        {{-- desktop: 1 baris; mobile: turun jadi kolom --}}
-                        <div class="d-flex gap-2 justify-content-md-start flex-column flex-md-row">
+                        <div class="d-flex gap-2 justify-content-md-end flex-column flex-md-row">
                             <a href="{{ url()->current() }}" class="btn btn-soft btn-sm">
                                 <i class="fa fa-rotate-left me-1"></i> Reset
                             </a>
@@ -309,8 +305,11 @@
                 <input type="hidden" name="download" value="1">
             </form>
 
+
+
             <div class="report-divider"></div>
 
+            {{-- HINT --}}
             <div class="report-hint d-flex align-items-start gap-2">
                 <i class="fa fa-circle-info mt-1"></i>
                 <div class="small text-muted">
@@ -321,7 +320,6 @@
             </div>
         </div>
     </div>
-
 
     <div class="row mt-4">
         <div class="col-lg-12 mb-lg-0 mb-4 ">
@@ -1446,6 +1444,11 @@
         align-items: end;
         margin-top: 12px;
     }
+
+    .report-grid-2 .actions-wrap{
+  grid-column: 1 / -1; /* actions turun ke baris bawah, full width */
+}
+
 
     /* ✅ biar kolom actions benar2 nempel kanan */
     .report-grid-2 .field-wrap:last-child {
