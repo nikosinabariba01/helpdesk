@@ -3,11 +3,11 @@
 <html lang="id">
 <head>
     <meta charset="utf-8">
-    <title>Laporan Keluhan Bulanan</title>
+    <title>Laporan Keluhan</title>
     <style>
         @page { margin: 70px 26px 55px 26px; }
-        body { font-family: DejaVu Sans, sans-serif; font-size: 12px; color: #111827; }
 
+        body { font-family: DejaVu Sans, sans-serif; font-size: 12px; color: #111827; }
         .muted { color:#6b7280; }
         .small { font-size: 10px; }
 
@@ -53,6 +53,13 @@
             background:#f9fafb;
             color:#374151;
         }
+
+        .note {
+            background:#f9fafb;
+            border:1px dashed #e5e7eb;
+            border-radius:8px;
+            padding:8px 10px;
+        }
     </style>
 </head>
 <body>
@@ -63,7 +70,7 @@
         $font = $fontMetrics->get_font("DejaVu Sans", "normal");
         $size = 9;
 
-        $pdf->text(26, 22, "Laporan Keluhan Bulanan • Sistem Kos", $font, $size);
+        $pdf->text(26, 22, "Laporan Keluhan • Sistem Kos", $font, $size);
 
         $periode = "{{ $meta['periode_label'] ?? '-' }}";
         $role    = "{{ strtoupper($meta['role'] ?? '-') }}";
@@ -81,7 +88,7 @@
 
 {{-- COVER INFO --}}
 <div class="card no-break">
-    <div class="h1">Laporan Keluhan Bulanan</div>
+    <div class="h1">Laporan Keluhan</div>
     <div class="muted" style="margin-top:4px;">Sistem Manajemen Keluhan & Monitoring Kos</div>
     <div class="small muted" style="margin-top:4px;">
         Periode: <b>{{ $meta['periode_label'] ?? '-' }}</b>
@@ -92,7 +99,9 @@
     </div>
 </div>
 
-{{-- RINGKASAN GLOBAL --}}
+{{-- =========================
+     RINGKASAN GLOBAL
+========================= --}}
 <div class="card no-break">
     <div class="h2" style="margin-top:0;">Ringkasan Global</div>
 
@@ -126,13 +135,16 @@
 
     <div class="divider"></div>
 
+    {{-- Close Rate + metrik waktu (conditional per period) --}}
     <div class="small muted">
         Close rate: <b>{{ number_format((float)($summary['close_rate'] ?? 0), 1) }}%</b>
 
-        {{-- ✅ waktu penyelesaian hanya untuk PEMILIK --}}
-        @if(($meta['role'] ?? '') === 'pemilik')
-            • Rata-rata selesai: <b>{{ number_format((float)($summary['avg_resolution_days'] ?? 0), 1) }}</b> hari
+        @if(($meta['period'] ?? '') === 'monthly')
+            • Avg selesai: <b>{{ number_format((float)($summary['avg_resolution_days'] ?? 0), 1) }}</b> hari
             • Median: <b>{{ number_format((float)($summary['median_resolution_days'] ?? 0), 1) }}</b> hari
+        @elseif(($meta['period'] ?? '') === 'yearly')
+            • Median selesai: <b>{{ number_format((float)($summary['median_resolution_days'] ?? 0), 1) }}</b> hari
+            • P90 selesai: <b>{{ number_format((float)($summary['p90_resolution_days'] ?? 0), 1) }}</b> hari
         @endif
 
         • Dominan: <b>{{ $summary['dominant_type'] ?? '-' }}</b>
@@ -142,146 +154,251 @@
         Jenis — Perbaikan: <b>{{ $byType['perbaikan']['count'] ?? 0 }}</b>
         • Permintaan: <b>{{ $byType['permintaan']['count'] ?? 0 }}</b>
     </div>
+
+    @if(($meta['period'] ?? '') === 'all')
+        <div class="note small muted" style="margin-top:8px;">
+            Catatan: Untuk <b>Semua Tahun</b>, metrik waktu (avg/median) global biasanya bias.
+            Laporan menampilkan <b>KPI Per Tahun</b> agar lebih representatif.
+        </div>
+    @endif
 </div>
 
-{{-- BREAKDOWN STATUS --}}
+{{-- =========================
+     BREAKDOWN STATUS
+========================= --}}
 <div class="card no-break">
     <div class="h2" style="margin-top:0;">Breakdown Status</div>
     <table>
         <thead>
-        <tr>
-            <th>Status</th>
-            <th class="text-right">Jumlah</th>
-            <th class="text-right">Persentase</th>
-        </tr>
+            <tr>
+                <th>Status</th>
+                <th class="text-right">Jumlah</th>
+                <th class="text-right">Persentase</th>
+            </tr>
         </thead>
         <tbody>
-        @foreach(($byStatus ?? []) as $k => $v)
-            <tr>
-                <td class="wrap"><span class="pill">{{ strtoupper($k) }}</span></td>
-                <td class="text-right">{{ $v['count'] ?? 0 }}</td>
-                <td class="text-right">{{ number_format((float)($v['pct'] ?? 0), 1) }}%</td>
-            </tr>
-        @endforeach
+            @foreach(($byStatus ?? []) as $k => $v)
+                <tr>
+                    <td class="wrap"><span class="pill">{{ strtoupper($k) }}</span></td>
+                    <td class="text-right">{{ $v['count'] ?? 0 }}</td>
+                    <td class="text-right">{{ number_format((float)($v['pct'] ?? 0), 1) }}%</td>
+                </tr>
+            @endforeach
         </tbody>
     </table>
 </div>
 
-{{-- BREAKDOWN JENIS PENGADUAN --}}
+{{-- =========================
+     BREAKDOWN JENIS
+========================= --}}
 <div class="card no-break">
     <div class="h2" style="margin-top:0;">Breakdown Jenis Pengaduan</div>
     <table>
         <thead>
-        <tr>
-            <th>Jenis</th>
-            <th class="text-right">Jumlah</th>
-            <th class="text-right">Persentase</th>
-        </tr>
+            <tr>
+                <th>Jenis</th>
+                <th class="text-right">Jumlah</th>
+                <th class="text-right">Persentase</th>
+            </tr>
         </thead>
         <tbody>
-        @foreach(($byType ?? []) as $k => $v)
-            <tr>
-                <td class="wrap"><span class="pill">{{ strtoupper($k) }}</span></td>
-                <td class="text-right">{{ $v['count'] ?? 0 }}</td>
-                <td class="text-right">{{ number_format((float)($v['pct'] ?? 0), 1) }}%</td>
-            </tr>
-        @endforeach
+            @foreach(($byType ?? []) as $k => $v)
+                <tr>
+                    <td class="wrap"><span class="pill">{{ strtoupper($k) }}</span></td>
+                    <td class="text-right">{{ $v['count'] ?? 0 }}</td>
+                    <td class="text-right">{{ number_format((float)($v['pct'] ?? 0), 1) }}%</td>
+                </tr>
+            @endforeach
         </tbody>
     </table>
 </div>
 
-{{-- TOP LOCATIONS --}}
+{{-- =========================
+     TREN BULANAN (khusus yearly)
+========================= --}}
+@if(($meta['period'] ?? '') === 'yearly')
+    @php
+        $trend = $trendMonthly ?? [];
+        $monthNames = [
+            1=>'Jan',2=>'Feb',3=>'Mar',4=>'Apr',5=>'Mei',6=>'Jun',
+            7=>'Jul',8=>'Agu',9=>'Sep',10=>'Okt',11=>'Nov',12=>'Des'
+        ];
+    @endphp
+    <div class="card no-break">
+        <div class="h2" style="margin-top:0;">Tren Bulanan (Jan–Des)</div>
+        <div class="small muted">Jumlah tiket dibuat per bulan pada tahun terpilih.</div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Bulan</th>
+                    <th class="text-right">Total</th>
+                    <th class="text-right">Close</th>
+                    <th class="text-right">Close Rate</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for($m=1; $m<=12; $m++)
+                    @php
+                        $row = $trend[$m] ?? ['total'=>0,'close'=>0,'close_rate'=>0];
+                    @endphp
+                    <tr>
+                        <td><span class="pill">{{ $monthNames[$m] }}</span></td>
+                        <td class="text-right">{{ $row['total'] ?? 0 }}</td>
+                        <td class="text-right">{{ $row['close'] ?? 0 }}</td>
+                        <td class="text-right">{{ number_format((float)($row['close_rate'] ?? 0), 1) }}%</td>
+                    </tr>
+                @endfor
+            </tbody>
+        </table>
+    </div>
+@endif
+
+{{-- =========================
+     TOP LOCATIONS
+========================= --}}
 @if(!empty($topLocations) && count($topLocations))
     <div class="card no-break">
         <div class="h2" style="margin-top:0;">Top Lokasi Keluhan</div>
         <table>
             <thead>
-            <tr>
-                <th>Lokasi</th>
-                <th class="text-right">Jumlah</th>
-            </tr>
+                <tr>
+                    <th>Lokasi</th>
+                    <th class="text-right">Jumlah</th>
+                </tr>
             </thead>
             <tbody>
-            @foreach($topLocations as $loc)
-                <tr>
-                    <td class="wrap">{{ $loc['Lokasi'] ?? '-' }}</td>
-                    <td class="text-right">{{ $loc['total'] ?? 0 }}</td>
-                </tr>
-            @endforeach
+                @foreach($topLocations as $loc)
+                    <tr>
+                        <td class="wrap">{{ $loc['Lokasi'] ?? '-' }}</td>
+                        <td class="text-right">{{ $loc['total'] ?? 0 }}</td>
+                    </tr>
+                @endforeach
             </tbody>
         </table>
     </div>
 @endif
 
-{{-- TOP SUBJECTS --}}
+{{-- =========================
+     TOP SUBJECTS
+========================= --}}
 @if(!empty($topSubjects) && count($topSubjects))
     <div class="card no-break">
         <div class="h2" style="margin-top:0;">Top Subject Keluhan</div>
         <table>
             <thead>
-            <tr>
-                <th>Subject</th>
-                <th class="text-right">Jumlah</th>
-            </tr>
+                <tr>
+                    <th>Subject</th>
+                    <th class="text-right">Jumlah</th>
+                </tr>
             </thead>
             <tbody>
-            @foreach($topSubjects as $sb)
-                <tr>
-                    <td class="wrap">{{ $sb['subject'] ?? '-' }}</td>
-                    <td class="text-right">{{ $sb['total'] ?? 0 }}</td>
-                </tr>
-            @endforeach
+                @foreach($topSubjects as $sb)
+                    <tr>
+                        <td class="wrap">{{ $sb['subject'] ?? '-' }}</td>
+                        <td class="text-right">{{ $sb['total'] ?? 0 }}</td>
+                    </tr>
+                @endforeach
             </tbody>
         </table>
     </div>
 @endif
 
-{{-- ✅ KINERJA PER PENGURUS (pemilik & pengurus) - tampilkan semua pengurus termasuk handled=0 --}}
-@if(in_array(($meta['role'] ?? ''), ['pemilik','pengurus']))
+{{-- =========================
+     KPI PER TAHUN (khusus all)
+========================= --}}
+@if(($meta['period'] ?? '') === 'all' && !empty($kpiByYear))
     <div class="card no-break">
-        <div class="h2" style="margin-top:0;">Kinerja Per Pengurus</div>
+        <div class="h2" style="margin-top:0;">Ringkasan KPI Per Tahun (All Time)</div>
+        <div class="small muted">Lebih representatif daripada avg global sepanjang sejarah.</div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Tahun</th>
+                    <th class="text-right">Total</th>
+                    <th class="text-right">Close</th>
+                    <th class="text-right">Close Rate</th>
+                    <th class="text-right">Median Selesai</th>
+                    <th class="text-right">P90 Selesai</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($kpiByYear as $y)
+                    <tr>
+                        <td class="nowrap"><span class="pill">{{ $y['year'] ?? '-' }}</span></td>
+                        <td class="text-right">{{ $y['total'] ?? 0 }}</td>
+                        <td class="text-right">{{ $y['close'] ?? 0 }}</td>
+                        <td class="text-right">{{ number_format((float)($y['close_rate'] ?? 0), 1) }}%</td>
+                        <td class="text-right">{{ number_format((float)($y['median_days'] ?? 0), 1) }} hari</td>
+                        <td class="text-right">{{ number_format((float)($y['p90_days'] ?? 0), 1) }} hari</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+@endif
+
+{{-- =========================
+     PEMILIK: KINERJA PER PENGURUS (pemilik + pengurus)
+========================= --}}
+@if(($meta['role'] ?? '') === 'pemilik' && !empty($performance))
+    <div class="card no-break">
+        <div class="h2" style="margin-top:0;">Kinerja Per Pengurus (Termasuk Pemilik)</div>
         <div class="small muted">
-            Semua pengurus ditampilkan (termasuk yang tidak menangani tiket = handled 0).
+            Handled = tiket yang ditugaskan ke user (via <b>ticket_assignees</b>) pada periode.
+            Jika handled=0 artinya tidak menangani tiket.
         </div>
 
         <table>
             <thead>
-            <tr>
-                <th>Nama</th>
-                <th class="text-right">Handled</th>
-                <th class="text-right">Closed</th>
-                <th class="text-right">Close Rate</th>
-                <th class="text-right">Avg Selesai (hari)</th>
-            </tr>
+                <tr>
+                    <th>Nama</th>
+                    <th>Role</th>
+                    <th class="text-right">Handled</th>
+                    <th class="text-right">Closed</th>
+                    <th class="text-right">Close Rate</th>
+
+                    @if(($meta['period'] ?? '') === 'monthly')
+                        <th class="text-right">Avg Selesai (hari)</th>
+                    @elseif(($meta['period'] ?? '') === 'yearly')
+                        <th class="text-right">Median (hari)</th>
+                        <th class="text-right">P90 (hari)</th>
+                    @else
+                        <th class="text-right">Catatan</th>
+                    @endif
+                </tr>
             </thead>
             <tbody>
-            @forelse(($performance ?? []) as $p)
-                <tr>
-                    <td class="wrap">{{ $p['name'] ?? '-' }}</td>
-                    <td class="text-right">{{ $p['handled'] ?? 0 }}</td>
-                    <td class="text-right">{{ $p['closed'] ?? 0 }}</td>
-                    <td class="text-right">{{ number_format((float)($p['close_rate'] ?? 0), 1) }}%</td>
-                    <td class="text-right">{{ number_format((float)($p['avg_resolution_days'] ?? 0), 1) }}</td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="5" class="text-center muted">Tidak ada data pengurus.</td>
-                </tr>
-            @endforelse
+                @foreach($performance as $p)
+                    <tr>
+                        <td class="wrap"><b>{{ $p['name'] ?? '-' }}</b></td>
+                        <td class="nowrap"><span class="pill">{{ strtoupper($p['role'] ?? '-') }}</span></td>
+                        <td class="text-right">{{ $p['handled'] ?? 0 }}</td>
+                        <td class="text-right">{{ $p['closed'] ?? 0 }}</td>
+                        <td class="text-right">{{ number_format((float)($p['close_rate'] ?? 0), 1) }}%</td>
+
+                        @if(($meta['period'] ?? '') === 'monthly')
+                            <td class="text-right">{{ number_format((float)($p['avg_resolution_days'] ?? 0), 1) }}</td>
+                        @elseif(($meta['period'] ?? '') === 'yearly')
+                            <td class="text-right">{{ number_format((float)($p['median_resolution_days'] ?? 0), 1) }}</td>
+                            <td class="text-right">{{ number_format((float)($p['p90_resolution_days'] ?? 0), 1) }}</td>
+                        @else
+                            <td class="text-right muted">All-time: lihat KPI per tahun</td>
+                        @endif
+                    </tr>
+                @endforeach
             </tbody>
         </table>
-
-        <div class="small muted" style="margin-top:6px;">
-            Catatan: Avg selesai dihitung dari tiket <b>close</b> yang memiliki <b>Tanggal_Selesai</b>.
-        </div>
     </div>
 @endif
 
-{{-- ✅ REKAP ESKALASI (tampil hanya jika period != all) --}}
-@if(($meta['period'] ?? '') !== 'all')
+{{-- =========================
+     PEMILIK: REKAP ESKALASI (hanya monthly/yearly)
+========================= --}}
+@if(($meta['role'] ?? '') === 'pemilik' && in_array(($meta['period'] ?? ''), ['monthly','yearly']) && !empty($escalationSummary))
     <div class="card no-break">
         <div class="h2" style="margin-top:0;">Rekap Eskalasi</div>
-
         <div class="small muted">
             Total escalated pada periode: <b>{{ $escalationSummary['total'] ?? 0 }}</b>
         </div>
@@ -290,18 +407,18 @@
             <div class="h3">Top Lokasi Eskalasi</div>
             <table>
                 <thead>
-                <tr>
-                    <th>Lokasi</th>
-                    <th class="text-right">Jumlah</th>
-                </tr>
+                    <tr>
+                        <th>Lokasi</th>
+                        <th class="text-right">Jumlah</th>
+                    </tr>
                 </thead>
                 <tbody>
-                @foreach($escalationSummary['top_locations'] as $x)
-                    <tr>
-                        <td class="wrap">{{ $x['Lokasi'] ?? '-' }}</td>
-                        <td class="text-right">{{ $x['total'] ?? 0 }}</td>
-                    </tr>
-                @endforeach
+                    @foreach($escalationSummary['top_locations'] as $x)
+                        <tr>
+                            <td class="wrap">{{ $x['Lokasi'] ?? '-' }}</td>
+                            <td class="text-right">{{ $x['total'] ?? 0 }}</td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
         @endif
@@ -310,60 +427,62 @@
             <div class="h3">Top Subject Eskalasi</div>
             <table>
                 <thead>
-                <tr>
-                    <th>Subject</th>
-                    <th class="text-right">Jumlah</th>
-                </tr>
+                    <tr>
+                        <th>Subject</th>
+                        <th class="text-right">Jumlah</th>
+                    </tr>
                 </thead>
                 <tbody>
-                @foreach($escalationSummary['top_subjects'] as $x)
-                    <tr>
-                        <td class="wrap">{{ $x['subject'] ?? '-' }}</td>
-                        <td class="text-right">{{ $x['total'] ?? 0 }}</td>
-                    </tr>
-                @endforeach
+                    @foreach($escalationSummary['top_subjects'] as $x)
+                        <tr>
+                            <td class="wrap">{{ $x['subject'] ?? '-' }}</td>
+                            <td class="text-right">{{ $x['total'] ?? 0 }}</td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
         @endif
     </div>
 @endif
 
-{{-- DAFTAR TIKET --}}
+{{-- =========================
+     DAFTAR TIKET
+========================= --}}
 <div class="card">
     <div class="h2" style="margin-top:0;">Daftar Tiket (Periode)</div>
     <table>
         <thead>
-        <tr>
-            <th style="width:12%;">ID</th>
-            <th style="width:28%;">Subject</th>
-            <th style="width:12%;">Jenis</th>
-            <th style="width:12%;">Status</th>
-            <th style="width:18%;">Lokasi</th>
-            <th style="width:9%;">Tanggal</th>
-            <th style="width:9%;">Selesai</th>
-        </tr>
+            <tr>
+                <th style="width:12%;">ID</th>
+                <th style="width:28%;">Subject</th>
+                <th style="width:12%;">Jenis</th>
+                <th style="width:12%;">Status</th>
+                <th style="width:18%;">Lokasi</th>
+                <th style="width:9%;">Tanggal</th>
+                <th style="width:9%;">Selesai</th>
+            </tr>
         </thead>
         <tbody>
-        @forelse($tickets as $t)
-            @php
-                $st = $t->status;
-                $cls = $st==='open' ? 'st-open' : ($st==='on process' ? 'st-process' : ($st==='close' ? 'st-close' : 'st-escalated'));
-                $ticketCode = $t->ticket_code ?? ('sp-' . substr(preg_replace('/[^0-9]/','',$t->id), -3) . \Carbon\Carbon::parse($t->created_at)->format('dmy'));
-            @endphp
-            <tr>
-                <td class="nowrap">{{ $ticketCode }}</td>
-                <td class="wrap"><b>{{ $t->subject ?? '-' }}</b></td>
-                <td class="nowrap">{{ $t->Jenis_Pengaduan ?? '-' }}</td>
-                <td class="nowrap"><span class="st {{ $cls }}">{{ $st ?? '-' }}</span></td>
-                <td class="wrap">{{ $t->Lokasi ?? '-' }}</td>
-                <td class="nowrap">{{ $t->created_at ? \Carbon\Carbon::parse($t->created_at)->format('d/m/Y') : '-' }}</td>
-                <td class="nowrap">{{ !empty($t->Tanggal_Selesai) ? \Carbon\Carbon::parse($t->Tanggal_Selesai)->format('d/m/Y') : '-' }}</td>
-            </tr>
-        @empty
-            <tr>
-                <td colspan="7" class="text-center muted">Tidak ada tiket pada periode ini.</td>
-            </tr>
-        @endforelse
+            @forelse($tickets as $t)
+                @php
+                    $st = $t->status;
+                    $cls = $st==='open' ? 'st-open' : ($st==='on process' ? 'st-process' : ($st==='close' ? 'st-close' : 'st-escalated'));
+                    $ticketCode = $t->ticket_code ?? ('sp-' . substr(preg_replace('/[^0-9]/','',$t->id), -3) . \Carbon\Carbon::parse($t->created_at)->format('dmy'));
+                @endphp
+                <tr>
+                    <td class="nowrap">{{ $ticketCode }}</td>
+                    <td class="wrap"><b>{{ $t->subject ?? '-' }}</b></td>
+                    <td class="nowrap">{{ $t->Jenis_Pengaduan ?? '-' }}</td>
+                    <td class="nowrap"><span class="st {{ $cls }}">{{ $st ?? '-' }}</span></td>
+                    <td class="wrap">{{ $t->Lokasi ?? '-' }}</td>
+                    <td class="nowrap">{{ $t->created_at ? \Carbon\Carbon::parse($t->created_at)->format('d/m/Y') : '-' }}</td>
+                    <td class="nowrap">{{ !empty($t->Tanggal_Selesai) ? \Carbon\Carbon::parse($t->Tanggal_Selesai)->format('d/m/Y') : '-' }}</td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="7" class="text-center muted">Tidak ada tiket pada periode ini.</td>
+                </tr>
+            @endforelse
         </tbody>
     </table>
 
