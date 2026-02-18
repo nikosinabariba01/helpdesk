@@ -108,23 +108,26 @@ class TeknisiController extends Controller {
 
         $closeRate = $total ? round(($close / $total) * 100, 2) : 0;
 
-        // by type
         $perbaikan  = $tickets->where('Jenis_Pengaduan', 'perbaikan')->count();
         $permintaan = $tickets->where('Jenis_Pengaduan', 'permintaan')->count();
 
         $summary = [
-            'total'      => $total,
-            'open'       => $open,
-            'on_process' => $onProcess,
-            'escalated'  => $escalated,
-            'close'      => $close,
-            'close_rate' => $closeRate,
-            'perbaikan'  => $perbaikan,
-            'permintaan' => $permintaan,
+            'total'                  => $total,
+            'open'                   => $open,
+            'on_process'             => $onProcess,
+            'escalated'              => $escalated,
+            'close'                  => $close,
+            'close_rate'             => $closeRate,
+            'perbaikan'              => $perbaikan,
+            'permintaan'             => $permintaan,
+            // pemilik-only akan diisi di bawah
+            'avg_resolution_days'    => 0,
+            'median_resolution_days' => 0,
+            'dominant_type'          => ($perbaikan >= $permintaan) ? 'PERBAIKAN' : 'PERMINTAAN',
         ];
 
         // =========================
-        // BY STATUS (untuk tabel persentase)
+        // BY STATUS
         // =========================
         $byStatus = [
             'open'       => ['count' => $open, 'pct' => $total ? round(($open / $total) * 100, 2) : 0],
@@ -134,7 +137,7 @@ class TeknisiController extends Controller {
         ];
 
         // =========================
-        // BY TYPE (untuk tabel persentase)
+        // BY TYPE
         // =========================
         $byType = [
             'perbaikan'  => ['count' => $perbaikan, 'pct' => $total ? round(($perbaikan / $total) * 100, 2) : 0],
@@ -142,7 +145,7 @@ class TeknisiController extends Controller {
         ];
 
         // =========================
-        // TOP LOCATIONS & SUBJECTS (ikut filter)
+        // TOP LOCATIONS & SUBJECTS
         // =========================
         $qAgg = Ticket::query()->whereBetween('created_at', [$start, $end]);
         if ($status !== 'all') {
@@ -155,22 +158,14 @@ class TeknisiController extends Controller {
 
         $topLocations = (clone $qAgg)
             ->selectRaw('Lokasi, COUNT(*) as total')
-            ->groupBy('Lokasi')
-            ->orderByDesc('total')
-            ->limit(8)
-            ->get()
-            ->toArray();
+            ->groupBy('Lokasi')->orderByDesc('total')->limit(8)->get()->toArray();
 
         $topSubjects = (clone $qAgg)
             ->selectRaw('subject, COUNT(*) as total')
-            ->groupBy('subject')
-            ->orderByDesc('total')
-            ->limit(8)
-            ->get()
-            ->toArray();
+            ->groupBy('subject')->orderByDesc('total')->limit(8)->get()->toArray();
 
         // =========================
-        // FILTER TEXT (buat header PDF)
+        // FILTER TEXT
         // =========================
         $filters   = [];
         $filters[] = "Periode: {$periodeLabel}";
@@ -185,8 +180,10 @@ class TeknisiController extends Controller {
         $filtersText = implode(' • ', $filters);
 
         // =========================
-        // META
+        // ROLE & META (dipakai di blade)
         // =========================
+        $role = Auth::user()->role ?? '-';
+
         $meta = [
             'periode_label' => $periodeLabel,
             'generated_at'  => now()->translatedFormat('d F Y H:i'),
@@ -195,10 +192,103 @@ class TeknisiController extends Controller {
             'period'        => $period,
             'year'          => $year,
             'month'         => $month,
+
+            // ✅ ini yg kamu pakai di header text/php
+            'role'          => $role,
+            'user_name'     => Auth::user()->name ?? 'System',
         ];
 
+        // =========================
+        // ✅ PEMILIK-ONLY METRICS
+        // =========================
+        $performance       = [];
+        $escalationSummary = [
+            'total'         => $escalated,
+            'top_locations' => [],
+            'top_subjects'  => [],
+        ];
+
+        if ($role === 'pemilik') {
+
+            // ===== Avg + Median resolution days (hanya tiket close & punya tanggal_selesai)
+            $days = [];
+            foreach ($tickets as $t) {
+                if ($t->status === 'close' && ! empty($t->Tanggal_Selesai)) {
+                    $a      = Carbon::parse($t->created_at)->startOfDay();
+                    $b      = Carbon::parse($t->Tanggal_Selesai)->startOfDay();
+                    $days[] = max(0, $a->diffInDays($b));
+                }
+            }
+            sort($days);
+            $avg    = count($days) ? round(array_sum($days) / count($days), 2) : 0;
+            $median = 0;
+            if (count($days)) {
+                $mid    = intdiv(count($days), 2);
+                $median = (count($days) % 2) ? $days[$mid] : round(($days[$mid - 1] + $days[$mid]) / 2, 2);
+            }
+
+            $summary['avg_resolution_days']    = $avg;
+            $summary['median_resolution_days'] = $median;
+
+            // ===== Performance per pengurus (global dalam range + filter)
+            $performance = Ticket::query()
+                ->selectRaw("
+                users.id as user_id,
+                users.name as name,
+                COUNT(DISTINCT tickets.id) as handled,
+                SUM(CASE WHEN tickets.status='close' THEN 1 ELSE 0 END) as closed,
+                AVG(
+                  CASE
+                    WHEN tickets.status='close' AND tickets.Tanggal_Selesai IS NOT NULL
+                    THEN DATEDIFF(tickets.Tanggal_Selesai, tickets.created_at)
+                    ELSE NULL
+                  END
+                ) as avg_resolution_days
+            ")
+                ->join('ticket_assignees', 'ticket_assignees.ticket_id', '=', 'tickets.id')
+                ->join('users', 'users.id', '=', 'ticket_assignees.user_id')
+                ->whereBetween('tickets.created_at', [$start, $end])
+                ->when($status !== 'all', fn($qq) => $qq->where('tickets.status', $status))
+                ->when($jenis !== 'all', fn($qq) => $qq->where('tickets.Jenis_Pengaduan', $jenis))
+                ->groupBy('users.id', 'users.name')
+                ->orderByDesc('handled')
+                ->get()
+                ->map(function ($r) {
+                    $handled = (int) $r->handled;
+                    $closed  = (int) $r->closed;
+                    return [
+                        'name'                => $r->name,
+                        'handled'             => $handled,
+                        'closed'              => $closed,
+                        'close_rate'          => $handled ? round(($closed / $handled) * 100, 2) : 0,
+                        'avg_resolution_days' => $r->avg_resolution_days !== null ? round((float) $r->avg_resolution_days, 2) : 0,
+                    ];
+                })
+                ->toArray();
+
+            // ===== Rekap eskalasi (khusus escalated)
+            $escBase = Ticket::query()
+                ->whereBetween('created_at', [$start, $end])
+                ->where('status', 'escalated')
+                ->when($jenis !== 'all', fn($qq) => $qq->where('Jenis_Pengaduan', $jenis)); // status filter ga relevan (udah fixed escalated)
+
+            $escalationSummary = [
+                'total'         => (clone $escBase)->count(),
+                'top_locations' => (clone $escBase)
+                    ->selectRaw('Lokasi, COUNT(*) as total')
+                    ->groupBy('Lokasi')->orderByDesc('total')->limit(5)->get()->toArray(),
+                'top_subjects'  => (clone $escBase)
+                    ->selectRaw('subject, COUNT(*) as total')
+                    ->groupBy('subject')->orderByDesc('total')->limit(5)->get()->toArray(),
+            ];
+        }
+
         $pdf = Pdf::loadView('ticketsmonthly', compact(
-            'meta', 'summary', 'byStatus', 'byType', 'topLocations', 'topSubjects', 'tickets'
+            'meta', 'summary', 'byStatus', 'byType',
+            'topLocations', 'topSubjects',
+            'tickets',
+            // ✅ selalu dikirim, tapi bisa kosong kalau bukan pemilik
+            'performance', 'escalationSummary'
         ))->setPaper('a4', 'portrait');
 
         $fileKey = ($period === 'all') ? 'all-time' : (($period === 'yearly') ? $year : $start->format('Y-m'));

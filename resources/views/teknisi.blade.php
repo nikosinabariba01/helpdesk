@@ -171,7 +171,7 @@
                     <h6 class="mb-0">Komposisi Status</h6>
 
                     <select select id="pieMonthSelect" class="form-select form-select-sm" style="width: 140px;">
-                        <option value="0">All Year</option>
+                        <option value="0">This year</option>
                         <option value="1">Januari</option>
                         <option value="2">Februari</option>
                         <option value="3">Maret</option>
