@@ -1449,7 +1449,7 @@
     .report-grid-2 {
         display: grid;
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) max-content;
-        gap: 12px;
+        gap: 9px;
         align-items: end;
         margin-top: 12px;
     }
