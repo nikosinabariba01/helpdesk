@@ -206,98 +206,112 @@
 
         <div class="card-body px-3 py-3">
             {{-- FORM FILTER --}}
-<form action="{{ route('teknisi.report.monthly') }}" method="GET" class="report-form">
+            <form action="{{ route('teknisi.report.monthly') }}" method="GET" class="report-form">
 
-  {{-- BARIS 1: Periode - Tahun - Bulan - Status --}}
-  <div class="report-grid">
+                {{-- BARIS 1: Periode - Tahun - Bulan - Status --}}
+                <div class="report-grid">
 
-    <div class="field-wrap">
-      <label class="form-label mb-1">Periode</label>
-      @php $period = request('period','monthly'); @endphp
-      <select name="period" id="periodSelect" class="form-select form-select-sm">
-        <option value="monthly" {{ $period === 'monthly' ? 'selected' : '' }}>Bulanan</option>
-        <option value="yearly"  {{ $period === 'yearly' ? 'selected' : '' }}>Tahunan (Jan–Des)</option>
-        <option value="all"     {{ $period === 'all' ? 'selected' : '' }}>Semua Tahun</option>
-      </select>
-      <div class="form-text">Pilih cakupan laporan.</div>
-    </div>
+                    <div class="field-wrap">
+                        <label class="form-label mb-1">Periode</label>
+                        @php $period = request('period','monthly'); @endphp
+                        <select name="period" id="periodSelect" class="form-select form-select-sm">
+                            <option value="monthly" {{ $period === 'monthly' ? 'selected' : '' }}>Bulanan</option>
+                            <option value="yearly" {{ $period === 'yearly' ? 'selected' : '' }}>Tahunan (Jan–Des)</option>
+                            <option value="all" {{ $period === 'all' ? 'selected' : '' }}>Semua Tahun</option>
+                        </select>
+                        <div class="form-text">Pilih cakupan laporan.</div>
+                    </div>
 
-    <div class="field-wrap" id="yearWrap">
-      <label class="form-label mb-1">Tahun</label>
-      @php
-        $yNow = now()->year;
-        $yearsList = $years ?? collect(range($yNow, $yNow - 10));
-        $selectedYear = (int) request('year', $yNow);
-      @endphp
-      <select name="year" id="yearSelectReport" class="form-select form-select-sm">
-        @foreach ($yearsList as $y)
-          <option value="{{ $y }}" {{ (int)$selectedYear === (int)$y ? 'selected' : '' }}>{{ $y }}</option>
-        @endforeach
-      </select>
-      <div class="form-text" id="yearHelp">Dipakai untuk Bulanan/Tahunan.</div>
-    </div>
+                    <div class="field-wrap" id="yearWrap">
+                        <label class="form-label mb-1">Tahun</label>
+                        @php
+                            $yNow = now()->year;
+                            $yearsList = $years ?? collect(range($yNow, $yNow - 10));
+                            $selectedYear = (int) request('year', $yNow);
+                        @endphp
+                        <select name="year" id="yearSelectReport" class="form-select form-select-sm">
+                            @foreach ($yearsList as $y)
+                                <option value="{{ $y }}"
+                                    {{ (int) $selectedYear === (int) $y ? 'selected' : '' }}>{{ $y }}</option>
+                            @endforeach
+                        </select>
+                        <div class="form-text" id="yearHelp">Dipakai untuk Bulanan/Tahunan.</div>
+                    </div>
 
-    <div class="field-wrap" id="monthWrap">
-      <label class="form-label mb-1">Bulan</label>
-      @php
-        $months = [
-          1=>'Januari',2=>'Februari',3=>'Maret',4=>'April',5=>'Mei',6=>'Juni',
-          7=>'Juli',8=>'Agustus',9=>'September',10=>'Oktober',11=>'November',12=>'Desember'
-        ];
-        $selectedMonth = (int) request('month', now()->month);
-      @endphp
-      <select name="month" id="monthSelectReport" class="form-select form-select-sm">
-        @foreach ($months as $num => $name)
-          <option value="{{ $num }}" {{ $selectedMonth === (int)$num ? 'selected' : '' }}>{{ $name }}</option>
-        @endforeach
-      </select>
-      <div class="form-text" id="monthHelp">Muncul hanya untuk Bulanan.</div>
-    </div>
+                    <div class="field-wrap" id="monthWrap">
+                        <label class="form-label mb-1">Bulan</label>
+                        @php
+                            $months = [
+                                1 => 'Januari',
+                                2 => 'Februari',
+                                3 => 'Maret',
+                                4 => 'April',
+                                5 => 'Mei',
+                                6 => 'Juni',
+                                7 => 'Juli',
+                                8 => 'Agustus',
+                                9 => 'September',
+                                10 => 'Oktober',
+                                11 => 'November',
+                                12 => 'Desember',
+                            ];
+                            $selectedMonth = (int) request('month', now()->month);
+                        @endphp
+                        <select name="month" id="monthSelectReport" class="form-select form-select-sm">
+                            @foreach ($months as $num => $name)
+                                <option value="{{ $num }}"
+                                    {{ $selectedMonth === (int) $num ? 'selected' : '' }}>
+                                    {{ $name }}</option>
+                            @endforeach
+                        </select>
+                        <div class="form-text" id="monthHelp">Muncul hanya untuk Bulanan.</div>
+                    </div>
 
-    <div class="field-wrap">
-      <label class="form-label mb-1">Status (opsional)</label>
-      @php $status = request('status','all'); @endphp
-      <select name="status" class="form-select form-select-sm">
-        <option value="all" {{ $status==='all' ? 'selected' : '' }}>Semua Status</option>
-        <option value="open" {{ $status==='open' ? 'selected' : '' }}>Open</option>
-        <option value="on process" {{ $status==='on process' ? 'selected' : '' }}>On Process</option>
-        <option value="close" {{ $status==='close' ? 'selected' : '' }}>Close</option>
-        <option value="escalated" {{ $status==='escalated' ? 'selected' : '' }}>Escalated</option>
-      </select>
-    </div>
+                </div>
 
-  </div>
+                {{-- BARIS 2: Jenis - (kosong) - Actions --}}
+                <div class="report-grid-2">
 
-  {{-- BARIS 2: Jenis - (kosong) - Actions --}}
-  <div class="report-grid-2">
+                    <div class="field-wrap">
+                        <label class="form-label mb-1">Status (opsional)</label>
+                        @php $status = request('status','all'); @endphp
+                        <select name="status" class="form-select form-select-sm">
+                            <option value="all" {{ $status === 'all' ? 'selected' : '' }}>Semua Status</option>
+                            <option value="open" {{ $status === 'open' ? 'selected' : '' }}>Open</option>
+                            <option value="on process" {{ $status === 'on process' ? 'selected' : '' }}>On Process
+                            </option>
+                            <option value="close" {{ $status === 'close' ? 'selected' : '' }}>Close</option>
+                            <option value="escalated" {{ $status === 'escalated' ? 'selected' : '' }}>Escalated</option>
+                        </select>
+                    </div>
 
-    <div class="field-wrap">
-      <label class="form-label mb-1">Jenis (opsional)</label>
-      @php $jenis = request('jenis','all'); @endphp
-      <select name="jenis" class="form-select form-select-sm">
-        <option value="all" {{ $jenis==='all' ? 'selected' : '' }}>Semua Jenis</option>
-        <option value="perbaikan" {{ $jenis==='perbaikan' ? 'selected' : '' }}>Perbaikan</option>
-        <option value="permintaan" {{ $jenis==='permintaan' ? 'selected' : '' }}>Permintaan</option>
-      </select>
-    </div>
+                    <div class="field-wrap">
+                        <label class="form-label mb-1">Jenis (opsional)</label>
+                        @php $jenis = request('jenis','all'); @endphp
+                        <select name="jenis" class="form-select form-select-sm">
+                            <option value="all" {{ $jenis === 'all' ? 'selected' : '' }}>Semua Jenis</option>
+                            <option value="perbaikan" {{ $jenis === 'perbaikan' ? 'selected' : '' }}>Perbaikan</option>
+                            <option value="permintaan" {{ $jenis === 'permintaan' ? 'selected' : '' }}>Permintaan</option>
+                        </select>
+                    </div>
 
-    <div></div> {{-- spacer biar actions tetap di kolom kanan --}}
+                    <div></div> {{-- spacer biar actions tetap di kolom kanan --}}
 
-    <div class="field-wrap">
-      <div class="report-actions">
-        <a href="{{ url()->current() }}" class="btn btn-soft btn-sm">
-          <i class="fa fa-rotate-left me-1"></i> Reset
-        </a>
-        <button type="submit" class="btn btn-primary btn-sm">
-          <i class="fa fa-download me-1"></i> Download PDF
-        </button>
-      </div>
-    </div>
+                    <div class="field-wrap">
+                        <div class="report-actions">
+                            <a href="{{ url()->current() }}" class="btn btn-soft btn-sm">
+                                <i class="fa fa-rotate-left me-1"></i> Reset
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-sm">
+                                <i class="fa fa-download me-1"></i> Download PDF
+                            </button>
+                        </div>
+                    </div>
 
-  </div>
+                </div>
 
-  <input type="hidden" name="download" value="1">
-</form>
+                <input type="hidden" name="download" value="1">
+            </form>
 
 
             <div class="report-divider"></div>
@@ -745,42 +759,42 @@
         });
     </script>
 
-<script>
-(function () {
-  const periodEl   = document.getElementById('periodSelect');
-  const yearWrap   = document.getElementById('yearWrap');
-  const monthWrap  = document.getElementById('monthWrap');
-  const yearSelect = document.getElementById('yearSelectReport');
-  const monthSelect= document.getElementById('monthSelectReport');
+    <script>
+        (function() {
+            const periodEl = document.getElementById('periodSelect');
+            const yearWrap = document.getElementById('yearWrap');
+            const monthWrap = document.getElementById('monthWrap');
+            const yearSelect = document.getElementById('yearSelectReport');
+            const monthSelect = document.getElementById('monthSelectReport');
 
-  function applyPeriod() {
-    const p = periodEl.value;
+            function applyPeriod() {
+                const p = periodEl.value;
 
-    yearWrap.classList.remove('hidden');
-    monthWrap.classList.remove('hidden');
-    yearSelect.disabled = false;
-    monthSelect.disabled = false;
+                yearWrap.classList.remove('hidden');
+                monthWrap.classList.remove('hidden');
+                yearSelect.disabled = false;
+                monthSelect.disabled = false;
 
-    if (p === 'all') {
-      yearWrap.classList.add('hidden');
-      monthWrap.classList.add('hidden');
-      yearSelect.disabled = true;
-      monthSelect.disabled = true;
-      return;
-    }
+                if (p === 'all') {
+                    yearWrap.classList.add('hidden');
+                    monthWrap.classList.add('hidden');
+                    yearSelect.disabled = true;
+                    monthSelect.disabled = true;
+                    return;
+                }
 
-    if (p === 'yearly') {
-      monthWrap.classList.add('hidden');
-      monthSelect.disabled = true;
-      return;
-    }
-    // monthly -> tampil semua
-  }
+                if (p === 'yearly') {
+                    monthWrap.classList.add('hidden');
+                    monthSelect.disabled = true;
+                    return;
+                }
+                // monthly -> tampil semua
+            }
 
-  periodEl.addEventListener('change', applyPeriod);
-  applyPeriod();
-})();
-</script>
+            periodEl.addEventListener('change', applyPeriod);
+            applyPeriod();
+        })();
+    </script>
 
 @endsection
 
@@ -1413,40 +1427,63 @@
 </style>
 
 <style>
-  /* Grid form yang auto-rapi walau field disembunyikan */
-  .report-grid{
-    display:grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 12px;
-    align-items:end;
-  }
-  .report-grid .field-wrap{ display:block; }
-  .report-grid .hidden{ display:none !important; }
+    /* Grid form yang auto-rapi walau field disembunyikan */
+    .report-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+        align-items: end;
+    }
 
-  .report-grid-2{
-    display:grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px;
-    align-items:end;
-    margin-top: 12px;
-  }
-  .report-actions{
-    display:flex;
-    gap:10px;
-    justify-content:flex-end;
-    flex-wrap:wrap;
-  }
+    .report-grid .field-wrap {
+        display: block;
+    }
 
-  /* Responsive */
-  @media (max-width: 991.98px){
-    .report-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .report-grid-2{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .report-actions{ justify-content:stretch; }
-    .report-actions .btn{ width:100%; }
-  }
-  @media (max-width: 575.98px){
-    .report-grid{ grid-template-columns: 1fr; }
-    .report-grid-2{ grid-template-columns: 1fr; }
-  }
+    .report-grid .hidden {
+        display: none !important;
+    }
+
+    .report-grid-2 {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        align-items: end;
+        margin-top: 12px;
+    }
+
+    .report-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+    }
+
+    /* Responsive */
+    @media (max-width: 991.98px) {
+        .report-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .report-grid-2 {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .report-actions {
+            justify-content: stretch;
+        }
+
+        .report-actions .btn {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .report-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .report-grid-2 {
+            grid-template-columns: 1fr;
+        }
+    }
 </style>
-
