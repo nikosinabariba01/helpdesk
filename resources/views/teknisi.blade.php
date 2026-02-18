@@ -205,7 +205,7 @@
     </div>
 
     {{-- Optional quick button: download bulan ini --}}
-    <form action="{{ route('reports.monthly.pdf') }}" method="GET" class="d-inline">
+    <form action="{{ route('teknisi.report.monthly') }}" method="GET" class="d-inline">
       <input type="hidden" name="year" value="{{ request('year', now()->year) }}">
       <input type="hidden" name="month" value="{{ request('month', now()->month) }}">
       <input type="hidden" name="type" value="summary">
@@ -217,7 +217,7 @@
 
   <div class="card-body">
     {{-- FORM FILTER --}}
-    <form action="{{ route('reports.monthly.pdf') }}" method="GET" class="row g-3 align-items-end">
+    <form action="{{ route('teknisi.report.monthly') }}" method="GET" class="row g-3 align-items-end">
 
       {{-- Tahun --}}
       <div class="col-12 col-md-3">
