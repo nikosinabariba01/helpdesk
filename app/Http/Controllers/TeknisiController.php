@@ -158,8 +158,7 @@ class TeknisiController extends Controller
             'median_resolution_days' => $medianRes,
             'dominant_type' => $dominantType,
         ];
-
-        $pdf = Pdf::loadView('reports.tickets-monthly', compact(
+        $pdf = Pdf::loadView('ticketsmonthly', compact(
             'meta',
             'summary',
             'byStatus',
@@ -169,7 +168,6 @@ class TeknisiController extends Controller
             'performance',
             'tickets'
         ))->setPaper('a4', 'portrait');
-
         return $pdf->download('laporan-keluhan-' . $start->format('Y-m') . '.pdf');
     }
 
