@@ -197,22 +197,21 @@
     </div>
 
     <div class="card report-card shadow-sm">
-        {{-- HEADER (bersih, tanpa badge & quick actions) --}}
         <div class="card-header px-3 py-3">
             <h6 class="report-title">Download Laporan PDF</h6>
-            <p class="report-subtitle mb-0">Rekap keluhan kos: ringkasan, close rate, top lokasi/subject, dan daftar tiket.
+            <p class="report-subtitle mb-0">
+                Rekap keluhan kos: ringkasan, close rate, top lokasi/subject, dan daftar tiket.
             </p>
         </div>
 
         <div class="card-body px-3 py-3">
-            {{-- FORM FILTER --}}
             <form action="{{ route('teknisi.report.monthly') }}" method="GET" class="report-form">
-                <div class="row g-3 align-items-end">
 
-                    {{-- =======================
-      BARIS 1: Periode - Tahun - Bulan
-      ======================= --}}
-                    <div class="col-12 col-md-4">
+                {{-- BARIS 1: Periode - Tahun - Bulan - Status --}}
+                <div class="row-1">
+
+                    {{-- Periode --}}
+                    <div class="field-wrap">
                         <label class="form-label mb-1">Periode</label>
                         @php $period = request('period','monthly'); @endphp
                         <select name="period" id="periodSelect" class="form-select form-select-sm">
@@ -223,7 +222,8 @@
                         <div class="form-text">Pilih cakupan laporan.</div>
                     </div>
 
-                    <div class="col-12 col-md-4 field-wrap" id="yearWrap">
+                    {{-- Tahun --}}
+                    <div class="field-wrap" id="yearWrap">
                         <label class="form-label mb-1">Tahun</label>
                         @php
                             $yNow = now()->year;
@@ -241,7 +241,8 @@
                         <div class="form-text" id="yearHelp">Dipakai untuk Bulanan/Tahunan.</div>
                     </div>
 
-                    <div class="col-12 col-md-4 field-wrap" id="monthWrap">
+                    {{-- Bulan --}}
+                    <div class="field-wrap" id="monthWrap">
                         <label class="form-label mb-1">Bulan</label>
                         @php
                             $months = [
@@ -262,8 +263,7 @@
                         @endphp
                         <select name="month" id="monthSelectReport" class="form-select form-select-sm">
                             @foreach ($months as $num => $name)
-                                <option value="{{ $num }}"
-                                    {{ $selectedMonth === (int) $num ? 'selected' : '' }}>
+                                <option value="{{ $num }}" {{ $selectedMonth === (int) $num ? 'selected' : '' }}>
                                     {{ $name }}
                                 </option>
                             @endforeach
@@ -271,23 +271,26 @@
                         <div class="form-text" id="monthHelp">Muncul hanya untuk Bulanan.</div>
                     </div>
 
-                    {{-- =======================
-      BARIS 2: Status - Jenis - Actions
-      ======================= --}}
-                    <div class="col-12 col-md-4">
+                    {{-- Status --}}
+                    <div class="field-wrap">
                         <label class="form-label mb-1">Status (opsional)</label>
                         @php $status = request('status','all'); @endphp
                         <select name="status" class="form-select form-select-sm">
                             <option value="all" {{ $status === 'all' ? 'selected' : '' }}>Semua Status</option>
                             <option value="open" {{ $status === 'open' ? 'selected' : '' }}>Open</option>
-                            <option value="on process" {{ $status === 'on process' ? 'selected' : '' }}>On Process
-                            </option>
+                            <option value="on process" {{ $status === 'on process' ? 'selected' : '' }}>On Process</option>
                             <option value="close" {{ $status === 'close' ? 'selected' : '' }}>Close</option>
                             <option value="escalated" {{ $status === 'escalated' ? 'selected' : '' }}>Escalated</option>
                         </select>
                     </div>
 
-                    <div class="col-12 col-md-4">
+                </div>
+
+                {{-- BARIS 2: Jenis - spacer - tombol --}}
+                <div class="row-2">
+
+                    {{-- Jenis --}}
+                    <div class="field-wrap">
                         <label class="form-label mb-1">Jenis (opsional)</label>
                         @php $jenis = request('jenis','all'); @endphp
                         <select name="jenis" class="form-select form-select-sm">
@@ -297,8 +300,12 @@
                         </select>
                     </div>
 
-                    <div class="col-12 col-md-4 report-actions">
-                        <div class="d-flex gap-2 justify-content-md-end">
+                    {{-- Spacer supaya tombol selalu di kanan --}}
+                    <div></div>
+
+                    {{-- Actions --}}
+                    <div class="field-wrap report-actions">
+                        <div class="d-flex gap-2 justify-content-end flex-wrap">
                             <a href="{{ url()->current() }}" class="btn btn-soft btn-sm">
                                 <i class="fa fa-rotate-left me-1"></i> Reset
                             </a>
@@ -308,14 +315,13 @@
                         </div>
                     </div>
 
-                    <input type="hidden" name="download" value="1">
                 </div>
 
+                <input type="hidden" name="download" value="1">
             </form>
 
             <div class="report-divider"></div>
 
-            {{-- HINT --}}
             <div class="report-hint d-flex align-items-start gap-2">
                 <i class="fa fa-circle-info mt-1"></i>
                 <div class="small text-muted">
@@ -326,6 +332,7 @@
             </div>
         </div>
     </div>
+
 
     <div class="row mt-4">
         <div class="col-lg-12 mb-lg-0 mb-4 ">
@@ -775,7 +782,6 @@
                 yearSelect.disabled = false;
                 monthSelect.disabled = false;
 
-                // all: sembunyikan tahun & bulan
                 if (p === 'all') {
                     yearWrap.classList.add('hidden');
                     monthWrap.classList.add('hidden');
@@ -784,13 +790,11 @@
                     return;
                 }
 
-                // yearly: sembunyikan bulan
                 if (p === 'yearly') {
                     monthWrap.classList.add('hidden');
                     monthSelect.disabled = true;
                     return;
                 }
-
                 // monthly: tampil semua
             }
 
@@ -798,6 +802,7 @@
             applyPeriod();
         })();
     </script>
+
 @endsection
 
 <!-- Modal -->
@@ -1429,88 +1434,63 @@
 </style>
 
 <style>
-    /* ===== Report Filter UI (clean) ===== */
-    .report-card {
-        border: 1px solid rgba(0, 0, 0, .06);
-        border-radius: 14px;
+    /* Grid form yang auto-rapi walau field disembunyikan */
+    .report-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+        align-items: end;
     }
 
-    .report-card .card-header {
-        background: #fff;
-        border-bottom: 1px solid rgba(0, 0, 0, .06);
-        border-top-left-radius: 14px;
-        border-top-right-radius: 14px;
+    .report-grid .field-wrap {
+        display: block;
     }
 
-    .report-title {
-        font-size: 15px;
-        font-weight: 700;
-        margin: 0;
-        color: #111827;
-    }
-
-    .report-subtitle {
-        font-size: 12px;
-        color: #6B7280;
-        margin: 4px 0 0;
-    }
-
-    .report-divider {
-        height: 1px;
-        background: rgba(0, 0, 0, .06);
-        margin: 14px 0;
-    }
-
-    .report-form .form-label {
-        font-size: 12px;
-        font-weight: 700;
-        color: #111827;
-    }
-
-    .report-form .form-text {
-        font-size: 11px;
-        color: #6B7280;
-    }
-
-    .report-form .form-select,
-    .report-form .form-control {
-        border-radius: 10px;
-        border: 1px solid rgba(0, 0, 0, .10);
-        box-shadow: none !important;
-    }
-
-    .report-form .form-select:focus,
-    .report-form .form-control:focus {
-        border-color: rgba(99, 102, 241, .6);
-    }
-
-    .report-actions .btn {
-        border-radius: 10px;
-    }
-
-    .btn-soft {
-        background: #F3F4F6;
-        border: 1px solid rgba(0, 0, 0, .06);
-        color: #111827;
-    }
-
-    .btn-soft:hover {
-        background: #E5E7EB;
-    }
-
-    .report-hint {
-        background: #F9FAFB;
-        border: 1px dashed rgba(0, 0, 0, .12);
-        border-radius: 12px;
-        padding: 12px 14px;
-    }
-
-    .report-hint i {
-        color: #2563EB;
-    }
-
-    /* hide helper */
-    .field-wrap.hidden {
+    .report-grid .hidden {
         display: none !important;
+    }
+
+    .report-grid-2 {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        align-items: end;
+        margin-top: 12px;
+    }
+
+    .report-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+    }
+
+    /* Responsive */
+    @media (max-width: 991.98px) {
+        .report-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .report-grid-2 {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .report-actions {
+            justify-content: stretch;
+        }
+
+        .report-actions .btn {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .report-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .report-grid-2 {
+            grid-template-columns: 1fr;
+        }
     }
 </style>
