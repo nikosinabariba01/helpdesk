@@ -209,8 +209,10 @@
             <form action="{{ route('teknisi.report.monthly') }}" method="GET" class="report-form">
                 <div class="row g-3 align-items-end">
 
-                    {{-- BARIS 1 (sejajar menyamping): Periode - Tahun - Bulan - Status --}}
-                    <div class="col-12 col-md-3">
+                    {{-- =======================
+      BARIS 1: Periode - Tahun - Bulan
+      ======================= --}}
+                    <div class="col-12 col-md-4">
                         <label class="form-label mb-1">Periode</label>
                         @php $period = request('period','monthly'); @endphp
                         <select name="period" id="periodSelect" class="form-select form-select-sm">
@@ -221,7 +223,7 @@
                         <div class="form-text">Pilih cakupan laporan.</div>
                     </div>
 
-                    <div class="col-12 col-md-3 field-wrap" id="yearWrap">
+                    <div class="col-12 col-md-4 field-wrap" id="yearWrap">
                         <label class="form-label mb-1">Tahun</label>
                         @php
                             $yNow = now()->year;
@@ -231,13 +233,15 @@
                         <select name="year" id="yearSelectReport" class="form-select form-select-sm">
                             @foreach ($yearsList as $y)
                                 <option value="{{ $y }}"
-                                    {{ (int) $selectedYear === (int) $y ? 'selected' : '' }}>{{ $y }}</option>
+                                    {{ (int) $selectedYear === (int) $y ? 'selected' : '' }}>
+                                    {{ $y }}
+                                </option>
                             @endforeach
                         </select>
                         <div class="form-text" id="yearHelp">Dipakai untuk Bulanan/Tahunan.</div>
                     </div>
 
-                    <div class="col-12 col-md-3 field-wrap" id="monthWrap">
+                    <div class="col-12 col-md-4 field-wrap" id="monthWrap">
                         <label class="form-label mb-1">Bulan</label>
                         @php
                             $months = [
@@ -259,13 +263,17 @@
                         <select name="month" id="monthSelectReport" class="form-select form-select-sm">
                             @foreach ($months as $num => $name)
                                 <option value="{{ $num }}" {{ $selectedMonth === (int) $num ? 'selected' : '' }}>
-                                    {{ $name }}</option>
+                                    {{ $name }}
+                                </option>
                             @endforeach
                         </select>
                         <div class="form-text" id="monthHelp">Muncul hanya untuk Bulanan.</div>
                     </div>
 
-                    <div class="col-12 col-md-3">
+                    {{-- =======================
+      BARIS 2: Status - Jenis - Actions
+      ======================= --}}
+                    <div class="col-12 col-md-4">
                         <label class="form-label mb-1">Status (opsional)</label>
                         @php $status = request('status','all'); @endphp
                         <select name="status" class="form-select form-select-sm">
@@ -277,8 +285,7 @@
                         </select>
                     </div>
 
-                    {{-- BARIS 2: Jenis + Tombol --}}
-                    <div class="col-12 col-md-3">
+                    <div class="col-12 col-md-4">
                         <label class="form-label mb-1">Jenis (opsional)</label>
                         @php $jenis = request('jenis','all'); @endphp
                         <select name="jenis" class="form-select form-select-sm">
@@ -288,12 +295,11 @@
                         </select>
                     </div>
 
-                    <div class="col-12 col-md-9 report-actions">
-                        <div class="d-flex gap-2 justify-content-md-end flex-wrap">
+                    <div class="col-12 col-md-4 report-actions">
+                        <div class="d-flex gap-2 justify-content-md-end">
                             <a href="{{ url()->current() }}" class="btn btn-soft btn-sm">
                                 <i class="fa fa-rotate-left me-1"></i> Reset
                             </a>
-
                             <button type="submit" class="btn btn-primary btn-sm">
                                 <i class="fa fa-download me-1"></i> Download PDF
                             </button>
@@ -302,6 +308,7 @@
 
                     <input type="hidden" name="download" value="1">
                 </div>
+
             </form>
 
             <div class="report-divider"></div>
@@ -1252,7 +1259,7 @@
             yearSelect.disabled = false;
             monthSelect.disabled = false;
 
-            // all: sembunyikan tahun+bulan
+            // all: sembunyikan tahun & bulan
             if (p === 'all') {
                 yearWrap.classList.add('hidden');
                 monthWrap.classList.add('hidden');
@@ -1261,20 +1268,21 @@
                 return;
             }
 
-            // yearly: sembunyikan bulan saja
+            // yearly: sembunyikan bulan
             if (p === 'yearly') {
                 monthWrap.classList.add('hidden');
                 monthSelect.disabled = true;
                 return;
             }
 
-            // monthly: tampilkan semua
+            // monthly: tampil semua
         }
 
         periodEl.addEventListener('change', applyPeriod);
         applyPeriod();
     })();
 </script>
+
 
 <style>
     .chart-pop {
