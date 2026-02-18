@@ -80,7 +80,6 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/managepengumuman/{id}', [PengumumanController::class, 'destroy'])->name('pengumuman.destroy')->middleware('userAkses:pengurus,pemilik,admin');
     //Route untuk laporan
     Route::get('/laporan/download', [LaporanController::class, 'download'])->name('laporan.download')->middleware('userAkses:pengurus,pemilik,admin');
-    Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index')->middleware('userAkses:pengurus,pemilik,admin');
 
 
 
