@@ -207,27 +207,32 @@
         <div class="card-body px-3 py-3">
             {{-- FORM FILTER --}}
             <form action="{{ route('teknisi.report.monthly') }}" method="GET">
+                {{-- ambil period SEKALI di awal --}}
+                @php $period = request('period','monthly'); @endphp
+
                 {{-- ROW 1 --}}
                 <div class="row g-3 align-items-end">
                     <div class="col-12 col-md-4 col-lg-3">
                         <label class="form-label mb-1">Periode</label>
-                        @php $period = request('period','monthly'); @endphp
                         <select name="period" id="periodSelect" class="form-select form-select-sm">
                             <option value="monthly" {{ $period === 'monthly' ? 'selected' : '' }}>Bulanan</option>
-                            <option value="yearly" {{ $period === 'yearly' ? 'selected' : '' }}>Tahunan (Jan–Des)</option>
+                            <option value="yearly" {{ $period === 'yearly' ? 'selected' : '' }}>Tahunan (Jan–Des)
+                            </option>
                             <option value="all" {{ $period === 'all' ? 'selected' : '' }}>Semua Tahun</option>
                         </select>
                         <div class="form-text">Pilih cakupan laporan.</div>
                     </div>
 
-                    <div class="col-12 col-md-4 col-lg-3" id="yearWrap">
+                    {{-- ✅ YEAR: hide saat period = all --}}
+                    <div class="col-12 col-md-4 col-lg-3 {{ $period === 'all' ? 'd-none' : '' }}" id="yearWrap">
                         <label class="form-label mb-1">Tahun</label>
                         @php
                             $yNow = now()->year;
                             $yearsList = $years ?? collect(range($yNow, $yNow - 10));
                             $selectedYear = (int) request('year', $yNow);
                         @endphp
-                        <select name="year" id="yearSelectReport" class="form-select form-select-sm">
+                        <select name="year" id="yearSelectReport" class="form-select form-select-sm"
+                            {{ $period === 'all' ? 'disabled' : '' }}>
                             @foreach ($yearsList as $y)
                                 <option value="{{ $y }}"
                                     {{ (int) $selectedYear === (int) $y ? 'selected' : '' }}>{{ $y }}</option>
@@ -236,7 +241,9 @@
                         <div class="form-text" id="yearHelp">Dipakai untuk Bulanan/Tahunan.</div>
                     </div>
 
-                    <div class="col-12 col-md-4 col-lg-3" id="monthWrap">
+                    {{-- ✅ MONTH: hide saat period = yearly ATAU all --}}
+                    <div class="col-12 col-md-4 col-lg-3 {{ in_array($period, ['yearly', 'all']) ? 'd-none' : '' }}"
+                        id="monthWrap">
                         <label class="form-label mb-1">Bulan</label>
                         @php
                             $months = [
@@ -255,7 +262,8 @@
                             ];
                             $selectedMonth = (int) request('month', now()->month);
                         @endphp
-                        <select name="month" id="monthSelectReport" class="form-select form-select-sm">
+                        <select name="month" id="monthSelectReport" class="form-select form-select-sm"
+                            {{ in_array($period, ['yearly', 'all']) ? 'disabled' : '' }}>
                             @foreach ($months as $num => $name)
                                 <option value="{{ $num }}" {{ $selectedMonth === (int) $num ? 'selected' : '' }}>
                                     {{ $name }}</option>
@@ -304,6 +312,7 @@
 
                 <input type="hidden" name="download" value="1">
             </form>
+
 
 
 
@@ -753,41 +762,48 @@
     </script>
 
     <script>
-        (function() {
+        document.addEventListener('DOMContentLoaded', function() {
             const periodEl = document.getElementById('periodSelect');
             const yearWrap = document.getElementById('yearWrap');
             const monthWrap = document.getElementById('monthWrap');
             const yearSelect = document.getElementById('yearSelectReport');
             const monthSelect = document.getElementById('monthSelectReport');
 
+            if (!periodEl || !yearWrap || !monthWrap || !yearSelect || !monthSelect) return;
+
+            const show = (el) => el.classList.remove('d-none');
+            const hide = (el) => el.classList.add('d-none');
+
             function applyPeriod() {
                 const p = periodEl.value;
 
-                yearWrap.classList.remove('hidden');
-                monthWrap.classList.remove('hidden');
+                // default: tampil semua
+                show(yearWrap);
+                show(monthWrap);
                 yearSelect.disabled = false;
                 monthSelect.disabled = false;
 
                 if (p === 'all') {
-                    yearWrap.classList.add('hidden');
-                    monthWrap.classList.add('hidden');
+                    hide(yearWrap);
+                    hide(monthWrap);
                     yearSelect.disabled = true;
                     monthSelect.disabled = true;
                     return;
                 }
 
                 if (p === 'yearly') {
-                    monthWrap.classList.add('hidden');
+                    hide(monthWrap);
                     monthSelect.disabled = true;
                     return;
                 }
-                // monthly -> tampil semua
+                // monthly: tetap tampil semua
             }
 
             periodEl.addEventListener('change', applyPeriod);
             applyPeriod();
-        })();
+        });
     </script>
+
 
 @endsection
 
@@ -1445,9 +1461,10 @@
         margin-top: 12px;
     }
 
-    .report-grid-2 .actions-wrap{
-  grid-column: 1 / -1; /* actions turun ke baris bawah, full width */
-}
+    .report-grid-2 .actions-wrap {
+        grid-column: 1 / -1;
+        /* actions turun ke baris bawah, full width */
+    }
 
 
     /* ✅ biar kolom actions benar2 nempel kanan */
