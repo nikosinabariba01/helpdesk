@@ -290,8 +290,8 @@
                         </select>
                     </div>
 
-                    <div class="col-12 col-md-4">
-                        <div class="d-flex gap-2 justify-content-md-end flex-column flex-md-row">
+                    <div class="col-12 col-md-5">
+                        <div class="d-flex gap-2 justify-content-md-start flex-column flex-md-row">
                             <a href="{{ url()->current() }}" class="btn btn-soft btn-sm">
                                 <i class="fa fa-rotate-left me-1"></i> Reset
                             </a>
