@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CustomerController;
-use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
@@ -26,7 +25,6 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
 Route::match(['GET', 'POST'], '/telegram/webhook', [TelegramWebhookController::class, 'handle']);
 Route::get('/', [LoginController::class, 'index'])->name('login');
 Route::post('/', [LoginController::class, 'Login']);
@@ -78,8 +76,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/managepengumuman/{id}/edit', [PengumumanController::class, 'edit'])->name('pengumuman.edit')->middleware('userAkses:pengurus,pemilik,admin');
     Route::put('/managepengumuman/{id}', [PengumumanController::class, 'update'])->name('pengumuman.update')->middleware('userAkses:pengurus,pemilik,admin');
     Route::delete('/managepengumuman/{id}', [PengumumanController::class, 'destroy'])->name('pengumuman.destroy')->middleware('userAkses:pengurus,pemilik,admin');
-    //Route untuk laporan
-    Route::get('/laporan/download', [LaporanController::class, 'download'])->name('laporan.download')->middleware('userAkses:pengurus,pemilik,admin');
+    // Route untuk laporan
+    Route::get('/teknisi/report/monthly', [TeknisiController::class, 'downloadMonthlyReport'])->name('teknisi.report.monthly')->middleware('userAkses:pengurus,pemilik,admin');
 
 
 
