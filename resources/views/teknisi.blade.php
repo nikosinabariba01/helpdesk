@@ -206,12 +206,10 @@
 
         <div class="card-body px-3 py-3">
             {{-- FORM FILTER --}}
-            <form action="{{ route('teknisi.report.monthly') }}" method="GET" class="report-form">
-
-                {{-- BARIS 1: Periode - Tahun - Bulan - Status --}}
-                <div class="report-grid">
-
-                    <div class="field-wrap">
+            <form action="{{ route('teknisi.report.monthly') }}" method="GET">
+                {{-- ROW 1 --}}
+                <div class="row g-3 align-items-end">
+                    <div class="col-12 col-md-4 col-lg-3">
                         <label class="form-label mb-1">Periode</label>
                         @php $period = request('period','monthly'); @endphp
                         <select name="period" id="periodSelect" class="form-select form-select-sm">
@@ -222,7 +220,7 @@
                         <div class="form-text">Pilih cakupan laporan.</div>
                     </div>
 
-                    <div class="field-wrap" id="yearWrap">
+                    <div class="col-12 col-md-4 col-lg-3" id="yearWrap">
                         <label class="form-label mb-1">Tahun</label>
                         @php
                             $yNow = now()->year;
@@ -238,7 +236,7 @@
                         <div class="form-text" id="yearHelp">Dipakai untuk Bulanan/Tahunan.</div>
                     </div>
 
-                    <div class="field-wrap" id="monthWrap">
+                    <div class="col-12 col-md-4 col-lg-3" id="monthWrap">
                         <label class="form-label mb-1">Bulan</label>
                         @php
                             $months = [
@@ -259,20 +257,17 @@
                         @endphp
                         <select name="month" id="monthSelectReport" class="form-select form-select-sm">
                             @foreach ($months as $num => $name)
-                                <option value="{{ $num }}"
-                                    {{ $selectedMonth === (int) $num ? 'selected' : '' }}>
+                                <option value="{{ $num }}" {{ $selectedMonth === (int) $num ? 'selected' : '' }}>
                                     {{ $name }}</option>
                             @endforeach
                         </select>
                         <div class="form-text" id="monthHelp">Muncul hanya untuk Bulanan.</div>
                     </div>
-
                 </div>
 
-                {{-- BARIS 2: Status - Jenis - Actions --}}
-                <div class="report-grid-2">
-
-                    <div class="field-wrap">
+                {{-- ROW 2 --}}
+                <div class="row g-3 align-items-end mt-1">
+                    <div class="col-12 col-md-4">
                         <label class="form-label mb-1">Status (opsional)</label>
                         @php $status = request('status','all'); @endphp
                         <select name="status" class="form-select form-select-sm">
@@ -285,7 +280,7 @@
                         </select>
                     </div>
 
-                    <div class="field-wrap">
+                    <div class="col-12 col-md-4">
                         <label class="form-label mb-1">Jenis (opsional)</label>
                         @php $jenis = request('jenis','all'); @endphp
                         <select name="jenis" class="form-select form-select-sm">
@@ -294,25 +289,22 @@
                             <option value="permintaan" {{ $jenis === 'permintaan' ? 'selected' : '' }}>Permintaan</option>
                         </select>
                     </div>
-                </div>
-                <div class="field-wrap actions-wrap">
-                    {{-- label kosong biar sejajar tinggi --}}
-                    <label class="form-label mb-1 d-none d-md-block">&nbsp;</label>
 
-                    <div class="report-actions">
-                        <a href="{{ url()->current() }}" class="btn btn-soft btn-sm">
-                            <i class="fa fa-rotate-left me-1"></i> Reset
-                        </a>
-                        <button type="submit" class="btn btn-primary btn-sm">
-                            <i class="fa fa-download me-1"></i> Download PDF
-                        </button>
+                    <div class="col-12 col-md-4">
+                        <div class="d-flex gap-2 justify-content-md-end flex-column flex-md-row">
+                            <a href="{{ url()->current() }}" class="btn btn-soft btn-sm">
+                                <i class="fa fa-rotate-left me-1"></i> Reset
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-sm">
+                                <i class="fa fa-download me-1"></i> Download PDF
+                            </button>
+                        </div>
                     </div>
-
                 </div>
-
 
                 <input type="hidden" name="download" value="1">
             </form>
+
 
 
             <div class="report-divider"></div>
