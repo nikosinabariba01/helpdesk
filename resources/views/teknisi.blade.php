@@ -294,19 +294,18 @@
                             <option value="permintaan" {{ $jenis === 'permintaan' ? 'selected' : '' }}>Permintaan</option>
                         </select>
                     </div>
+                </div>
+                <div class="field-wrap actions-wrap">
+                    {{-- label kosong biar sejajar tinggi --}}
+                    <label class="form-label mb-1 d-none d-md-block">&nbsp;</label>
 
-                    <div class="field-wrap">
-                        {{-- label kosong biar sejajar tinggi --}}
-                        <label class="form-label mb-1 d-none d-md-block">&nbsp;</label>
-
-                        <div class="report-actions">
-                            <a href="{{ url()->current() }}" class="btn btn-soft btn-sm">
-                                <i class="fa fa-rotate-left me-1"></i> Reset
-                            </a>
-                            <button type="submit" class="btn btn-primary btn-sm">
-                                <i class="fa fa-download me-1"></i> Download PDF
-                            </button>
-                        </div>
+                    <div class="report-actions">
+                        <a href="{{ url()->current() }}" class="btn btn-soft btn-sm">
+                            <i class="fa fa-rotate-left me-1"></i> Reset
+                        </a>
+                        <button type="submit" class="btn btn-primary btn-sm">
+                            <i class="fa fa-download me-1"></i> Download PDF
+                        </button>
                     </div>
 
                 </div>
