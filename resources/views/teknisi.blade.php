@@ -1429,9 +1429,86 @@
 </style>
 
 <style>
-  @media (max-width: 576px) {
-    .card-header h6 { font-size: 14px; }
-    .card-header small { display:block; line-height:1.2; }
-    .form-text { font-size: 11px; }
-  }
+    /* Grid form yang auto-rapi walau field disembunyikan */
+    .report-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+        align-items: end;
+    }
+
+    .report-grid .field-wrap {
+        display: block;
+    }
+
+    .report-grid .hidden {
+        display: none !important;
+    }
+
+    /* ✅ FIX: kolom ke-3 jadi max-content biar tombol gak kejauhan */
+    .report-grid-2 {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) max-content;
+        gap: 12px;
+        align-items: end;
+        margin-top: 12px;
+    }
+
+    /* ✅ biar kolom actions benar2 nempel kanan */
+    .report-grid-2 .field-wrap:last-child {
+        justify-self: end;
+    }
+
+    .report-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+    }
+
+    .report-actions .btn {
+        white-space: nowrap;
+        /* tombol gak pecah kata */
+    }
+
+    /* Responsive */
+    @media (max-width: 991.98px) {
+        .report-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        /* di tablet: jadi 2 kolom (Status | Jenis) lalu Actions full di baris bawah */
+        .report-grid-2 {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .report-grid-2 .field-wrap:last-child {
+            justify-self: stretch;
+            /* actions ikut lebar */
+            grid-column: 1 / -1;
+            /* pindah full row biar rapi */
+        }
+
+        .report-actions {
+            justify-content: stretch;
+        }
+
+        .report-actions .btn {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .report-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .report-grid-2 {
+            grid-template-columns: 1fr;
+        }
+
+        .report-grid-2 .field-wrap:last-child {
+            grid-column: auto;
+        }
+    }
 </style>
