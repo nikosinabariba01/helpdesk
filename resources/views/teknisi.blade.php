@@ -197,47 +197,19 @@
     </div>
 
     <div class="card report-card shadow-sm">
-        <div class="card-header px-3 py-3 d-flex align-items-start justify-content-between flex-wrap gap-2">
-            <div>
-                <h6 class="report-title">Download Laporan PDF</h6>
-                <p class="report-subtitle">Rekap keluhan kos: ringkasan, close rate, top lokasi/subject, dan daftar tiket.
-                </p>
-            </div>
-
-            <div class="d-flex align-items-center gap-2 flex-wrap">
-                <span class="report-badge">
-                    <i class="fa fa-file-pdf"></i> PDF Report
-                </span>
-
-                {{-- Quick Actions --}}
-                <div class="quick-row">
-                    {{-- Tahun ini (Jan–Des) --}}
-                    <form action="{{ route('teknisi.report.monthly') }}" method="GET">
-                        <input type="hidden" name="period" value="yearly">
-                        <input type="hidden" name="year" value="{{ now()->year }}">
-                        <button class="btn btn-soft btn-sm">
-                            <i class="fa fa-calendar me-1"></i> Tahun Ini
-                        </button>
-                    </form>
-
-                    {{-- Semua tahun --}}
-                    <form action="{{ route('teknisi.report.monthly') }}" method="GET">
-                        <input type="hidden" name="period" value="all">
-                        <button class="btn btn-outline-primary btn-sm">
-                            <i class="fa fa-layer-group me-1"></i> Semua Tahun
-                        </button>
-                    </form>
-                </div>
-            </div>
+        {{-- HEADER (bersih, tanpa badge & quick actions) --}}
+        <div class="card-header px-3 py-3">
+            <h6 class="report-title">Download Laporan PDF</h6>
+            <p class="report-subtitle mb-0">Rekap keluhan kos: ringkasan, close rate, top lokasi/subject, dan daftar tiket.
+            </p>
         </div>
 
         <div class="card-body px-3 py-3">
             {{-- FORM FILTER --}}
             <form action="{{ route('teknisi.report.monthly') }}" method="GET" class="report-form">
-
                 <div class="row g-3 align-items-end">
 
-                    {{-- Periode --}}
+                    {{-- BARIS 1 (sejajar menyamping): Periode - Tahun - Bulan - Status --}}
                     <div class="col-12 col-md-3">
                         <label class="form-label mb-1">Periode</label>
                         @php $period = request('period','monthly'); @endphp
@@ -249,7 +221,6 @@
                         <div class="form-text">Pilih cakupan laporan.</div>
                     </div>
 
-                    {{-- Tahun --}}
                     <div class="col-12 col-md-3 field-wrap" id="yearWrap">
                         <label class="form-label mb-1">Tahun</label>
                         @php
@@ -266,7 +237,6 @@
                         <div class="form-text" id="yearHelp">Dipakai untuk Bulanan/Tahunan.</div>
                     </div>
 
-                    {{-- Bulan --}}
                     <div class="col-12 col-md-3 field-wrap" id="monthWrap">
                         <label class="form-label mb-1">Bulan</label>
                         @php
@@ -292,10 +262,9 @@
                                     {{ $name }}</option>
                             @endforeach
                         </select>
-                        <div class="form-text" id="monthHelp">Hanya untuk Bulanan.</div>
+                        <div class="form-text" id="monthHelp">Muncul hanya untuk Bulanan.</div>
                     </div>
 
-                    {{-- Filter Status --}}
                     <div class="col-12 col-md-3">
                         <label class="form-label mb-1">Status (opsional)</label>
                         @php $status = request('status','all'); @endphp
@@ -308,7 +277,7 @@
                         </select>
                     </div>
 
-                    {{-- Filter Jenis --}}
+                    {{-- BARIS 2: Jenis + Tombol --}}
                     <div class="col-12 col-md-3">
                         <label class="form-label mb-1">Jenis (opsional)</label>
                         @php $jenis = request('jenis','all'); @endphp
@@ -319,7 +288,6 @@
                         </select>
                     </div>
 
-                    {{-- Tombol --}}
                     <div class="col-12 col-md-9 report-actions">
                         <div class="d-flex gap-2 justify-content-md-end flex-wrap">
                             <a href="{{ url()->current() }}" class="btn btn-soft btn-sm">
@@ -1278,12 +1246,13 @@
         function applyPeriod() {
             const p = periodEl.value;
 
-            // reset visibility
+            // reset
             yearWrap.classList.remove('hidden');
             monthWrap.classList.remove('hidden');
             yearSelect.disabled = false;
             monthSelect.disabled = false;
 
+            // all: sembunyikan tahun+bulan
             if (p === 'all') {
                 yearWrap.classList.add('hidden');
                 monthWrap.classList.add('hidden');
@@ -1292,13 +1261,14 @@
                 return;
             }
 
+            // yearly: sembunyikan bulan saja
             if (p === 'yearly') {
                 monthWrap.classList.add('hidden');
                 monthSelect.disabled = true;
                 return;
             }
 
-            // monthly: show all
+            // monthly: tampilkan semua
         }
 
         periodEl.addEventListener('change', applyPeriod);
@@ -1475,18 +1445,6 @@
         margin: 4px 0 0;
     }
 
-    .report-badge {
-        font-size: 11px;
-        padding: 6px 10px;
-        border-radius: 999px;
-        background: #EEF2FF;
-        color: #4338CA;
-        font-weight: 700;
-        display: inline-flex;
-        gap: 6px;
-        align-items: center;
-    }
-
     .report-divider {
         height: 1px;
         background: rgba(0, 0, 0, .06);
@@ -1541,21 +1499,8 @@
         color: #2563EB;
     }
 
-    .field-wrap {
-        display: block;
-    }
-
+    /* hide helper */
     .field-wrap.hidden {
         display: none !important;
-    }
-
-    .quick-row {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-    }
-
-    .quick-row form {
-        margin: 0;
     }
 </style>
