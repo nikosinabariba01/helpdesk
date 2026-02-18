@@ -269,7 +269,7 @@
 
                 </div>
 
-                {{-- BARIS 2: Jenis - (kosong) - Actions --}}
+                {{-- BARIS 2: Status - Jenis - Actions --}}
                 <div class="report-grid-2">
 
                     <div class="field-wrap">
@@ -295,7 +295,10 @@
                         </select>
                     </div>
 
-                    <div class="field-wrap">
+                    <div class="field-wrap actions-wrap">
+                        {{-- label kosong biar sejajar tinggi --}}
+                        <label class="form-label mb-1 d-none d-md-block">&nbsp;</label>
+
                         <div class="report-actions">
                             <a href="{{ url()->current() }}" class="btn btn-soft btn-sm">
                                 <i class="fa fa-rotate-left me-1"></i> Reset
@@ -306,9 +309,8 @@
                         </div>
                     </div>
 
-                    <div></div> {{-- spacer biar actions tetap di kolom kanan --}}
-
                 </div>
+
 
                 <input type="hidden" name="download" value="1">
             </form>
@@ -1443,12 +1445,18 @@
         display: none !important;
     }
 
+    /* ✅ FIX: kolom ke-3 jadi max-content biar tombol gak kejauhan */
     .report-grid-2 {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) max-content;
         gap: 12px;
         align-items: end;
         margin-top: 12px;
+    }
+
+    /* ✅ biar kolom actions benar2 nempel kanan */
+    .report-grid-2 .field-wrap:last-child {
+        justify-self: end;
     }
 
     .report-actions {
@@ -1458,14 +1466,27 @@
         flex-wrap: wrap;
     }
 
+    .report-actions .btn {
+        white-space: nowrap;
+        /* tombol gak pecah kata */
+    }
+
     /* Responsive */
     @media (max-width: 991.98px) {
         .report-grid {
             grid-template-columns: repeat(2, minmax(0, 1fr));
         }
 
+        /* di tablet: jadi 2 kolom (Status | Jenis) lalu Actions full di baris bawah */
         .report-grid-2 {
             grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .report-grid-2 .field-wrap:last-child {
+            justify-self: stretch;
+            /* actions ikut lebar */
+            grid-column: 1 / -1;
+            /* pindah full row biar rapi */
         }
 
         .report-actions {
@@ -1484,6 +1505,10 @@
 
         .report-grid-2 {
             grid-template-columns: 1fr;
+        }
+
+        .report-grid-2 .field-wrap:last-child {
+            grid-column: auto;
         }
     }
 </style>
