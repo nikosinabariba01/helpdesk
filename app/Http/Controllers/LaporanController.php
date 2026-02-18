@@ -10,6 +10,95 @@ use Carbon\Carbon;
 
 class LaporanController extends Controller
 {
+
+    public function index(Request $request)
+    {
+        $year = $request->year ?? now()->year;
+
+        $tickets = Ticket::with('asignees')
+            ->whereYear('tickets.created_at', $year)
+            ->get();
+
+        $years = Ticket::selectRaw('YEAR(created_at) as year')
+            ->distinct()
+            ->orderByDesc('year')
+            ->pluck('year');
+
+        $selectedYear = $year;
+
+        // ====== GLOBAL ======
+        $totalTickets   = $tickets->count();
+        $totalClose     = $tickets->where('status', 'close')->count();
+        $totalOpen      = $tickets->where('status', 'open')->count();
+        $totalOnProcess = $tickets->where('status', 'on process')->count();
+        $totalEscalated = $tickets->where('status', 'escalated')->count();
+
+        $totalPermintaan = $tickets->where('Jenis_Pengaduan', 'permintaan')->count();
+        $totalPerbaikan  = $tickets->where('Jenis_Pengaduan', 'perbaikan')->count();
+
+        $closeRate = $totalTickets > 0
+            ? round(($totalClose / $totalTickets) * 100, 2)
+            : 0;
+
+        // ====== KINERJA ======
+        $pengurusList = User::where('role', 'pengurus')->get();
+
+        $kinerja = [];
+
+        foreach ($pengurusList as $pengurus) {
+
+            $assignedTickets = $pengurus->assigneeTickets()
+                ->whereYear('tickets.created_at', $year)
+                ->get();
+
+            $totalHandled    = $assignedTickets->count();
+            $totalClosed     = $assignedTickets->where('status', 'close')->count();
+            $totalEscalation = $assignedTickets->where('status', 'escalated')->count();
+
+            $avgDays = 0;
+
+            $closedTickets = $assignedTickets
+                ->where('status', 'close')
+                ->whereNotNull('Tanggal_Selesai');
+
+            if ($closedTickets->count() > 0) {
+                $totalDays = 0;
+
+                foreach ($closedTickets as $t) {
+                    $totalDays += \Carbon\Carbon::parse($t->Tanggal_Selesai)
+                        ->diffInDays($t->created_at);
+                }
+
+                $avgDays = round($totalDays / $closedTickets->count(), 2);
+            }
+
+            $kinerja[] = [
+                'nama'       => $pengurus->name,
+                'total'      => $totalHandled,
+                'close'      => $totalClosed,
+                'escalated'  => $totalEscalation,
+                'close_rate' => $totalHandled > 0
+                    ? round(($totalClosed / $totalHandled) * 100, 2)
+                    : 0,
+                'avg_days'   => $avgDays,
+            ];
+        }
+
+        return view('laporan.index', compact(
+            'years',
+            'selectedYear',
+            'totalTickets',
+            'totalClose',
+            'totalOpen',
+            'totalOnProcess',
+            'totalEscalated',
+            'totalPermintaan',
+            'totalPerbaikan',
+            'closeRate',
+            'kinerja'
+        ));
+    }
+
     public function download(Request $request)
     {
         $year = $request->year ?? now()->year;
