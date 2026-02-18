@@ -196,140 +196,178 @@
         </div>
     </div>
 
-    <div class="card report-card shadow-sm">
-        {{-- HEADER (bersih, tanpa badge & quick actions) --}}
-        <div class="card-header px-3 py-3">
-            <h6 class="report-title">Download Laporan PDF</h6>
-            <p class="report-subtitle mb-0">Rekap keluhan kos: ringkasan, close rate, top lokasi/subject, dan daftar tiket.
-            </p>
+    {{-- ================================
+   DOWNLOAD LAPORAN PDF (VIEW ONLY)
+   ================================ --}}
+
+    <div class="card shadow-sm border">
+        <div class="card-header bg-white d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div>
+                <h6 class="mb-0">Download Laporan PDF</h6>
+                <small class="text-muted">
+                    Rekap bulanan untuk monitoring keluhan kos (tiket, close rate, tren).
+                </small>
+            </div>
+
+            {{-- Optional quick button: download bulan ini --}}
+            <form action="{{ route('reports.monthly.pdf') }}" method="GET" class="d-inline">
+                <input type="hidden" name="year" value="{{ request('year', now()->year) }}">
+                <input type="hidden" name="month" value="{{ request('month', now()->month) }}">
+                <input type="hidden" name="type" value="summary">
+                <button class="btn btn-outline-primary btn-sm">
+                    <i class="fa fa-download me-1"></i> Bulan Ini
+                </button>
+            </form>
         </div>
 
-        <div class="card-body px-3 py-3">
+        <div class="card-body">
             {{-- FORM FILTER --}}
-            <form action="{{ route('teknisi.report.monthly') }}" method="GET" class="report-form">
+            <form action="{{ route('reports.monthly.pdf') }}" method="GET" class="row g-3 align-items-end">
 
-                {{-- BARIS 1: Periode - Tahun - Bulan - Status --}}
-                <div class="report-grid">
-
-                    <div class="field-wrap">
-                        <label class="form-label mb-1">Periode</label>
-                        @php $period = request('period','monthly'); @endphp
-                        <select name="period" id="periodSelect" class="form-select form-select-sm">
-                            <option value="monthly" {{ $period === 'monthly' ? 'selected' : '' }}>Bulanan</option>
-                            <option value="yearly" {{ $period === 'yearly' ? 'selected' : '' }}>Tahunan (Jan–Des)</option>
-                            <option value="all" {{ $period === 'all' ? 'selected' : '' }}>Semua Tahun</option>
-                        </select>
-                        <div class="form-text">Pilih cakupan laporan.</div>
-                    </div>
-
-                    <div class="field-wrap" id="yearWrap">
-                        <label class="form-label mb-1">Tahun</label>
+                {{-- Tahun --}}
+                <div class="col-12 col-md-3">
+                    <label class="form-label mb-1">Tahun</label>
+                    <select name="year" class="form-select form-select-sm">
                         @php
                             $yNow = now()->year;
-                            $yearsList = $years ?? collect(range($yNow, $yNow - 10));
-                            $selectedYear = (int) request('year', $yNow);
+                            $yearsList = $years ?? collect(range($yNow, $yNow - 5));
+                            $selectedYear = request('year', $yNow);
                         @endphp
-                        <select name="year" id="yearSelectReport" class="form-select form-select-sm">
-                            @foreach ($yearsList as $y)
-                                <option value="{{ $y }}"
-                                    {{ (int) $selectedYear === (int) $y ? 'selected' : '' }}>{{ $y }}</option>
-                            @endforeach
-                        </select>
-                        <div class="form-text" id="yearHelp">Dipakai untuk Bulanan/Tahunan.</div>
-                    </div>
-
-                    <div class="field-wrap" id="monthWrap">
-                        <label class="form-label mb-1">Bulan</label>
-                        @php
-                            $months = [
-                                1 => 'Januari',
-                                2 => 'Februari',
-                                3 => 'Maret',
-                                4 => 'April',
-                                5 => 'Mei',
-                                6 => 'Juni',
-                                7 => 'Juli',
-                                8 => 'Agustus',
-                                9 => 'September',
-                                10 => 'Oktober',
-                                11 => 'November',
-                                12 => 'Desember',
-                            ];
-                            $selectedMonth = (int) request('month', now()->month);
-                        @endphp
-                        <select name="month" id="monthSelectReport" class="form-select form-select-sm">
-                            @foreach ($months as $num => $name)
-                                <option value="{{ $num }}"
-                                    {{ $selectedMonth === (int) $num ? 'selected' : '' }}>
-                                    {{ $name }}</option>
-                            @endforeach
-                        </select>
-                        <div class="form-text" id="monthHelp">Muncul hanya untuk Bulanan.</div>
-                    </div>
-
-                </div>
-
-                {{-- BARIS 2: Status - Jenis - Actions --}}
-                <div class="report-grid-2">
-
-                    <div class="field-wrap">
-                        <label class="form-label mb-1">Status (opsional)</label>
-                        @php $status = request('status','all'); @endphp
-                        <select name="status" class="form-select form-select-sm">
-                            <option value="all" {{ $status === 'all' ? 'selected' : '' }}>Semua Status</option>
-                            <option value="open" {{ $status === 'open' ? 'selected' : '' }}>Open</option>
-                            <option value="on process" {{ $status === 'on process' ? 'selected' : '' }}>On Process
+                        @foreach ($yearsList as $y)
+                            <option value="{{ $y }}" {{ (int) $selectedYear === (int) $y ? 'selected' : '' }}>
+                                {{ $y }}
                             </option>
-                            <option value="close" {{ $status === 'close' ? 'selected' : '' }}>Close</option>
-                            <option value="escalated" {{ $status === 'escalated' ? 'selected' : '' }}>Escalated</option>
-                        </select>
-                    </div>
-
-                    <div class="field-wrap">
-                        <label class="form-label mb-1">Jenis (opsional)</label>
-                        @php $jenis = request('jenis','all'); @endphp
-                        <select name="jenis" class="form-select form-select-sm">
-                            <option value="all" {{ $jenis === 'all' ? 'selected' : '' }}>Semua Jenis</option>
-                            <option value="perbaikan" {{ $jenis === 'perbaikan' ? 'selected' : '' }}>Perbaikan</option>
-                            <option value="permintaan" {{ $jenis === 'permintaan' ? 'selected' : '' }}>Permintaan</option>
-                        </select>
-                    </div>
-
-                    <div class="field-wrap actions-wrap">
-                        {{-- label kosong biar sejajar tinggi --}}
-                        <label class="form-label mb-1 d-none d-md-block">&nbsp;</label>
-
-                        <div class="report-actions">
-                            <a href="{{ url()->current() }}" class="btn btn-soft btn-sm">
-                                <i class="fa fa-rotate-left me-1"></i> Reset
-                            </a>
-                            <button type="submit" class="btn btn-primary btn-sm">
-                                <i class="fa fa-download me-1"></i> Download PDF
-                            </button>
-                        </div>
-                    </div>
-
+                        @endforeach
+                    </select>
                 </div>
 
+                {{-- Bulan --}}
+                <div class="col-12 col-md-4">
+                    <label class="form-label mb-1">Bulan</label>
+                    @php
+                        $months = [
+                            1 => 'Januari',
+                            2 => 'Februari',
+                            3 => 'Maret',
+                            4 => 'April',
+                            5 => 'Mei',
+                            6 => 'Juni',
+                            7 => 'Juli',
+                            8 => 'Agustus',
+                            9 => 'September',
+                            10 => 'Oktober',
+                            11 => 'November',
+                            12 => 'Desember',
+                        ];
+                        $selectedMonth = (int) request('month', now()->month);
+                    @endphp
+                    <select name="month" class="form-select form-select-sm">
+                        @foreach ($months as $num => $name)
+                            <option value="{{ $num }}" {{ $selectedMonth === (int) $num ? 'selected' : '' }}>
+                                {{ $name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
 
+                {{-- Tipe Laporan --}}
+                <div class="col-12 col-md-5">
+                    <label class="form-label mb-1">Tipe Laporan</label>
+
+                    @php
+                        $role = auth()->user()->role ?? 'admin';
+                        $selectedType = request('type', 'summary');
+                    @endphp
+
+                    <select name="type" class="form-select form-select-sm">
+                        {{-- Semua role boleh summary --}}
+                        <option value="summary" {{ $selectedType === 'summary' ? 'selected' : '' }}>
+                            Ringkasan Bulanan (Rekap + Close Rate + Tren)
+                        </option>
+
+                        {{-- Pengurus / Pemilik / Admin: ada kinerja --}}
+                        @if (in_array($role, ['pengurus', 'pemilik', 'admin']))
+                            <option value="performance" {{ $selectedType === 'performance' ? 'selected' : '' }}>
+                                Bukti Kinerja Pengurus (Handled Tickets, Avg Close Time, SLA sederhana)
+                            </option>
+                        @endif
+
+                        {{-- Pemilik / Admin: full detail --}}
+                        @if (in_array($role, ['pemilik', 'admin']))
+                            <option value="full" {{ $selectedType === 'full' ? 'selected' : '' }}>
+                                Full Detail (Daftar Tiket + Riwayat Status + Catatan)
+                            </option>
+                        @endif
+
+                        {{-- Penyewa: riwayat pribadi --}}
+                        @if ($role === 'penyewa')
+                            <option value="my_tickets" {{ $selectedType === 'my_tickets' ? 'selected' : '' }}>
+                                Riwayat Tiket Saya (Bulanan)
+                            </option>
+                        @endif
+                    </select>
+
+                    <div class="form-text">
+                        <i class="fa fa-info-circle me-1"></i>
+                        Tipe laporan menyesuaikan role: penyewa/pengurus/pemilik/admin.
+                    </div>
+                </div>
+
+                {{-- Optional filter: status --}}
+                <div class="col-12 col-md-4">
+                    <label class="form-label mb-1">Filter Status (opsional)</label>
+                    @php $status = request('status','all'); @endphp
+                    <select name="status" class="form-select form-select-sm">
+                        <option value="all" {{ $status === 'all' ? 'selected' : '' }}>Semua Status</option>
+                        <option value="open" {{ $status === 'open' ? 'selected' : '' }}>Open</option>
+                        <option value="on process" {{ $status === 'on process' ? 'selected' : '' }}>On Process</option>
+                        <option value="close" {{ $status === 'close' ? 'selected' : '' }}>Close</option>
+                        <option value="escalated" {{ $status === 'escalated' ? 'selected' : '' }}>Escalated</option>
+                    </select>
+                </div>
+
+                {{-- Optional filter: jenis pengaduan --}}
+                <div class="col-12 col-md-4">
+                    <label class="form-label mb-1">Filter Jenis (opsional)</label>
+                    @php $jenis = request('jenis','all'); @endphp
+                    <select name="jenis" class="form-select form-select-sm">
+                        <option value="all" {{ $jenis === 'all' ? 'selected' : '' }}>Semua Jenis</option>
+                        <option value="perbaikan" {{ $jenis === 'perbaikan' ? 'selected' : '' }}>Perbaikan</option>
+                        <option value="permintaan" {{ $jenis === 'permintaan' ? 'selected' : '' }}>Permintaan</option>
+                    </select>
+                </div>
+
+                {{-- Tombol --}}
+                <div class="col-12 col-md-4">
+                    <div class="d-grid d-md-flex gap-2 justify-content-md-end">
+                        <a href="{{ url()->current() }}" class="btn btn-light btn-sm">
+                            <i class="fa fa-rotate-left me-1"></i> Reset
+                        </a>
+
+                        <button type="submit" class="btn btn-primary btn-sm">
+                            <i class="fa fa-file-pdf me-1"></i> Download PDF
+                        </button>
+                    </div>
+                </div>
+
+                {{-- opsional: force download as attachment --}}
                 <input type="hidden" name="download" value="1">
             </form>
 
-
-            <div class="report-divider"></div>
-
-            {{-- HINT --}}
-            <div class="report-hint d-flex align-items-start gap-2">
-                <i class="fa fa-circle-info mt-1"></i>
-                <div class="small text-muted">
-                    <b>Bulanan:</b> hitung data dalam 1 bulan terpilih. &nbsp;|&nbsp;
-                    <b>Tahunan:</b> akumulasi Jan–Des untuk tahun tertentu. &nbsp;|&nbsp;
-                    <b>Semua Tahun:</b> akumulasi keseluruhan data.
+            {{-- Preview info kecil --}}
+            <div class="mt-3 p-3 rounded bg-light border">
+                <div class="d-flex align-items-start gap-2">
+                    <i class="fa fa-chart-line mt-1 text-primary"></i>
+                    <div class="small text-muted">
+                        PDF akan berisi: <b>Rekap jumlah keluhan</b>, <b>Close rate</b>, <b>Tren masalah</b>, dan (opsional)
+                        <b>bukti kinerja pengurus</b>.
+                        Format final kamu tentuin di controller / generator PDF.
+                    </div>
                 </div>
             </div>
+
         </div>
     </div>
-
     <div class="row mt-4">
         <div class="col-lg-12 mb-lg-0 mb-4 ">
             <div class="card z-index-2 h-100 d-flex flex-column shadow-lg" style="border: 1px solid #e4e4e4;">
