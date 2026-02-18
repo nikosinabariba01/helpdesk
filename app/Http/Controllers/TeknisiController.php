@@ -238,25 +238,33 @@ class TeknisiController extends Controller {
             ];
         }
 
-        // =========================
-        // KINERJA PER PENGURUS
-        // tampil di blade untuk role pemilik & pengurus
-        // harus muncul SEMUA pengurus (handled bisa 0)
-        // =========================
+// =========================
+// KINERJA TIM (PEMILIK + PENGURUS)
+// tampil di blade untuk role pemilik & pengurus
+// harus muncul PEMILIK di paling atas + semua pengurus (handled bisa 0)
+// =========================
         $viewerRole = Auth::user()->role ?? 'admin';
 
         $performance = [];
         if (in_array($viewerRole, ['pemilik', 'pengurus'])) {
 
+            // 1) Ambil PEMILIK dulu (bisa lebih dari 1 jika sistemmu memungkinkan)
+            $owners = User::query()
+                ->where('role', 'pemilik')
+                ->orderBy('name')
+                ->get(['id', 'name', 'role']);
+
+            // 2) Ambil semua PENGURUS
             $allPengurus = User::query()
                 ->where('role', 'pengurus')
                 ->orderBy('name')
-                ->get(['id', 'name']);
+                ->get(['id', 'name', 'role']);
 
-            // index tickets by assignee quickly via collection
-            foreach ($allPengurus as $u) {
+            // 3) Gabungkan: pemilik di atas, lalu pengurus
+            $team = $owners->concat($allPengurus);
+
+            foreach ($team as $u) {
                 $handledTickets = $tickets->filter(function ($t) use ($u) {
-                    // asignees adalah belongsToMany -> collection user
                     return $t->asignees && $t->asignees->contains('id', $u->id);
                 });
 
@@ -279,6 +287,7 @@ class TeknisiController extends Controller {
                 $performance[] = [
                     'id'                  => $u->id,
                     'name'                => $u->name,
+                    'role'                => $u->role, // ✅ penting untuk ditampilkan di tabel
                     'handled'             => $handled,
                     'closed'              => $closed,
                     'close_rate'          => $closeRateUser,
