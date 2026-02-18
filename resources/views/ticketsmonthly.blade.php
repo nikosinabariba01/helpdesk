@@ -158,7 +158,7 @@
     @if(($meta['period'] ?? '') === 'all')
         <div class="note small muted" style="margin-top:8px;">
             Catatan: Untuk <b>Semua Tahun</b>, metrik waktu (avg/median) global biasanya bias.
-            Laporan menampilkan <b>KPI Per Tahun</b> agar lebih representatif.
+            Laporan menampilkan <b>KPI(Key Performance Indicator) Per Tahun</b> agar lebih representatif.
         </div>
     @endif
 </div>
@@ -346,7 +346,7 @@
     <div class="card no-break">
         <div class="h2" style="margin-top:0;">Kinerja Per Pengurus (Termasuk Pemilik)</div>
         <div class="small muted">
-            Handled = tiket yang ditugaskan ke user (via <b>ticket_assignees</b>) pada periode.
+            Handled = tiket yang ditugaskan ke penanggung jawab pada periode.
             Jika handled=0 artinya tidak menangani tiket.
         </div>
 
