@@ -196,79 +196,70 @@
         </div>
     </div>
 
-    <div class="card report-card shadow-sm">
-        <div class="card-header px-3 py-3 d-flex align-items-start justify-content-between flex-wrap gap-2">
+    <div class="card rp-card shadow-sm">
+        <div class="rp-head">
             <div>
-                <h6 class="report-title">Download Laporan PDF</h6>
-                <p class="report-subtitle">Rekap keluhan kos: ringkasan, close rate, top lokasi/subject, dan daftar tiket.
-                </p>
+                <h6 class="rp-title">Download Laporan PDF</h6>
+                <p class="rp-sub">Pilih periode, filter, lalu unduh laporan (Bulanan / Tahunan / Semua Tahun).</p>
             </div>
 
-            <div class="d-flex align-items-center gap-2 flex-wrap">
-                <span class="report-badge">
-                    <i class="fa fa-file-pdf"></i> PDF Report
-                </span>
-
-                {{-- Quick Actions --}}
-                <div class="quick-row">
-                    {{-- Tahun ini (Jan–Des) --}}
-                    <form action="{{ route('teknisi.report.monthly') }}" method="GET">
-                        <input type="hidden" name="period" value="yearly">
-                        <input type="hidden" name="year" value="{{ now()->year }}">
-                        <button class="btn btn-soft btn-sm">
-                            <i class="fa fa-calendar me-1"></i> Tahun Ini
-                        </button>
-                    </form>
-
-                    {{-- Semua tahun --}}
-                    <form action="{{ route('teknisi.report.monthly') }}" method="GET">
-                        <input type="hidden" name="period" value="all">
-                        <button class="btn btn-outline-primary btn-sm">
-                            <i class="fa fa-layer-group me-1"></i> Semua Tahun
-                        </button>
-                    </form>
+            {{-- KANAN: ganti "PDF Report + Tahun Ini + Semua Tahun" jadi kontrol rapi --}}
+            <div class="rp-actions">
+                <div class="rp-seg">
+                    <label for="rpQuick">Quick</label>
+                    <select id="rpQuick">
+                        <option value="">Pilih cepat…</option>
+                        <option value="yearly_this">Tahun ini (Jan–Des)</option>
+                        <option value="all_time">Semua Tahun</option>
+                    </select>
                 </div>
+
+                <button type="button" id="rpApplyQuick" class="rp-btn rp-btn-soft">
+                    <i class="fa fa-bolt"></i> Terapkan
+                </button>
+
+                <button type="submit" form="reportForm" class="rp-btn rp-btn-primary">
+                    <i class="fa fa-file-pdf"></i> Download
+                </button>
             </div>
         </div>
 
-        <div class="card-body px-3 py-3">
-            {{-- FORM FILTER --}}
-            <form action="{{ route('teknisi.report.monthly') }}" method="GET" class="report-form">
-
-                <div class="row g-3 align-items-end">
+        <div class="rp-body">
+            <form id="reportForm" action="{{ route('teknisi.report.monthly') }}" method="GET">
+                <div class="rp-grid">
 
                     {{-- Periode --}}
-                    <div class="col-12 col-md-3">
-                        <label class="form-label mb-1">Periode</label>
+                    <div class="rp-field">
+                        <label for="periodSelect">Periode</label>
                         @php $period = request('period','monthly'); @endphp
-                        <select name="period" id="periodSelect" class="form-select form-select-sm">
+                        <select name="period" id="periodSelect">
                             <option value="monthly" {{ $period === 'monthly' ? 'selected' : '' }}>Bulanan</option>
                             <option value="yearly" {{ $period === 'yearly' ? 'selected' : '' }}>Tahunan (Jan–Des)</option>
                             <option value="all" {{ $period === 'all' ? 'selected' : '' }}>Semua Tahun</option>
                         </select>
-                        <div class="form-text">Pilih cakupan laporan.</div>
+                        <div class="hint">Menentukan cakupan data laporan.</div>
                     </div>
 
                     {{-- Tahun --}}
-                    <div class="col-12 col-md-3 field-wrap" id="yearWrap">
-                        <label class="form-label mb-1">Tahun</label>
+                    <div class="rp-field" id="yearWrap">
+                        <label for="yearSelectReport">Tahun</label>
                         @php
                             $yNow = now()->year;
                             $yearsList = $years ?? collect(range($yNow, $yNow - 10));
                             $selectedYear = (int) request('year', $yNow);
                         @endphp
-                        <select name="year" id="yearSelectReport" class="form-select form-select-sm">
+                        <select name="year" id="yearSelectReport">
                             @foreach ($yearsList as $y)
                                 <option value="{{ $y }}"
                                     {{ (int) $selectedYear === (int) $y ? 'selected' : '' }}>{{ $y }}</option>
                             @endforeach
                         </select>
-                        <div class="form-text" id="yearHelp">Dipakai untuk Bulanan/Tahunan.</div>
+                        <div class="hint" id="yearHint">Dipakai untuk Bulanan/Tahunan.</div>
                     </div>
 
                     {{-- Bulan --}}
-                    <div class="col-12 col-md-3 field-wrap" id="monthWrap">
-                        <label class="form-label mb-1">Bulan</label>
+                    <div class="rp-field" id="monthWrap">
+                        <label for="monthSelectReport">Bulan</label>
                         @php
                             $months = [
                                 1 => 'Januari',
@@ -286,51 +277,47 @@
                             ];
                             $selectedMonth = (int) request('month', now()->month);
                         @endphp
-                        <select name="month" id="monthSelectReport" class="form-select form-select-sm">
+                        <select name="month" id="monthSelectReport">
                             @foreach ($months as $num => $name)
-                                <option value="{{ $num }}"
-                                    {{ $selectedMonth === (int) $num ? 'selected' : '' }}>
+                                <option value="{{ $num }}" {{ $selectedMonth === (int) $num ? 'selected' : '' }}>
                                     {{ $name }}</option>
                             @endforeach
                         </select>
-                        <div class="form-text" id="monthHelp">Hanya untuk Bulanan.</div>
+                        <div class="hint" id="monthHint">Hanya untuk Bulanan.</div>
                     </div>
 
-                    {{-- Filter Status --}}
-                    <div class="col-12 col-md-3">
-                        <label class="form-label mb-1">Status (opsional)</label>
+                    {{-- Status --}}
+                    <div class="rp-field">
+                        <label>Status (opsional)</label>
                         @php $status = request('status','all'); @endphp
-                        <select name="status" class="form-select form-select-sm">
+                        <select name="status">
                             <option value="all" {{ $status === 'all' ? 'selected' : '' }}>Semua Status</option>
                             <option value="open" {{ $status === 'open' ? 'selected' : '' }}>Open</option>
-                            <option value="on process" {{ $status === 'on process' ? 'selected' : '' }}>On Process
-                            </option>
+                            <option value="on process" {{ $status === 'on process' ? 'selected' : '' }}>On Process</option>
                             <option value="close" {{ $status === 'close' ? 'selected' : '' }}>Close</option>
                             <option value="escalated" {{ $status === 'escalated' ? 'selected' : '' }}>Escalated</option>
                         </select>
+                        <div class="hint">Kosongkan jika semua.</div>
                     </div>
 
-                    {{-- Filter Jenis --}}
-                    <div class="col-12 col-md-3">
-                        <label class="form-label mb-1">Jenis (opsional)</label>
+                    {{-- Jenis --}}
+                    <div class="rp-field">
+                        <label>Jenis (opsional)</label>
                         @php $jenis = request('jenis','all'); @endphp
-                        <select name="jenis" class="form-select form-select-sm">
+                        <select name="jenis">
                             <option value="all" {{ $jenis === 'all' ? 'selected' : '' }}>Semua Jenis</option>
                             <option value="perbaikan" {{ $jenis === 'perbaikan' ? 'selected' : '' }}>Perbaikan</option>
                             <option value="permintaan" {{ $jenis === 'permintaan' ? 'selected' : '' }}>Permintaan</option>
                         </select>
+                        <div class="hint">Kosongkan jika semua.</div>
                     </div>
 
-                    {{-- Tombol --}}
-                    <div class="col-12 col-md-9 report-actions">
-                        <div class="d-flex gap-2 justify-content-md-end flex-wrap">
-                            <a href="{{ url()->current() }}" class="btn btn-soft btn-sm">
-                                <i class="fa fa-rotate-left me-1"></i> Reset
+                    {{-- Reset --}}
+                    <div class="rp-field w6">
+                        <div class="d-flex justify-content-end gap-2 flex-wrap">
+                            <a href="{{ url()->current() }}" class="rp-btn rp-btn-soft">
+                                <i class="fa fa-rotate-left"></i> Reset Filter
                             </a>
-
-                            <button type="submit" class="btn btn-primary btn-sm">
-                                <i class="fa fa-download me-1"></i> Download PDF
-                            </button>
                         </div>
                     </div>
 
@@ -338,15 +325,14 @@
                 </div>
             </form>
 
-            <div class="report-divider"></div>
+            <div class="rp-divider"></div>
 
-            {{-- HINT --}}
-            <div class="report-hint d-flex align-items-start gap-2">
-                <i class="fa fa-circle-info mt-1"></i>
-                <div class="small text-muted">
-                    <b>Bulanan:</b> hitung data dalam 1 bulan terpilih. &nbsp;|&nbsp;
-                    <b>Tahunan:</b> akumulasi Jan–Des untuk tahun tertentu. &nbsp;|&nbsp;
-                    <b>Semua Tahun:</b> akumulasi keseluruhan data.
+            <div class="rp-note">
+                <i class="fa fa-circle-info"></i>
+                <div class="txt">
+                    <b>Bulanan</b> = 1 bulan terpilih. &nbsp;•&nbsp;
+                    <b>Tahunan</b> = Januari–Desember pada tahun terpilih. &nbsp;•&nbsp;
+                    <b>Semua Tahun</b> = akumulasi seluruh data ticket.
                 </div>
             </div>
         </div>
@@ -1274,37 +1260,53 @@
         const periodEl = document.getElementById('periodSelect');
         const yearWrap = document.getElementById('yearWrap');
         const monthWrap = document.getElementById('monthWrap');
-        const yearSelect = document.getElementById('yearSelectReport');
-        const monthSelect = document.getElementById('monthSelectReport');
+        const yearSel = document.getElementById('yearSelectReport');
+        const monthSel = document.getElementById('monthSelectReport');
 
-        function applyPeriod() {
+        const quickSel = document.getElementById('rpQuick');
+        const quickBtn = document.getElementById('rpApplyQuick');
+
+        function applyPeriodUI() {
             const p = periodEl.value;
 
-            // reset visibility
-            yearWrap.classList.remove('hidden');
-            monthWrap.classList.remove('hidden');
-            yearSelect.disabled = false;
-            monthSelect.disabled = false;
+            // default show
+            yearWrap.classList.remove('rp-hide');
+            monthWrap.classList.remove('rp-hide');
+            yearSel.disabled = false;
+            monthSel.disabled = false;
 
             if (p === 'all') {
-                yearWrap.classList.add('hidden');
-                monthWrap.classList.add('hidden');
-                yearSelect.disabled = true;
-                monthSelect.disabled = true;
+                yearWrap.classList.add('rp-hide');
+                monthWrap.classList.add('rp-hide');
+                yearSel.disabled = true;
+                monthSel.disabled = true;
                 return;
             }
-
             if (p === 'yearly') {
-                monthWrap.classList.add('hidden');
-                monthSelect.disabled = true;
+                monthWrap.classList.add('rp-hide');
+                monthSel.disabled = true;
                 return;
             }
-
-            // monthly: show all
+            // monthly -> show both
         }
 
-        periodEl.addEventListener('change', applyPeriod);
-        applyPeriod();
+        periodEl.addEventListener('change', applyPeriodUI);
+        applyPeriodUI();
+
+        // Quick apply
+        quickBtn.addEventListener('click', function() {
+            const v = quickSel.value;
+            if (!v) return;
+
+            if (v === 'yearly_this') {
+                periodEl.value = 'yearly';
+                yearSel.value = String(new Date().getFullYear());
+            }
+            if (v === 'all_time') {
+                periodEl.value = 'all';
+            }
+            applyPeriodUI();
+        });
     })();
 </script>
 
@@ -1451,113 +1453,214 @@
 </style>
 
 <style>
-    /* ===== Report Filter UI (clean) ===== */
-    .report-card {
-        border: 1px solid rgba(0, 0, 0, .06);
-        border-radius: 14px;
-    }
-
-    .report-card .card-header {
+    /* ====== Report Panel (Premium + Clean) ====== */
+    .rp-card {
+        border: 1px solid rgba(0, 0, 0, .08);
+        border-radius: 16px;
+        overflow: hidden;
         background: #fff;
+    }
+
+    .rp-head {
+        padding: 14px 16px;
         border-bottom: 1px solid rgba(0, 0, 0, .06);
-        border-top-left-radius: 14px;
-        border-top-right-radius: 14px;
-    }
-
-    .report-title {
-        font-size: 15px;
-        font-weight: 700;
-        margin: 0;
-        color: #111827;
-    }
-
-    .report-subtitle {
-        font-size: 12px;
-        color: #6B7280;
-        margin: 4px 0 0;
-    }
-
-    .report-badge {
-        font-size: 11px;
-        padding: 6px 10px;
-        border-radius: 999px;
-        background: #EEF2FF;
-        color: #4338CA;
-        font-weight: 700;
-        display: inline-flex;
-        gap: 6px;
+        display: flex;
         align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
     }
 
-    .report-divider {
+    .rp-title {
+        margin: 0;
+        font-size: 15px;
+        font-weight: 800;
+        color: #0f172a;
+        letter-spacing: .2px;
+        line-height: 1.2;
+    }
+
+    .rp-sub {
+        margin: 4px 0 0;
+        font-size: 12px;
+        color: #64748b;
+        line-height: 1.4;
+    }
+
+    .rp-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .rp-seg {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        padding: 8px 10px;
+        border: 1px solid rgba(0, 0, 0, .08);
+        border-radius: 12px;
+        background: #f8fafc;
+    }
+
+    .rp-seg label {
+        font-size: 11px;
+        font-weight: 800;
+        color: #334155;
+        margin: 0;
+        letter-spacing: .2px;
+        white-space: nowrap;
+    }
+
+    .rp-seg select {
+        border: 1px solid rgba(0, 0, 0, .10);
+        border-radius: 10px;
+        padding: 6px 10px;
+        font-size: 12px;
+        background: #fff;
+        outline: none;
+        min-width: 140px;
+    }
+
+    .rp-btn {
+        border-radius: 12px !important;
+        font-weight: 800;
+        letter-spacing: .2px;
+        padding: 8px 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid rgba(0, 0, 0, .08);
+    }
+
+    .rp-btn-primary {
+        background: #2563eb;
+        color: #fff;
+        border-color: #2563eb;
+    }
+
+    .rp-btn-primary:hover {
+        background: #1d4ed8;
+        border-color: #1d4ed8;
+    }
+
+    .rp-btn-soft {
+        background: #f1f5f9;
+        color: #0f172a;
+    }
+
+    .rp-btn-soft:hover {
+        background: #e2e8f0;
+    }
+
+    .rp-body {
+        padding: 16px;
+    }
+
+    .rp-grid {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 12px;
+        align-items: end;
+    }
+
+    .rp-field {
+        grid-column: span 3;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .rp-field label {
+        font-size: 12px;
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0;
+    }
+
+    .rp-field .hint {
+        font-size: 11px;
+        color: #64748b;
+        margin-top: 2px;
+    }
+
+    .rp-field select {
+        width: 100%;
+        border: 1px solid rgba(0, 0, 0, .12);
+        border-radius: 12px;
+        padding: 10px 12px;
+        font-size: 12px;
+        background: #fff;
+        outline: none;
+    }
+
+    .rp-field select:focus {
+        border-color: rgba(37, 99, 235, .55);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, .12);
+    }
+
+    .rp-field.w4 {
+        grid-column: span 4;
+    }
+
+    .rp-field.w6 {
+        grid-column: span 6;
+    }
+
+    .rp-field.w12 {
+        grid-column: span 12;
+    }
+
+    .rp-hide {
+        display: none !important;
+    }
+
+    .rp-divider {
         height: 1px;
         background: rgba(0, 0, 0, .06);
         margin: 14px 0;
     }
 
-    .report-form .form-label {
-        font-size: 12px;
-        font-weight: 700;
-        color: #111827;
-    }
-
-    .report-form .form-text {
-        font-size: 11px;
-        color: #6B7280;
-    }
-
-    .report-form .form-select,
-    .report-form .form-control {
-        border-radius: 10px;
-        border: 1px solid rgba(0, 0, 0, .10);
-        box-shadow: none !important;
-    }
-
-    .report-form .form-select:focus,
-    .report-form .form-control:focus {
-        border-color: rgba(99, 102, 241, .6);
-    }
-
-    .report-actions .btn {
-        border-radius: 10px;
-    }
-
-    .btn-soft {
-        background: #F3F4F6;
-        border: 1px solid rgba(0, 0, 0, .06);
-        color: #111827;
-    }
-
-    .btn-soft:hover {
-        background: #E5E7EB;
-    }
-
-    .report-hint {
-        background: #F9FAFB;
-        border: 1px dashed rgba(0, 0, 0, .12);
-        border-radius: 12px;
+    .rp-note {
+        background: #f8fafc;
+        border: 1px dashed rgba(0, 0, 0, .14);
+        border-radius: 14px;
         padding: 12px 14px;
-    }
-
-    .report-hint i {
-        color: #2563EB;
-    }
-
-    .field-wrap {
-        display: block;
-    }
-
-    .field-wrap.hidden {
-        display: none !important;
-    }
-
-    .quick-row {
         display: flex;
         gap: 10px;
-        flex-wrap: wrap;
+        align-items: flex-start;
     }
 
-    .quick-row form {
-        margin: 0;
+    .rp-note i {
+        color: #2563eb;
+        margin-top: 2px;
+    }
+
+    .rp-note .txt {
+        font-size: 12px;
+        color: #475569;
+        line-height: 1.5;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+        .rp-field {
+            grid-column: span 6;
+        }
+
+        .rp-field.w4 {
+            grid-column: span 6;
+        }
+
+        .rp-field.w6 {
+            grid-column: span 12;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .rp-field {
+            grid-column: span 12;
+        }
     }
 </style>
