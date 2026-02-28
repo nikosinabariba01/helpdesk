@@ -151,10 +151,10 @@
                                             </a>
                                         </li>
                                         <li>
-                                            <form method="POST" action="{{ route('ticketsteknisi.close', $teknisidataticket->id) }}" id="closeTicketForm">
+                                            <form method="POST" action="{{ route('ticketsteknisi.close', $teknisidataticket->id) }}" id="closeTicketForm-{{ $teknisidataticket->id }}">
                                                 @method('PUT')
                                                 @csrf
-                                                <button type="button" class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#modal-confirmation">
+                                                <button type="button" class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#modal-confirmation" data-form-id="closeTicketForm-{{ $teknisidataticket->id }}">
                                                     <i class="fa fa-minus pe-2 text-danger"></i>close
                                                 </button>
                                             </form>
@@ -223,7 +223,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-white" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-danger" onclick="document.getElementById('closeTicketForm').submit();">Ya, close tiket</button>
+                <button type="submit" class="btn btn-danger" id="modal-submit-btn">Ya, close tiket</button>
             </div>
         </div>
     </div>
@@ -234,6 +234,7 @@
         let currentSort = 'desc'; // Default: Terbaru
         let currentPage = 1;
         const itemsPerPage = 10;
+        let selectedFormId = null; // Store selected form ID
 
         var table = $('#TicketTable').DataTable({
             searching: true,
@@ -254,6 +255,19 @@
 
         // Initial pagination
         updatePagination();
+
+        // Handle modal show event - simpan form ID yang dipilih
+        $('#modal-confirmation').on('show.bs.modal', function(e) {
+            const button = e.relatedTarget; // Tombol yang memicu modal
+            selectedFormId = button.getAttribute('data-form-id');
+        });
+
+        // Handle modal submit button
+        $('#modal-submit-btn').on('click', function() {
+            if (selectedFormId) {
+                document.getElementById(selectedFormId).submit();
+            }
+        });
 
         // Custom search hanya kolom Subject dan User (kolom 0 dan 1)
         $('#search').on('keyup', function() {
