@@ -257,13 +257,7 @@ class TelegramWebhookController extends Controller
         $ticketOwner = $ticket->user;
 
         // Tentukan nama pengirim dan role
-        if ($commenter->id === $ticketOwner->id) {
-            // Jika pengirim adalah pemilik tiket sendiri
-            $userDisplay = "(anda sendiri)";
-        } else {
-            // Jika pengirim adalah orang lain
-            $userDisplay = $commenter->name . " (" . $commenter->role . ")";
-        }
+        $userDisplay = $commenter->name . " (" . $commenter->role . ")";
 
         // Format pesan notifikasi
         $notificationMessage = "<b>Ticket #{$ticketNumber}</b>\n";
