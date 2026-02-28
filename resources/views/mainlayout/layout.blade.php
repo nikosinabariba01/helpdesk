@@ -19,7 +19,7 @@
   @include('mainlayout.partials.head')
 </head>
 
-<body class="g-sidenav-show bg-gray-100">
+<body class="g-sidenav-show bg-gray-100 @if(Auth::user()->role == 'pemilik' || Auth::user()->role == 'pengurus' || Auth::user()->role == 'admin') body-admin @endif">
   <div class="min-height-300 bg-dark position-absolute w-100"></div>
   <aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-radius-xl my-3 fixed-start ms-4 shadow-lg" id="sidenav-main" style="border: 2px solid #e4e4e4;">
     <div class="sidenav-header">
@@ -101,6 +101,10 @@
       top: 0;
       left: 0;
       right: 0;
+    }
+
+    body.body-admin > .min-height-300.bg-dark.position-absolute.w-100 {
+      min-height: 480px !important;
     }
   }
 </style>
