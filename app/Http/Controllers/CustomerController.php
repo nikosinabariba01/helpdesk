@@ -52,7 +52,9 @@ class CustomerController extends Controller
     {
         $userId = Auth::id();
         $data_ticket = Ticket::with('user')->where('user_id', $userId)->orderBy('created_at', 'desc')->get();
-        $totalTickets = $data_ticket->count();
+        $totalEscalation = Ticket::where('user_id', $userId)
+            ->where('status', 'escalated')
+            ->count();
 
         $OnProcessTickets = Ticket::where('user_id', $userId)
             ->where('status', 'on process')
@@ -76,7 +78,7 @@ class CustomerController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('customer', compact('data_ticket', 'totalTickets', 'OnProcessTickets', 'closedtic', 'OpenTic', 'latestComments', 'pengumuman'));
+        return view('customer', compact('data_ticket', 'totalEscalation', 'OnProcessTickets', 'closedtic', 'OpenTic', 'latestComments', 'pengumuman'));
     }
 
     public function viewprocess()
@@ -94,7 +96,9 @@ class CustomerController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        $totalTickets = $data_ticket->count();
+        $totalEscalation = Ticket::where('user_id', $userId)
+            ->where('status', 'escalated')
+            ->count();
 
         $OnProcessTickets = Ticket::where('user_id', $userId)
             ->where('status', 'on process')
@@ -118,6 +122,6 @@ class CustomerController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('process', compact('data_ticket', 'totalTickets', 'OnProcessTickets', 'closedtic', 'OpenTic', 'latestComments', 'pengumuman'));
+        return view('process', compact('data_ticket', 'totalEscalation', 'OnProcessTickets', 'closedtic', 'OpenTic', 'latestComments', 'pengumuman'));
     }
 }

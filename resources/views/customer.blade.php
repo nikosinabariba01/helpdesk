@@ -73,9 +73,9 @@
   <div class="card">
     <div class="card-body p-3" style="min-height: 120px; display: flex; align-items: center; justify-content: space-between;">
       <div class="numbers" style="flex: 1;">
-        <p class="text-sm mb-2 text-uppercase font-weight-bold" style="font-size: 11px; letter-spacing: 0.5px;">Total Ticket</p>
+        <p class="text-sm mb-2 text-uppercase font-weight-bold" style="font-size: 11px; letter-spacing: 0.5px;">Escalation</p>
         <h5 class="font-weight-bolder mb-0" style="font-size: 28px; line-height: 1.2;">
-          {{ $totalTickets }}
+          {{ $totalEscalation }}
         </h5>
       </div>
       <div class="d-flex align-items-center justify-content-center" style="flex: 0 0 auto; margin-left: 12px;">
