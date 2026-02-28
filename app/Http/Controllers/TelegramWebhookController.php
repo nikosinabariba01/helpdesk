@@ -122,12 +122,10 @@ class TelegramWebhookController extends Controller
 
         // Menambahkan tombol inline untuk setiap tiket yang ditemukan
         foreach ($tickets as $ticket) {
-            // Batasi subject hanya 2 kalimat
-            $sentences = explode('. ', $ticket->subject);
-            $limitedSubject = implode('. ', array_slice($sentences, 0, 2));
-            if (count($sentences) > 2) {
-                $limitedSubject .= '.';
-            }
+            // Batasi subject hanya 39 karakter
+            $limitedSubject = strlen($ticket->subject) > 39 
+                ? substr($ticket->subject, 0, 39) . '...' 
+                : $ticket->subject;
 
             $ticketText = "Tiket #sp-" . substr(preg_replace('/[^0-9]/', '', $ticket->id), -3) . \Carbon\Carbon::parse($ticket->created_at)->format('dmy') . ($ticket->Jenis_Pengaduan == 0 ? '0' : '1') . " - {$limitedSubject}";
 
