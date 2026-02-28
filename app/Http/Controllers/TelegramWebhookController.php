@@ -122,12 +122,7 @@ class TelegramWebhookController extends Controller
 
         // Menambahkan tombol inline untuk setiap tiket yang ditemukan
         foreach ($tickets as $ticket) {
-            // Batasi subject hanya 39 karakter
-            $limitedSubject = strlen($ticket->subject) > 39 
-                ? substr($ticket->subject, 0, 39) . '...' 
-                : $ticket->subject;
-
-            $ticketText = "Tiket #sp-" . substr(preg_replace('/[^0-9]/', '', $ticket->id), -3) . \Carbon\Carbon::parse($ticket->created_at)->format('dmy') . ($ticket->Jenis_Pengaduan == 0 ? '0' : '1') . " - {$limitedSubject}";
+            $ticketText = "Tiket #sp-" . substr(preg_replace('/[^0-9]/', '', $ticket->id), -3) . \Carbon\Carbon::parse($ticket->created_at)->format('dmy') . ($ticket->Jenis_Pengaduan == 0 ? '0' : '1') . " - {$ticket->subject}";
 
             $keyboard['inline_keyboard'][] = [
                 [
@@ -240,6 +235,9 @@ class TelegramWebhookController extends Controller
             // Mengirimkan konfirmasi ke pengguna dengan format tiket yang benar
             $this->sendTelegramMessage($user->telegram_chat_id, "✅ Komentar Anda telah berhasil disimpan untuk tiket <b>#" . $ticketNumber . "</b>.");
 
+            // Mengirimkan notifikasi ke pemilik tiket
+            $this->notifyTicketOwner($ticket, $user, $commentText, $ticketNumber);
+
             // Clear cache setelah komentar disimpan
             Cache::forget("user_ticket_{$user->telegram_chat_id}");
 
@@ -250,5 +248,37 @@ class TelegramWebhookController extends Controller
         }
 
         return false;
+    }
+
+    // Fungsi untuk mengirimkan notifikasi ke pemilik tiket
+    protected function notifyTicketOwner($ticket, $commenter, $commentText, $ticketNumber)
+    {
+        // Ambil pemilik tiket (user yang membuat tiket)
+        $ticketOwner = $ticket->user;
+
+        // Cek apakah pemilik tiket memiliki telegram_chat_id
+        if (!$ticketOwner || !$ticketOwner->telegram_chat_id) {
+            Log::warning("Pemilik tiket dengan ID {$ticket->user_id} tidak memiliki telegram_chat_id");
+            return;
+        }
+
+        // Batasi commentText hanya 150 karakter
+        $limitedComment = strlen($commentText) > 150 
+            ? substr($commentText, 0, 150) . '...' 
+            : $commentText;
+
+        // Format pesan notifikasi untuk pemilik tiket
+        $notificationMessage = "💬 <b>Komentar Baru pada Tiket Anda</b>\n\n";
+        $notificationMessage .= "🔖 <b>Tiket:</b> #" . $ticketNumber . "\n";
+        $notificationMessage .= "📝 <b>Subjek:</b> {$ticket->subject}\n";
+        $notificationMessage .= "👤 <b>Dari:</b> {$commenter->name}\n";
+        $notificationMessage .= "📄 <b>Komentar:</b> {$limitedComment}\n";
+        $notificationMessage .= "🕐 <b>Waktu:</b> " . \Carbon\Carbon::now()->format('d-m-Y H:i') . "\n\n";
+        $notificationMessage .= "🔗 Silakan cek aplikasi untuk detail lengkap.";
+
+        // Kirimkan notifikasi ke pemilik tiket
+        $this->sendTelegramMessage($ticketOwner->telegram_chat_id, $notificationMessage);
+
+        Log::info("Notifikasi komentar berhasil dikirim ke pemilik tiket {$ticketOwner->id}");
     }
 }
