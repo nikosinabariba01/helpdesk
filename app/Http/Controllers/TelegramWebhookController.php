@@ -256,29 +256,45 @@ class TelegramWebhookController extends Controller
         // Ambil pemilik tiket (user yang membuat tiket)
         $ticketOwner = $ticket->user;
 
-        // Cek apakah pemilik tiket memiliki telegram_chat_id
-        if (!$ticketOwner || !$ticketOwner->telegram_chat_id) {
-            Log::warning("Pemilik tiket dengan ID {$ticket->user_id} tidak memiliki telegram_chat_id");
-            return;
+        // Tentukan nama pengirim dan role
+        if ($commenter->id === $ticketOwner->id) {
+            // Jika pengirim adalah pemilik tiket sendiri
+            $userDisplay = "(anda sendiri)";
+        } else {
+            // Jika pengirim adalah orang lain
+            $userDisplay = $commenter->name . " (" . $commenter->role . ")";
         }
 
-        // Batasi commentText hanya 150 karakter
-        $limitedComment = strlen($commentText) > 150 
-            ? substr($commentText, 0, 150) . '...' 
-            : $commentText;
+        // Format pesan notifikasi
+        $notificationMessage = "<b>Ticket #{$ticketNumber}</b>\n";
+        $notificationMessage .= "Komentar oleh <b>{$userDisplay}</b>:\n";
+        $notificationMessage .= "{$commentText}";
 
-        // Format pesan notifikasi untuk pemilik tiket
-        $notificationMessage = "💬 <b>Komentar Baru pada Tiket Anda</b>\n\n";
-        $notificationMessage .= "🔖 <b>Tiket:</b> #" . $ticketNumber . "\n";
-        $notificationMessage .= "📝 <b>Subjek:</b> {$ticket->subject}\n";
-        $notificationMessage .= "👤 <b>Dari:</b> {$commenter->name}\n";
-        $notificationMessage .= "📄 <b>Komentar:</b> {$limitedComment}\n";
-        $notificationMessage .= "🕐 <b>Waktu:</b> " . \Carbon\Carbon::now()->format('d-m-Y H:i') . "\n\n";
-        $notificationMessage .= "🔗 Silakan cek aplikasi untuk detail lengkap.";
+        // Daftar penerima: pemilik tiket + semua teknisi
+        $recipientChatIds = [];
 
-        // Kirimkan notifikasi ke pemilik tiket
-        $this->sendTelegramMessage($ticketOwner->telegram_chat_id, $notificationMessage);
+        // Tambahkan chat ID pemilik tiket jika ada
+        if ($ticketOwner && $ticketOwner->telegram_chat_id) {
+            $recipientChatIds[] = $ticketOwner->telegram_chat_id;
+        }
 
-        Log::info("Notifikasi komentar berhasil dikirim ke pemilik tiket {$ticketOwner->id}");
+        // Tambahkan chat ID semua teknisi (role: pemilik, pengurus)
+        $teknisiUsers = User::whereIn('role', ['pemilik', 'pengurus'])
+            ->whereNotNull('telegram_chat_id')
+            ->get();
+
+        foreach ($teknisiUsers as $teknisiUser) {
+            // Hindari duplikat jika teknisi adalah pemilik tiket
+            if ($teknisiUser->id !== $ticketOwner->id) {
+                $recipientChatIds[] = $teknisiUser->telegram_chat_id;
+            }
+        }
+
+        // Kirimkan notifikasi ke semua penerima
+        foreach ($recipientChatIds as $chatId) {
+            $this->sendTelegramMessage($chatId, $notificationMessage);
+        }
+
+        Log::info("Notifikasi komentar berhasil dikirim ke " . count($recipientChatIds) . " penerima");
     }
 }
