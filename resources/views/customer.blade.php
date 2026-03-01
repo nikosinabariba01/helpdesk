@@ -160,6 +160,7 @@
                       </a>
 
                       </li>
+                      @if($dataticket->status === 'open')
                       <li>
                         <form method="POST" action="{{ route('tickets.destroy', $dataticket->id) }}">
                           @method('delete')
@@ -167,6 +168,7 @@
                           <button type="submit" class="dropdown-item text-danger" href="#" onclick="return confirm ('are you sure?')"><i class="fa fa-trash pe-2 text-danger"></i>delete</button>
                         </form>
                       </li>
+                      @endif
                     </ul>
                   </div>
                 </td>
