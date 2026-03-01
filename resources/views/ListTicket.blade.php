@@ -94,28 +94,11 @@
                                 </form>
                             </td>
                             <!-- "Edit" button within a dropdown -->
-                            <td class="align-middle text-center ">
-                                <div class="dropdown">
-                                    <a class="btn btn-link" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="fa fa-ellipsis-v fa-sm"></i>
-                                    </a>
-                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
-                                        <li>
-                                        <li>
-                                            <a class="dropdown-item text-info" href="{{ route('viewticketteknisi.index', ['id' => $teknisidataticket->id]) }}">
-                                                <i class="fa fa-eye pe-2 text-info"></i>Detail
-                                            </a>
-                                        </li>
-                                        </li>
-                                        <li>
-                                            <form method="POST" action="{{ route('tickets.destroy', $teknisidataticket->id) }}">
-                                                @method('delete')
-                                                @csrf
-                                                <button type="submit" class="dropdown-item text-danger" href="#" onclick="return confirm ('are you sure?')"><i class="fa fa-trash pe-2 text-danger"></i>delete</button>
-                                            </form>
-                                        </li>
-                                    </ul>
-                                </div>
+                            <td class="align-middle text-center border border-light">
+                                <a class="dropdown-item"
+                                    href="{{ route('viewticketteknisi.index', ['id' => $teknisidataticket->id]) }}">
+                                    <i class="fa fa-eye pe-2 text-dark"></i>
+                                </a>
                             </td>
                         </tr>
                         @endforeach
