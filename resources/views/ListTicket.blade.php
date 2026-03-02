@@ -43,7 +43,7 @@
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">User</th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Status</th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Deskripsi</th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Asign</th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Aksi Status</th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">aksi</th>
                         </tr>
                     </thead>
@@ -86,7 +86,7 @@
                                     <button type="submit" class="btn btn-sm btn-transparent text-primary">Assign</button>
                                     @elseif($teknisidataticket->asignees->first()->id == Auth::id())
                                     <!-- Jika sudah di-assign ke teknisi yang sedang login -->
-                                    <button type="submit" class="btn btn-sm btn-outline-warning text-secondary">Re-assign</button>
+                                    <button type="submit" class="btn btn-sm btn-outline-warning text-secondary">Reprocess</button>
                                     @else
                                     <!-- Jika sudah di-assign oleh teknisi lain -->
                                     <button type="submit" class="btn btn-sm btn-outline-success text-primary">Contribute</button>

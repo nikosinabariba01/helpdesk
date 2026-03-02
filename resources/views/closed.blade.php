@@ -6,7 +6,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
         <li class="breadcrumb-item text-sm"><a class="opacity-5 text-white" href="javascript:;">Pages</a></li>
-        <li class="breadcrumb-item text-sm text-white active" aria-current="page">Closed Ticket</li>
+        <li class="breadcrumb-item text-sm text-white active" aria-current="page">Closed Tickets</li>
     </ol>
     <h6 class="font-weight-bolder text-white mb-0">My Closed Ticket</h6>
 </nav>
@@ -43,7 +43,7 @@
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">User</th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Status</th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Deskripsi</th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Asign</th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Aksi Status</th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">aksi</th>
                         </tr>
                     </thead>
@@ -109,7 +109,7 @@
                                 <form action="{{ route('tickets.assign', $teknisidataticket->id) }}" method="POST">
                                     @csrf
                                     @method('PUT')
-                                    <button type="submit" class="btn btn-sm btn-outline-warning text-secondary">Re-assign</button>
+                                    <button type="submit" class="btn btn-sm btn-outline-warning text-secondary">Reprocess</button>
                                 </form>
                             </td>
                             <!-- "Edit" button within a dropdown -->

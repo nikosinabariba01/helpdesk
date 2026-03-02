@@ -43,7 +43,7 @@
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">User</th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Status</th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Deskripsi</th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Asign</th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Aksi Status</th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">aksi</th>
                         </tr>
                     </thead>
@@ -112,7 +112,7 @@
                                 <form action="{{ route('tickets.cancel_assign', $teknisidataticket->id) }}" method="POST" class="mb-2">
                                     @csrf
                                     @method('PUT')
-                                    <button type="submit" class="btn btn-sm btn-outline-danger btn-transparent text-secondary">Cancel Assign</button>
+                                    <button type="submit" class="btn btn-sm btn-outline-danger btn-transparent text-secondary">Cancel Process</button>
                                 </form>
                                 <!-- Tombol Request Follow-up jika tiket belum escalated -->
                                 <form method="POST" action="{{ $teknisidataticket->status == 'escalated' ? route('ticketsteknisi.cancelRequestFollowUp', $teknisidataticket->id) : route('ticketsteknisi.requestFollowup', $teknisidataticket->id) }}">
@@ -120,11 +120,11 @@
                                     @if($teknisidataticket->status == 'escalated')
                                     @method('PUT') <!-- Menggunakan PUT karena kita akan memperbarui status tiket -->
                                     <button type="submit" class="btn btn-sm btn-outline-danger btn-transparent text-danger">
-                                        <i class="fa fa-times pe-2 text-danger"></i>Cancel Request
+                                        <i class="fa fa-times pe-2 text-danger"></i>Cancel Escalation
                                     </button>
                                     @else
                                     <button type="submit" class="btn btn-sm btn-outline-success btn-transparent text-success">
-                                        <i class="fa fa-refresh pe-2 text-success"></i>Request Follow-up
+                                        <i class="fa fa-refresh pe-2 text-success"></i>Escalate
                                     </button>
                                     @endif
                                 </form>
@@ -133,7 +133,7 @@
                                 <form action="{{ route('tickets.cancel_assign', $teknisidataticket->id) }}" method="POST" class="mb-2">
                                     @csrf
                                     @method('PUT')
-                                    <button type="submit" class="btn btn-sm btn-outline-danger btn-transparent text-secondary">Cancel Assign</button>
+                                    <button type="submit" class="btn btn-sm btn-outline-danger btn-transparent text-secondary">Cancel Process</button>
                                 </form>
                                 @endif
                             </td>

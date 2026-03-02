@@ -40,7 +40,7 @@
             <div class="card">
                 <div class="card-body p-3 card-stat">
                     <div class="numbers">
-                        <p class="text-sm mb-2 text-uppercase font-weight-bold card-stat-title">Assigned Ticket</p>
+                        <p class="text-sm mb-2 text-uppercase font-weight-bold card-stat-title">Proceeding Ticket</p>
                         <h5 class="font-weight-bolder mb-0 card-stat-value">{{ $totalOnProcessTickets }}</h5>
                     </div>
                     <div class="card-stat-icon">
@@ -372,7 +372,7 @@
                                             Deskripsi</th>
                                         <th
                                             class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                            Assign</th>
+                                            Aksi Status</th>
                                         <th
                                             class="text-secondary text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                             aksi</th>
@@ -423,7 +423,7 @@
                                                     @csrf
                                                     @method('PUT')
                                                     <button type="submit"
-                                                        class="btn btn-sm btn-transparent text-primary">Assign</button>
+                                                        class="btn btn-sm btn-transparent text-primary">Proceed</button>
                                                 </form>
                                             </td>
                                             <!-- "Edit" button within a dropdown -->
