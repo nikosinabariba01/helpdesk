@@ -147,8 +147,8 @@
                                         <i class="fa fa-times pe-2 text-danger"></i>Cancel Escalation
                                     </button>
                                     @else
-                                    <button type="submit" class="btn btn-sm btn-outline-success btn-transparent text-success">
-                                        <i class="fa fa-refresh pe-2 text-success"></i>Escalate
+                                    <button type="submit" class="btn btn-sm btn-outline-info btn-transparent text-info">
+                                        <i class="fa fa-arrow-up pe-2 text-info"></i>Escalate
                                     </button>
                                     @endif
                                 </form>
