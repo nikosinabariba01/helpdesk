@@ -206,14 +206,19 @@
         const itemsPerPage = 10;
         var table = $('#TicketTable').DataTable({
             searching: true,
-            ordering: false,
+            ordering: true, // Pengurutan diaktifkan untuk seluruh tabel
             paging: false,
             lengthChange: false,
             info: false,
             columnDefs: [{
-                targets: [2, 3, 4, 5],
-                orderable: false
-            }]
+                    targets: [0, 1, 2], // Mengaktifkan pengurutan untuk kolom 0, 1, dan 2
+                    orderable: true // Kolom-kolom ini bisa diurutkan
+                },
+                {
+                    targets: [3, 4, 5], // Mengnonaktifkan pengurutan untuk kolom 3, 4, dan 5
+                    orderable: false // Kolom-kolom ini tidak bisa diurutkan
+                }
+            ]
         });
         $('#TicketTable_filter').hide();
         $('#TicketTable_length').hide();
