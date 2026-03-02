@@ -147,8 +147,8 @@
                                         <i class="fa fa-times pe-2 text-danger"></i>Cancel Escalation
                                     </button>
                                     @else
-                                    <button type="submit" class="btn btn-sm btn-outline-info btn-transparent text-info">
-                                        <i class="fa fa-arrow-up pe-2 text-info"></i>Escalate
+                                    <button type="submit" class="btn btn-sm btn-outline-success btn-transparent text-success">
+                                        <i class="fa fa-refresh pe-2 text-success"></i>Escalate
                                     </button>
                                     @endif
                                 </form>
@@ -169,19 +169,14 @@
                                     @csrf
                                     @method('PUT')
                                     <button type="submit" class="btn btn-sm btn-outline-warning btn-transparent text-warning">
-                                        <i class="fa fa-ban pe-2 text-warning"></i>Cancel
+                                        <i class="fa fa-ban pe-2 text-warning"></i>Cancel Process
                                     </button>
                                 </form>
-                                <!-- Tombol Close -->
-                                @if($teknisidataticket->status != 'escalated')
-                                <form method="POST" action="{{ route('ticketsteknski.close', $teknisidataticket->id) }}" id="closeTicketForm-{{ $teknisidataticket->id }}">
-                                    @method('PUT')
                                     @csrf
-                                    <button type="button" class="btn btn-sm btn-outline-success btn-transparent text-success" data-bs-toggle="modal" data-bs-target="#modal-confirmation" data-form-id="closeTicketForm-{{ $teknisidataticket->id }}">
-                                        <i class="fa fa-check-circle pe-2 text-success"></i>Close
+                                    <button type="button" class="btn btn-sm btn-outline-danger btn-transparent text-danger" data-bs-toggle="modal" data-bs-target="#modal-confirmation" data-form-id="closeTicketForm-{{ $teknisidataticket->id }}">
+                                        <i class="fa fa-check pe-2 text-danger"></i>Close
                                     </button>
                                 </form>
-                                @endif
                                 @endif
                                 @endif
                             </td>
