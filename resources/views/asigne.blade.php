@@ -129,11 +129,13 @@
                                 <!-- Cek apakah tiket sudah diassign oleh pemilik -->
                                 @if($teknisidataticket->asignees->where('role', 'pemilik')->isEmpty())
                                 <!-- Jika belum ada pemilik yang meng-assign, tampilkan tombol cancel assign -->
+                                @if($teknisidataticket->status != 'escalated')
                                 <form action="{{ route('tickets.cancel_assign', $teknisidataticket->id) }}" method="POST" class="mb-2">
                                     @csrf
                                     @method('PUT')
                                     <button type="submit" class="btn btn-sm btn-outline-danger btn-transparent text-secondary">Cancel Process</button>
                                 </form>
+                                @endif
                                 <!-- Tombol Request Follow-up jika tiket belum escalated -->
                                 <form method="POST" action="{{ $teknisidataticket->status == 'escalated' ? route('ticketsteknisi.cancelRequestFollowUp', $teknisidataticket->id) : route('ticketsteknisi.requestFollowup', $teknisidataticket->id) }}" class="mb-2">
                                     @csrf
@@ -149,6 +151,7 @@
                                     @endif
                                 </form>
                                 <!-- Tombol Close -->
+                                @if($teknisidataticket->status != 'escalated')
                                 <form method="POST" action="{{ route('ticketsteknisi.close', $teknisidataticket->id) }}" id="closeTicketForm-{{ $teknisidataticket->id }}">
                                     @method('PUT')
                                     @csrf
@@ -156,14 +159,18 @@
                                         <i class="fa fa-check pe-2 text-danger"></i>Close
                                     </button>
                                 </form>
+                                @endif
                                 @else
                                 <!-- Jika sudah ada pemilik yang meng-assign, hanya tampilkan tombol Cancel Assign -->
+                                @if($teknisidataticket->status != 'escalated')
                                 <form action="{{ route('tickets.cancel_assign', $teknisidataticket->id) }}" method="POST" class="mb-2">
                                     @csrf
                                     @method('PUT')
                                     <button type="submit" class="btn btn-sm btn-outline-danger btn-transparent text-secondary">Cancel Process</button>
                                 </form>
+                                @endif
                                 <!-- Tombol Close -->
+                                @if($teknisidataticket->status != 'escalated')
                                 <form method="POST" action="{{ route('ticketsteknisi.close', $teknisidataticket->id) }}" id="closeTicketForm-{{ $teknisidataticket->id }}">
                                     @method('PUT')
                                     @csrf
@@ -171,6 +178,7 @@
                                         <i class="fa fa-check pe-2 text-danger"></i>Close
                                     </button>
                                 </form>
+                                @endif
                                 @endif
                             </td>
                             <!-- Detail button -->
