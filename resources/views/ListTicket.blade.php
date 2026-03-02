@@ -137,7 +137,7 @@
                                 <form method="POST" action="{{ route('ticketsteknisi.cancelRequestFollowUp', $teknisidataticket->id) }}">
                                     @csrf
                                     @method('PUT')
-                                    <button type="submit" class="btn btn-sm btn-outline-info btn-transparent text-info">
+                                    <button type="submit" class="btn btn-sm btn-outline-primary btn-transparent text-primary">
                                         Cancel Escalation
                                     </button>
                                 </form>
