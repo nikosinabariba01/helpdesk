@@ -169,13 +169,12 @@
                                                         <!-- Menggunakan PUT karena kita akan memperbarui status tiket -->
                                                         <button type="submit"
                                                             class="btn btn-sm btn-outline-primary btn-transparent text-primary">
-                                                            <i class="fa fa-arrow-left pe-2 text-primary"></i>Cancel
-                                                            Escalation
+                                                            Cancel Escalation
                                                         </button>
                                                     @else
                                                         <button type="submit"
                                                             class="btn btn-sm btn-outline-info btn-transparent text-info">
-                                                            <i class="fa fa-exclamation pe-2 text-info"></i>Escalate
+                                                            Escalate
                                                         </button>
                                                     @endif
                                                 </form>
@@ -187,10 +186,10 @@
                                                         @method('PUT')
                                                         @csrf
                                                         <button type="button"
-                                                            class="btn btn-sm btn-outline-success btn-transparent text-success"
+                                                            class="btn btn-sm btn-outline-danger btn-transparent text-danger"
                                                             data-bs-toggle="modal" data-bs-target="#modal-confirmation"
                                                             data-form-id="closeTicketForm-{{ $teknisidataticket->id }}">
-                                                            <i class="fa fa-check pe-2 text-success"></i>Close
+                                                            Close
                                                         </button>
                                                     </form>
                                                 @endif
@@ -203,7 +202,7 @@
                                                         @csrf
                                                         @method('PUT')
                                                         <button type="submit"
-                                                            class="btn btn-sm btn-outline-danger btn-transparent text-secondary">Cancel
+                                                            class="btn btn-sm btn-outline-warning btn-transparent text-warning">Cancel
                                                             Process</button>
                                                     </form>
                                                 @endif
@@ -218,7 +217,7 @@
                                                             class="btn btn-sm btn-outline-danger btn-transparent text-danger"
                                                             data-bs-toggle="modal" data-bs-target="#modal-confirmation"
                                                             data-form-id="closeTicketForm-{{ $teknisidataticket->id }}">
-                                                            <i class="fa fa-check pe-2 text-danger"></i>Close
+                                                            Close
                                                         </button>
                                                     </form>
                                                 @endif
