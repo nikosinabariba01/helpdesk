@@ -328,8 +328,8 @@
 
             // Menyembunyikan elemen pencarian bawaan
             $('#TicketTable_filter').hide();
-            $('#TicketTable_length').hide();
-            $('#TicketTable_paginate').hide();
+            // $('#TicketTable_length').hide();
+            // $('#TicketTable_paginate').hide();
 
             // Initial pagination
             updatePagination();
