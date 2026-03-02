@@ -182,7 +182,7 @@
                             <span id="filterJenisPengaduanDisplay">Jenis Pengaduan</span>
                             <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
                         </button>
-                        <ul class="dropdown-menu" aria-labelledby="filterJenisPengaduanBtn" style="font-size: 13px; min-width: 150px; position: absolute; top: 100%; left: 0; z-index: 1000; display: none;">
+                        <ul class="dropdown-menu" aria-labelledby="filterJenisPengaduanBtn" style="font-size: 13px; min-width: 150px;">
                             <li><a class="dropdown-item filter-option" href="#" data-filter-type="jenis_pengaduan" data-filter-value="" style="padding: 8px 16px;">Semua</a></li>
                             <li><a class="dropdown-item filter-option" href="#" data-filter-type="jenis_pengaduan" data-filter-value="perbaikan" style="padding: 8px 16px;">Perbaikan</a></li>
                             <li><a class="dropdown-item filter-option" href="#" data-filter-type="jenis_pengaduan" data-filter-value="permintaan" style="padding: 8px 16px;">Permintaan</a></li>
@@ -195,7 +195,7 @@
                             <span id="filterStatusDisplay">Status</span>
                             <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
                         </button>
-                        <ul class="dropdown-menu" aria-labelledby="filterStatusBtn" style="font-size: 13px; min-width: 150px; position: absolute; top: 100%; left: 0; z-index: 1000; display: none;">
+                        <ul class="dropdown-menu" aria-labelledby="filterStatusBtn" style="font-size: 13px; min-width: 150px;">
                             <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="" style="padding: 8px 16px;">Semua</a></li>
                             <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="open" style="padding: 8px 16px;">Open</a></li>
                             <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="on process" style="padding: 8px 16px;">On Process</a></li>
@@ -210,7 +210,7 @@
                             <span id="paginationDisplay">1-10 dari {{ $teknisi_data_ticket->count() }}</span>
                             <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
                         </button>
-                        <ul class="dropdown-menu" aria-labelledby="sortByDateBtn" style="font-size: 13px; min-width: 150px; position: absolute; top: 100%; left: 0; z-index: 1000; display: none;">
+                        <ul class="dropdown-menu" aria-labelledby="sortByDateBtn" style="font-size: 13px; min-width: 150px;">
                             <li><a class="dropdown-item page-sort-option" href="#" data-sort="desc" style="padding: 8px 16px;"><i class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru</a></li>
                             <li><a class="dropdown-item page-sort-option" href="#" data-sort="asc" style="padding: 8px 16px;"><i class="fa fa-arrow-up me-2" style="color: #6c757d;"></i>Terlama</a></li>
                         </ul>
