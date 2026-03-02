@@ -71,7 +71,7 @@
                     </thead>
                     <tbody>
                         @foreach($teknisi_data_ticket as $teknisidataticket)
-                        <tr class="align-middle text-sm border border-light" data-created-at="{{ $teknisidataticket->created_at->timestamp }}" data-subject="{{ strtolower($teknisidataticket->subject) }}" data-user="{{ strtolower($teknisidataticket->user->name) }}" data-status="{{ strtolower($teknisidataticket->status) }}">
+                        <tr class="align-middle text-sm border border-light" data-created-at="{{ $teknisidataticket->created_at->timestamp }}">
                             <td class="align-middle text-sm border border-light">
                                 <div class="d-flex px-2 py-1">
                                     <div class="d-flex flex-column justify-content-center">
@@ -203,60 +203,26 @@
     $(document).ready(function() {
         let currentSort = 'desc';
         let currentPage = 1;
-        let currentOrderColumn = null; // Track which column is being ordered
         const itemsPerPage = 10;
         var table = $('#TicketTable').DataTable({
             searching: true,
-            ordering: false, // Disable default DataTable ordering, kita buat custom
+            ordering: true, // Pengurutan diaktifkan untuk seluruh tabel
             paging: false,
             lengthChange: false,
-            info: false
+            info: false,
+            columnDefs: [{
+                    targets: [0, 1, 2], // Mengaktifkan pengurutan untuk kolom 0, 1, dan 2
+                    orderable: true // Kolom-kolom ini bisa diurutkan
+                },
+                {
+                    targets: [3, 4, 5], // Mengnonaktifkan pengurutan untuk kolom 3, 4, dan 5
+                    orderable: false // Kolom-kolom ini tidak bisa diurutkan
+                }
+            ]
         });
         $('#TicketTable_filter').hide();
         $('#TicketTable_length').hide();
         $('#TicketTable_paginate').hide();
-        
-        // Custom ordering pada header klik
-        $('#TicketTable thead th').on('click', function() {
-            var columnIndex = $(this).index();
-            
-            // Tentukan kolom mana yang bisa diurutkan
-            if (columnIndex === 0) { // Subject
-                currentOrderColumn = 'subject';
-            } else if (columnIndex === 1) { // User
-                currentOrderColumn = 'user';
-            } else if (columnIndex === 2) { // Status
-                currentOrderColumn = 'status';
-            } else {
-                return; // Kolom lain tidak bisa diurutkan
-            }
-            
-            // Toggle sort direction
-            currentSort = currentSort === 'asc' ? 'desc' : 'asc';
-            sortTableByColumn(currentOrderColumn, currentSort);
-            currentPage = 1;
-            updatePagination();
-        });
-        
-        // Fungsi untuk custom ordering per kolom
-        function sortTableByColumn(column, direction) {
-            var rows = $('#TicketTable tbody tr').get();
-            rows.sort(function(a, b) {
-                var aValue = $(a).data(column);
-                var bValue = $(b).data(column);
-                
-                // Bandingkan nilai
-                if (direction === 'asc') {
-                    return aValue > bValue ? 1 : aValue < bValue ? -1 : 0;
-                } else {
-                    return aValue < bValue ? 1 : aValue > bValue ? -1 : 0;
-                }
-            });
-            $.each(rows, function(index, row) {
-                $('#TicketTable tbody').append(row);
-            });
-        }
-        
         updatePagination();
         $('#search').on('keyup', function() {
             var searchTerm = this.value.toLowerCase();
