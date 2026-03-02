@@ -43,8 +43,7 @@
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">User</th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Status</th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Deskripsi</th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Aksi Status</th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">aksi</th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -76,29 +75,43 @@
                             <td class="align-middle text-center text-limit-30 border border-light">
                                 <span class="text-secondary text-xs font-weight-bold ">{{ $teknisidataticket->Detail }}</span>
                             </td>
-                            <td class="align-middle text-center text-sm border border-light">
-                                <form action="{{ route('tickets.assign', $teknisidataticket->id) }}" method="POST">
-                                    @csrf
-                                    @method('PUT')
-                                    <!-- Cek apakah tiket sudah memiliki asignees -->
-                                    @if($teknisidataticket->asignees->isEmpty())
-                                    <!-- Jika belum di-assign oleh siapapun -->
-                                    <button type="submit" class="btn btn-sm btn-transparent text-primary">Assign</button>
-                                    @elseif($teknisidataticket->asignees->first()->id == Auth::id())
-                                    <!-- Jika sudah di-assign ke teknisi yang sedang login -->
-                                    <button type="submit" class="btn btn-sm btn-outline-warning text-secondary">Reprocess</button>
-                                    @else
-                                    <!-- Jika sudah di-assign oleh teknisi lain -->
-                                    <button type="submit" class="btn btn-sm btn-outline-success text-primary">Contribute</button>
-                                    @endif
-                                </form>
-                            </td>
-                            <!-- "Edit" button within a dropdown -->
                             <td class="align-middle text-center border border-light">
-                                <a class="dropdown-item"
-                                    href="{{ route('viewticketteknisi.index', ['id' => $teknisidataticket->id]) }}">
-                                    <i class="fa fa-eye pe-2 text-dark"></i>
-                                </a>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fa fa-ellipsis-v"></i>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item" href="{{ route('viewticketteknisi.index', ['id' => $teknisidataticket->id]) }}">
+                                                <i class="fa fa-eye pe-2 text-dark"></i>View
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <form action="{{ route('tickets.assign', $teknisidataticket->id) }}" method="POST" style="display: inline;">
+                                                @csrf
+                                                @method('PUT')
+                                                <!-- Cek apakah tiket sudah memiliki asignees -->
+                                                @if($teknisidataticket->asignees->isEmpty())
+                                                <!-- Jika belum di-assign oleh siapapun -->
+                                                <button type="submit" class="dropdown-item text-primary">
+                                                    <i class="fa fa-user-plus pe-2"></i>Assign
+                                                </button>
+                                                @elseif($teknisidataticket->asignees->first()->id == Auth::id())
+                                                <!-- Jika sudah di-assign ke teknisi yang sedang login -->
+                                                <button type="submit" class="dropdown-item text-warning">
+                                                    <i class="fa fa-redo pe-2"></i>Reprocess
+                                                </button>
+                                                @else
+                                                <!-- Jika sudah di-assign oleh teknisi lain -->
+                                                <button type="submit" class="dropdown-item text-success">
+                                                    <i class="fa fa-handshake pe-2"></i>Contribute
+                                                </button>
+                                                @endif
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
                             </td>
                         </tr>
                         @endforeach
@@ -142,7 +155,7 @@
             paging: false,
             lengthChange: false,
             info: false,
-            columnDefs: [{targets: [2, 3, 4, 5], orderable: false}]
+            columnDefs: [{targets: [2, 3, 4], orderable: false}]
         });
         $('#TicketTable_filter').hide();
         $('#TicketTable_length').hide();
