@@ -249,11 +249,11 @@
                 }
             ]
         });
-        
+
         // Variables to track current filters
         let currentJenisPengaduanFilter = '';
         let currentStatusFilter = '';
-        
+
         // Handle filter dropdown selections
         $(document).on('click', '.filter-option', function(e) {
             e.preventDefault();
@@ -261,7 +261,7 @@
             var filterType = $(this).data('filter-type');
             var filterValue = $(this).data('filter-value');
             var filterText = $(this).text().trim();
-            
+
             if (filterType === 'jenis_pengaduan') {
                 currentJenisPengaduanFilter = filterValue;
                 var displayText = filterValue === '' ? 'Jenis Pengaduan' : filterText;
@@ -271,37 +271,37 @@
                 var displayText = filterValue === '' ? 'Status' : filterText;
                 $('#filterStatusDisplay').text(displayText);
             }
-            
+
             currentPage = 1;
             applyFilters();
-            
+
             return false;
         });
-        
+
         function applyFilters() {
             var allRows = $('#TicketTable tbody tr');
-            
+
             allRows.each(function() {
                 var row = $(this);
                 var jenisPengaduan = String(row.data('jenis-pengaduan')).trim().toLowerCase();
                 var status = String(row.data('status')).trim().toLowerCase();
-                
+
                 var filterJenis = String(currentJenisPengaduanFilter).trim().toLowerCase();
                 var filterStat = String(currentStatusFilter).trim().toLowerCase();
-                
+
                 var jenisPengaduanMatch = (filterJenis === '') || (jenisPengaduan === filterJenis);
                 var statusMatch = (filterStat === '') || (status === filterStat);
-                
+
                 if (jenisPengaduanMatch && statusMatch) {
-                    row.show();
+                    row.show(); // Menampilkan baris jika filter cocok
                 } else {
-                    row.hide();
+                    row.hide(); // Menyembunyikan baris jika filter tidak cocok
                 }
             });
-            
-            updatePagination();
+
+            updatePagination(); // Memperbarui pagination setelah filter diterapkan
         }
-        
+
         // Handle column header sorting for User column only (column 1)
         // Only trigger on the actual th element, not on nested buttons
         $(document).on('click', '#TicketTable thead th:nth-child(2)', function(e) {
@@ -309,29 +309,29 @@
             if ($(e.target).closest('[data-bs-toggle="dropdown"]').length) {
                 return;
             }
-            
+
             var isAsc = $(this).hasClass('sorting_asc');
-            
+
             // Remove all sorting classes
             $('#TicketTable thead th').removeClass('sorting_asc sorting_desc').addClass('sorting');
-            
+
             // Add sorting class to current column
             if (isAsc) {
                 $(this).removeClass('sorting').addClass('sorting_desc');
             } else {
                 $(this).removeClass('sorting').addClass('sorting_asc');
             }
-            
+
             sortAllDataByColumn(1, !isAsc);
             currentPage = 1;
             updatePagination();
         });
-        
+
         function sortAllDataByColumn(columnIndex, isAsc) {
             var rows = $('#TicketTable tbody tr').get();
             rows.sort(function(a, b) {
                 var aVal, bVal;
-                
+
                 if (columnIndex === 0) {
                     aVal = $(a).data('subject') || '';
                     bVal = $(b).data('subject') || '';
@@ -342,18 +342,18 @@
                     aVal = $(a).data('status') || '';
                     bVal = $(b).data('status') || '';
                 }
-                
+
                 // Case-insensitive string comparison
                 aVal = String(aVal).toLowerCase();
                 bVal = String(bVal).toLowerCase();
-                
+
                 if (isAsc) {
                     return aVal.localeCompare(bVal);
                 } else {
                     return bVal.localeCompare(aVal);
                 }
             });
-            
+
             $.each(rows, function(index, row) {
                 $('#TicketTable tbody').append(row);
             });
@@ -393,24 +393,45 @@
         }
 
         function updatePagination() {
-            var allRows = $('#TicketTable tbody tr').filter(':visible');
-            var totalRows = allRows.length;
-            const totalPages = Math.ceil(totalRows / itemsPerPage);
-            if (currentPage > totalPages) currentPage = totalPages || 1;
+            // Ambil hanya baris yang terlihat
+            var allRows = $('#TicketTable tbody tr').filter(':visible'); // Mengambil hanya baris yang terlihat
+            var totalRows = allRows.length; // Menghitung jumlah baris yang terlihat
+            const totalPages = Math.ceil(totalRows / itemsPerPage); // Hitung jumlah total halaman berdasarkan data yang terlihat
+
+            // Batasi halaman jika melebihi total halaman
+            if (currentPage > totalPages) {
+                currentPage = totalPages || 1;
+            }
+
+            // Sembunyikan semua baris terlebih dahulu
             $('#TicketTable tbody tr').hide();
+
+            // Tentukan indeks awal dan akhir untuk baris yang ditampilkan pada halaman saat ini
             var startIndex = (currentPage - 1) * itemsPerPage;
             var endIndex = startIndex + itemsPerPage;
+
+            // Tampilkan baris yang relevan sesuai dengan halaman saat ini
             allRows.slice(startIndex, endIndex).show();
+
+            // Menampilkan rentang data yang sedang ditampilkan
             var displayStart, displayEnd;
+
             if (currentSort === 'desc') {
                 displayStart = totalRows === 0 ? 0 : startIndex + 1;
                 displayEnd = Math.min(endIndex, totalRows);
             } else {
                 displayStart = totalRows - startIndex;
                 displayEnd = totalRows - endIndex + 1;
-                if (displayEnd < 1) displayEnd = 1;
+                if (displayEnd < 1) {
+                    displayEnd = 1;
+                }
+
             }
+
+            // Memperbarui teks untuk menampilkan rentang data yang ditampilkan dan total data
             $('#paginationDisplay').text(displayStart + '-' + displayEnd + ' dari ' + totalRows);
+
+            // Mengatur status tombol prev/next
             $('#prevPage').prop('disabled', currentPage === 1).css('opacity', currentPage === 1 ? '0.5' : '1').css('cursor', currentPage === 1 ? 'not-allowed' : 'pointer');
             $('#nextPage').prop('disabled', currentPage === totalPages || totalPages === 0).css('opacity', currentPage === totalPages || totalPages === 0 ? '0.5' : '1').css('cursor', currentPage === totalPages || totalPages === 0 ? 'not-allowed' : 'pointer');
         }
