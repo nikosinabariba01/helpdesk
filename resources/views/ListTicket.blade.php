@@ -193,7 +193,7 @@
                             <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="filterJenisPengaduanBtn" style="font-size: 13px; min-width: 150px;">
-                            <li><a class="dropdown-item filter-option" href="#" data-filter-type="jenis_pengaduan" data-filter-value="" style="padding: 8px 16px;">Semua</a></li>
+                            <li><a class="dropdown-item filter-option" href="#" data-filter-type="jenis_pengaduan" data-filter-value="" style="padding: 8px 16px;">Jenis Pengaduan</a></li>
                             <li><a class="dropdown-item filter-option" href="#" data-filter-type="jenis_pengaduan" data-filter-value="perbaikan" style="padding: 8px 16px;">Perbaikan</a></li>
                             <li><a class="dropdown-item filter-option" href="#" data-filter-type="jenis_pengaduan" data-filter-value="permintaan" style="padding: 8px 16px;">Permintaan</a></li>
                         </ul>
@@ -206,7 +206,7 @@
                             <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="filterStatusBtn" style="font-size: 13px; min-width: 150px;">
-                            <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="" style="padding: 8px 16px;">Semua</a></li>
+                            <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="" style="padding: 8px 16px;">Status</a></li>
                             <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="open" style="padding: 8px 16px;">Open</a></li>
                             <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="on process" style="padding: 8px 16px;">On Process</a></li>
                             <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="escalated" style="padding: 8px 16px;">Escalated</a></li>
@@ -231,7 +231,7 @@
         let currentSort = 'desc';
         let currentPage = 1;
         const itemsPerPage = 10;
-        let filteredData = [];  // To store filtered data
+        let filteredData = []; // To store filtered data
 
         var table = $('#TicketTable').DataTable({
             searching: false,
@@ -337,7 +337,7 @@
 
         // Update Pagination
         function updatePagination() {
-            var totalRows = filteredData.length;  // Count rows based on filtered data
+            var totalRows = filteredData.length; // Count rows based on filtered data
             const totalPages = Math.ceil(totalRows / itemsPerPage);
             if (currentPage > totalPages) currentPage = totalPages || 1;
 
@@ -394,7 +394,7 @@
 
         function filterTable(filterType, filterValue) {
             var rows = $('#TicketTable tbody tr');
-            filteredData = [];  // Reset filtered data
+            filteredData = []; // Reset filtered data
 
             rows.each(function() {
                 var row = $(this);
