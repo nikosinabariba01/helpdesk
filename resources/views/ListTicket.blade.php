@@ -43,8 +43,7 @@
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">User</th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Status</th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Deskripsi</th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Aksi Status</th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">aksi</th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -76,29 +75,31 @@
                             <td class="align-middle text-center text-limit-30 border border-light">
                                 <span class="text-secondary text-xs font-weight-bold ">{{ $teknisidataticket->Detail }}</span>
                             </td>
-                            <td class="align-middle text-center text-sm border border-light">
-                                <form action="{{ route('tickets.assign', $teknisidataticket->id) }}" method="POST">
-                                    @csrf
-                                    @method('PUT')
-                                    <!-- Cek apakah tiket sudah memiliki asignees -->
-                                    @if($teknisidataticket->asignees->isEmpty())
-                                    <!-- Jika belum di-assign oleh siapapun -->
-                                    <button type="submit" class="btn btn-sm btn-transparent text-primary">Assign</button>
-                                    @elseif($teknisidataticket->asignees->first()->id == Auth::id())
-                                    <!-- Jika sudah di-assign ke teknisi yang sedang login -->
-                                    <button type="submit" class="btn btn-sm btn-outline-warning text-secondary">Reprocess</button>
-                                    @else
-                                    <!-- Jika sudah di-assign oleh teknisi lain -->
-                                    <button type="submit" class="btn btn-sm btn-outline-success text-primary">Contribute</button>
-                                    @endif
-                                </form>
-                            </td>
-                            <!-- "Edit" button within a dropdown -->
+                            <!-- Action dropdown -->
                             <td class="align-middle text-center border border-light">
-                                <a class="dropdown-item"
-                                    href="{{ route('viewticketteknisi.index', ['id' => $teknisidataticket->id]) }}">
-                                    <i class="fa fa-eye pe-2 text-dark"></i>
-                                </a>
+                                <div class="dropdown">
+                                    <a class="btn btn-link" href="#" role="button" id="dropdownMenuLink-{{ $teknisidataticket->id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fa fa-ellipsis-v fa-sm"></i>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink-{{ $teknisidataticket->id }}">
+                                        <li>
+                                            <a class="dropdown-item text-info" href="{{ route('viewticketteknisi.index', ['id' => $teknisidataticket->id]) }}">
+                                                <i class="fa fa-eye pe-2 text-info"></i>Detail
+                                            </a>
+                                        </li>
+                                        @if(!$teknisidataticket->asignees->isEmpty() && $teknisidataticket->asignees->first()->id != Auth::id())
+                                        <li>
+                                            <form action="{{ route('tickets.assign', $teknisidataticket->id) }}" method="POST" style="display: inline;">
+                                                @csrf
+                                                @method('PUT')
+                                                <button type="submit" class="dropdown-item text-success">
+                                                    <i class="fa fa-handshake pe-2 text-success"></i>Contribute
+                                                </button>
+                                            </form>
+                                        </li>
+                                        @endif
+                                    </ul>
+                                </div>
                             </td>
                         </tr>
                         @endforeach
@@ -142,7 +143,7 @@
             paging: false,
             lengthChange: false,
             info: false,
-            columnDefs: [{targets: [2, 3, 4, 5], orderable: false}]
+            columnDefs: [{targets: [2, 3, 4], orderable: false}]
         });
         $('#TicketTable_filter').hide();
         $('#TicketTable_length').hide();
