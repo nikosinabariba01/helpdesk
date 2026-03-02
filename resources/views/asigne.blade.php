@@ -133,9 +133,7 @@
                                 <form action="{{ route('tickets.cancel_assign', $teknisidataticket->id) }}" method="POST" class="mb-2">
                                     @csrf
                                     @method('PUT')
-                                    <button type="submit" class="btn btn-sm btn-outline-warning btn-transparent text-warning">
-                                        <i class="fa fa-ban pe-2 text-warning"></i>Cancel
-                                    </button>
+                                    <button type="submit" class="btn btn-sm btn-outline-danger btn-transparent text-secondary">Cancel Process</button>
                                 </form>
                                 @endif
                                 <!-- Tombol Request Follow-up jika tiket belum escalated -->
@@ -147,8 +145,8 @@
                                         <i class="fa fa-times pe-2 text-danger"></i>Cancel Escalation
                                     </button>
                                     @else
-                                    <button type="submit" class="btn btn-sm btn-outline-info btn-transparent text-info">
-                                        <i class="fa fa-arrow-up pe-2 text-info"></i>Escalate
+                                    <button type="submit" class="btn btn-sm btn-outline-success btn-transparent text-success">
+                                        <i class="fa fa-refresh pe-2 text-success"></i>Escalate
                                     </button>
                                     @endif
                                 </form>
@@ -168,10 +166,13 @@
                                 <form action="{{ route('tickets.cancel_assign', $teknisidataticket->id) }}" method="POST" class="mb-2">
                                     @csrf
                                     @method('PUT')
-                                    <button type="submit" class="btn btn-sm btn-outline-warning btn-transparent text-warning">
-                                        <i class="fa fa-ban pe-2 text-warning"></i>Cancel Process
-                                    </button>
+                                    <button type="submit" class="btn btn-sm btn-outline-danger btn-transparent text-secondary">Cancel Process</button>
                                 </form>
+                                @endif
+                                <!-- Tombol Close -->
+                                @if($teknisidataticket->status != 'escalated')
+                                <form method="POST" action="{{ route('ticketsteknisi.close', $teknisidataticket->id) }}" id="closeTicketForm-{{ $teknisidataticket->id }}">
+                                    @method('PUT')
                                     @csrf
                                     <button type="button" class="btn btn-sm btn-outline-danger btn-transparent text-danger" data-bs-toggle="modal" data-bs-target="#modal-confirmation" data-form-id="closeTicketForm-{{ $teknisidataticket->id }}">
                                         <i class="fa fa-check pe-2 text-danger"></i>Close
