@@ -29,13 +29,27 @@
             </div>
         </div>
         <div class="card-body px-0 pt-0 pb-2 h-500">
+            <style>
+                @media (max-width: 768px) {
+                    .table-responsive-custom {
+                        height: 400px !important;
+                        max-height: 400px !important;
+                    }
+                }
+                @media (min-width: 769px) {
+                    .table-responsive-custom {
+                        height: 550px !important;
+                        max-height: 550px !important;
+                    }
+                }
+            </style>
             @if($teknisi_data_ticket->isEmpty())
-            <div class="table-responsive margin-right: 15px; position: relative;" style="height: 400px; max-height: 400px; overflow-y: auto;">
+            <div class="table-responsive margin-right: 15px; position: relative; table-responsive-custom" style="overflow-y: auto;">
                 <!-- Add your button here -->
                 <a href="{{ route('teknisi.index') }}" class="btn btn-primary position-absolute top-50 start-50 translate-middle">assign ticket</a>
             </div>
             @else
-            <div class="table-responsive margin-right: 15px;" style="height: 400px; max-height: 400px; overflow-y: auto;">
+            <div class="table-responsive margin-right: 15px; table-responsive-custom" style="overflow-y: auto;">
                 <table class="table align-items-center mb-0" id="TicketTable">
                     <thead>
                         <tr>
