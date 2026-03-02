@@ -393,7 +393,6 @@
         }
 
         function updatePagination() {
-            // Ambil hanya baris yang terlihat
             var allRows = $('#TicketTable tbody tr').filter(':visible'); // Mengambil hanya baris yang terlihat
             var totalRows = allRows.length; // Menghitung jumlah baris yang terlihat
             const totalPages = Math.ceil(totalRows / itemsPerPage); // Hitung jumlah total halaman berdasarkan data yang terlihat
@@ -425,7 +424,6 @@
                 if (displayEnd < 1) {
                     displayEnd = 1;
                 }
-
             }
 
             // Memperbarui teks untuk menampilkan rentang data yang ditampilkan dan total data
