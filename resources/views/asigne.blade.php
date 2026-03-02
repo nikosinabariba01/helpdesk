@@ -307,180 +307,186 @@
         </div>
     </div>
 
-    <script>
-        $(document).ready(function() {
-            let currentSort = 'desc'; // Default: Terbaru
-            let currentPage = 1;
-            const itemsPerPage = 10;
-            let selectedFormId = null; // Store selected form ID
+<script>
+    $(document).ready(function() {
+        let currentSort = 'desc'; // Default: Terbaru
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        let selectedFormId = null; // Store selected form ID
 
-            var table = $('#TicketTable').DataTable({
-                searching: true,
-                ordering: false,
-                paging: false,
-                lengthChange: false,
-                info: false,
-                columnDefs: [{
-                    targets: [2, 3, 4, 5],
-                    orderable: false
-                }]
-            });
-
-            // Menyembunyikan elemen pencarian bawaan
-            $('#TicketTable_filter').hide();
-            // $('#TicketTable_length').hide();
-            // $('#TicketTable_paginate').hide();
-
-            // Initial pagination
-            updatePagination();
-
-            // Handle modal show event - simpan form ID yang dipilih
-            $('#modal-confirmation').on('show.bs.modal', function(e) {
-                const button = e.relatedTarget; // Tombol yang memicu modal
-                selectedFormId = button.getAttribute('data-form-id');
-            });
-
-            // Handle modal submit button
-            $('#modal-submit-btn').on('click', function() {
-                if (selectedFormId) {
-                    document.getElementById(selectedFormId).submit();
+        var table = $('#TicketTable').DataTable({
+            searching: true,
+            ordering: true, // Aktifkan pengurutan secara global
+            paging: false,
+            lengthChange: false,
+            info: false,
+            columnDefs: [
+                {
+                    targets: [0, 1, 2], // Aktifkan pengurutan untuk kolom 0, 1, dan 2
+                    orderable: true // Kolom-kolom ini bisa diurutkan
+                },
+                {
+                    targets: [3, 4, 5], // Nonaktifkan pengurutan untuk kolom 3, 4, dan 5
+                    orderable: false // Kolom-kolom ini tidak bisa diurutkan
                 }
-            });
-
-            // Custom search hanya kolom Subject dan User (kolom 0 dan 1)
-            $('#search').on('keyup', function() {
-                var searchTerm = this.value.toLowerCase();
-
-                $.fn.dataTable.ext.search = [];
-                $.fn.dataTable.ext.search.push(
-                    function(settings, data, dataIndex) {
-                        // Kolom subject dan user (kolom ke-0 dan ke-1)
-                        var subject = data[0].toLowerCase(); // subject
-                        var user = data[1].toLowerCase(); // user
-
-                        return subject.includes(searchTerm) || user.includes(searchTerm);
-                    }
-                );
-
-                table.draw();
-                currentPage = 1;
-                updatePagination();
-            });
-
-            // Handle pagination sort option clicks (from paginationInfo dropdown)
-            $(document).on('click', '.page-sort-option', function(e) {
-                e.preventDefault();
-                currentSort = $(this).data('sort');
-
-                // Sort rows
-                sortTableByDate(currentSort);
-                currentPage = 1;
-                updatePagination();
-            });
-
-            // Function to sort table by date
-            function sortTableByDate(direction) {
-                var rows = $('#TicketTable tbody tr').get();
-
-                rows.sort(function(a, b) {
-                    // Ambil teks dari kolom pertama (yang berisi nomor tiket dengan tanggal)
-                    var aText = $(a).find('li:first').text(); // sp-123012401
-                    var bText = $(b).find('li:first').text(); // sp-456012402
-
-                    // Ekstrak tanggal dari format sp-xxxddmmyy
-                    var aDate = extractDateFromTicket(aText);
-                    var bDate = extractDateFromTicket(bText);
-
-                    if (direction === 'desc') {
-                        return new Date(bDate) - new Date(aDate);
-                    } else {
-                        return new Date(aDate) - new Date(bDate);
-                    }
-                });
-
-                $.each(rows, function(index, row) {
-                    $('#TicketTable tbody').append(row);
-                });
-            }
-
-            // Function to extract date from ticket format
-            function extractDateFromTicket(ticketText) {
-                // Format: sp-xxxddmmyy
-                var match = ticketText.match(/sp-(\d{3})(\d{6})/);
-                if (match) {
-                    var dateStr = match[2]; // ddmmyy
-                    var day = dateStr.substring(0, 2);
-                    var month = dateStr.substring(2, 4);
-                    var year = '20' + dateStr.substring(4, 6);
-                    return new Date(year, parseInt(month) - 1, day);
-                }
-                return new Date(0);
-            }
-
-            // Function to update pagination display
-            function updatePagination() {
-                var allRows = $('#TicketTable tbody tr');
-                var totalRows = allRows.length;
-                const totalPages = Math.ceil(totalRows / itemsPerPage);
-
-                // Batasi halaman
-                if (currentPage > totalPages) {
-                    currentPage = totalPages || 1;
-                }
-
-                // Hide semua rows
-                allRows.hide();
-
-                // Show rows untuk halaman saat ini
-                var startIndex = (currentPage - 1) * itemsPerPage;
-                var endIndex = startIndex + itemsPerPage;
-                allRows.slice(startIndex, endIndex).show();
-
-                // Update pagination display berdasarkan sorting
-                var displayStart, displayEnd;
-
-                if (currentSort === 'desc') {
-                    // Terbaru: tampil normal (1-10, 11-20, dst)
-                    displayStart = totalRows === 0 ? 0 : startIndex + 1;
-                    displayEnd = Math.min(endIndex, totalRows);
-                } else {
-                    // Terlama: tampil terbalik (100-90, 90-80, dst)
-                    displayStart = totalRows - startIndex;
-                    displayEnd = totalRows - endIndex + 1;
-
-                    // Pastikan displayEnd tidak kurang dari 1
-                    if (displayEnd < 1) {
-                        displayEnd = 1;
-                    }
-                }
-
-                $('#paginationDisplay').text(displayStart + '-' + displayEnd + ' dari ' + totalRows);
-
-                // Update button states
-                $('#prevPage').prop('disabled', currentPage === 1).css('opacity', currentPage === 1 ? '0.5' : '1')
-                    .css('cursor', currentPage === 1 ? 'not-allowed' : 'pointer');
-                $('#nextPage').prop('disabled', currentPage === totalPages || totalPages === 0).css('opacity',
-                    currentPage === totalPages || totalPages === 0 ? '0.5' : '1').css('cursor', currentPage ===
-                    totalPages || totalPages === 0 ? 'not-allowed' : 'pointer');
-            }
-
-            // Handle pagination buttons
-            $('#prevPage').on('click', function() {
-                if (currentPage > 1) {
-                    currentPage--;
-                    updatePagination();
-                }
-            });
-
-            $('#nextPage').on('click', function() {
-                var totalRows = $('#TicketTable tbody tr').length;
-                const totalPages = Math.ceil(totalRows / itemsPerPage);
-                if (currentPage < totalPages) {
-                    currentPage++;
-                    updatePagination();
-                }
-            });
+            ]
         });
-    </script>
+
+        // Menyembunyikan elemen pencarian bawaan
+        $('#TicketTable_filter').hide();
+        // $('#TicketTable_length').hide();
+        // $('#TicketTable_paginate').hide();
+
+        // Initial pagination
+        updatePagination();
+
+        // Handle modal show event - simpan form ID yang dipilih
+        $('#modal-confirmation').on('show.bs.modal', function(e) {
+            const button = e.relatedTarget; // Tombol yang memicu modal
+            selectedFormId = button.getAttribute('data-form-id');
+        });
+
+        // Handle modal submit button
+        $('#modal-submit-btn').on('click', function() {
+            if (selectedFormId) {
+                document.getElementById(selectedFormId).submit();
+            }
+        });
+
+        // Custom search hanya kolom Subject dan User (kolom 0 dan 1)
+        $('#search').on('keyup', function() {
+            var searchTerm = this.value.toLowerCase();
+
+            $.fn.dataTable.ext.search = [];
+            $.fn.dataTable.ext.search.push(
+                function(settings, data, dataIndex) {
+                    // Kolom subject dan user (kolom ke-0 dan ke-1)
+                    var subject = data[0].toLowerCase(); // subject
+                    var user = data[1].toLowerCase(); // user
+
+                    return subject.includes(searchTerm) || user.includes(searchTerm);
+                }
+            );
+
+            table.draw();
+            currentPage = 1;
+            updatePagination();
+        });
+
+        // Handle pagination sort option clicks (from paginationInfo dropdown)
+        $(document).on('click', '.page-sort-option', function(e) {
+            e.preventDefault();
+            currentSort = $(this).data('sort');
+
+            // Sort rows
+            sortTableByDate(currentSort);
+            currentPage = 1;
+            updatePagination();
+        });
+
+        // Function to sort table by date
+        function sortTableByDate(direction) {
+            var rows = $('#TicketTable tbody tr').get();
+
+            rows.sort(function(a, b) {
+                // Ambil teks dari kolom pertama (yang berisi nomor tiket dengan tanggal)
+                var aText = $(a).find('li:first').text(); // sp-123012401
+                var bText = $(b).find('li:first').text(); // sp-456012402
+
+                // Ekstrak tanggal dari format sp-xxxddmmyy
+                var aDate = extractDateFromTicket(aText);
+                var bDate = extractDateFromTicket(bText);
+
+                if (direction === 'desc') {
+                    return new Date(bDate) - new Date(aDate);
+                } else {
+                    return new Date(aDate) - new Date(bDate);
+                }
+            });
+
+            $.each(rows, function(index, row) {
+                $('#TicketTable tbody').append(row);
+            });
+        }
+
+        // Function to extract date from ticket format
+        function extractDateFromTicket(ticketText) {
+            // Format: sp-xxxddmmyy
+            var match = ticketText.match(/sp-(\d{3})(\d{6})/);
+            if (match) {
+                var dateStr = match[2]; // ddmmyy
+                var day = dateStr.substring(0, 2);
+                var month = dateStr.substring(2, 4);
+                var year = '20' + dateStr.substring(4, 6);
+                return new Date(year, parseInt(month) - 1, day);
+            }
+            return new Date(0);
+        }
+
+        // Function to update pagination display
+        function updatePagination() {
+            var allRows = $('#TicketTable tbody tr');
+            var totalRows = allRows.length;
+            const totalPages = Math.ceil(totalRows / itemsPerPage);
+
+            // Batasi halaman
+            if (currentPage > totalPages) {
+                currentPage = totalPages || 1;
+            }
+
+            // Hide semua rows
+            allRows.hide();
+
+            // Show rows untuk halaman saat ini
+            var startIndex = (currentPage - 1) * itemsPerPage;
+            var endIndex = startIndex + itemsPerPage;
+            allRows.slice(startIndex, endIndex).show();
+
+            // Update pagination display berdasarkan sorting
+            var displayStart, displayEnd;
+
+            if (currentSort === 'desc') {
+                // Terbaru: tampil normal (1-10, 11-20, dst)
+                displayStart = totalRows === 0 ? 0 : startIndex + 1;
+                displayEnd = Math.min(endIndex, totalRows);
+            } else {
+                // Terlama: tampil terbalik (100-90, 90-80, dst)
+                displayStart = totalRows - startIndex;
+                displayEnd = totalRows - endIndex + 1;
+
+                // Pastikan displayEnd tidak kurang dari 1
+                if (displayEnd < 1) {
+                    displayEnd = 1;
+                }
+            }
+
+            $('#paginationDisplay').text(displayStart + '-' + displayEnd + ' dari ' + totalRows);
+
+            // Update button states
+            $('#prevPage').prop('disabled', currentPage === 1).css('opacity', currentPage === 1 ? '0.5' : '1')
+                .css('cursor', currentPage === 1 ? 'not-allowed' : 'pointer');
+            $('#nextPage').prop('disabled', currentPage === totalPages || totalPages === 0).css('opacity',
+                currentPage === totalPages || totalPages === 0 ? '0.5' : '1').css('cursor', currentPage ===
+                totalPages || totalPages === 0 ? 'not-allowed' : 'pointer');
+        }
+
+        // Handle pagination buttons
+        $('#prevPage').on('click', function() {
+            if (currentPage > 1) {
+                currentPage--;
+                updatePagination();
+            }
+        });
+
+        $('#nextPage').on('click', function() {
+            var totalRows = $('#TicketTable tbody tr').length;
+            const totalPages = Math.ceil(totalRows / itemsPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                updatePagination();
+            }
+        });
+    });
+</script>
 
 @endsection
