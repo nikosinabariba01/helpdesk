@@ -61,9 +61,33 @@
                 <table class="table align-items-center mb-0" id="TicketTable">
                     <thead>
                         <tr>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">subject</th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">
+                                <div class="dropdown d-inline-block" style="position: relative;">
+                                    <button class="btn btn-sm btn-link text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center p-0" style="text-decoration: none; color: inherit; background: none; border: none; cursor: pointer; font-size: inherit;" data-bs-toggle="dropdown" aria-expanded="false">
+                                        subject <i class="fa fa-chevron-down" style="font-size: 10px; margin-left: 4px;"></i>
+                                    </button>
+                                    <ul class="dropdown-menu" id="jenisPengaduanFilter" style="font-size: 12px; min-width: 150px;">
+                                        <li><a class="dropdown-item filter-option" href="#" data-filter-type="jenis_pengaduan" data-filter-value="" style="padding: 8px 16px;">Semua</a></li>
+                                        <li><a class="dropdown-item filter-option" href="#" data-filter-type="jenis_pengaduan" data-filter-value="perbaikan" style="padding: 8px 16px;">Perbaikan</a></li>
+                                        <li><a class="dropdown-item filter-option" href="#" data-filter-type="jenis_pengaduan" data-filter-value="permintaan" style="padding: 8px 16px;">Permintaan</a></li>
+                                    </ul>
+                                </div>
+                            </th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">User</th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Status</th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">
+                                <div class="dropdown d-inline-block" style="position: relative;">
+                                    <button class="btn btn-sm btn-link text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center p-0" style="text-decoration: none; color: inherit; background: none; border: none; cursor: pointer; font-size: inherit;" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Status <i class="fa fa-chevron-down" style="font-size: 10px; margin-left: 4px;"></i>
+                                    </button>
+                                    <ul class="dropdown-menu" id="statusFilter" style="font-size: 12px; min-width: 150px;">
+                                        <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="" style="padding: 8px 16px;">Semua</a></li>
+                                        <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="open" style="padding: 8px 16px;">Open</a></li>
+                                        <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="on process" style="padding: 8px 16px;">On Process</a></li>
+                                        <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="escalated" style="padding: 8px 16px;">Escalated</a></li>
+                                        <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="close" style="padding: 8px 16px;">Close</a></li>
+                                    </ul>
+                                </div>
+                            </th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Deskripsi</th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Aksi Status</th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">aksi</th>
@@ -71,7 +95,7 @@
                     </thead>
                     <tbody>
                         @foreach($teknisi_data_ticket as $teknisidataticket)
-                        <tr class="align-middle text-sm border border-light" data-created-at="{{ $teknisidataticket->created_at->timestamp }}">
+                        <tr class="align-middle text-sm border border-light" data-created-at="{{ $teknisidataticket->created_at->timestamp }}" data-jenis-pengaduan="{{ $teknisidataticket->Jenis_Pengaduan }}">
                             <td class="align-middle text-sm border border-light" data-subject="{{ $teknisidataticket->subject }}">
                                 <div class="d-flex px-2 py-1">
                                     <div class="d-flex flex-column justify-content-center">
@@ -221,9 +245,47 @@
             ]
         });
         
-        // Handle column header sorting
-        $('#TicketTable thead th').slice(0, 3).on('click', function() {
-            var columnIndex = $(this).index();
+        // Variables to track current filters
+        let currentJenisPengaduanFilter = '';
+        let currentStatusFilter = '';
+        
+        // Handle filter dropdown selections
+        $(document).on('click', '.filter-option', function(e) {
+            e.preventDefault();
+            var filterType = $(this).data('filter-type');
+            var filterValue = $(this).data('filter-value');
+            
+            if (filterType === 'jenis_pengaduan') {
+                currentJenisPengaduanFilter = filterValue;
+            } else if (filterType === 'status') {
+                currentStatusFilter = filterValue;
+            }
+            
+            currentPage = 1;
+            applyFilters();
+        });
+        
+        function applyFilters() {
+            var allRows = $('#TicketTable tbody tr');
+            allRows.each(function() {
+                var row = $(this);
+                var jenisPengaduan = row.data('jenis-pengaduan');
+                var status = row.data('status');
+                
+                var jenisPengaduanMatch = currentJenisPengaduanFilter === '' || String(jenisPengaduan).toLowerCase() === currentJenisPengaduanFilter.toLowerCase();
+                var statusMatch = currentStatusFilter === '' || String(status).toLowerCase() === currentStatusFilter.toLowerCase();
+                
+                if (jenisPengaduanMatch && statusMatch) {
+                    row.show();
+                } else {
+                    row.hide();
+                }
+            });
+            updatePagination();
+        }
+        
+        // Handle column header sorting for User column only (column 1)
+        $(document).on('click', '#TicketTable thead th:nth-child(2)', function() {
             var isAsc = $(this).hasClass('sorting_asc');
             
             // Remove all sorting classes
@@ -236,7 +298,7 @@
                 $(this).removeClass('sorting').addClass('sorting_asc');
             }
             
-            sortAllDataByColumn(columnIndex, !isAsc);
+            sortAllDataByColumn(1, !isAsc);
             currentPage = 1;
             updatePagination();
         });
@@ -307,11 +369,11 @@
         }
 
         function updatePagination() {
-            var allRows = $('#TicketTable tbody tr');
+            var allRows = $('#TicketTable tbody tr').filter(':visible');
             var totalRows = allRows.length;
             const totalPages = Math.ceil(totalRows / itemsPerPage);
             if (currentPage > totalPages) currentPage = totalPages || 1;
-            allRows.hide();
+            $('#TicketTable tbody tr').hide();
             var startIndex = (currentPage - 1) * itemsPerPage;
             var endIndex = startIndex + itemsPerPage;
             allRows.slice(startIndex, endIndex).show();
@@ -335,7 +397,7 @@
             }
         });
         $('#nextPage').on('click', function() {
-            var totalRows = $('#TicketTable tbody tr').length;
+            var totalRows = $('#TicketTable tbody tr').filter(':visible').length;
             const totalPages = Math.ceil(totalRows / itemsPerPage);
             if (currentPage < totalPages) {
                 currentPage++;
