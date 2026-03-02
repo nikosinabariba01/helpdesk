@@ -105,20 +105,20 @@
                                     @csrf
                                     @method('PUT')
                                     <button type="submit" class="btn btn-sm btn-outline-warning btn-transparent text-warning">
-                                        <i class="fa fa-ban pe-2 text-warning"></i>Cancel
+                                        Cancel
                                     </button>
                                 </form>
                                 <form method="POST" action="{{ route('ticketsteknisi.requestFollowup', $teknisidataticket->id) }}" class="mb-2">
                                     @csrf
                                     <button type="submit" class="btn btn-sm btn-outline-info btn-transparent text-info">
-                                        <i class="fa fa-arrow-up pe-2 text-info"></i>Escalate
+                                        Escalate
                                     </button>
                                 </form>
                                 <form method="POST" action="{{ route('ticketsteknisi.close', $teknisidataticket->id) }}" id="closeTicketForm-{{ $teknisidataticket->id }}" class="mb-2">
                                     @method('PUT')
                                     @csrf
                                     <button type="button" class="btn btn-sm btn-outline-success btn-transparent text-success" data-bs-toggle="modal" data-bs-target="#modal-confirmation" data-form-id="closeTicketForm-{{ $teknisidataticket->id }}">
-                                        <i class="fa fa-check-circle pe-2 text-success"></i>Close
+                                        Close
                                     </button>
                                 </form>
                                 <!-- Tombol Contribute jika sudah di-assign oleh teknisi lain -->
@@ -127,7 +127,7 @@
                                     @csrf
                                     @method('PUT')
                                     <button type="submit" class="btn btn-sm btn-outline-primary btn-transparent text-primary">
-                                        <i class="fa fa-handshake pe-2 text-primary"></i>Contribute
+                                        Contribute
                                     </button>
                                 </form>
                                 @endif
@@ -137,7 +137,7 @@
                                     @csrf
                                     @method('PUT')
                                     <button type="submit" class="btn btn-sm btn-outline-danger btn-transparent text-danger">
-                                        <i class="fa fa-times pe-2 text-danger"></i>Esc. Cancel
+                                        Esc. Cancel
                                     </button>
                                 </form>
                                 @elseif($teknisidataticket->status == 'close')
@@ -146,7 +146,7 @@
                                     @csrf
                                     @method('PUT')
                                     <button type="submit" class="btn btn-sm btn-outline-warning btn-transparent text-warning">
-                                        <i class="fa fa-redo pe-2 text-warning"></i>Reprocess
+                                        Reprocess
                                     </button>
                                 </form>
                                 @elseif($teknisidataticket->status == 'open')
@@ -155,7 +155,7 @@
                                     @csrf
                                     @method('PUT')
                                     <button type="submit" class="btn btn-sm btn-outline-primary btn-transparent text-primary">
-                                        <i class="fa fa-play pe-2 text-primary"></i>Proceed
+                                        Proceed
                                     </button>
                                 </form>
                                 @endif
