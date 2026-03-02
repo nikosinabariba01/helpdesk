@@ -71,7 +71,7 @@
                     </thead>
                     <tbody>
                         @foreach($teknisi_data_ticket as $teknisidataticket)
-                        <tr class="align-middle text-sm border border-light">
+                        <tr class="align-middle text-sm border border-light" data-created-at="{{ $teknisidataticket->created_at->timestamp }}">
                             <td class="align-middle text-sm border border-light">
                                 <div class="d-flex px-2 py-1">
                                     <div class="d-flex flex-column justify-content-center">
@@ -245,22 +245,13 @@
         function sortTableByDate(direction) {
             var rows = $('#TicketTable tbody tr').get();
             rows.sort(function(a, b) {
-                var aDate = extractDateFromTicket($(a).find('li:first').text());
-                var bDate = extractDateFromTicket($(b).find('li:first').text());
-                return direction === 'desc' ? new Date(bDate) - new Date(aDate) : new Date(aDate) - new Date(bDate);
+                var aTimestamp = parseInt($(a).data('created-at')) || 0;
+                var bTimestamp = parseInt($(b).data('created-at')) || 0;
+                return direction === 'desc' ? bTimestamp - aTimestamp : aTimestamp - bTimestamp;
             });
             $.each(rows, function(index, row) {
                 $('#TicketTable tbody').append(row);
             });
-        }
-
-        function extractDateFromTicket(ticketText) {
-            var match = ticketText.match(/sp-(\d{3})(\d{6})/);
-            if (match) {
-                var dateStr = match[2];
-                return new Date('20' + dateStr.substring(4, 6), parseInt(dateStr.substring(2, 4)) - 1, dateStr.substring(0, 2));
-            }
-            return new Date(0);
         }
 
         function updatePagination() {
