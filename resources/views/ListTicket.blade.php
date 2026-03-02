@@ -71,7 +71,7 @@
                     </thead>
                     <tbody>
                         @foreach($teknisi_data_ticket as $teknisidataticket)
-                        <tr class="align-middle text-sm border border-light" data-created-at="{{ $teknisidataticket->created_at->timestamp }}">
+                        <tr class="align-middle text-sm border border-light" data-created-at="{{ $teknisidataticket->created_at->timestamp }}" data-jenis-pengaduan="{{ $teknisidataticket->Jenis_Pengaduan }}" data-status="{{ $teknisidataticket->status }}">
                             <td class="align-middle text-sm border border-light" data-subject="{{ $teknisidataticket->subject }}">
                                 <div class="d-flex px-2 py-1">
                                     <div class="d-flex flex-column justify-content-center">
@@ -248,7 +248,7 @@
             ]
         });
 
-        // Variabel untuk menyimpan nilai filter
+        // Variables to track current filters
         let currentJenisPengaduanFilter = '';
         let currentStatusFilter = '';
 
@@ -271,7 +271,9 @@
             }
 
             currentPage = 1;
-            applyFilters(); // Terapkan filter saat dropdown dipilih
+            applyFilters();
+
+            return false;
         });
 
         function applyFilters() {
@@ -288,7 +290,6 @@
                 var jenisPengaduanMatch = (filterJenis === '') || (jenisPengaduan === filterJenis);
                 var statusMatch = (filterStat === '') || (status === filterStat);
 
-                // Tampilkan baris jika memenuhi filter
                 if (jenisPengaduanMatch && statusMatch) {
                     row.show();
                 } else {
@@ -296,7 +297,7 @@
                 }
             });
 
-            updatePagination(); // Update pagination setelah filter diterapkan
+            updatePagination();
         }
 
         // Handle column header sorting
@@ -350,12 +351,10 @@
                 $('#TicketTable tbody').append(row);
             });
         }
-
         $('#TicketTable_filter').hide();
         $('#TicketTable_length').hide();
         $('#TicketTable_paginate').hide();
         updatePagination();
-
         $('#search').on('keyup', function() {
             var searchTerm = this.value.toLowerCase();
             $.fn.dataTable.ext.search = [];
@@ -366,13 +365,32 @@
             currentPage = 1;
             updatePagination();
         });
+        $(document).on('click', '.page-sort-option', function(e) {
+            e.preventDefault();
+            currentSort = $(this).data('sort');
+            sortTableByDate(currentSort);
+            currentPage = 1;
+            updatePagination();
+        });
+
+        function sortTableByDate(direction) {
+            var rows = $('#TicketTable tbody tr').get();
+            rows.sort(function(a, b) {
+                var aTimestamp = parseInt($(a).data('created-at')) || 0;
+                var bTimestamp = parseInt($(b).data('created-at')) || 0;
+                return direction === 'desc' ? bTimestamp - aTimestamp : aTimestamp - bTimestamp;
+            });
+            $.each(rows, function(index, row) {
+                $('#TicketTable tbody').append(row);
+            });
+        }
 
         function updatePagination() {
-            var allRows = $('#TicketTable tbody tr');
+            var allRows = $('#TicketTable tbody tr').filter(':visible');
             var totalRows = allRows.length;
             const totalPages = Math.ceil(totalRows / itemsPerPage);
             if (currentPage > totalPages) currentPage = totalPages || 1;
-            allRows.hide();
+            $('#TicketTable tbody tr').hide();
             var startIndex = (currentPage - 1) * itemsPerPage;
             var endIndex = startIndex + itemsPerPage;
             allRows.slice(startIndex, endIndex).show();
@@ -389,16 +407,14 @@
             $('#prevPage').prop('disabled', currentPage === 1).css('opacity', currentPage === 1 ? '0.5' : '1').css('cursor', currentPage === 1 ? 'not-allowed' : 'pointer');
             $('#nextPage').prop('disabled', currentPage === totalPages || totalPages === 0).css('opacity', currentPage === totalPages || totalPages === 0 ? '0.5' : '1').css('cursor', currentPage === totalPages || totalPages === 0 ? 'not-allowed' : 'pointer');
         }
-
         $('#prevPage').on('click', function() {
             if (currentPage > 1) {
                 currentPage--;
                 updatePagination();
             }
         });
-
         $('#nextPage').on('click', function() {
-            var totalRows = $('#TicketTable tbody tr').length;
+            var totalRows = $('#TicketTable tbody tr').filter(':visible').length;
             const totalPages = Math.ceil(totalRows / itemsPerPage);
             if (currentPage < totalPages) {
                 currentPage++;
