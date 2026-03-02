@@ -232,7 +232,7 @@
         let currentPage = 1;
         const itemsPerPage = 10;
         var table = $('#TicketTable').DataTable({
-            searching: true,
+            searching: false,
             ordering: true,
             paging: false,
             lengthChange: false,
@@ -299,10 +299,8 @@
                 $('#TicketTable tbody').append(row);
             });
         }
-        $('#TicketTable_filter').hide();
-        $('#TicketTable_length').hide();
-        $('#TicketTable_paginate').hide();
-        updatePagination();
+
+        // Search filter
         $('#search').on('keyup', function() {
             var searchTerm = this.value.toLowerCase();
             $.fn.dataTable.ext.search = [];
@@ -313,6 +311,8 @@
             currentPage = 1;
             updatePagination();
         });
+
+        // Sorting by date
         $(document).on('click', '.page-sort-option', function(e) {
             e.preventDefault();
             currentSort = $(this).data('sort');
@@ -333,6 +333,7 @@
             });
         }
 
+        // Update Pagination
         function updatePagination() {
             var allRows = $('#TicketTable tbody tr');
             var totalRows = allRows.length;
@@ -355,12 +356,14 @@
             $('#prevPage').prop('disabled', currentPage === 1).css('opacity', currentPage === 1 ? '0.5' : '1').css('cursor', currentPage === 1 ? 'not-allowed' : 'pointer');
             $('#nextPage').prop('disabled', currentPage === totalPages || totalPages === 0).css('opacity', currentPage === totalPages || totalPages === 0 ? '0.5' : '1').css('cursor', currentPage === totalPages || totalPages === 0 ? 'not-allowed' : 'pointer');
         }
+
         $('#prevPage').on('click', function() {
             if (currentPage > 1) {
                 currentPage--;
                 updatePagination();
             }
         });
+
         $('#nextPage').on('click', function() {
             var totalRows = $('#TicketTable tbody tr').length;
             const totalPages = Math.ceil(totalRows / itemsPerPage);
@@ -369,6 +372,34 @@
                 updatePagination();
             }
         });
+
+        // Filter Dropdown: Jenis Pengaduan
+        $(document).on('click', '.filter-option[data-filter-type="jenis_pengaduan"]', function(e) {
+            e.preventDefault();
+            var filterValue = $(this).data('filter-value');
+            $('#filterJenisPengaduanDisplay').text($(this).text()); // Update button text
+            filterTable('jenis_pengaduan', filterValue);
+        });
+
+        // Filter Dropdown: Status
+        $(document).on('click', '.filter-option[data-filter-type="status"]', function(e) {
+            e.preventDefault();
+            var filterValue = $(this).data('filter-value');
+            $('#filterStatusDisplay').text($(this).text()); // Update button text
+            filterTable('status', filterValue);
+        });
+
+        function filterTable(filterType, filterValue) {
+            var rows = $('#TicketTable tbody tr');
+            rows.show(); // Reset visibility
+            rows.each(function() {
+                var row = $(this);
+                var value = row.data(filterType); // Get the data for the selected filter type
+                if (filterValue && value !== filterValue) {
+                    row.hide(); // Hide rows that do not match the filter
+                }
+            });
+        }
     });
 </script>
 
