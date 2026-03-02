@@ -71,7 +71,7 @@
                     </thead>
                     <tbody>
                         @foreach($teknisi_data_ticket as $teknisidataticket)
-                        <tr class="align-middle text-sm border border-light" data-created-at="{{ $teknisidataticket->created_at->timestamp }}">
+                        <tr class="align-middle text-sm border border-light" data-created-at="{{ $teknisidataticket->created_at->timestamp }}" data-jenis-pengaduan="{{ $teknisidataticket->Jenis_Pengaduan }}" data-status="{{ $teknisidataticket->status }}">
                             <td class="align-middle text-sm border border-light" data-subject="{{ $teknisidataticket->subject }}">
                                 <div class="d-flex px-2 py-1">
                                     <div class="d-flex flex-column justify-content-center">
@@ -392,11 +392,21 @@
         function filterTable(filterType, filterValue) {
             var rows = $('#TicketTable tbody tr');
             rows.show(); // Reset visibility
+
             rows.each(function() {
                 var row = $(this);
-                var value = row.data(filterType); // Get the data for the selected filter type
-                if (filterValue && value !== filterValue) {
-                    row.hide(); // Hide rows that do not match the filter
+                var value;
+
+                // Get the value for the selected filter type
+                if (filterType === 'jenis_pengaduan') {
+                    value = row.data('jenis-pengaduan');
+                } else if (filterType === 'status') {
+                    value = row.data('status');
+                }
+
+                // If filterValue is empty (meaning "Semua"), show all rows
+                if (filterValue && value !== filterValue && filterValue !== '') {
+                    row.hide(); // Hide rows that don't match the filter
                 }
             });
         }
