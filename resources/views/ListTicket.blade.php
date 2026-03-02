@@ -393,41 +393,26 @@
         }
 
         function updatePagination() {
-            var allRows = $('#TicketTable tbody tr');
-            var visibleRows = allRows.filter(':visible');
-            var totalRows = visibleRows.length;
+            var allRows = $('#TicketTable tbody tr').filter(':visible');
+            var totalRows = allRows.length;
             const totalPages = Math.ceil(totalRows / itemsPerPage);
-            
             if (currentPage > totalPages) currentPage = totalPages || 1;
-            if (currentPage < 1) currentPage = 1;
-            
-            // Hide all rows
-            allRows.hide();
-            
-            // Show only rows for current page
+            $('#TicketTable tbody tr').hide();
             var startIndex = (currentPage - 1) * itemsPerPage;
             var endIndex = startIndex + itemsPerPage;
-            
-            var rowsToShow = [];
-            visibleRows.each(function(index) {
-                if (index >= startIndex && index < endIndex) {
-                    rowsToShow.push(this);
-                }
-            });
-            
-            $(rowsToShow).show();
-            
-            // Update pagination display
-            var displayStart = totalRows === 0 ? 0 : startIndex + 1;
-            var displayEnd = Math.min(endIndex, totalRows);
+            allRows.slice(startIndex, endIndex).show();
+            var displayStart, displayEnd;
+            if (currentSort === 'desc') {
+                displayStart = totalRows === 0 ? 0 : startIndex + 1;
+                displayEnd = Math.min(endIndex, totalRows);
+            } else {
+                displayStart = totalRows - startIndex;
+                displayEnd = totalRows - endIndex + 1;
+                if (displayEnd < 1) displayEnd = 1;
+            }
             $('#paginationDisplay').text(displayStart + '-' + displayEnd + ' dari ' + totalRows);
-            
-            // Update button states (visual feedback only)
-            var isPrevDisabled = currentPage === 1;
-            var isNextDisabled = currentPage === totalPages || totalPages === 0;
-            
-            $('#prevPage').css('opacity', isPrevDisabled ? '0.5' : '1').css('cursor', isPrevDisabled ? 'not-allowed' : 'pointer');
-            $('#nextPage').css('opacity', isNextDisabled ? '0.5' : '1').css('cursor', isNextDisabled ? 'not-allowed' : 'pointer');
+            $('#prevPage').prop('disabled', currentPage === 1).css('opacity', currentPage === 1 ? '0.5' : '1').css('cursor', currentPage === 1 ? 'not-allowed' : 'pointer');
+            $('#nextPage').prop('disabled', currentPage === totalPages || totalPages === 0).css('opacity', currentPage === totalPages || totalPages === 0 ? '0.5' : '1').css('cursor', currentPage === totalPages || totalPages === 0 ? 'not-allowed' : 'pointer');
         }
         $('#prevPage').on('click', function() {
             if (currentPage > 1) {
@@ -435,12 +420,9 @@
                 updatePagination();
             }
         });
-        
         $('#nextPage').on('click', function() {
-            var allVisibleRows = $('#TicketTable tbody tr:visible');
-            var totalRows = allVisibleRows.length;
-            var totalPages = Math.ceil(totalRows / itemsPerPage);
-            
+            var totalRows = $('#TicketTable tbody tr').filter(':visible').length;
+            const totalPages = Math.ceil(totalRows / itemsPerPage);
             if (currentPage < totalPages) {
                 currentPage++;
                 updatePagination();
