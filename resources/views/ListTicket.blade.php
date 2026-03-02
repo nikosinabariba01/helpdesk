@@ -186,6 +186,33 @@
                             <li><a class="dropdown-item page-sort-option" href="#" data-sort="asc" style="padding: 8px 16px;"><i class="fa fa-arrow-up me-2" style="color: #6c757d;"></i>Terlama</a></li>
                         </ul>
                     </div>
+                    <!-- Filter Jenis Pengaduan Dropdown -->
+                    <div class="dropdown" style="position: relative; display: inline-block;">
+                        <button class="btn btn-sm btn-outline-secondary" style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;" type="button" id="filterJenisPengaduanBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span id="filterJenisPengaduanDisplay">Jenis Pengaduan</span>
+                            <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="filterJenisPengaduanBtn" style="font-size: 13px; min-width: 150px;">
+                            <li><a class="dropdown-item filter-option" href="#" data-filter-type="jenis_pengaduan" data-filter-value="" style="padding: 8px 16px;">Semua</a></li>
+                            <li><a class="dropdown-item filter-option" href="#" data-filter-type="jenis_pengaduan" data-filter-value="perbaikan" style="padding: 8px 16px;">Perbaikan</a></li>
+                            <li><a class="dropdown-item filter-option" href="#" data-filter-type="jenis_pengaduan" data-filter-value="permintaan" style="padding: 8px 16px;">Permintaan</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Filter Status Dropdown -->
+                    <div class="dropdown" style="position: relative; display: inline-block;">
+                        <button class="btn btn-sm btn-outline-secondary" style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;" type="button" id="filterStatusBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span id="filterStatusDisplay">Status</span>
+                            <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="filterStatusBtn" style="font-size: 13px; min-width: 150px;">
+                            <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="" style="padding: 8px 16px;">Semua</a></li>
+                            <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="open" style="padding: 8px 16px;">Open</a></li>
+                            <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="on process" style="padding: 8px 16px;">On Process</a></li>
+                            <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="escalated" style="padding: 8px 16px;">Escalated</a></li>
+                            <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="close" style="padding: 8px 16px;">Close</a></li>
+                        </ul>
+                    </div>
                 </div>
                 <div style="display: flex; gap: 12px; align-items: center;">
                     <div style="display: flex; gap: 6px;">
@@ -220,32 +247,32 @@
                 }
             ]
         });
-        
+
         // Handle column header sorting
         $('#TicketTable thead th').slice(0, 3).on('click', function() {
             var columnIndex = $(this).index();
             var isAsc = $(this).hasClass('sorting_asc');
-            
+
             // Remove all sorting classes
             $('#TicketTable thead th').removeClass('sorting_asc sorting_desc').addClass('sorting');
-            
+
             // Add sorting class to current column
             if (isAsc) {
                 $(this).removeClass('sorting').addClass('sorting_desc');
             } else {
                 $(this).removeClass('sorting').addClass('sorting_asc');
             }
-            
+
             sortAllDataByColumn(columnIndex, !isAsc);
             currentPage = 1;
             updatePagination();
         });
-        
+
         function sortAllDataByColumn(columnIndex, isAsc) {
             var rows = $('#TicketTable tbody tr').get();
             rows.sort(function(a, b) {
                 var aVal, bVal;
-                
+
                 if (columnIndex === 0) {
                     aVal = $(a).data('subject') || '';
                     bVal = $(b).data('subject') || '';
@@ -256,18 +283,18 @@
                     aVal = $(a).data('status') || '';
                     bVal = $(b).data('status') || '';
                 }
-                
+
                 // Case-insensitive string comparison
                 aVal = String(aVal).toLowerCase();
                 bVal = String(bVal).toLowerCase();
-                
+
                 if (isAsc) {
                     return aVal.localeCompare(bVal);
                 } else {
                     return bVal.localeCompare(aVal);
                 }
             });
-            
+
             $.each(rows, function(index, row) {
                 $('#TicketTable tbody').append(row);
             });
