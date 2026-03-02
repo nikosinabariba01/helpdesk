@@ -62,11 +62,11 @@
                     <thead>
                         <tr>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">
-                                <div class="dropdown d-inline-block" style="position: relative;">
-                                    <button class="btn btn-sm btn-link text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center p-0" style="text-decoration: none; color: inherit; background: none; border: none; cursor: pointer; font-size: inherit;" data-bs-toggle="dropdown" aria-expanded="false">
+                                <div class="dropdown" style="position: relative; display: inline-block;">
+                                    <button class="btn btn-sm p-0 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" style="background: none; border: none; cursor: pointer; font-size: inherit; text-decoration: none;" type="button" id="jenisPengaduanBtn" data-bs-toggle="dropdown" aria-expanded="false">
                                         subject <i class="fa fa-chevron-down" style="font-size: 10px; margin-left: 4px;"></i>
                                     </button>
-                                    <ul class="dropdown-menu" id="jenisPengaduanFilter" style="font-size: 12px; min-width: 150px;">
+                                    <ul class="dropdown-menu dropdown-menu-center" aria-labelledby="jenisPengaduanBtn" style="font-size: 12px; min-width: 150px;">
                                         <li><a class="dropdown-item filter-option" href="#" data-filter-type="jenis_pengaduan" data-filter-value="" style="padding: 8px 16px;">Semua</a></li>
                                         <li><a class="dropdown-item filter-option" href="#" data-filter-type="jenis_pengaduan" data-filter-value="perbaikan" style="padding: 8px 16px;">Perbaikan</a></li>
                                         <li><a class="dropdown-item filter-option" href="#" data-filter-type="jenis_pengaduan" data-filter-value="permintaan" style="padding: 8px 16px;">Permintaan</a></li>
@@ -75,11 +75,11 @@
                             </th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">User</th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">
-                                <div class="dropdown d-inline-block" style="position: relative;">
-                                    <button class="btn btn-sm btn-link text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center p-0" style="text-decoration: none; color: inherit; background: none; border: none; cursor: pointer; font-size: inherit;" data-bs-toggle="dropdown" aria-expanded="false">
+                                <div class="dropdown" style="position: relative; display: inline-block;">
+                                    <button class="btn btn-sm p-0 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" style="background: none; border: none; cursor: pointer; font-size: inherit; text-decoration: none;" type="button" id="statusBtn" data-bs-toggle="dropdown" aria-expanded="false">
                                         Status <i class="fa fa-chevron-down" style="font-size: 10px; margin-left: 4px;"></i>
                                     </button>
-                                    <ul class="dropdown-menu" id="statusFilter" style="font-size: 12px; min-width: 150px;">
+                                    <ul class="dropdown-menu dropdown-menu-center" aria-labelledby="statusBtn" style="font-size: 12px; min-width: 150px;">
                                         <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="" style="padding: 8px 16px;">Semua</a></li>
                                         <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="open" style="padding: 8px 16px;">Open</a></li>
                                         <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="on process" style="padding: 8px 16px;">On Process</a></li>
@@ -249,9 +249,15 @@
         let currentJenisPengaduanFilter = '';
         let currentStatusFilter = '';
         
+        // Prevent dropdown button from triggering sorting
+        $(document).on('click', '[data-bs-toggle="dropdown"]', function(e) {
+            e.stopPropagation();
+        });
+        
         // Handle filter dropdown selections
         $(document).on('click', '.filter-option', function(e) {
             e.preventDefault();
+            e.stopPropagation();
             var filterType = $(this).data('filter-type');
             var filterValue = $(this).data('filter-value');
             
@@ -285,7 +291,13 @@
         }
         
         // Handle column header sorting for User column only (column 1)
-        $(document).on('click', '#TicketTable thead th:nth-child(2)', function() {
+        // Only trigger on the actual th element, not on nested buttons
+        $(document).on('click', '#TicketTable thead th:nth-child(2)', function(e) {
+            // Don't trigger if clicking on dropdown button
+            if ($(e.target).closest('[data-bs-toggle="dropdown"]').length) {
+                return;
+            }
+            
             var isAsc = $(this).hasClass('sorting_asc');
             
             // Remove all sorting classes
