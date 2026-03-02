@@ -36,12 +36,14 @@
                         max-height: 400px !important;
                     }
                 }
+
                 @media (min-width: 769px) and (max-width: 1024px) {
                     .table-responsive-custom {
                         height: 600px !important;
                         max-height: 600px !important;
                     }
                 }
+
                 @media (min-width: 1025px) {
                     .table-responsive-custom {
                         height: 550px !important;
@@ -56,7 +58,7 @@
             </div>
             @else
             <div class="table-responsive margin-right: 15px; table-responsive-custom" style="overflow-y: auto;">
-                <table class="table align-items-center mb-0"  id="TicketTable">
+                <table class="table align-items-center mb-0" id="TicketTable">
                     <thead>
                         <tr>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">subject</th>
@@ -102,19 +104,19 @@
                                 <form action="{{ route('tickets.cancel_assign', $teknisidataticket->id) }}" method="POST" class="mb-2">
                                     @csrf
                                     @method('PUT')
-                                    <button type="submit" class="btn btn-sm btn-outline-danger btn-transparent text-secondary">Cancel Process</button>
+                                    <button type="submit" class="btn btn-sm btn-outline-warning btn-transparent text-warning">Cancel Process</button>
                                 </form>
                                 <form method="POST" action="{{ route('ticketsteknisi.requestFollowup', $teknisidataticket->id) }}" class="mb-2">
                                     @csrf
-                                    <button type="submit" class="btn btn-sm btn-outline-success btn-transparent text-success">
-                                        <i class="fa fa-refresh pe-2 text-success"></i>Escalate
+                                    <button type="submit" class="btn btn-sm btn-outline-info btn-transparent text-info">
+                                        Escalate
                                     </button>
                                 </form>
                                 <form method="POST" action="{{ route('ticketsteknisi.close', $teknisidataticket->id) }}" id="closeTicketForm-{{ $teknisidataticket->id }}">
                                     @method('PUT')
                                     @csrf
                                     <button type="button" class="btn btn-sm btn-outline-danger btn-transparent text-danger" data-bs-toggle="modal" data-bs-target="#modal-confirmation" data-form-id="closeTicketForm-{{ $teknisidataticket->id }}">
-                                        <i class="fa fa-check pe-2 text-danger"></i>Close
+                                        Close
                                     </button>
                                 </form>
                                 @elseif($teknisidataticket->status == 'escalated')
@@ -123,7 +125,7 @@
                                     @csrf
                                     @method('PUT')
                                     <button type="submit" class="btn btn-sm btn-outline-danger btn-transparent text-danger">
-                                        <i class="fa fa-times pe-2 text-danger"></i>Cancel Escalation
+                                        Cancel Escalation
                                     </button>
                                 </form>
                                 @elseif($teknisidataticket->status == 'close')
@@ -156,24 +158,24 @@
                 </table>
             </div>
             <div style="padding: 15px 16px; border-top: 1px solid #e4e4e4; display: flex; justify-content: space-between; align-items: center; background-color: #ffffff;">
-              <div style="display: flex; gap: 12px; align-items: center;">
-                <div class="dropdown" style="position: relative;">
-                  <button class="btn btn-sm btn-outline-secondary" style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;" data-bs-toggle="dropdown" aria-expanded="false">
-                    <span id="paginationDisplay">1-10 dari {{ $teknisi_data_ticket->count() }}</span>
-                    <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
-                  </button>
-                  <ul class="dropdown-menu" style="font-size: 13px; min-width: 150px;">
-                    <li><a class="dropdown-item page-sort-option" href="#" data-sort="desc" style="padding: 8px 16px;"><i class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru</a></li>
-                    <li><a class="dropdown-item page-sort-option" href="#" data-sort="asc" style="padding: 8px 16px;"><i class="fa fa-arrow-up me-2" style="color: #6c757d;"></i>Terlama</a></li>
-                  </ul>
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <div class="dropdown" style="position: relative;">
+                        <button class="btn btn-sm btn-outline-secondary" style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span id="paginationDisplay">1-10 dari {{ $teknisi_data_ticket->count() }}</span>
+                            <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
+                        </button>
+                        <ul class="dropdown-menu" style="font-size: 13px; min-width: 150px;">
+                            <li><a class="dropdown-item page-sort-option" href="#" data-sort="desc" style="padding: 8px 16px;"><i class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru</a></li>
+                            <li><a class="dropdown-item page-sort-option" href="#" data-sort="asc" style="padding: 8px 16px;"><i class="fa fa-arrow-up me-2" style="color: #6c757d;"></i>Terlama</a></li>
+                        </ul>
+                    </div>
                 </div>
-              </div>
-              <div style="display: flex; gap: 12px; align-items: center;">
-                <div style="display: flex; gap: 6px;">
-                  <button id="prevPage" class="btn btn-sm btn-outline-secondary" style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;" title="Halaman Sebelumnya"><i class="fa fa-chevron-left" style="font-size: 11px;"></i></button>
-                  <button id="nextPage" class="btn btn-sm btn-outline-secondary" style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;" title="Halaman Berikutnya"><i class="fa fa-chevron-right" style="font-size: 11px;"></i></button>
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <div style="display: flex; gap: 6px;">
+                        <button id="prevPage" class="btn btn-sm btn-outline-secondary" style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;" title="Halaman Sebelumnya"><i class="fa fa-chevron-left" style="font-size: 11px;"></i></button>
+                        <button id="nextPage" class="btn btn-sm btn-outline-secondary" style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;" title="Halaman Berikutnya"><i class="fa fa-chevron-right" style="font-size: 11px;"></i></button>
+                    </div>
                 </div>
-              </div>
             </div>
             @endif
         </div>
@@ -191,7 +193,10 @@
             paging: false,
             lengthChange: false,
             info: false,
-            columnDefs: [{targets: [2, 3, 4, 5], orderable: false}]
+            columnDefs: [{
+                targets: [2, 3, 4, 5],
+                orderable: false
+            }]
         });
         $('#TicketTable_filter').hide();
         $('#TicketTable_length').hide();
@@ -214,6 +219,7 @@
             currentPage = 1;
             updatePagination();
         });
+
         function sortTableByDate(direction) {
             var rows = $('#TicketTable tbody tr').get();
             rows.sort(function(a, b) {
@@ -221,8 +227,11 @@
                 var bDate = extractDateFromTicket($(b).find('li:first').text());
                 return direction === 'desc' ? new Date(bDate) - new Date(aDate) : new Date(aDate) - new Date(bDate);
             });
-            $.each(rows, function(index, row) {$('#TicketTable tbody').append(row);});
+            $.each(rows, function(index, row) {
+                $('#TicketTable tbody').append(row);
+            });
         }
+
         function extractDateFromTicket(ticketText) {
             var match = ticketText.match(/sp-(\d{3})(\d{6})/);
             if (match) {
@@ -231,6 +240,7 @@
             }
             return new Date(0);
         }
+
         function updatePagination() {
             var allRows = $('#TicketTable tbody tr');
             var totalRows = allRows.length;
@@ -253,8 +263,20 @@
             $('#prevPage').prop('disabled', currentPage === 1).css('opacity', currentPage === 1 ? '0.5' : '1').css('cursor', currentPage === 1 ? 'not-allowed' : 'pointer');
             $('#nextPage').prop('disabled', currentPage === totalPages || totalPages === 0).css('opacity', currentPage === totalPages || totalPages === 0 ? '0.5' : '1').css('cursor', currentPage === totalPages || totalPages === 0 ? 'not-allowed' : 'pointer');
         }
-        $('#prevPage').on('click', function() {if (currentPage > 1) {currentPage--; updatePagination();}});
-        $('#nextPage').on('click', function() {var totalRows = $('#TicketTable tbody tr').length; const totalPages = Math.ceil(totalRows / itemsPerPage); if (currentPage < totalPages) {currentPage++; updatePagination();}});
+        $('#prevPage').on('click', function() {
+            if (currentPage > 1) {
+                currentPage--;
+                updatePagination();
+            }
+        });
+        $('#nextPage').on('click', function() {
+            var totalRows = $('#TicketTable tbody tr').length;
+            const totalPages = Math.ceil(totalRows / itemsPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                updatePagination();
+            }
+        });
     });
 </script>
 
