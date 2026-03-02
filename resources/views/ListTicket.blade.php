@@ -274,17 +274,23 @@
             
             currentPage = 1;
             applyFilters();
+            
+            return false;
         });
         
         function applyFilters() {
             var allRows = $('#TicketTable tbody tr');
+            
             allRows.each(function() {
                 var row = $(this);
-                var jenisPengaduan = row.data('jenis-pengaduan');
-                var status = row.data('status');
+                var jenisPengaduan = String(row.data('jenis-pengaduan')).trim().toLowerCase();
+                var status = String(row.data('status')).trim().toLowerCase();
                 
-                var jenisPengaduanMatch = currentJenisPengaduanFilter === '' || String(jenisPengaduan).toLowerCase() === currentJenisPengaduanFilter.toLowerCase();
-                var statusMatch = currentStatusFilter === '' || String(status).toLowerCase() === currentStatusFilter.toLowerCase();
+                var filterJenis = String(currentJenisPengaduanFilter).trim().toLowerCase();
+                var filterStat = String(currentStatusFilter).trim().toLowerCase();
+                
+                var jenisPengaduanMatch = (filterJenis === '') || (jenisPengaduan === filterJenis);
+                var statusMatch = (filterStat === '') || (status === filterStat);
                 
                 if (jenisPengaduanMatch && statusMatch) {
                     row.show();
@@ -292,6 +298,7 @@
                     row.hide();
                 }
             });
+            
             updatePagination();
         }
         
