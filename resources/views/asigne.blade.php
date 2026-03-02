@@ -36,7 +36,13 @@
                         max-height: 400px !important;
                     }
                 }
-                @media (min-width: 769px) {
+                @media (min-width: 769px) and (max-width: 1024px) {
+                    .table-responsive-custom {
+                        height: 600px !important;
+                        max-height: 600px !important;
+                    }
+                }
+                @media (min-width: 1025px) {
                     .table-responsive-custom {
                         height: 550px !important;
                         max-height: 550px !important;
