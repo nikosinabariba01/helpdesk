@@ -100,12 +100,22 @@
                             </td>
                             <td class="align-middle text-center text-sm border border-light">
                                 @if($teknisidataticket->status == 'on process')
-                                <!-- Status: On Process - tampilkan Cancel Process, Escalate, Close -->
+                                <!-- Jika tiket sudah di-assign oleh teknisi lain, hanya tampilkan tombol Contribute -->
+                                @if(!$teknisidataticket->asignees->isEmpty() && $teknisidataticket->asignees->first()->id != Auth::id())
+                                <form action="{{ route('tickets.assign', $teknisidataticket->id) }}" method="POST">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="submit" class="btn btn-sm btn-outline-primary btn-transparent text-primary">
+                                        Contribute
+                                    </button>
+                                </form>
+                                @else
+                                <!-- Status: On Process - tombol Cancel Process, Escalate, Close disembunyikan -->
                                 <form action="{{ route('tickets.cancel_assign', $teknisidataticket->id) }}" method="POST" class="mb-2">
                                     @csrf
                                     @method('PUT')
                                     <button type="submit" class="btn btn-sm btn-outline-warning btn-transparent text-warning">
-                                        Cancel
+                                        Cancel Process
                                     </button>
                                 </form>
                                 <form method="POST" action="{{ route('ticketsteknisi.requestFollowup', $teknisidataticket->id) }}" class="mb-2">
@@ -117,17 +127,8 @@
                                 <form method="POST" action="{{ route('ticketsteknisi.close', $teknisidataticket->id) }}" id="closeTicketForm-{{ $teknisidataticket->id }}" class="mb-2">
                                     @method('PUT')
                                     @csrf
-                                    <button type="button" class="btn btn-sm btn-outline-success btn-transparent text-success" data-bs-toggle="modal" data-bs-target="#modal-confirmation" data-form-id="closeTicketForm-{{ $teknisidataticket->id }}">
+                                    <button type="button" class="btn btn-sm btn-outline-danger btn-transparent text-danger" data-bs-toggle="modal" data-bs-target="#modal-confirmation" data-form-id="closeTicketForm-{{ $teknisidataticket->id }}">
                                         Close
-                                    </button>
-                                </form>
-                                <!-- Tombol Contribute jika sudah di-assign oleh teknisi lain -->
-                                @if(!$teknisidataticket->asignees->isEmpty() && $teknisidataticket->asignees->first()->id != Auth::id())
-                                <form action="{{ route('tickets.assign', $teknisidataticket->id) }}" method="POST">
-                                    @csrf
-                                    @method('PUT')
-                                    <button type="submit" class="btn btn-sm btn-outline-primary btn-transparent text-primary">
-                                        Contribute
                                     </button>
                                 </form>
                                 @endif
@@ -137,7 +138,7 @@
                                     @csrf
                                     @method('PUT')
                                     <button type="submit" class="btn btn-sm btn-outline-danger btn-transparent text-danger">
-                                        Esc. Cancel
+                                        Cancel Escalation
                                     </button>
                                 </form>
                                 @elseif($teknisidataticket->status == 'close')
@@ -145,7 +146,7 @@
                                 <form action="{{ route('tickets.assign', $teknisidataticket->id) }}" method="POST">
                                     @csrf
                                     @method('PUT')
-                                    <button type="submit" class="btn btn-sm btn-outline-warning btn-transparent text-warning">
+                                    <button type="submit" class="btn btn-sm btn-outline-warning btn-transparent text-secondary">
                                         Reprocess
                                     </button>
                                 </form>
