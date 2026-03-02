@@ -105,7 +105,7 @@
                                 <form action="{{ route('tickets.assign', $teknisidataticket->id) }}" method="POST">
                                     @csrf
                                     @method('PUT')
-                                    <button type="submit" class="btn btn-sm btn-outline-primary btn-transparent text-primary">
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary btn-transparent text-secondary">
                                         Contribute
                                     </button>
                                 </form>
@@ -137,7 +137,7 @@
                                 <form method="POST" action="{{ route('ticketsteknisi.cancelRequestFollowUp', $teknisidataticket->id) }}">
                                     @csrf
                                     @method('PUT')
-                                    <button type="submit" class="btn btn-sm btn-outline-danger btn-transparent text-danger">
+                                    <button type="submit" class="btn btn-sm btn-outline-info btn-transparent text-info">
                                         Cancel Escalation
                                     </button>
                                 </form>
