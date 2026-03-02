@@ -71,7 +71,7 @@
                     </thead>
                     <tbody>
                         @foreach($teknisi_data_ticket as $teknisidataticket)
-                        <tr class="align-middle text-sm border border-light" data-created-at="{{ $teknisidataticket->created_at->timestamp }}" data-jenis-pengaduan="{{ $teknisidataticket->Jenis_Pengaduan }}" data-status="{{ $teknisidataticket->status }}">
+                        <tr class="align-middle text-sm border border-light" data-created-at="{{ $teknisidataticket->created_at->timestamp }}">
                             <td class="align-middle text-sm border border-light" data-subject="{{ $teknisidataticket->subject }}">
                                 <div class="d-flex px-2 py-1">
                                     <div class="d-flex flex-column justify-content-center">
@@ -248,58 +248,6 @@
             ]
         });
 
-        // Variables to track current filters
-        let currentJenisPengaduanFilter = '';
-        let currentStatusFilter = '';
-
-        // Handle filter dropdown selections
-        $(document).on('click', '.filter-option', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            var filterType = $(this).data('filter-type');
-            var filterValue = $(this).data('filter-value');
-            var filterText = $(this).text().trim();
-
-            if (filterType === 'jenis_pengaduan') {
-                currentJenisPengaduanFilter = filterValue;
-                var displayText = filterValue === '' ? 'Jenis Pengaduan' : filterText;
-                $('#filterJenisPengaduanDisplay').text(displayText);
-            } else if (filterType === 'status') {
-                currentStatusFilter = filterValue;
-                var displayText = filterValue === '' ? 'Status' : filterText;
-                $('#filterStatusDisplay').text(displayText);
-            }
-
-            currentPage = 1;
-            applyFilters();
-
-            return false;
-        });
-
-        function applyFilters() {
-            var allRows = $('#TicketTable tbody tr');
-
-            allRows.each(function() {
-                var row = $(this);
-                var jenisPengaduan = String(row.data('jenis-pengaduan')).trim().toLowerCase();
-                var status = String(row.data('status')).trim().toLowerCase();
-
-                var filterJenis = String(currentJenisPengaduanFilter).trim().toLowerCase();
-                var filterStat = String(currentStatusFilter).trim().toLowerCase();
-
-                var jenisPengaduanMatch = (filterJenis === '') || (jenisPengaduan === filterJenis);
-                var statusMatch = (filterStat === '') || (status === filterStat);
-
-                if (jenisPengaduanMatch && statusMatch) {
-                    row.show();
-                } else {
-                    row.hide();
-                }
-            });
-
-            updatePagination();
-        }
-
         // Handle column header sorting
         $('#TicketTable thead th').slice(0, 3).on('click', function() {
             var columnIndex = $(this).index();
@@ -386,11 +334,11 @@
         }
 
         function updatePagination() {
-            var allRows = $('#TicketTable tbody tr').filter(':visible');
+            var allRows = $('#TicketTable tbody tr');
             var totalRows = allRows.length;
             const totalPages = Math.ceil(totalRows / itemsPerPage);
             if (currentPage > totalPages) currentPage = totalPages || 1;
-            $('#TicketTable tbody tr').hide();
+            allRows.hide();
             var startIndex = (currentPage - 1) * itemsPerPage;
             var endIndex = startIndex + itemsPerPage;
             allRows.slice(startIndex, endIndex).show();
@@ -414,7 +362,7 @@
             }
         });
         $('#nextPage').on('click', function() {
-            var totalRows = $('#TicketTable tbody tr').filter(':visible').length;
+            var totalRows = $('#TicketTable tbody tr').length;
             const totalPages = Math.ceil(totalRows / itemsPerPage);
             if (currentPage < totalPages) {
                 currentPage++;
