@@ -72,7 +72,7 @@
                     <tbody>
                         @foreach($teknisi_data_ticket as $teknisidataticket)
                         <tr class="align-middle text-sm border border-light" data-created-at="{{ $teknisidataticket->created_at->timestamp }}">
-                            <td class="align-middle text-sm border border-light">
+                            <td class="align-middle text-sm border border-light" data-subject="{{ $teknisidataticket->subject }}">
                                 <div class="d-flex px-2 py-1">
                                     <div class="d-flex flex-column justify-content-center">
                                         <h6 class="mb-0 text-s text-limit-35" title="Subject">
@@ -89,10 +89,10 @@
                                     </div>
                                 </div>
                             </td>
-                            <td class="align-middle text-center text-sm text-limit-20 border border-light">
+                            <td class="align-middle text-center text-sm text-limit-20 border border-light" data-user="{{ $teknisidataticket->user->name }}">
                                 {{ $teknisidataticket->user->name }}
                             </td>
-                            <td class="align-middle text-center text-sm">
+                            <td class="align-middle text-center text-sm border border-light" data-status="{{ $teknisidataticket->status }}">
                                 <x-status-badge :status="$teknisidataticket->status" />
                             </td>
                             <td class="align-middle text-center text-limit-30 border border-light">
@@ -206,20 +206,72 @@
         const itemsPerPage = 10;
         var table = $('#TicketTable').DataTable({
             searching: true,
-            ordering: true, // Pengurutan diaktifkan untuk seluruh tabel
+            ordering: true,
             paging: false,
             lengthChange: false,
             info: false,
             columnDefs: [{
-                    targets: [0, 1, 2], // Mengaktifkan pengurutan untuk kolom 0, 1, dan 2
-                    orderable: true // Kolom-kolom ini bisa diurutkan
+                    targets: [0, 1, 2],
+                    orderable: true
                 },
                 {
-                    targets: [3, 4, 5], // Mengnonaktifkan pengurutan untuk kolom 3, 4, dan 5
-                    orderable: false // Kolom-kolom ini tidak bisa diurutkan
+                    targets: [3, 4, 5],
+                    orderable: false
                 }
             ]
         });
+        
+        // Handle column header sorting
+        $('#TicketTable thead th').slice(0, 3).on('click', function() {
+            var columnIndex = $(this).index();
+            var isAsc = $(this).hasClass('sorting_asc');
+            
+            // Remove all sorting classes
+            $('#TicketTable thead th').removeClass('sorting_asc sorting_desc').addClass('sorting');
+            
+            // Add sorting class to current column
+            if (isAsc) {
+                $(this).removeClass('sorting').addClass('sorting_desc');
+            } else {
+                $(this).removeClass('sorting').addClass('sorting_asc');
+            }
+            
+            sortAllDataByColumn(columnIndex, !isAsc);
+            currentPage = 1;
+            updatePagination();
+        });
+        
+        function sortAllDataByColumn(columnIndex, isAsc) {
+            var rows = $('#TicketTable tbody tr').get();
+            rows.sort(function(a, b) {
+                var aVal, bVal;
+                
+                if (columnIndex === 0) {
+                    aVal = $(a).data('subject') || '';
+                    bVal = $(b).data('subject') || '';
+                } else if (columnIndex === 1) {
+                    aVal = $(a).data('user') || '';
+                    bVal = $(b).data('user') || '';
+                } else if (columnIndex === 2) {
+                    aVal = $(a).data('status') || '';
+                    bVal = $(b).data('status') || '';
+                }
+                
+                // Case-insensitive string comparison
+                aVal = String(aVal).toLowerCase();
+                bVal = String(bVal).toLowerCase();
+                
+                if (isAsc) {
+                    return aVal.localeCompare(bVal);
+                } else {
+                    return bVal.localeCompare(aVal);
+                }
+            });
+            
+            $.each(rows, function(index, row) {
+                $('#TicketTable tbody').append(row);
+            });
+        }
         $('#TicketTable_filter').hide();
         $('#TicketTable_length').hide();
         $('#TicketTable_paginate').hide();
