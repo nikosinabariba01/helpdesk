@@ -232,11 +232,22 @@
         let currentPage = 1;
         const itemsPerPage = 10;
         let filteredData = [];  // To store filtered data
-        let allRows = [];  // Store all rows for search and pagination
 
-        // Store all rows initially (this will be used for search filtering)
-        $('#TicketTable tbody tr').each(function() {
-            allRows.push(this);
+        var table = $('#TicketTable').DataTable({
+            searching: false,
+            ordering: true,
+            paging: false, // We will handle pagination manually
+            lengthChange: false,
+            info: false,
+            columnDefs: [{
+                    targets: [0, 1, 2],
+                    orderable: true
+                },
+                {
+                    targets: [3, 4, 5],
+                    orderable: false
+                }
+            ]
         });
 
         // Set default value for dropdown (display name only, no actual value)
@@ -298,20 +309,12 @@
         // Search filter
         $('#search').on('keyup', function() {
             var searchTerm = this.value.toLowerCase();
-
-            // Reset the filtered data
-            filteredData = [];
-
-            // Filter all rows based on search term
-            $.each(allRows, function(index, row) {
-                var subject = $(row).data('subject').toLowerCase();
-                var user = $(row).data('user').toLowerCase();
-                if (subject.includes(searchTerm) || user.includes(searchTerm)) {
-                    filteredData.push(row);
-                }
+            $.fn.dataTable.ext.search = [];
+            $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+                return data[0].toLowerCase().includes(searchTerm) || data[1].toLowerCase().includes(searchTerm);
             });
-
-            currentPage = 1; // Reset pagination after search
+            table.draw();
+            currentPage = 1;
             updatePagination();
         });
 
@@ -338,7 +341,8 @@
 
         // Update Pagination
         function updatePagination() {
-            const totalRows = filteredData.length || allRows.length;
+            // Use filteredData if filter is applied, else use all rows
+            const totalRows = filteredData.length || $('#TicketTable tbody tr').length;
             const totalPages = Math.ceil(totalRows / itemsPerPage);
             if (currentPage > totalPages) currentPage = totalPages || 1;
 
@@ -349,7 +353,7 @@
             var endIndex = startIndex + itemsPerPage;
 
             // Show only the rows for the current page (filtered or unfiltered)
-            const rowsToDisplay = filteredData.length ? filteredData : allRows;
+            const rowsToDisplay = filteredData.length ? filteredData : $('#TicketTable tbody tr').get();
             for (let i = startIndex; i < endIndex && i < totalRows; i++) {
                 $(rowsToDisplay[i]).show();
             }
@@ -370,7 +374,7 @@
         });
 
         $('#nextPage').on('click', function() {
-            const totalRows = filteredData.length || allRows.length;
+            const totalRows = filteredData.length || $('#TicketTable tbody tr').length;
             const totalPages = Math.ceil(totalRows / itemsPerPage);
             if (currentPage < totalPages) {
                 currentPage++;
