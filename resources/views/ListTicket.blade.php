@@ -1,5 +1,3 @@
-tolong kan ada tombol filter jenis pengaduan dropdown dan filter status dropdown. nah kedua dropdown itu masi ui doang belum berfungsi jadi tolong jalan kan lah biar berfungsi
-
 @extends('mainlayout.layout')
 @section('navbar')
 @include('mainlayout.navbar.nav')
@@ -73,7 +71,7 @@ tolong kan ada tombol filter jenis pengaduan dropdown dan filter status dropdown
                     </thead>
                     <tbody>
                         @foreach($teknisi_data_ticket as $teknisidataticket)
-                        <tr class="align-middle text-sm border border-light" data-created-at="{{ $teknisidataticket->created_at->timestamp }}">
+                        <tr class="align-middle text-sm border border-light" data-created-at="{{ $teknisidataticket->created_at->timestamp }}" data-jenis-pengaduan="{{ $teknisidataticket->Jenis_Pengaduan }}" data-status="{{ $teknisidataticket->status }}">
                             <td class="align-middle text-sm border border-light" data-subject="{{ $teknisidataticket->subject }}">
                                 <div class="d-flex px-2 py-1">
                                     <div class="d-flex flex-column justify-content-center">
