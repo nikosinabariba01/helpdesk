@@ -232,6 +232,12 @@
         let currentPage = 1;
         const itemsPerPage = 10;
         let filteredData = [];  // To store filtered data
+        let allData = []; // To store all the data for search and pagination
+
+        // Fetching all rows into allData to handle search properly
+        $('#TicketTable tbody tr').each(function() {
+            allData.push(this);
+        });
 
         var table = $('#TicketTable').DataTable({
             searching: false,
@@ -309,12 +315,15 @@
         // Search filter
         $('#search').on('keyup', function() {
             var searchTerm = this.value.toLowerCase();
-            $.fn.dataTable.ext.search = [];
-            $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
-                return data[0].toLowerCase().includes(searchTerm) || data[1].toLowerCase().includes(searchTerm);
+
+            // Filter through all data rows and store the matching ones
+            filteredData = allData.filter(function(row) {
+                var subject = $(row).data('subject').toLowerCase();
+                var user = $(row).data('user').toLowerCase();
+                return subject.includes(searchTerm) || user.includes(searchTerm);
             });
-            table.draw();
-            currentPage = 1;
+
+            currentPage = 1;  // Reset pagination after search
             updatePagination();
         });
 
