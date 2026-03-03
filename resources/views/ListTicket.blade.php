@@ -299,10 +299,14 @@
                 $('#TicketTable tbody').append(row);
             });
         }
+
+        // Hiding DataTables built-in search and length controls
         $('#TicketTable_filter').hide();
         $('#TicketTable_length').hide();
         $('#TicketTable_paginate').hide();
         updatePagination();
+
+        // Search Functionality
         $('#search').on('keyup', function() {
             var searchTerm = this.value.toLowerCase();
             $.fn.dataTable.ext.search = [];
@@ -313,6 +317,8 @@
             currentPage = 1;
             updatePagination();
         });
+
+        // Sorting Table by Date
         $(document).on('click', '.page-sort-option', function(e) {
             e.preventDefault();
             currentSort = $(this).data('sort');
@@ -333,6 +339,7 @@
             });
         }
 
+        // Function to update pagination
         function updatePagination() {
             var allRows = $('#TicketTable tbody tr');
             var totalRows = allRows.length;
@@ -355,6 +362,8 @@
             $('#prevPage').prop('disabled', currentPage === 1).css('opacity', currentPage === 1 ? '0.5' : '1').css('cursor', currentPage === 1 ? 'not-allowed' : 'pointer');
             $('#nextPage').prop('disabled', currentPage === totalPages || totalPages === 0).css('opacity', currentPage === totalPages || totalPages === 0 ? '0.5' : '1').css('cursor', currentPage === totalPages || totalPages === 0 ? 'not-allowed' : 'pointer');
         }
+
+        // Paginate Previous/Next Button Click
         $('#prevPage').on('click', function() {
             if (currentPage > 1) {
                 currentPage--;
@@ -369,6 +378,46 @@
                 updatePagination();
             }
         });
+
+        // Filter by Status and Jenis Pengaduan
+        $(document).on('click', '.filter-option', function() {
+            var filterType = $(this).data('filter-type');
+            var filterValue = $(this).data('filter-value');
+
+            // Update filter display text
+            if (filterType === 'status') {
+                $('#filterStatusDisplay').text($(this).text());
+            } else if (filterType === 'jenis_pengaduan') {
+                $('#filterJenisPengaduanDisplay').text($(this).text());
+            }
+
+            // Apply filtering
+            filterTable();
+        });
+
+        // Function to filter the table
+        function filterTable() {
+            var selectedStatus = $('#filterStatusDisplay').text().trim();
+            var selectedJenisPengaduan = $('#filterJenisPengaduanDisplay').text().trim();
+
+            $('#TicketTable tbody tr').each(function() {
+                var status = $(this).data('status');
+                var jenisPengaduan = $(this).data('jenis-pengaduan');
+
+                var statusMatch = selectedStatus === 'Status' || status.toLowerCase().includes(selectedStatus.toLowerCase());
+                var jenisPengaduanMatch = selectedJenisPengaduan === 'Jenis Pengaduan' || jenisPengaduan.toLowerCase().includes(selectedJenisPengaduan.toLowerCase());
+
+                // Show rows that match the filter criteria
+                if (statusMatch && jenisPengaduanMatch) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+
+            // Update pagination after applying the filter
+            updatePagination();
+        }
     });
 </script>
 
