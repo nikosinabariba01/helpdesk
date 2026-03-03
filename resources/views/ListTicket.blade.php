@@ -438,8 +438,8 @@
                 var status = row.data('status');
 
                 // Check if the row matches both the filters
-                var jenisPengaduanMatch = selectedJenisPengaduan === 'Jenis Pengaduan' || jenisPengaduan.toLowerCase().includes(selectedJenisPengaduan.toLowerCase());
-                var statusMatch = selectedStatus === 'Status' || status.toLowerCase().includes(selectedStatus.toLowerCase());
+                var jenisPengaduanMatch = selectedJenisPengaduan === 'Jenis Pengaduan' || selectedJenisPengaduan === 'Semua' || jenisPengaduan.toLowerCase().includes(selectedJenisPengaduan.toLowerCase());
+                var statusMatch = selectedStatus === 'Status' || selectedStatus === 'Semua' || status.toLowerCase().includes(selectedStatus.toLowerCase());
 
                 // If both filters match, add the row to filtered data
                 if (jenisPengaduanMatch && statusMatch) {
