@@ -228,10 +228,11 @@
 
 <script>
     $(document).ready(function() {
-        let currentSort = 'desc';  // Set default sorting to 'desc'
+        let currentSort = 'desc'; // Set default sorting to 'desc'
         let currentPage = 1;
         const itemsPerPage = 10;
-        let filteredData = [];  // To store filtered data
+        let filteredData = []; // To store filtered data
+        let originalData = []; // To store original data (before filtering or searching)
 
         var table = $('#TicketTable').DataTable({
             searching: true,
@@ -255,6 +256,11 @@
         // Set default value for dropdown (display name only, no actual value)
         $('#filterJenisPengaduanDisplay').text('Jenis Pengaduan');
         $('#filterStatusDisplay').text('Status');
+
+        // Store original data (before filter or search)
+        $('#TicketTable tbody tr').each(function() {
+            originalData.push(this); // Store all rows as original data
+        });
 
         // Handle column header sorting
         $('#TicketTable thead th').slice(0, 3).on('click', function() {
@@ -311,6 +317,16 @@
         // Search filter
         $('#search').on('keyup', function() {
             var searchTerm = this.value.toLowerCase();
+
+            // If search term is empty, restore the original data
+            if (searchTerm === '') {
+                filteredData = []; // Clear filtered data
+                $('#TicketTable tbody').empty().append(originalData); // Restore original data
+                sortTableByDate(currentSort); // Reapply last sort
+                updatePagination(); // Reapply pagination
+                return;
+            }
+
             $.fn.dataTable.ext.search = [];
             $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
                 return data[0].toLowerCase().includes(searchTerm) || data[1].toLowerCase().includes(searchTerm);
@@ -318,6 +334,8 @@
             table.draw();
             currentPage = 1;
             updatePagination();
+            // After searching, re-sort the table by date
+            sortTableByDate(currentSort); // Ensure latest items are first
         });
 
         // Sorting by date (newest to oldest)
@@ -404,7 +422,7 @@
             const selectedJenisPengaduan = $('#filterJenisPengaduanDisplay').text().trim();
             const selectedStatus = $('#filterStatusDisplay').text().trim();
             const rows = $('#TicketTable tbody tr');
-            filteredData = [];  // Reset filtered data
+            filteredData = []; // Reset filtered data
 
             rows.each(function() {
                 var row = $(this);
@@ -429,8 +447,8 @@
         updatePagination();
 
         // Sort table by date when the page loads
-        sortTableByDate('desc');  // Default sort by 'created_at' desc (newest first)
-        updatePagination();  // Update pagination after sorting
+        sortTableByDate('desc'); // Default sort by 'created_at' desc (newest first)
+        updatePagination(); // Update pagination after sorting
     });
 </script>
 
