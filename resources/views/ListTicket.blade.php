@@ -231,12 +231,12 @@
         let currentSort = 'desc';
         let currentPage = 1;
         const itemsPerPage = 10;
-        let filteredData = []; // To store filtered data
+        let filteredData = []; // Untuk menyimpan data yang sudah difilter
 
         var table = $('#TicketTable').DataTable({
             searching: false,
             ordering: true,
-            paging: false, // We will handle pagination manually
+            paging: false, // Pagination kita handle manual
             lengthChange: false,
             info: false,
             columnDefs: [{
@@ -302,16 +302,23 @@
             });
         }
 
-        // Search filter
+        // Search filter hanya pada kolom Subject dan User
         $('#search').on('keyup', function() {
             var searchTerm = this.value.toLowerCase();
-            $.fn.dataTable.ext.search = [];
-            $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
-                return data[0].toLowerCase().includes(searchTerm) || data[1].toLowerCase().includes(searchTerm);
+            filteredData = []; // Reset filteredData
+
+            $('#TicketTable tbody tr').each(function() {
+                var subject = $(this).data('subject').toLowerCase(); // Kolom subject
+                var user = $(this).data('user').toLowerCase(); // Kolom user
+
+                // Memeriksa apakah pencarian cocok dengan kolom Subject atau User
+                if (subject.includes(searchTerm) || user.includes(searchTerm)) {
+                    filteredData.push(this); // Menambahkan baris yang cocok ke filteredData
+                }
             });
-            table.draw();
-            currentPage = 1;
-            updatePagination();
+
+            currentPage = 1; // Reset pagination
+            updatePagination(); // Memperbarui pagination setelah pencarian
         });
 
         // Sorting by date
