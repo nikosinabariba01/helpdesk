@@ -338,7 +338,7 @@
         // Update Pagination
         function updatePagination() {
             // Use filteredData if filter is applied, else use all rows
-            const totalRows = filteredData.length || $('#TicketTable tbody tr').length; 
+            const totalRows = filteredData.length || $('#TicketTable tbody tr').length;
             const totalPages = Math.ceil(totalRows / itemsPerPage);
             if (currentPage > totalPages) currentPage = totalPages || 1;
 
