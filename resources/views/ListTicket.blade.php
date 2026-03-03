@@ -247,9 +247,10 @@
                     targets: [3, 4, 5],
                     orderable: false
                 }
-            ],
-            order: [[3, 'desc']] // Initially sort by 'created_at' (column 3) descending
+            ]
         });
+
+        $('#TicketTable_filter').hide();
 
         // Set default value for dropdown (display name only, no actual value)
         $('#filterJenisPengaduanDisplay').text('Jenis Pengaduan');
