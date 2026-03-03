@@ -226,6 +226,7 @@
     </div>
 </div>
 
+
 <script>
     $(document).ready(function() {
         let currentSort = 'desc'; // Set default sorting to 'desc'
@@ -379,9 +380,9 @@
             var displayStart = startIndex + 1;
             var displayEnd = Math.min(endIndex, totalRows);
 
-            // If no rows to display, show "No matching records found"
+            // DataTables will automatically show "No matching records found" if no rows match
             if (totalRows === 0) {
-                $('#TicketTable tbody').html('<tr><td colspan="6" class="text-center">No matching records found</td></tr>');
+                // No matching records found will be handled by DataTables automatically
             } else {
                 // Show pagination display correctly depending on sorting
                 if (currentSort === 'desc') {
