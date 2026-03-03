@@ -253,10 +253,6 @@
 
         $('#TicketTable_filter').hide();
 
-        // Set default value for dropdown (display name only, no actual value)
-        $('#filterJenisPengaduanDisplay').text('Jenis Pengaduan');
-        $('#filterStatusDisplay').text('Status');
-
         // Store original data (before filter or search)
         $('#TicketTable tbody tr').each(function() {
             originalData.push(this); // Store all rows as original data
@@ -364,9 +360,7 @@
             // Use filteredData if filter is applied, else use all rows
             const totalRows = filteredData.length || $('#TicketTable tbody tr').length;
             const totalPages = Math.ceil(totalRows / itemsPerPage);
-            if (currentPage > totalPages) {
-                currentPage = totalPages || 1;
-            }
+            if (currentPage > totalPages) currentPage = totalPages || 1;
 
             $('#TicketTable tbody tr').hide(); // Hide all rows first
 
@@ -385,19 +379,18 @@
 
             // Adjust display text based on sorting direction
             if (currentSort === 'asc') {
-                // When sorting by oldest, we need to reverse the range
+                // For oldest sorting, the order is reversed
                 displayStart = totalRows - endIndex + 1;
                 displayEnd = totalRows - startIndex;
             }
-
-            // Ensure that the range never goes negative and is correct when on the last page
+            
+            // Fix edge case where the start and end are inverted
             if (displayStart > displayEnd) {
                 displayStart = displayEnd;
             }
 
             $('#paginationDisplay').text(displayStart + '-' + displayEnd + ' dari ' + totalRows);
 
-            // Update prev and next buttons
             $('#prevPage').prop('disabled', currentPage === 1).css('opacity', currentPage === 1 ? '0.5' : '1').css('cursor', currentPage === 1 ? 'not-allowed' : 'pointer');
             $('#nextPage').prop('disabled', currentPage === totalPages || totalRows === 0).css('opacity', currentPage === totalPages || totalRows === 0 ? '0.5' : '1').css('cursor', currentPage === totalPages || totalRows === 0 ? 'not-allowed' : 'pointer');
         }
