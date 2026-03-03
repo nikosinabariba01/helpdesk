@@ -380,6 +380,11 @@
 
             var displayStart = startIndex + 1;
             var displayEnd = Math.min(endIndex, totalRows);
+            // Adjust display text based on sorting direction
+            if (currentSort === 'asc') {
+                displayStart = totalRows - endIndex + 1;
+                displayEnd = totalRows - startIndex;
+            }
             $('#paginationDisplay').text(displayStart + '-' + displayEnd + ' dari ' + totalRows);
 
             $('#prevPage').prop('disabled', currentPage === 1).css('opacity', currentPage === 1 ? '0.5' : '1').css('cursor', currentPage === 1 ? 'not-allowed' : 'pointer');
