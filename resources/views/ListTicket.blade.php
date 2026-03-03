@@ -233,6 +233,7 @@
         const itemsPerPage = 10;
         let filteredData = []; // To store filtered data
         let originalData = []; // To store original data (before filtering or searching)
+        let hasActiveFilter = false; // FIX: Flag baru untuk track jika filter spesifik applied (bukan Semua)
 
         var table = $('#TicketTable').DataTable({
             searching: true,
@@ -304,7 +305,7 @@
             });
         }
 
-        // Search filter (tetap seperti asli)
+        // Search filter (TIDAK DISENTUH, tetap seperti asli)
         $('#search').on('keyup', function() {
             var searchTerm = this.value.toLowerCase();
             // If search term is empty, restore the original data
@@ -347,7 +348,7 @@
             });
         }
 
-        // Update Pagination (dengan modifikasi untuk handle no data)
+        // Update Pagination (dengan fix untuk no match)
         function updatePagination() {
             let totalRows;
             let rowsToDisplay;
@@ -356,7 +357,7 @@
                 totalRows = filteredData.length;
                 rowsToDisplay = filteredData;
             } else {
-                // Jika filteredData kosong → pakai semua baris yang ada di tabel (bisa setelah search)
+                // Jika filteredData kosong → check jika filter active
                 totalRows = $('#TicketTable tbody tr').length;
                 rowsToDisplay = $('#TicketTable tbody tr').get();
             }
@@ -367,6 +368,11 @@
             }
 
             $('#TicketTable tbody tr').hide(); // Hide all rows first
+
+            // FIX: Jika hasActiveFilter true dan filteredData.length === 0, treat sebagai no match
+            if (hasActiveFilter && filteredData.length === 0) {
+                totalRows = 0;
+            }
 
             if (totalRows === 0) {
                 // Tampilkan pesan jika nol
@@ -442,36 +448,32 @@
             const isAllJenis = selectedJenis === 'Jenis Pengaduan' || selectedJenis === 'Semua';
             const isAllStatus = selectedStatus === 'Status' || selectedStatus === 'Semua';
 
-            // Jika keduanya "Semua", reset filter
-            if (isAllJenis && isAllStatus) {
-                filteredData = []; // Kosongkan untuk kembali ke semua data
-            } else {
-                filteredData = [];
-                // Filter dari originalData, bukan dari tbody saat ini
-                originalData.forEach(function(row) {
-                    var $row = $(row);
-                    var jenis = $row.data('jenis-pengaduan') || '';
-                    var status = $row.data('status') || '';
+            hasActiveFilter = !(isAllJenis && isAllStatus); // FIX: Set flag true jika ada filter spesifik
 
-                    var matchJ = isAllJenis || jenis.toLowerCase().includes(selectedJenis.toLowerCase());
-                    var matchS = isAllStatus || status.toLowerCase().includes(selectedStatus.toLowerCase());
+            filteredData = [];
+            originalData.forEach(function(row) {
+                var $row = $(row);
+                var jenis = $row.data('jenis-pengaduan') || '';
+                var status = $row.data('status') || '';
 
-                    if (matchJ && matchS) {
-                        filteredData.push(row);
-                    }
-                });
-            }
+                var matchJ = isAllJenis || jenis.toLowerCase().includes(selectedJenis.toLowerCase());
+                var matchS = isAllStatus || status.toLowerCase().includes(selectedStatus.toLowerCase());
+
+                if (matchJ && matchS) {
+                    filteredData.push(row);
+                }
+            });
 
             currentPage = 1;
             updatePagination();
 
-            // Jika reset, pastikan semua terlihat (jaga-jaga konflik dengan search)
-            if (filteredData.length === 0 && isAllJenis && isAllStatus) {
+            // FIX: Jika reset ke Semua, pastikan fallback ke semua data dan show
+            if (!hasActiveFilter) {
                 $('#TicketTable tbody tr').show();
             }
         }
 
-        // Initial load: trigger pagination on page load
+        // Initial load: trigger pagination on page load (using default "Jenis Pengaduan" and "Status")
         updatePagination();
         // Sort table by date when the page loads
         sortTableByDate('desc'); // Default sort by 'created_at' desc (newest first)
