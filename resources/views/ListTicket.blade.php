@@ -231,7 +231,7 @@
         let currentSort = 'desc';
         let currentPage = 1;
         const itemsPerPage = 10;
-        let filteredData = [];  // To store filtered data
+        let filteredData = []; // To store filtered data
 
         var table = $('#TicketTable').DataTable({
             searching: false,
@@ -341,17 +341,21 @@
             const totalPages = Math.ceil(totalRows / itemsPerPage);
             if (currentPage > totalPages) currentPage = totalPages || 1;
 
-            allRows.hide(); // Hide all rows first
+            $('#TicketTable tbody tr').hide(); // Hide all rows first
+
             var startIndex = (currentPage - 1) * itemsPerPage;
             var endIndex = startIndex + itemsPerPage;
-            allRows.slice(startIndex, endIndex).show(); // Show only the rows for the current page
+            // Show only the rows for the current page
+            for (let i = startIndex; i < endIndex && i < totalRows; i++) {
+                $(filteredData[i]).show();
+            }
 
             var displayStart = startIndex + 1;
             var displayEnd = Math.min(endIndex, totalRows);
             $('#paginationDisplay').text(displayStart + '-' + displayEnd + ' dari ' + totalRows);
 
             $('#prevPage').prop('disabled', currentPage === 1).css('opacity', currentPage === 1 ? '0.5' : '1').css('cursor', currentPage === 1 ? 'not-allowed' : 'pointer');
-            $('#nextPage').prop('disabled', currentPage === totalPages || totalPages === 0).css('opacity', currentPage === totalPages || totalPages === 0 ? '0.5' : '1').css('cursor', currentPage === totalPages || totalPages === 0 ? 'not-allowed' : 'pointer');
+            $('#nextPage').prop('disabled', currentPage === totalPages || totalRows === 0).css('opacity', currentPage === totalPages || totalRows === 0 ? '0.5' : '1').css('cursor', currentPage === totalPages || totalRows === 0 ? 'not-allowed' : 'pointer');
         }
 
         $('#prevPage').on('click', function() {
@@ -390,7 +394,7 @@
             const selectedJenisPengaduan = $('#filterJenisPengaduanDisplay').text().trim();
             const selectedStatus = $('#filterStatusDisplay').text().trim();
             const rows = $('#TicketTable tbody tr');
-            filteredData = [];  // Reset filtered data
+            filteredData = []; // Reset filtered data
 
             rows.each(function() {
                 var row = $(this);
