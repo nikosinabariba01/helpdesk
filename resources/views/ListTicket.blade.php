@@ -71,7 +71,7 @@
                     </thead>
                     <tbody>
                         @foreach($teknisi_data_ticket as $teknisidataticket)
-                        <tr class="align-middle text-sm border border-light" data-created-at="{{ $teknisidataticket->created_at->timestamp }}" data-jenis-pengaduan="{{ $teknisidataticket->Jenis_Pengaduan }}">
+                        <tr class="align-middle text-sm border border-light" data-created-at="{{ $teknisidataticket->created_at->timestamp }}">
                             <td class="align-middle text-sm border border-light" data-subject="{{ $teknisidataticket->subject }}">
                                 <div class="d-flex px-2 py-1">
                                     <div class="d-flex flex-column justify-content-center">
@@ -176,6 +176,16 @@
             </div>
             <div style="padding: 15px 16px; border-top: 1px solid #e4e4e4; display: flex; justify-content: space-between; align-items: center; background-color: #ffffff;">
                 <div style="display: flex; gap: 12px; align-items: center;">
+                    <div class="dropdown" style="position: relative;">
+                        <button class="btn btn-sm btn-outline-secondary" style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span id="paginationDisplay">1-10 dari {{ $teknisi_data_ticket->count() }}</span>
+                            <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
+                        </button>
+                        <ul class="dropdown-menu" style="font-size: 13px; min-width: 150px;">
+                            <li><a class="dropdown-item page-sort-option" href="#" data-sort="desc" style="padding: 8px 16px;"><i class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru</a></li>
+                            <li><a class="dropdown-item page-sort-option" href="#" data-sort="asc" style="padding: 8px 16px;"><i class="fa fa-arrow-up me-2" style="color: #6c757d;"></i>Terlama</a></li>
+                        </ul>
+                    </div>
                     <!-- Filter Jenis Pengaduan Dropdown -->
                     <div class="dropdown" style="position: relative; display: inline-block;">
                         <button class="btn btn-sm btn-outline-secondary" style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;" type="button" id="filterJenisPengaduanBtn" data-bs-toggle="dropdown" aria-expanded="false">
@@ -201,18 +211,6 @@
                             <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="on process" style="padding: 8px 16px;">On Process</a></li>
                             <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="escalated" style="padding: 8px 16px;">Escalated</a></li>
                             <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="close" style="padding: 8px 16px;">Close</a></li>
-                        </ul>
-                    </div>
-
-                    <!-- Sort by Date Dropdown -->
-                    <div class="dropdown" style="position: relative; display: inline-block;">
-                        <button class="btn btn-sm btn-outline-secondary" style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;" type="button" id="sortByDateBtn" data-bs-toggle="dropdown" aria-expanded="false">
-                            <span id="paginationDisplay">1-10 dari {{ $teknisi_data_ticket->count() }}</span>
-                            <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="sortByDateBtn" style="font-size: 13px; min-width: 150px;">
-                            <li><a class="dropdown-item page-sort-option" href="#" data-sort="desc" style="padding: 8px 16px;"><i class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru</a></li>
-                            <li><a class="dropdown-item page-sort-option" href="#" data-sort="asc" style="padding: 8px 16px;"><i class="fa fa-arrow-up me-2" style="color: #6c757d;"></i>Terlama</a></li>
                         </ul>
                     </div>
                 </div>
@@ -250,7 +248,7 @@
             ]
         });
 
-        // Variables to track current filters
+        // Variabel untuk menyimpan nilai filter
         let currentJenisPengaduanFilter = '';
         let currentStatusFilter = '';
 
@@ -273,9 +271,7 @@
             }
 
             currentPage = 1;
-            applyFilters();
-
-            return false;
+            applyFilters(); // Terapkan filter saat dropdown dipilih
         });
 
         function applyFilters() {
@@ -292,24 +288,20 @@
                 var jenisPengaduanMatch = (filterJenis === '') || (jenisPengaduan === filterJenis);
                 var statusMatch = (filterStat === '') || (status === filterStat);
 
+                // Tampilkan baris jika memenuhi filter
                 if (jenisPengaduanMatch && statusMatch) {
-                    row.show(); // Menampilkan baris jika filter cocok
+                    row.show();
                 } else {
-                    row.hide(); // Menyembunyikan baris jika filter tidak cocok
+                    row.hide();
                 }
             });
 
-            updatePagination(); // Memperbarui pagination setelah filter diterapkan
+            updatePagination(); // Update pagination setelah filter diterapkan
         }
 
-        // Handle column header sorting for User column only (column 1)
-        // Only trigger on the actual th element, not on nested buttons
-        $(document).on('click', '#TicketTable thead th:nth-child(2)', function(e) {
-            // Don't trigger if clicking on dropdown button
-            if ($(e.target).closest('[data-bs-toggle="dropdown"]').length) {
-                return;
-            }
-
+        // Handle column header sorting
+        $('#TicketTable thead th').slice(0, 3).on('click', function() {
+            var columnIndex = $(this).index();
             var isAsc = $(this).hasClass('sorting_asc');
 
             // Remove all sorting classes
@@ -322,7 +314,7 @@
                 $(this).removeClass('sorting').addClass('sorting_asc');
             }
 
-            sortAllDataByColumn(1, !isAsc);
+            sortAllDataByColumn(columnIndex, !isAsc);
             currentPage = 1;
             updatePagination();
         });
@@ -358,10 +350,12 @@
                 $('#TicketTable tbody').append(row);
             });
         }
+
         $('#TicketTable_filter').hide();
         $('#TicketTable_length').hide();
         $('#TicketTable_paginate').hide();
         updatePagination();
+
         $('#search').on('keyup', function() {
             var searchTerm = this.value.toLowerCase();
             $.fn.dataTable.ext.search = [];
@@ -372,75 +366,39 @@
             currentPage = 1;
             updatePagination();
         });
-        $(document).on('click', '.page-sort-option', function(e) {
-            e.preventDefault();
-            currentSort = $(this).data('sort');
-            sortTableByDate(currentSort);
-            currentPage = 1;
-            updatePagination();
-        });
-
-        function sortTableByDate(direction) {
-            var rows = $('#TicketTable tbody tr').get();
-            rows.sort(function(a, b) {
-                var aTimestamp = parseInt($(a).data('created-at')) || 0;
-                var bTimestamp = parseInt($(b).data('created-at')) || 0;
-                return direction === 'desc' ? bTimestamp - aTimestamp : aTimestamp - bTimestamp;
-            });
-            $.each(rows, function(index, row) {
-                $('#TicketTable tbody').append(row);
-            });
-        }
 
         function updatePagination() {
-            var allRows = $('#TicketTable tbody tr').filter(':visible'); // Mengambil hanya baris yang terlihat
-            var totalRows = allRows.length; // Menghitung jumlah baris yang terlihat
-            const totalPages = Math.ceil(totalRows / itemsPerPage); // Hitung jumlah total halaman berdasarkan data yang terlihat
-
-            // Batasi halaman jika melebihi total halaman
-            if (currentPage > totalPages) {
-                currentPage = totalPages || 1;
-            }
-
-            // Sembunyikan semua baris terlebih dahulu
-            $('#TicketTable tbody tr').hide();
-
-            // Tentukan indeks awal dan akhir untuk baris yang ditampilkan pada halaman saat ini
+            var allRows = $('#TicketTable tbody tr');
+            var totalRows = allRows.length;
+            const totalPages = Math.ceil(totalRows / itemsPerPage);
+            if (currentPage > totalPages) currentPage = totalPages || 1;
+            allRows.hide();
             var startIndex = (currentPage - 1) * itemsPerPage;
             var endIndex = startIndex + itemsPerPage;
-
-            // Tampilkan baris yang relevan sesuai dengan halaman saat ini
             allRows.slice(startIndex, endIndex).show();
-
-            // Menampilkan rentang data yang sedang ditampilkan
             var displayStart, displayEnd;
-
             if (currentSort === 'desc') {
                 displayStart = totalRows === 0 ? 0 : startIndex + 1;
                 displayEnd = Math.min(endIndex, totalRows);
             } else {
                 displayStart = totalRows - startIndex;
                 displayEnd = totalRows - endIndex + 1;
-                if (displayEnd < 1) {
-                    displayEnd = 1;
-                }
+                if (displayEnd < 1) displayEnd = 1;
             }
-
-            // Memperbarui teks untuk menampilkan rentang data yang ditampilkan dan total data
             $('#paginationDisplay').text(displayStart + '-' + displayEnd + ' dari ' + totalRows);
-
-            // Mengatur status tombol prev/next
             $('#prevPage').prop('disabled', currentPage === 1).css('opacity', currentPage === 1 ? '0.5' : '1').css('cursor', currentPage === 1 ? 'not-allowed' : 'pointer');
             $('#nextPage').prop('disabled', currentPage === totalPages || totalPages === 0).css('opacity', currentPage === totalPages || totalPages === 0 ? '0.5' : '1').css('cursor', currentPage === totalPages || totalPages === 0 ? 'not-allowed' : 'pointer');
         }
+
         $('#prevPage').on('click', function() {
             if (currentPage > 1) {
                 currentPage--;
                 updatePagination();
             }
         });
+
         $('#nextPage').on('click', function() {
-            var totalRows = $('#TicketTable tbody tr').filter(':visible').length;
+            var totalRows = $('#TicketTable tbody tr').length;
             const totalPages = Math.ceil(totalRows / itemsPerPage);
             if (currentPage < totalPages) {
                 currentPage++;
