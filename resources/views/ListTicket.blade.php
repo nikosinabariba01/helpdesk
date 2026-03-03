@@ -341,15 +341,10 @@
             const totalPages = Math.ceil(totalRows / itemsPerPage);
             if (currentPage > totalPages) currentPage = totalPages || 1;
 
-            // Hide all rows first
-            $('#TicketTable tbody tr').hide();
+            allRows.hide(); // Hide all rows first
             var startIndex = (currentPage - 1) * itemsPerPage;
             var endIndex = startIndex + itemsPerPage;
-
-            // Loop through the filtered data and show only the rows for the current page
-            for (let i = startIndex; i < endIndex && i < totalRows; i++) {
-                $(filteredData[i]).show();
-            }
+            allRows.slice(startIndex, endIndex).show(); // Show only the rows for the current page
 
             var displayStart = startIndex + 1;
             var displayEnd = Math.min(endIndex, totalRows);
@@ -380,7 +375,7 @@
             e.preventDefault();
             var filterValue = $(this).data('filter-value');
             $('#filterJenisPengaduanDisplay').text($(this).text()); // Update button text
-            filterTable('jenis_pengaduan', filterValue);
+            filterTable();
         });
 
         // Filter Dropdown: Status
@@ -388,27 +383,27 @@
             e.preventDefault();
             var filterValue = $(this).data('filter-value');
             $('#filterStatusDisplay').text($(this).text()); // Update button text
-            filterTable('status', filterValue);
+            filterTable();
         });
 
-        function filterTable(filterType, filterValue) {
+        function filterTable() {
+            const selectedJenisPengaduan = $('#filterJenisPengaduanDisplay').text().trim();
+            const selectedStatus = $('#filterStatusDisplay').text().trim();
             const rows = $('#TicketTable tbody tr');
-            filteredData = []; // Reset filtered data
+            filteredData = [];  // Reset filtered data
 
             rows.each(function() {
                 var row = $(this);
-                var value;
+                var jenisPengaduan = row.data('jenis-pengaduan');
+                var status = row.data('status');
 
-                // Get the value for the selected filter type
-                if (filterType === 'jenis_pengaduan') {
-                    value = row.data('jenis-pengaduan');
-                } else if (filterType === 'status') {
-                    value = row.data('status');
-                }
+                // Check if the row matches both the filters
+                var jenisPengaduanMatch = selectedJenisPengaduan === 'Jenis Pengaduan' || jenisPengaduan.toLowerCase().includes(selectedJenisPengaduan.toLowerCase());
+                var statusMatch = selectedStatus === 'Status' || status.toLowerCase().includes(selectedStatus.toLowerCase());
 
-                // If filterValue is empty (meaning "Semua"), show all rows
-                if (!filterValue || value === filterValue) {
-                    filteredData.push(row[0]); // Add to filtered data
+                // If both filters match, add the row to filtered data
+                if (jenisPengaduanMatch && statusMatch) {
+                    filteredData.push(row[0]);
                 }
             });
 
