@@ -231,10 +231,11 @@
         let currentSort = 'desc';
         let currentPage = 1;
         const itemsPerPage = 10;
+
         var table = $('#TicketTable').DataTable({
             searching: false,
             ordering: true,
-            paging: false,
+            paging: false, // We will handle pagination manually
             lengthChange: false,
             info: false,
             columnDefs: [{
@@ -339,20 +340,17 @@
             var totalRows = allRows.length;
             const totalPages = Math.ceil(totalRows / itemsPerPage);
             if (currentPage > totalPages) currentPage = totalPages || 1;
-            allRows.hide();
+
+            allRows.hide(); // Hide all rows before pagination
+
             var startIndex = (currentPage - 1) * itemsPerPage;
             var endIndex = startIndex + itemsPerPage;
-            allRows.slice(startIndex, endIndex).show();
-            var displayStart, displayEnd;
-            if (currentSort === 'desc') {
-                displayStart = totalRows === 0 ? 0 : startIndex + 1;
-                displayEnd = Math.min(endIndex, totalRows);
-            } else {
-                displayStart = totalRows - startIndex;
-                displayEnd = totalRows - endIndex + 1;
-                if (displayEnd < 1) displayEnd = 1;
-            }
+            allRows.slice(startIndex, endIndex).show(); // Show only the rows for the current page
+
+            var displayStart = startIndex + 1;
+            var displayEnd = Math.min(endIndex, totalRows);
             $('#paginationDisplay').text(displayStart + '-' + displayEnd + ' dari ' + totalRows);
+
             $('#prevPage').prop('disabled', currentPage === 1).css('opacity', currentPage === 1 ? '0.5' : '1').css('cursor', currentPage === 1 ? 'not-allowed' : 'pointer');
             $('#nextPage').prop('disabled', currentPage === totalPages || totalPages === 0).css('opacity', currentPage === totalPages || totalPages === 0 ? '0.5' : '1').css('cursor', currentPage === totalPages || totalPages === 0 ? 'not-allowed' : 'pointer');
         }
@@ -409,6 +407,9 @@
                     row.hide(); // Hide rows that don't match the filter
                 }
             });
+
+            // Update pagination after applying the filter
+            updatePagination();
         }
     });
 </script>
