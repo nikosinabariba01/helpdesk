@@ -234,7 +234,7 @@
         let filteredData = [];  // To store filtered data
 
         var table = $('#TicketTable').DataTable({
-            searching: true,  // Enable searching, but we will hide the default UI
+            searching: true,
             ordering: true,
             paging: false, // We will handle pagination manually
             lengthChange: false,
@@ -249,9 +249,6 @@
                 }
             ]
         });
-
-        // Hide the default search UI element
-        $('#TicketTable_filter').hide(); // This hides the default search bar
 
         // Handle column header sorting
         $('#TicketTable thead th').slice(0, 3).on('click', function() {
@@ -305,14 +302,14 @@
             });
         }
 
-        // Custom search filter for the input box
+        // Search filter
         $('#search').on('keyup', function() {
             var searchTerm = this.value.toLowerCase();
             $.fn.dataTable.ext.search = [];
             $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
                 return data[0].toLowerCase().includes(searchTerm) || data[1].toLowerCase().includes(searchTerm);
             });
-            table.draw();  // Redraw the table after applying the filter
+            table.draw();
             currentPage = 1;
             updatePagination();
         });
