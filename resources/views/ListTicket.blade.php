@@ -234,7 +234,7 @@
         let filteredData = []; // To store filtered data
 
         var table = $('#TicketTable').DataTable({
-            searching: true,
+            searching: false,
             ordering: true,
             paging: false, // We will handle pagination manually
             lengthChange: false,
@@ -305,20 +305,11 @@
         // Search filter
         $('#search').on('keyup', function() {
             var searchTerm = this.value.toLowerCase();
-            var rows = $('#TicketTable tbody tr');
-            
-            rows.each(function() {
-                var row = $(this);
-                var subject = row.data('subject') ? String(row.data('subject')).toLowerCase() : '';
-                var user = row.data('user') ? String(row.data('user')).toLowerCase() : '';
-                
-                if (subject.includes(searchTerm) || user.includes(searchTerm)) {
-                    row.show();
-                } else {
-                    row.hide();
-                }
+            $.fn.dataTable.ext.search = [];
+            $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+                return data[0].toLowerCase().includes(searchTerm) || data[1].toLowerCase().includes(searchTerm);
             });
-            
+            table.draw();
             currentPage = 1;
             updatePagination();
         });
