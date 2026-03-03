@@ -80,7 +80,7 @@
                             </thead>
                             <tbody>
                                 @foreach ($teknisi_data_ticket as $teknisidataticket)
-                                    <tr class="align-middle text-sm border border-light"
+                                    <tr
                                         data-created-at="{{ $teknisidataticket->created_at->timestamp }}"
                                         data-jenis-pengaduan="{{ $teknisidataticket->Jenis_Pengaduan }}"
                                         data-status="{{ $teknisidataticket->status }}">
