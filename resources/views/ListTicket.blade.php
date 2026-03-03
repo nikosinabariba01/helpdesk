@@ -231,10 +231,12 @@
         let currentSort = 'desc';
         let currentPage = 1;
         const itemsPerPage = 10;
+        let filteredData = [];  // To store filtered data
+
         var table = $('#TicketTable').DataTable({
-            searching: true,
+            searching: false,
             ordering: true,
-            paging: false,
+            paging: false, // We will handle pagination manually
             lengthChange: false,
             info: false,
             columnDefs: [{
@@ -335,24 +337,25 @@
 
         // Update Pagination
         function updatePagination() {
-            var allRows = $('#TicketTable tbody tr');
-            var totalRows = allRows.length;
+            var totalRows = filteredData.length;  // Count rows based on filtered data
             const totalPages = Math.ceil(totalRows / itemsPerPage);
             if (currentPage > totalPages) currentPage = totalPages || 1;
-            allRows.hide();
+
+            // Hide all rows first
+            $('#TicketTable tbody tr').hide();
+            // Show only the filtered rows for the current page
             var startIndex = (currentPage - 1) * itemsPerPage;
             var endIndex = startIndex + itemsPerPage;
-            allRows.slice(startIndex, endIndex).show();
-            var displayStart, displayEnd;
-            if (currentSort === 'desc') {
-                displayStart = totalRows === 0 ? 0 : startIndex + 1;
-                displayEnd = Math.min(endIndex, totalRows);
-            } else {
-                displayStart = totalRows - startIndex;
-                displayEnd = totalRows - endIndex + 1;
-                if (displayEnd < 1) displayEnd = 1;
+
+            // Loop through the filtered data and show only the rows for the current page
+            for (let i = startIndex; i < endIndex && i < totalRows; i++) {
+                $(filteredData[i]).show();
             }
+
+            var displayStart = startIndex + 1;
+            var displayEnd = Math.min(endIndex, totalRows);
             $('#paginationDisplay').text(displayStart + '-' + displayEnd + ' dari ' + totalRows);
+
             $('#prevPage').prop('disabled', currentPage === 1).css('opacity', currentPage === 1 ? '0.5' : '1').css('cursor', currentPage === 1 ? 'not-allowed' : 'pointer');
             $('#nextPage').prop('disabled', currentPage === totalPages || totalPages === 0).css('opacity', currentPage === totalPages || totalPages === 0 ? '0.5' : '1').css('cursor', currentPage === totalPages || totalPages === 0 ? 'not-allowed' : 'pointer');
         }
@@ -365,7 +368,7 @@
         });
 
         $('#nextPage').on('click', function() {
-            var totalRows = $('#TicketTable tbody tr').length;
+            var totalRows = filteredData.length;
             const totalPages = Math.ceil(totalRows / itemsPerPage);
             if (currentPage < totalPages) {
                 currentPage++;
@@ -391,7 +394,7 @@
 
         function filterTable(filterType, filterValue) {
             var rows = $('#TicketTable tbody tr');
-            rows.show(); // Reset visibility
+            filteredData = [];  // Reset filtered data
 
             rows.each(function() {
                 var row = $(this);
@@ -405,10 +408,13 @@
                 }
 
                 // If filterValue is empty (meaning "Semua"), show all rows
-                if (filterValue && value !== filterValue && filterValue !== '') {
-                    row.hide(); // Hide rows that don't match the filter
+                if (!filterValue || value === filterValue) {
+                    filteredData.push(row[0]); // Add to filtered data
                 }
             });
+
+            currentPage = 1; // Reset pagination
+            updatePagination();
         }
     });
 </script>
