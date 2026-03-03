@@ -311,7 +311,6 @@
         }
 
         // Search filter
-        // Search filter
         $('#search').on('keyup', function() {
             var searchTerm = this.value.toLowerCase();
 
@@ -326,11 +325,8 @@
 
             $.fn.dataTable.ext.search = [];
             $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
-                // Corrected: Accessing the data-subject attribute from the row element
-                var subject = $(data[0]).data('subject'); // Get 'data-subject' attribute from the first column (subject)
-                return subject.toLowerCase().includes(searchTerm) || data[1].toLowerCase().includes(searchTerm);
+                return data[0].toLowerCase().includes(searchTerm) || data[1].toLowerCase().includes(searchTerm);
             });
-
             table.draw();
             currentPage = 1;
             updatePagination();
