@@ -302,23 +302,24 @@
             });
         }
 
-        // Search filter hanya pada kolom Subject dan User
+        // Custom search hanya kolom Subject dan User (kolom 0 dan 1)
         $('#search').on('keyup', function() {
             var searchTerm = this.value.toLowerCase();
-            filteredData = []; // Reset filteredData
 
-            $('#TicketTable tbody tr').each(function() {
-                var subject = $(this).data('subject').toLowerCase(); // Kolom subject
-                var user = $(this).data('user').toLowerCase(); // Kolom user
+            $.fn.dataTable.ext.search = [];
+            $.fn.dataTable.ext.search.push(
+                function(settings, data, dataIndex) {
+                    // Kolom subject dan user (kolom ke-0 dan ke-1)
+                    var subject = data[0].toLowerCase(); // subject
+                    var user = data[1].toLowerCase(); // user
 
-                // Memeriksa apakah pencarian cocok dengan kolom Subject atau User
-                if (subject.includes(searchTerm) || user.includes(searchTerm)) {
-                    filteredData.push(this); // Menambahkan baris yang cocok ke filteredData
+                    return subject.includes(searchTerm) || user.includes(searchTerm);
                 }
-            });
+            );
 
-            currentPage = 1; // Reset pagination
-            updatePagination(); // Memperbarui pagination setelah pencarian
+            table.draw();
+            currentPage = 1;
+            updatePagination();
         });
 
         // Sorting by date
