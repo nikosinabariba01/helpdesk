@@ -72,7 +72,7 @@
                     <tbody>
                         @foreach($teknisi_data_ticket as $teknisidataticket)
                         <tr class="align-middle text-sm border border-light" data-created-at="{{ $teknisidataticket->created_at->timestamp }}" data-jenis-pengaduan="{{ $teknisidataticket->Jenis_Pengaduan }}" data-status="{{ $teknisidataticket->status }}">
-                            <td class="align-middle text-sm border border-light">
+                            <td class="align-middle text-sm border border-light" data-subject="{{ $teknisidataticket->subject }}">
                                 <div class="d-flex px-2 py-1">
                                     <div class="d-flex flex-column justify-content-center">
                                         <h6 class="mb-0 text-s text-limit-35" title="Subject">
@@ -228,7 +228,7 @@
 
 <script>
     $(document).ready(function() {
-        let currentSort = 'desc';
+        let currentSort = 'desc';  // Set default sorting to 'desc'
         let currentPage = 1;
         const itemsPerPage = 10;
         let filteredData = [];  // To store filtered data
@@ -247,7 +247,8 @@
                     targets: [3, 4, 5],
                     orderable: false
                 }
-            ]
+            ],
+            order: [[3, 'desc']] // Initially sort by 'created_at' (column 3) descending
         });
 
         // Set default value for dropdown (display name only, no actual value)
@@ -318,7 +319,7 @@
             updatePagination();
         });
 
-        // Sorting by date
+        // Sorting by date (newest to oldest)
         $(document).on('click', '.page-sort-option', function(e) {
             e.preventDefault();
             currentSort = $(this).data('sort');
@@ -425,6 +426,10 @@
 
         // Initial load: trigger pagination on page load (using default "Jenis Pengaduan" and "Status")
         updatePagination();
+
+        // Sort table by date when the page loads
+        sortTableByDate('desc');  // Default sort by 'created_at' desc (newest first)
+        updatePagination();  // Update pagination after sorting
     });
 </script>
 
