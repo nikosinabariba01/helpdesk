@@ -232,7 +232,7 @@
         let currentPage = 1;
         const itemsPerPage = 10;
         var table = $('#TicketTable').DataTable({
-            searching: true,
+            searching: false,
             ordering: true,
             paging: false,
             lengthChange: false,
@@ -300,13 +300,7 @@
             });
         }
 
-        // Hiding DataTables built-in search and length controls
-        $('#TicketTable_filter').hide();
-        $('#TicketTable_length').hide();
-        $('#TicketTable_paginate').hide();
-        updatePagination();
-
-        // Search Functionality
+        // Search filter
         $('#search').on('keyup', function() {
             var searchTerm = this.value.toLowerCase();
             $.fn.dataTable.ext.search = [];
@@ -318,7 +312,7 @@
             updatePagination();
         });
 
-        // Sorting Table by Date
+        // Sorting by date
         $(document).on('click', '.page-sort-option', function(e) {
             e.preventDefault();
             currentSort = $(this).data('sort');
@@ -339,7 +333,7 @@
             });
         }
 
-        // Function to update pagination
+        // Update Pagination
         function updatePagination() {
             var allRows = $('#TicketTable tbody tr');
             var totalRows = allRows.length;
@@ -363,13 +357,13 @@
             $('#nextPage').prop('disabled', currentPage === totalPages || totalPages === 0).css('opacity', currentPage === totalPages || totalPages === 0 ? '0.5' : '1').css('cursor', currentPage === totalPages || totalPages === 0 ? 'not-allowed' : 'pointer');
         }
 
-        // Paginate Previous/Next Button Click
         $('#prevPage').on('click', function() {
             if (currentPage > 1) {
                 currentPage--;
                 updatePagination();
             }
         });
+
         $('#nextPage').on('click', function() {
             var totalRows = $('#TicketTable tbody tr').length;
             const totalPages = Math.ceil(totalRows / itemsPerPage);
@@ -379,45 +373,42 @@
             }
         });
 
-        // Filter by Status and Jenis Pengaduan
-        $(document).on('click', '.filter-option', function() {
-            var filterType = $(this).data('filter-type');
+        // Filter Dropdown: Jenis Pengaduan
+        $(document).on('click', '.filter-option[data-filter-type="jenis_pengaduan"]', function(e) {
+            e.preventDefault();
             var filterValue = $(this).data('filter-value');
-
-            // Update filter display text
-            if (filterType === 'status') {
-                $('#filterStatusDisplay').text($(this).text());
-            } else if (filterType === 'jenis_pengaduan') {
-                $('#filterJenisPengaduanDisplay').text($(this).text());
-            }
-
-            // Apply filtering
-            filterTable();
+            $('#filterJenisPengaduanDisplay').text($(this).text()); // Update button text
+            filterTable('jenis_pengaduan', filterValue);
         });
 
-        // Function to filter the table
-        function filterTable() {
-            var selectedStatus = $('#filterStatusDisplay').text().trim();
-            var selectedJenisPengaduan = $('#filterJenisPengaduanDisplay').text().trim();
+        // Filter Dropdown: Status
+        $(document).on('click', '.filter-option[data-filter-type="status"]', function(e) {
+            e.preventDefault();
+            var filterValue = $(this).data('filter-value');
+            $('#filterStatusDisplay').text($(this).text()); // Update button text
+            filterTable('status', filterValue);
+        });
 
-            $('#TicketTable tbody tr').each(function() {
-                var status = $(this).data('status');
-                var jenisPengaduan = $(this).data('jenis-pengaduan');
+        function filterTable(filterType, filterValue) {
+            var rows = $('#TicketTable tbody tr');
+            rows.show(); // Reset visibility
 
-                // Compare and match filter values with data attributes
-                var statusMatch = selectedStatus === 'Status' || status.toLowerCase().includes(selectedStatus.toLowerCase());
-                var jenisPengaduanMatch = selectedJenisPengaduan === 'Jenis Pengaduan' || jenisPengaduan.toLowerCase().includes(selectedJenisPengaduan.toLowerCase());
+            rows.each(function() {
+                var row = $(this);
+                var value;
 
-                // Show rows that match the filter criteria
-                if (statusMatch && jenisPengaduanMatch) {
-                    $(this).show();
-                } else {
-                    $(this).hide();
+                // Get the value for the selected filter type
+                if (filterType === 'jenis_pengaduan') {
+                    value = row.data('jenis-pengaduan');
+                } else if (filterType === 'status') {
+                    value = row.data('status');
+                }
+
+                // If filterValue is empty (meaning "Semua"), show all rows
+                if (filterValue && value !== filterValue && filterValue !== '') {
+                    row.hide(); // Hide rows that don't match the filter
                 }
             });
-
-            // Update pagination after applying the filter
-            updatePagination();
         }
     });
 </script>
