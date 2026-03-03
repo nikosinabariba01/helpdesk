@@ -228,7 +228,7 @@
 
 <script>
     $(document).ready(function() {
-        let currentSort = 'desc'; // Default sorting order is 'desc'
+        let currentSort = 'desc'; // Set default sorting to 'desc'
         let currentPage = 1;
         const itemsPerPage = 10;
         let filteredData = []; // To store filtered data
@@ -314,6 +314,7 @@
         $('#search').on('keyup', function() {
             var searchTerm = this.value.toLowerCase();
 
+            // If search term is empty, restore the original data
             if (searchTerm === '') {
                 filteredData = []; // Clear filtered data
                 $('#TicketTable tbody').empty().append(originalData); // Restore original data
@@ -329,6 +330,7 @@
             table.draw();
             currentPage = 1;
             updatePagination();
+            // After searching, re-sort the table by date
             sortTableByDate(currentSort); // Ensure latest items are first
         });
 
@@ -355,6 +357,7 @@
 
         // Update Pagination
         function updatePagination() {
+            // Use filteredData if filter is applied, else use all rows
             const totalRows = filteredData.length || $('#TicketTable tbody tr').length;
             const totalPages = Math.ceil(totalRows / itemsPerPage);
             if (currentPage > totalPages) currentPage = totalPages || 1;
@@ -374,9 +377,16 @@
             var displayStart = startIndex + 1;
             var displayEnd = Math.min(endIndex, totalRows);
 
+            // For 'asc' sorting (oldest first), reverse the pagination range
             if (currentSort === 'asc') {
+                // Calculate the correct display range from the last row to the first
                 displayStart = totalRows - endIndex + 1;
                 displayEnd = totalRows - startIndex;
+            }
+
+            // Ensure that displayStart is not greater than displayEnd
+            if (displayStart > displayEnd) {
+                displayStart = displayEnd;
             }
 
             $('#paginationDisplay').text(displayStart + '-' + displayEnd + ' dari ' + totalRows);
@@ -400,6 +410,47 @@
                 updatePagination();
             }
         });
+
+        // Filter Dropdown: Jenis Pengaduan
+        $(document).on('click', '.filter-option[data-filter-type="jenis_pengaduan"]', function(e) {
+            e.preventDefault();
+            var filterValue = $(this).data('filter-value');
+            $('#filterJenisPengaduanDisplay').text($(this).text()); // Update button text
+            filterTable();
+        });
+
+        // Filter Dropdown: Status
+        $(document).on('click', '.filter-option[data-filter-type="status"]', function(e) {
+            e.preventDefault();
+            var filterValue = $(this).data('filter-value');
+            $('#filterStatusDisplay').text($(this).text()); // Update button text
+            filterTable();
+        });
+
+        function filterTable() {
+            const selectedJenisPengaduan = $('#filterJenisPengaduanDisplay').text().trim();
+            const selectedStatus = $('#filterStatusDisplay').text().trim();
+            const rows = $('#TicketTable tbody tr');
+            filteredData = []; // Reset filtered data
+
+            rows.each(function() {
+                var row = $(this);
+                var jenisPengaduan = row.data('jenis-pengaduan');
+                var status = row.data('status');
+
+                // Check if the row matches both the filters
+                var jenisPengaduanMatch = selectedJenisPengaduan === 'Jenis Pengaduan' || jenisPengaduan.toLowerCase().includes(selectedJenisPengaduan.toLowerCase());
+                var statusMatch = selectedStatus === 'Status' || status.toLowerCase().includes(selectedStatus.toLowerCase());
+
+                // If both filters match, add the row to filtered data
+                if (jenisPengaduanMatch && statusMatch) {
+                    filteredData.push(row[0]);
+                }
+            });
+
+            currentPage = 1; // Reset pagination after filter
+            updatePagination();
+        }
 
         // Initial load: trigger pagination on page load (using default "Jenis Pengaduan" and "Status")
         updatePagination();
