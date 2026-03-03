@@ -233,8 +233,9 @@
         const itemsPerPage = 10;
         let filteredData = []; // To store filtered data
 
+        // DataTable Initialization with default search enabled
         var table = $('#TicketTable').DataTable({
-            searching: true,
+            searching: true, // Enable default search
             ordering: true,
             paging: false, // We will handle pagination manually
             lengthChange: false,
@@ -248,6 +249,21 @@
                     orderable: false
                 }
             ]
+        });
+
+        // Hide the default search box of DataTables
+        $('#TicketTable_filter').hide();
+
+        // Custom search UI: input field with id 'search'
+        $('#search').on('keyup', function() {
+            var searchTerm = this.value.toLowerCase(); // Get the search term
+
+            // Use the DataTables API to search in the relevant columns (Subject and User)
+            table.columns([0, 1]).search(searchTerm).draw();
+
+            // Reset pagination to first page after each search
+            currentPage = 1;
+            updatePagination();
         });
 
         // Handle column header sorting
@@ -301,27 +317,6 @@
                 $('#TicketTable tbody').append(row);
             });
         }
-
-        // Search filter
-        $('#search').on('keyup', function() {
-            var searchTerm = this.value.toLowerCase();
-            var rows = $('#TicketTable tbody tr');
-            
-            rows.each(function() {
-                var row = $(this);
-                var subject = row.data('subject') ? String(row.data('subject')).toLowerCase() : '';
-                var user = row.data('user') ? String(row.data('user')).toLowerCase() : '';
-                
-                if (subject.includes(searchTerm) || user.includes(searchTerm)) {
-                    row.show();
-                } else {
-                    row.hide();
-                }
-            });
-            
-            currentPage = 1;
-            updatePagination();
-        });
 
         // Sorting by date
         $(document).on('click', '.page-sort-option', function(e) {
