@@ -379,15 +379,20 @@
             var displayStart = startIndex + 1;
             var displayEnd = Math.min(endIndex, totalRows);
 
-            // Show pagination display correctly depending on sorting
-            if (currentSort === 'desc') {
-                // If sorting is descending (newest first)
-                $('#paginationDisplay').text(displayStart + '-' + displayEnd + ' dari ' + totalRows);
+            // If no rows to display, show "No matching records found"
+            if (totalRows === 0) {
+                $('#TicketTable tbody').html('<tr><td colspan="6" class="text-center">No matching records found</td></tr>');
             } else {
-                // If sorting is ascending (oldest first)
-                const reversedStart = totalRows - startIndex;
-                const reversedEnd = Math.max(reversedStart - (itemsPerPage - 1), 1);
-                $('#paginationDisplay').text(reversedStart + '-' + reversedEnd + ' dari ' + totalRows);
+                // Show pagination display correctly depending on sorting
+                if (currentSort === 'desc') {
+                    // If sorting is descending (newest first)
+                    $('#paginationDisplay').text(displayStart + '-' + displayEnd + ' dari ' + totalRows);
+                } else {
+                    // If sorting is ascending (oldest first)
+                    const reversedStart = totalRows - startIndex;
+                    const reversedEnd = Math.max(reversedStart - (itemsPerPage - 1), 1);
+                    $('#paginationDisplay').text(reversedStart + '-' + reversedEnd + ' dari ' + totalRows);
+                }
             }
 
             $('#prevPage').prop('disabled', currentPage === 1).css('opacity', currentPage === 1 ? '0.5' : '1').css('cursor', currentPage === 1 ? 'not-allowed' : 'pointer');
