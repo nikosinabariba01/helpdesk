@@ -231,7 +231,7 @@
         let currentSort = 'desc';
         let currentPage = 1;
         const itemsPerPage = 10;
-        let filteredData = []; // To store filtered data
+        let filteredData = [];  // To store filtered data
 
         var table = $('#TicketTable').DataTable({
             searching: false,
@@ -341,7 +341,8 @@
             const totalPages = Math.ceil(totalRows / itemsPerPage);
             if (currentPage > totalPages) currentPage = totalPages || 1;
 
-            $('#TicketTable tbody tr').hide(); // Hide all rows first
+            // Hide all rows first
+            $('#TicketTable tbody tr').hide();
 
             var startIndex = (currentPage - 1) * itemsPerPage;
             var endIndex = startIndex + itemsPerPage;
@@ -394,7 +395,7 @@
             const selectedJenisPengaduan = $('#filterJenisPengaduanDisplay').text().trim();
             const selectedStatus = $('#filterStatusDisplay').text().trim();
             const rows = $('#TicketTable tbody tr');
-            filteredData = []; // Reset filtered data
+            filteredData = [];  // Reset filtered data
 
             rows.each(function() {
                 var row = $(this);
