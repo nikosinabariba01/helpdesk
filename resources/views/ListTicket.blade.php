@@ -250,6 +250,10 @@
             ]
         });
 
+        // Set default value for "Semua" on page load (ensure dropdown shows "Semua")
+        $('#filterJenisPengaduanDisplay').text('Semua');
+        $('#filterStatusDisplay').text('Semua');
+
         // Handle column header sorting
         $('#TicketTable thead th').slice(0, 3).on('click', function() {
             var columnIndex = $(this).index();
@@ -337,7 +341,7 @@
 
         // Update Pagination
         function updatePagination() {
-            // Use filteredData if filter is applied, else use all rows
+            // If no filter is applied, use all rows
             const totalRows = filteredData.length || $('#TicketTable tbody tr').length;
             const totalPages = Math.ceil(totalRows / itemsPerPage);
             if (currentPage > totalPages) currentPage = totalPages || 1;
@@ -406,8 +410,8 @@
                 var status = row.data('status');
 
                 // Check if the row matches both the filters
-                var jenisPengaduanMatch = selectedJenisPengaduan === 'Jenis Pengaduan' || jenisPengaduan.toLowerCase().includes(selectedJenisPengaduan.toLowerCase());
-                var statusMatch = selectedStatus === 'Status' || status.toLowerCase().includes(selectedStatus.toLowerCase());
+                var jenisPengaduanMatch = selectedJenisPengaduan === 'Semua' || jenisPengaduan.toLowerCase().includes(selectedJenisPengaduan.toLowerCase());
+                var statusMatch = selectedStatus === 'Semua' || status.toLowerCase().includes(selectedStatus.toLowerCase());
 
                 // If both filters match, add the row to filtered data
                 if (jenisPengaduanMatch && statusMatch) {
