@@ -239,16 +239,17 @@
             paging: false, // We will handle pagination manually
             lengthChange: false,
             info: false,
-            columnDefs: [{
-                    targets: [0, 1, 2],
-                    orderable: true
+            columnDefs: [
+                {
+                    targets: [0, 1, 2],  // Only allow sorting for subject, user, and status columns
+                    orderable: true       // Enable sorting on these columns
                 },
                 {
-                    targets: [3, 4, 5],
-                    orderable: false
+                    targets: [3, 4, 5],  // Disable sorting on other columns (deskripsi, aksi status, and action)
+                    orderable: false     // Disable sorting on these columns
                 }
             ],
-            order: [[3, 'desc']] // Initially sort by 'created_at' (column 3) descending
+            order: [[3, 'desc']]  // Initially sort by 'created_at' (column 3) descending (latest first)
         });
 
         // Set default value for dropdown (display name only, no actual value)
