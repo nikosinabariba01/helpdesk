@@ -231,33 +231,22 @@
         let currentSort = 'desc';
         let currentPage = 1;
         const itemsPerPage = 10;
-        
-        var table = $('#TicketTable').DataTable({
-            searching: true,
-            ordering: true,
-            paging: false,
-            lengthChange: false,
-            info: false,
-            columnDefs: [{
-                    targets: [0, 1, 2],
-                    orderable: true
-                },
-                {
-                    targets: [3, 4, 5],
-                    orderable: false
-                }
-            ]
-        });
 
-        // Variables for storing filter values
+        // Menyembunyikan kolom pencarian bawaan DataTable
+        $('#TicketTable_filter').hide();
+        $('#TicketTable_length').hide();
+        $('#TicketTable_paginate').hide();
+
+        // Variabel untuk menyimpan filter
         let currentJenisPengaduanFilter = '';
         let currentStatusFilter = '';
         let searchTerm = '';
 
-        // Handle filter dropdown selections
+        // Event listener untuk dropdown filter
         $(document).on('click', '.filter-option', function(e) {
             e.preventDefault();
             e.stopPropagation();
+
             var filterType = $(this).data('filter-type');
             var filterValue = $(this).data('filter-value');
             var filterText = $(this).text().trim();
@@ -272,18 +261,19 @@
                 $('#filterStatusDisplay').text(displayText);
             }
 
-            currentPage = 1; // Reset to first page after filter change
-            applyFilters(); // Apply filters
+            // Reset ke halaman pertama setelah filter berubah
+            currentPage = 1;
+            applyFilters(); // Terapkan filter setelah dropdown dipilih
         });
 
-        // Handle the search box input
+        // Event listener untuk kolom pencarian
         $('#search').on('keyup', function() {
             searchTerm = this.value.toLowerCase();
-            currentPage = 1; // Reset to first page after search
-            applyFilters(); // Apply filters with search term
+            currentPage = 1; // Reset ke halaman pertama setelah pencarian
+            applyFilters(); // Terapkan filter dengan pencarian
         });
 
-        // Apply filters to table rows
+        // Fungsi untuk menerapkan filter
         function applyFilters() {
             var allRows = $('#TicketTable tbody tr');
             var filteredRows = [];
@@ -295,16 +285,16 @@
                 var subject = String(row.data('subject')).trim().toLowerCase();
                 var user = String(row.data('user')).trim().toLowerCase();
 
-                // Apply search filter
-                var matchesSearch = (subject.includes(searchTerm) || user.includes(searchTerm));
+                // Pencarian berdasarkan subject dan user
+                var matchesSearch = subject.includes(searchTerm) || user.includes(searchTerm);
 
-                // Apply jenis pengaduan filter
+                // Filter berdasarkan jenis pengaduan
                 var jenisPengaduanMatch = (currentJenisPengaduanFilter === '' || jenisPengaduan === currentJenisPengaduanFilter);
 
-                // Apply status filter
+                // Filter berdasarkan status
                 var statusMatch = (currentStatusFilter === '' || status === currentStatusFilter);
 
-                // Check if row matches all filters
+                // Tampilkan row jika memenuhi semua filter
                 if (matchesSearch && jenisPengaduanMatch && statusMatch) {
                     row.show();
                     filteredRows.push(row);
@@ -313,16 +303,19 @@
                 }
             });
 
-            updatePagination(filteredRows); // Update pagination after applying filters
+            // Memperbarui pagination setelah filter diterapkan
+            updatePagination(filteredRows);
         }
 
-        // Update pagination based on the filtered rows
+        // Fungsi untuk memperbarui pagination
         function updatePagination(filteredRows) {
             const totalRows = filteredRows.length;
             const totalPages = Math.ceil(totalRows / itemsPerPage);
 
-            if (currentPage > totalPages) currentPage = totalPages || 1;
-            
+            if (currentPage > totalPages) {
+                currentPage = totalPages || 1;
+            }
+
             filteredRows.forEach(function(row, index) {
                 row.hide();
                 if (index >= (currentPage - 1) * itemsPerPage && index < currentPage * itemsPerPage) {
@@ -330,6 +323,7 @@
                 }
             });
 
+            // Update teks pagination
             var displayStart = (currentPage - 1) * itemsPerPage + 1;
             var displayEnd = Math.min(currentPage * itemsPerPage, totalRows);
 
@@ -338,7 +332,7 @@
             $('#nextPage').prop('disabled', currentPage === totalPages || totalPages === 0).css('opacity', currentPage === totalPages || totalPages === 0 ? '0.5' : '1').css('cursor', currentPage === totalPages || totalPages === 0 ? 'not-allowed' : 'pointer');
         }
 
-        // Pagination next/prev buttons
+        // Event listener untuk tombol pagination "Halaman Sebelumnya"
         $('#prevPage').on('click', function() {
             if (currentPage > 1) {
                 currentPage--;
@@ -346,6 +340,7 @@
             }
         });
 
+        // Event listener untuk tombol pagination "Halaman Berikutnya"
         $('#nextPage').on('click', function() {
             var totalRows = $('#TicketTable tbody tr').length;
             const totalPages = Math.ceil(totalRows / itemsPerPage);
@@ -355,7 +350,7 @@
             }
         });
 
-        // Initialize table by applying all filters initially
+        // Inisialisasi filter pada pertama kali memuat halaman
         applyFilters();
     });
 </script>
