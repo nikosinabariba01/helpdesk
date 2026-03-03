@@ -231,6 +231,7 @@
         let currentSort = 'desc';
         let currentPage = 1;
         const itemsPerPage = 10;
+        let filteredData = [];  // To store filtered data
 
         var table = $('#TicketTable').DataTable({
             searching: false,
@@ -336,16 +337,19 @@
 
         // Update Pagination
         function updatePagination() {
-            var allRows = $('#TicketTable tbody tr');
-            var totalRows = allRows.length;
+            const totalRows = filteredData.length; // Use filteredData for pagination count
             const totalPages = Math.ceil(totalRows / itemsPerPage);
             if (currentPage > totalPages) currentPage = totalPages || 1;
 
-            allRows.hide(); // Hide all rows before pagination
-
+            // Hide all rows first
+            $('#TicketTable tbody tr').hide();
             var startIndex = (currentPage - 1) * itemsPerPage;
             var endIndex = startIndex + itemsPerPage;
-            allRows.slice(startIndex, endIndex).show(); // Show only the rows for the current page
+
+            // Loop through the filtered data and show only the rows for the current page
+            for (let i = startIndex; i < endIndex && i < totalRows; i++) {
+                $(filteredData[i]).show();
+            }
 
             var displayStart = startIndex + 1;
             var displayEnd = Math.min(endIndex, totalRows);
@@ -363,7 +367,7 @@
         });
 
         $('#nextPage').on('click', function() {
-            var totalRows = $('#TicketTable tbody tr').length;
+            const totalRows = filteredData.length;
             const totalPages = Math.ceil(totalRows / itemsPerPage);
             if (currentPage < totalPages) {
                 currentPage++;
@@ -388,8 +392,8 @@
         });
 
         function filterTable(filterType, filterValue) {
-            var rows = $('#TicketTable tbody tr');
-            rows.show(); // Reset visibility
+            const rows = $('#TicketTable tbody tr');
+            filteredData = []; // Reset filtered data
 
             rows.each(function() {
                 var row = $(this);
@@ -403,12 +407,12 @@
                 }
 
                 // If filterValue is empty (meaning "Semua"), show all rows
-                if (filterValue && value !== filterValue && filterValue !== '') {
-                    row.hide(); // Hide rows that don't match the filter
+                if (!filterValue || value === filterValue) {
+                    filteredData.push(row[0]); // Add to filtered data
                 }
             });
 
-            // Update pagination after applying the filter
+            currentPage = 1; // Reset pagination
             updatePagination();
         }
     });
