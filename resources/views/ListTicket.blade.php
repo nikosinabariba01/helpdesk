@@ -234,7 +234,7 @@
         let filteredData = [];  // To store filtered data
 
         var table = $('#TicketTable').DataTable({
-            searching: false,
+            searching: true,
             ordering: true,
             paging: false, // We will handle pagination manually
             lengthChange: false,
