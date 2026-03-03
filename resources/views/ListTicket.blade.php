@@ -341,7 +341,7 @@
 
         // Update Pagination
         function updatePagination() {
-            // If no filter is applied, use all rows
+            // Check if filteredData is empty or not. If empty, use all rows.
             const totalRows = filteredData.length || $('#TicketTable tbody tr').length;
             const totalPages = Math.ceil(totalRows / itemsPerPage);
             if (currentPage > totalPages) currentPage = totalPages || 1;
@@ -422,6 +422,9 @@
             currentPage = 1; // Reset pagination after filter
             updatePagination();
         }
+
+        // Initial load: trigger pagination on page load (using default "Semua")
+        updatePagination();
     });
 </script>
 
