@@ -228,14 +228,12 @@
 
 <script>
     $(document).ready(function() {
-        let currentSort = 'desc';
         let currentPage = 1;
         const itemsPerPage = 10;
         let filteredData = []; // To store filtered data
 
-        // DataTable Initialization with default search enabled
         var table = $('#TicketTable').DataTable({
-            searching: true, // Enable default search
+            searching: false, // Disable default search as we're using custom search
             ordering: true,
             paging: false, // We will handle pagination manually
             lengthChange: false,
@@ -251,17 +249,17 @@
             ]
         });
 
-        // Hide the default search box of DataTables
+        // Hide the default DataTables search box (we will use a custom search)
         $('#TicketTable_filter').hide();
 
-        // Custom search UI: input field with id 'search'
+        // Custom search: trigger search when user types in the search input
         $('#search').on('keyup', function() {
             var searchTerm = this.value.toLowerCase(); // Get the search term
 
-            // Use the DataTables API to search in the relevant columns (Subject and User)
+            // Use the DataTable API to search only in "Subject" and "User" columns (columns 0 and 1)
             table.columns([0, 1]).search(searchTerm).draw();
 
-            // Reset pagination to first page after each search
+            // Reset pagination to the first page after each search
             currentPage = 1;
             updatePagination();
         });
@@ -318,11 +316,11 @@
             });
         }
 
-        // Sorting by date
+        // Sorting by date (custom date sorting)
         $(document).on('click', '.page-sort-option', function(e) {
             e.preventDefault();
-            currentSort = $(this).data('sort');
-            sortTableByDate(currentSort);
+            var direction = $(this).data('sort');
+            sortTableByDate(direction);
             currentPage = 1;
             updatePagination();
         });
@@ -339,22 +337,20 @@
             });
         }
 
-        // Update Pagination
+        // Update Pagination: Display only 10 rows per page
         function updatePagination() {
-            var totalRows = filteredData.length; // Count rows based on filtered data
+            var allRows = $('#TicketTable tbody tr');
+            var totalRows = allRows.length; // Total rows after search and filter
             const totalPages = Math.ceil(totalRows / itemsPerPage);
             if (currentPage > totalPages) currentPage = totalPages || 1;
 
             // Hide all rows first
-            $('#TicketTable tbody tr').hide();
+            allRows.hide();
+
             // Show only the filtered rows for the current page
             var startIndex = (currentPage - 1) * itemsPerPage;
             var endIndex = startIndex + itemsPerPage;
-
-            // Loop through the filtered data and show only the rows for the current page
-            for (let i = startIndex; i < endIndex && i < totalRows; i++) {
-                $(filteredData[i]).show();
-            }
+            allRows.slice(startIndex, endIndex).show();
 
             var displayStart = startIndex + 1;
             var displayEnd = Math.min(endIndex, totalRows);
@@ -372,7 +368,7 @@
         });
 
         $('#nextPage').on('click', function() {
-            var totalRows = filteredData.length;
+            var totalRows = $('#TicketTable tbody tr').length;
             const totalPages = Math.ceil(totalRows / itemsPerPage);
             if (currentPage < totalPages) {
                 currentPage++;
