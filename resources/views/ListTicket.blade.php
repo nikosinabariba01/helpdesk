@@ -364,7 +364,9 @@
             // Use filteredData if filter is applied, else use all rows
             const totalRows = filteredData.length || $('#TicketTable tbody tr').length;
             const totalPages = Math.ceil(totalRows / itemsPerPage);
-            if (currentPage > totalPages) currentPage = totalPages || 1;
+            if (currentPage > totalPages) {
+                currentPage = totalPages || 1;
+            }
 
             $('#TicketTable tbody tr').hide(); // Hide all rows first
 
@@ -380,13 +382,22 @@
 
             var displayStart = startIndex + 1;
             var displayEnd = Math.min(endIndex, totalRows);
+
             // Adjust display text based on sorting direction
             if (currentSort === 'asc') {
+                // When sorting by oldest, we need to reverse the range
                 displayStart = totalRows - endIndex + 1;
                 displayEnd = totalRows - startIndex;
             }
+
+            // Ensure that the range never goes negative and is correct when on the last page
+            if (displayStart > displayEnd) {
+                displayStart = displayEnd;
+            }
+
             $('#paginationDisplay').text(displayStart + '-' + displayEnd + ' dari ' + totalRows);
 
+            // Update prev and next buttons
             $('#prevPage').prop('disabled', currentPage === 1).css('opacity', currentPage === 1 ? '0.5' : '1').css('cursor', currentPage === 1 ? 'not-allowed' : 'pointer');
             $('#nextPage').prop('disabled', currentPage === totalPages || totalRows === 0).css('opacity', currentPage === totalPages || totalRows === 0 ? '0.5' : '1').css('cursor', currentPage === totalPages || totalRows === 0 ? 'not-allowed' : 'pointer');
         }
