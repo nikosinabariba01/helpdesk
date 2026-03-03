@@ -367,11 +367,11 @@
             $('#prevPage').prop('disabled', currentPage === 1).css('opacity', currentPage === 1 ? '0.5' : '1').css('cursor', currentPage === 1 ? 'not-allowed' : 'pointer');
             $('#nextPage').prop('disabled', currentPage === totalPages || totalRows === 0).css('opacity', currentPage === totalPages || totalRows === 0 ? '0.5' : '1').css('cursor', currentPage === totalPages || totalRows === 0 ? 'not-allowed' : 'pointer');
 
-            // If no rows are displayed, show "Tidak ada data ditemukan"
+            // If no rows are displayed, show "No matching records found"
             if (totalRows === 0 || (filteredData.length === 0 && !$('#TicketTable tbody tr').is(':visible'))) {
-                $('#TicketTable tbody').append('<tr><td colspan="6" class="text-center">Tidak ada data ditemukan</td></tr>');
+                $('#TicketTable tbody').html('<tr><td colspan="6" class="text-center">No matching records found</td></tr>');
             } else {
-                $('#TicketTable tbody').find('tr:contains("Tidak ada data ditemukan")').remove(); // Remove "No data" message if rows are found
+                $('#TicketTable tbody').find('tr:contains("No matching records found")').remove(); // Remove "No data" message if rows are found
             }
         }
 
