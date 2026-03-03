@@ -337,18 +337,21 @@
 
         // Update Pagination
         function updatePagination() {
-            const totalRows = filteredData.length; // Use filteredData for pagination count
+            // Use filteredData if filter is applied, else use all rows
+            const totalRows = filteredData.length || $('#TicketTable tbody tr').length; 
             const totalPages = Math.ceil(totalRows / itemsPerPage);
             if (currentPage > totalPages) currentPage = totalPages || 1;
 
-            // Hide all rows first
-            $('#TicketTable tbody tr').hide();
+            $('#TicketTable tbody tr').hide(); // Hide all rows first
 
+            // Pagination logic for showing only the rows for the current page
             var startIndex = (currentPage - 1) * itemsPerPage;
             var endIndex = startIndex + itemsPerPage;
-            // Show only the rows for the current page
+
+            // Show only the rows for the current page (filtered or unfiltered)
+            const rowsToDisplay = filteredData.length ? filteredData : $('#TicketTable tbody tr').get();
             for (let i = startIndex; i < endIndex && i < totalRows; i++) {
-                $(filteredData[i]).show();
+                $(rowsToDisplay[i]).show();
             }
 
             var displayStart = startIndex + 1;
@@ -367,7 +370,7 @@
         });
 
         $('#nextPage').on('click', function() {
-            const totalRows = filteredData.length;
+            const totalRows = filteredData.length || $('#TicketTable tbody tr').length;
             const totalPages = Math.ceil(totalRows / itemsPerPage);
             if (currentPage < totalPages) {
                 currentPage++;
@@ -412,7 +415,7 @@
                 }
             });
 
-            currentPage = 1; // Reset pagination
+            currentPage = 1; // Reset pagination after filter
             updatePagination();
         }
     });
