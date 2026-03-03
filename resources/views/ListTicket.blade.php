@@ -404,6 +404,7 @@
                 var status = $(this).data('status');
                 var jenisPengaduan = $(this).data('jenis-pengaduan');
 
+                // Compare and match filter values with data attributes
                 var statusMatch = selectedStatus === 'Status' || status.toLowerCase().includes(selectedStatus.toLowerCase());
                 var jenisPengaduanMatch = selectedJenisPengaduan === 'Jenis Pengaduan' || jenisPengaduan.toLowerCase().includes(selectedJenisPengaduan.toLowerCase());
 
