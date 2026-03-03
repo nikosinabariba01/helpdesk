@@ -29,7 +29,26 @@
             </div>
         </div>
         <div class="card-body px-0 pt-0 pb-2 h-500">
-
+            <style>
+                @media (max-width: 768px) {
+                    .table-responsive-custom {
+                        height: 400px !important;
+                        max-height: 400px !important;
+                    }
+                }
+                @media (min-width: 769px) and (max-width: 1024px) {
+                    .table-responsive-custom {
+                        height: 600px !important;
+                        max-height: 600px !important;
+                    }
+                }
+                @media (min-width: 1025px) {
+                    .table-responsive-custom {
+                        height: 550px !important;
+                        max-height: 550px !important;
+                    }
+                }
+            </style>
             @if($teknisi_data_ticket->isEmpty())
             <div class="table-responsive margin-right: 15px; position: relative; table-responsive-custom" style="overflow-y: auto;">
                 <!-- Add your button here -->
