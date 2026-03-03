@@ -231,12 +231,12 @@
         let currentSort = 'desc';
         let currentPage = 1;
         const itemsPerPage = 10;
-        let filteredData = []; // Untuk menyimpan data yang sudah difilter
+        let filteredData = []; // To store filtered data
 
         var table = $('#TicketTable').DataTable({
-            searching: true,
+            searching: false,
             ordering: true,
-            paging: false, // Pagination kita handle manual
+            paging: false, // We will handle pagination manually
             lengthChange: false,
             info: false,
             columnDefs: [{
@@ -302,21 +302,13 @@
             });
         }
 
-        // Custom search hanya kolom Subject dan User (kolom 0 dan 1)
+        // Search filter
         $('#search').on('keyup', function() {
             var searchTerm = this.value.toLowerCase();
-
             $.fn.dataTable.ext.search = [];
-            $.fn.dataTable.ext.search.push(
-                function(settings, data, dataIndex) {
-                    // Kolom subject dan user (kolom ke-0 dan ke-1)
-                    var subject = data[0].toLowerCase(); // subject
-                    var user = data[1].toLowerCase(); // user
-
-                    return subject.includes(searchTerm) || user.includes(searchTerm);
-                }
-            );
-
+            $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+                return data[0].toLowerCase().includes(searchTerm) || data[1].toLowerCase().includes(searchTerm);
+            });
             table.draw();
             currentPage = 1;
             updatePagination();
