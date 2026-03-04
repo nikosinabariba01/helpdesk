@@ -279,7 +279,7 @@
                                     <button class="btn btn-sm btn-outline-secondary"
                                         style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
                                         type="button" id="filterStatusBtn" data-bs-toggle="dropdown"
-                                        data-bs-popper="static" aria-expanded="false">
+                                        data-bs-display="up" aria-expanded="false">
                                         <span id="filterStatusDisplay">Status</span>
                                         <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
                                     </button>
