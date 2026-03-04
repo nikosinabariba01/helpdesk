@@ -71,8 +71,8 @@
                     </thead>
                     <tbody>
                         @foreach($teknisi_data_ticket as $teknisidataticket)
-                        <tr>
-                            <td class="align-middle text-sm border border-light" data-subject="{{ $teknisidataticket->subject }}"  data-created-at="{{ $teknisidataticket->created_at->timestamp }}" data-jenis-pengaduan="{{ $teknisidataticket->Jenis_Pengaduan }}">
+                        <tr class="align-middle text-sm border border-light" data-created-at="{{ $teknisidataticket->created_at->timestamp }}" data-jenis-pengaduan="{{ $teknisidataticket->Jenis_Pengaduan }}" data-status="{{ $teknisidataticket->status }}" data-subject="{{ $teknisidataticket->subject }}" data-user="{{ $teknisidataticket->user->name }}">
+                            <td class="align-middle text-sm border border-light">
                                 <div class="d-flex px-2 py-1">
                                     <div class="d-flex flex-column justify-content-center">
                                         <h6 class="mb-0 text-s text-limit-35" title="Subject">
@@ -89,11 +89,11 @@
                                     </div>
                                 </div>
                             </td>
-                            <td class="align-middle text-center text-sm text-limit-20 border border-light" data-user="{{ $teknisidataticket->user->name }}">
+                            <td class="align-middle text-center text-sm text-limit-20 border border-light">
                                 {{ $teknisidataticket->user->name }}
                             </td>
-                            <td class="align-middle text-center text-sm border border-light" data-status="{{ $teknisidataticket->status }}">
-                                <x-status-badge :status="$teknisidataticket->status" />
+                            <td class="align-middle text-center text-sm border border-light">
+                                <x-status-badge :status="$teknisidataticket->status"/>
                             </td>
                             <td class="align-middle text-center text-limit-30 border border-light">
                                 <span class="text-secondary text-xs font-weight-bold ">{{ $teknisidataticket->Detail }}</span>
