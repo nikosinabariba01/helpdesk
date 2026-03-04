@@ -30,16 +30,37 @@
                 </div>
             </div>
             <div class="card-body px-0 pt-0 pb-2 h-500">
+                <style>
+                    @media (max-width: 768px) {
+                        .table-responsive-custom {
+                            height: 400px !important;
+                            max-height: 400px !important;
+                        }
+                    }
+
+                    @media (min-width: 769px) and (max-width: 1024px) {
+                        .table-responsive-custom {
+                            height: 600px !important;
+                            max-height: 600px !important;
+                        }
+                    }
+
+                    @media (min-width: 1025px) {
+                        .table-responsive-custom {
+                            height: 550px !important;
+                            max-height: 550px !important;
+                        }
+                    }
+                </style>
                 @if ($teknisi_data_ticket->isEmpty())
-                    <div class="table-responsive margin-right: 15px; position: relative;"
-                        style="height: 400px; max-height: 400px; overflow-y: auto;">
+                    <div class="table-responsive margin-right: 15px; position: relative; table-responsive-custom"
+                        style="overflow-y: auto;">
                         <!-- Add your button here -->
                         <a href="{{ route('teknisi.index') }}"
                             class="btn btn-primary position-absolute top-50 start-50 translate-middle">assign ticket</a>
                     </div>
                 @else
-                    <div class="table-responsive margin-right: 15px;"
-                        style="height: 400px; max-height: 400px; overflow-y: auto;">
+                    <div class="table-responsive margin-right: 15px; table-responsive-custom" style="overflow-y: auto;">
                         <table class="table align-items-center mb-0" id="TicketTable">
                             <thead>
                                 <tr>
@@ -59,7 +80,12 @@
                             </thead>
                             <tbody>
                                 @foreach ($teknisi_data_ticket as $teknisidataticket)
-                                    <tr>
+                                    <tr class="align-middle text-sm border border-light"
+                                        data-created-at="{{ $teknisidataticket->created_at->timestamp }}"
+                                        data-jenis-pengaduan="{{ $teknisidataticket->Jenis_Pengaduan }}"
+                                        data-status="{{ $teknisidataticket->status }}"
+                                        data-subject="{{ $teknisidataticket->subject }}"
+                                        data-user="{{ $teknisidataticket->user->name }}">
                                         <td class="align-middle text-sm border border-light">
                                             <div class="d-flex px-2 py-1">
                                                 <div class="d-flex flex-column justify-content-center">
@@ -202,39 +228,12 @@
                                                 @endif
                                             @endif
                                         </td>
-                                        <!-- "Edit" button within a dropdown -->
+                                        <!-- Detail button -->
                                         <td class="align-middle text-center border border-light">
-                                            <div class="dropdown">
-                                                <a class="btn btn-link" href="#" role="button"
-                                                    id="dropdownMenuLink" data-bs-toggle="dropdown"
-                                                    aria-expanded="false">
-                                                    <i class="fa fa-ellipsis-v fa-sm"></i>
-                                                </a>
-                                                <ul class="dropdown-menu dropdown-menu-end"
-                                                    aria-labelledby="dropdownMenuLink">
-                                                    <li>
-                                                    <li>
-                                                        <a class="dropdown-item text-info"
-                                                            href="{{ route('viewticketteknisi.index', ['id' => $teknisidataticket->id]) }}">
-                                                            <i class="fa fa-eye pe-2 text-info"></i>Detail
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <form method="POST"
-                                                            action="{{ route('ticketsteknisi.close', $teknisidataticket->id) }}"
-                                                            id="closeTicketForm-{{ $teknisidataticket->id }}">
-                                                            @method('PUT')
-                                                            @csrf
-                                                            <button type="button" class="dropdown-item text-danger"
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#modal-confirmation"
-                                                                data-form-id="closeTicketForm-{{ $teknisidataticket->id }}">
-                                                                <i class="fa fa-minus pe-2 text-danger"></i>close
-                                                            </button>
-                                                        </form>
-                                                    </li>
-                                                </ul>
-                                            </div>
+                                            <a class="dropdown-item"
+                                                href="{{ route('viewticketteknisi.index', ['id' => $teknisidataticket->id]) }}">
+                                                <i class="fa fa-eye pe-2 text-dark"></i>
+                                            </a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -264,6 +263,47 @@
                                         </a></li>
                                 </ul>
                             </div>
+                            <!-- Filter Jenis Pengaduan Dropdown -->
+                            <div class="dropdown" style="position: relative; display: inline-block;">
+                                <button class="btn btn-sm btn-outline-secondary"
+                                    style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
+                                    type="button" id="filterJenisPengaduanBtn" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    <span id="filterJenisPengaduanDisplay">Jenis Pengaduan</span>
+                                    <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="filterJenisPengaduanBtn"
+                                    style="font-size: 13px; min-width: 150px;">
+                                    <li><a class="dropdown-item filter-option" href="#"
+                                            data-filter-type="jenis_pengaduan" data-filter-value=""
+                                            style="padding: 8px 16px;">Semua</a></li>
+                                    <li><a class="dropdown-item filter-option" href="#"
+                                            data-filter-type="jenis_pengaduan" data-filter-value="perbaikan"
+                                            style="padding: 8px 16px;">Perbaikan</a></li>
+                                    <li><a class="dropdown-item filter-option" href="#"
+                                            data-filter-type="jenis_pengaduan" data-filter-value="permintaan"
+                                            style="padding: 8px 16px;">Permintaan</a></li>
+                                </ul>
+                            </div>
+
+                            <!-- Filter Status Dropdown -->
+                            <div class="dropdown" style="position: relative; display: inline-block;">
+                                <button class="btn btn-sm btn-outline-secondary"
+                                    style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
+                                    type="button" id="filterStatusBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span id="filterStatusDisplay">Status</span>
+                                    <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="filterStatusBtn"
+                                    style="font-size: 13px; min-width: 150px;">
+                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
+                                            data-filter-value="" style="padding: 8px 16px;">Semua</a></li>
+                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
+                                            data-filter-value="on process" style="padding: 8px 16px;">On Process</a></li>
+                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
+                                            data-filter-value="escalated" style="padding: 8px 16px;">Escalated</a></li>
+                                </ul>
+                            </div>
                         </div>
 
                         <div style="display: flex; gap: 12px; align-items: center;">
@@ -288,12 +328,19 @@
     </div>
 
     <!-- Modal Confirmation -->
+    <!-- Tombol Close -->
+    <button type="button" class="btn btn-sm btn-outline-danger btn-transparent text-danger" data-bs-toggle="modal"
+        data-bs-target="#modal-confirmation" data-form-id="closeTicketForm-{{ $teknisidataticket->id }}">
+        Close
+    </button>
+
+    <!-- Modal Konfirmasi -->
     <div class="modal fade" id="modal-confirmation" tabindex="-1" role="dialog" aria-labelledby="modal-confirmation"
         aria-hidden="true">
         <div class="modal-dialog modal-danger modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h6 class="modal-title" id="modal-title-confirmation">Are you sure?</h6>
+                    <h6 class="modal-title" id="modal-title-confirmation">Apakah Anda yakin?</h6>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
@@ -306,8 +353,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-white" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-danger" id="modal-submit-btn">Ya, close tiket</button>
+                    <button type="button" class="btn btn-white" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-danger" id="modal-submit-btn">Ya, tutup tiket</button>
                 </div>
             </div>
         </div>
@@ -401,9 +448,10 @@
                     if (filteredData.length === 0) {
                         // Tampilkan data yang sudah difilter (filteredData) dan pastikan urutannya benar
                         $('#TicketTable tbody').empty().append(
-                        filteredData); // Menampilkan kembali data yang sudah difilter
+                            filteredData); // Menampilkan kembali data yang sudah difilter
                         sortTableByDate(
-                        currentSort); // Urutkan data sesuai urutan yang diinginkan (misalnya berdasarkan tanggal)
+                            currentSort
+                        ); // Urutkan data sesuai urutan yang diinginkan (misalnya berdasarkan tanggal)
                         updatePagination(); // Update pagination sesuai data yang ditampilkan
                     } else {
                         // Jika tidak ada data yang sudah difilter, tampilkan seluruh data asli
@@ -590,4 +638,18 @@
         });
     </script>
 
+    <script>
+        // Menangani klik tombol konfirmasi untuk mengirimkan form
+        $('#modal-submit-btn').on('click', function() {
+            var formId = $('#modal-confirmation').data('form-id'); // Ambil form id dari modal
+            $('#' + formId).submit(); // Kirim form yang terkait dengan tombol
+        });
+
+        // Ketika modal ditampilkan, simpan form id yang terkait
+        $('#modal-confirmation').on('show.bs.modal', function(e) {
+            var button = $(e.relatedTarget); // Tombol yang memicu modal
+            var formId = button.data('form-id'); // Ambil form id dari data atribut tombol
+            $(this).data('form-id', formId); // Simpan formId dalam modal untuk digunakan nanti
+        });
+    </script>
 @endsection
