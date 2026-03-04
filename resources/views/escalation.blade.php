@@ -317,7 +317,7 @@
                         .includes(searchTerm);
                 });
                 table.draw();
-                currentPage = 1;
+
                 updatePagination();
                 // After searching, re-sort the table by date
                 sortTableByDate(currentSort); // Ensure latest items are first
