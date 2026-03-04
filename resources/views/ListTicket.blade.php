@@ -93,7 +93,7 @@
                                 {{ $teknisidataticket->user->name }}
                             </td>
                             <td class="align-middle text-center text-sm border border-light">
-                                <x-status-badge :status="$teknisidataticket->status"/>
+                                <x-status-badge :status="$teknisidataticket->status" />
                             </td>
                             <td class="align-middle text-center text-limit-30 border border-light">
                                 <span class="text-secondary text-xs font-weight-bold ">{{ $teknisidataticket->Detail }}</span>
@@ -321,9 +321,10 @@
                 return data[0].toLowerCase().includes(searchTerm) || data[1].toLowerCase().includes(searchTerm);
             });
             table.draw();
+            currentPage = 1;
+            sortTableByDate(currentSort); // Ensure latest items are first
             updatePagination();
             // After searching, re-sort the table by date
-            sortTableByDate(currentSort); // Ensure latest items are first
         });
 
         // Sorting by date (newest to oldest)
@@ -464,16 +465,14 @@
             });
 
             currentPage = 1;
-            sortTableByDate('desc'); // Default sort by 'created_at' desc (newest first)
-            updatePagination();
+            updatePagination(); // Recalculate pagination after filter
 
-            // FIX: Jika reset ke Semua, pastikan fallback ke semua data dan show
             if (!hasActiveFilter) {
-                $('#TicketTable tbody tr').show();
+                $('#TicketTable tbody tr').show(); // Show all data if no filter is applied
+            } else {
+                sortTableByDate(currentSort); // Reapply the last sort after filtering
             }
         }
-
-        updatePagination(); // Update pagination after sorting
     });
 </script>
 
