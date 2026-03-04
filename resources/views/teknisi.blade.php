@@ -27,17 +27,18 @@
                         <h5 class="font-weight-bolder mb-0 card-stat-value">{{ $totalTickets }}</h5>
                     </div>
                     <div class="card-stat-icon">
-                        <div class="icon icon-shape"
-                            style="background-color: rgba(94, 114, 228, 1); box-shadow: 0px 4px 6px rgba(94, 114, 228, 0.5);"
-                            text-center rounded-circle icon-48">
-                            <i class="fa fa-ticket-alt text-lg opacity-10"></i>
+                        <!-- Warna diubah ke RGB: 94,114,228 (Biru) -->
+                        <div class="icon icon-shape shadow-primary text-center rounded-circle icon-48"
+                            style="background: rgba(94,114,228,1);">
+                            <!-- Icon diganti: fa-ticket -->
+                            <i class="fa fa-ticket text-lg opacity-10"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Proceeding Ticket -->
+        <!-- Proceeding Ticket (On Process) -->
         <div class="col-6 col-sm-6 col-xl-2">
             <div class="card">
                 <div class="card-body p-3 card-stat">
@@ -46,9 +47,10 @@
                         <h5 class="font-weight-bolder mb-0 card-stat-value">{{ $totalOnProcessTickets }}</h5>
                     </div>
                     <div class="card-stat-icon">
-                        <div class="icon icon-shape"
-                            style="background-color: rgba(245, 158, 11, 1); box-shadow: 0px 4px 6px rgba(245, 158, 11, 0.5);"
-                            text-center rounded-circle icon-48">
+                        <!-- Warna diubah ke RGB: 245,158,11 (Oranye) -->
+                        <div class="icon icon-shape shadow-warning text-center rounded-circle icon-48"
+                            style="background: rgba(245,158,11,1);">
+                            <!-- Icon diganti: fa-spinner (sedang memproses) -->
                             <i class="fa fa-spinner text-lg opacity-10"></i>
                         </div>
                     </div>
@@ -65,10 +67,11 @@
                         <h5 class="font-weight-bolder mb-0 card-stat-value">{{ $totalEscalatedTickets }}</h5>
                     </div>
                     <div class="card-stat-icon">
-                        <div class="icon icon-shape"
-                            style="background-color: rgba(46, 204, 113, 1); box-shadow: 0px 4px 6px rgba(46, 204, 113, 0.5);"
-                            text-center rounded-circle icon-48">
-                            <i class="fa fa-exclamation-circle text-lg opacity-10"></i>
+                        <!-- Warna diubah ke RGB: 46,204,113 (Hijau) -->
+                        <div class="icon icon-shape shadow-success text-center rounded-circle icon-48"
+                            style="background: rgba(46,204,113,1);">
+                            <!-- Icon diganti: fa-flag (mengibarkan bendera/naik level) -->
+                            <i class="fa fa-flag text-lg opacity-10"></i>
                         </div>
                     </div>
                 </div>
@@ -84,17 +87,18 @@
                         <h5 class="font-weight-bolder mb-0 card-stat-value">{{ $totalClosedTickets }}</h5>
                     </div>
                     <div class="card-stat-icon">
-                        <div class="icon icon-shape"
-                            style="background-color: rgba(255, 0, 0, 1); box-shadow: 0px 4px 6px rgba(255, 0, 0, 0.5);"
-                            text-center rounded-circle icon-48">
-                            <i class="fa fa-check-circle text-lg opacity-10"></i>
+                        <!-- Warna diubah ke RGB: 255,0,0 (Merah) -->
+                        <div class="icon icon-shape shadow-danger text-center rounded-circle icon-48"
+                            style="background: rgba(255,0,0,1);">
+                            <!-- Icon diganti: fa-archive (arsip/tutup) -->
+                            <i class="fa fa-archive text-lg opacity-10"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Unfinished Ticket -->
+        <!-- Unfinished Ticket (Not Close) -->
         <div class="col-6 col-sm-6 col-xl-2">
             <div class="card">
                 <div class="card-body p-3 card-stat">
@@ -103,10 +107,11 @@
                         <h5 class="font-weight-bolder mb-0 card-stat-value">{{ $totalUnfinishedTickets }}</h5>
                     </div>
                     <div class="card-stat-icon">
-                        <div class="icon icon-shape"
-                            style="background-color: rgba(0, 153, 255, 1); box-shadow: 0px 4px 6px rgba(0, 153, 255, 0.5);"
-                            text-center rounded-circle icon-48">
-                            <i class="fa fa-hourglass-half text-lg opacity-10"></i>
+                        <!-- Warna baru: Ungu (Distinct) -->
+                        <div class="icon icon-shape shadow-primary text-center rounded-circle icon-48"
+                            style="background: rgba(155, 89, 182, 1);">
+                            <!-- Icon diganti: fa-clock (menunggu waktu) -->
+                            <i class="fa fa-clock text-lg opacity-10"></i>
                         </div>
                     </div>
                 </div>
@@ -122,10 +127,11 @@
                         <h5 class="font-weight-bolder mb-0 card-stat-value">{{ $totalAllTickets }}</h5>
                     </div>
                     <div class="card-stat-icon">
-                        <div class="icon icon-shape"
-                            style="background-color: rgba(255, 165, 0, 1); box-shadow: 0px 4px 6px rgba(255, 165, 0, 0.5);"
-                            text-center rounded-circle icon-48">
-                            <i class="fa fa-folder text-lg opacity-10"></i>
+                        <!-- Warna baru: Abu-abu Gelap (Distinct) -->
+                        <div class="icon icon-shape shadow-dark text-center rounded-circle icon-48"
+                            style="background: rgba(52, 73, 94, 1);">
+                            <!-- Icon diganti: fa-list (daftar semua) -->
+                            <i class="fa fa-list text-lg opacity-10"></i>
                         </div>
                     </div>
                 </div>
