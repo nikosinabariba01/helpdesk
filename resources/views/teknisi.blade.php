@@ -139,9 +139,10 @@
                     <div class="d-flex align-items-center gap-2 flex-wrap chart-controls">
                         <!-- Dropdown scope -->
                         <select id="scopeSelect" class="form-select form-select-sm">
-                            <option value="all" {{ $scope === 'all' ? 'selected' : '' }}>All (Open+Close)</option>
-                            <option value="open" {{ $scope === 'open' ? 'selected' : '' }}>Open</option>
-                            <option value="close" {{ $scope === 'close' ? 'selected' : '' }}>Close</option>
+                            <option value="all" {{ $scope === 'all' ? 'selected' : '' }}>All (Resolved+Unresolved)
+                            </option>
+                            <option value="resolved" {{ $scope === 'resolved' ? 'selected' : '' }}>Resolved</option>
+                            <option value="unresolved" {{ $scope === 'unresolved' ? 'selected' : '' }}>Unresolved</option>
                         </select>
 
                         <!-- Dropdown tahun -->
@@ -971,7 +972,6 @@
         const ANIM_MS = prefersReducedMotion ? 0 : 900;
         const EASING = 'easeOutQuart';
 
-        // ✅ CSS appear
         document.querySelectorAll('.chart-pop').forEach(el => {
             requestAnimationFrame(() => el.classList.add('is-ready'));
         });
@@ -979,9 +979,6 @@
         // =========================
         // YEAR + SCOPE SELECT (reload)
         // =========================
-        const chartYearEl = document.getElementById('chartYear');
-        if (chartYearEl) chartYearEl.textContent = chartLine?.year ?? '';
-
         const yearSelect = document.getElementById('yearSelect');
         const scopeSelect = document.getElementById('scopeSelect');
 
@@ -991,106 +988,13 @@
             if (scopeSelect) url.searchParams.set('scope', scopeSelect.value);
             window.location.href = url.toString();
         }
+
         if (yearSelect) yearSelect.addEventListener('change', reloadWithParams);
         if (scopeSelect) scopeSelect.addEventListener('change', reloadWithParams);
 
         // =========================
-        // PLUGIN: hover crosshair (line)
+        // LINE CHART
         // =========================
-        const hoverLinePlugin = {
-            id: 'hoverLine',
-            afterDatasetsDraw(chart) {
-                const active = chart.tooltip?.getActiveElements?.() || [];
-                if (!active.length) return;
-
-                const {
-                    ctx,
-                    chartArea: {
-                        top,
-                        bottom
-                    }
-                } = chart;
-                const x = active[0].element.x;
-
-                ctx.save();
-                ctx.beginPath();
-                ctx.moveTo(x, top);
-                ctx.lineTo(x, bottom);
-                ctx.setLineDash([4, 4]);
-                ctx.lineWidth = 1;
-                ctx.strokeStyle = 'rgba(0,0,0,.12)';
-                ctx.stroke();
-                ctx.restore();
-            }
-        };
-
-        // =========================
-        // PLUGIN: center text (doughnut)
-        // =========================
-        const centerTextPlugin = {
-            id: 'centerText',
-            afterDraw(chart, args, opts) {
-                if (chart.config.type !== 'doughnut') return;
-
-                const {
-                    ctx
-                } = chart;
-                const meta = chart.getDatasetMeta(0);
-                if (!meta?.data?.length) return;
-
-                const x = meta.data[0].x;
-                const y = meta.data[0].y;
-
-                const data = chart.data.datasets[0].data || [];
-                const total = data.reduce((a, b) => a + b, 0);
-
-                const closeIndex = chart.data.labels.indexOf('close');
-                const closed = closeIndex >= 0 ? (data[closeIndex] || 0) : 0;
-                const closeRate = total ? (closed / total * 100) : 0;
-
-                const topText = opts?.topText ?? 'Total Ticket';
-                const midText = opts?.midText ?? fmt(total);
-                const botText = opts?.botText ?? `Close rate ${closeRate.toFixed(1)}%`;
-
-                const isPhone = window.matchMedia('(max-width: 576px)').matches;
-
-                // ✅ lebih kecil lagi di HP
-                const topSize = opts?.topSize ?? (isPhone ? 8 : 12);
-                const midSize = opts?.midSize ?? (isPhone ? 14 : 22);
-                const botSize = opts?.botSize ?? (isPhone ? 8 : 12);
-
-                // jarak antar teks juga diperkecil di HP
-                const topOffset = isPhone ? 12 : 18;
-                const botOffset = isPhone ? 14 : 22;
-
-                ctx.save();
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-
-                ctx.fillStyle = 'rgba(52,71,103,.70)';
-                ctx.font =
-                    `600 ${topSize}px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial`;
-                ctx.fillText(topText, x, y - topOffset);
-
-                ctx.fillStyle = 'rgba(52,71,103,.95)';
-                ctx.font =
-                    `800 ${midSize}px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial`;
-                ctx.fillText(midText, x, y + 1);
-
-                ctx.fillStyle = 'rgba(52,71,103,.70)';
-                ctx.font =
-                    `600 ${botSize}px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial`;
-                ctx.fillText(botText, x, y + botOffset);
-
-                ctx.restore();
-            }
-        };
-
-        Chart.register(hoverLinePlugin, centerTextPlugin);
-
-        // ==========================================================
-        // ✅ LINE CHART
-        // ==========================================================
         const lineEl = document.getElementById('ticketsLineChart');
         if (lineEl) {
             const lineCtx = lineEl.getContext('2d');
@@ -1100,16 +1004,14 @@
 
             const typeColors = {
                 perbaikan: {
-                    stroke: "rgba(34,193,195,1)", // Modify color for 'perbaikan'
+                    stroke: "rgba(34,193,195,1)",
                     fillTop: "rgba(34,193,195,.20)"
                 },
                 permintaan: {
-                    stroke: "rgba(253,38,138,1)", // Modify color for 'permintaan'
+                    stroke: "rgba(253,38,138,1)",
                     fillTop: "rgba(253,38,138,.18)"
                 },
             };
-
-            const niceTypeLabel = (t) => (t === 'permintaan' ? 'Permintaan' : 'Perbaikan');
 
             const lineDatasets = types.map((t) => ({
                 label: t,
@@ -1163,43 +1065,13 @@
                                     size: 12,
                                     weight: '600'
                                 },
-                                generateLabels: (chart) => {
-                                    const original = Chart.defaults.plugins.legend.labels
-                                        .generateLabels(chart);
-
-                                    // Mengambil total perbaikan dan permintaan dari controller
-                                    const perbaikanTotal = @json($jenisTicketTotal['perbaikan_total']);
-                                    const permintaanTotal = @json($jenisTicketTotal['permintaan_total']);
-
-                                    return original.map((item) => {
-                                        const text = (item.text || '').toLowerCase();
-
-                                        // Menambahkan total perbaikan dan permintaan ke label chart
-                                        if (text === 'permintaan') {
-                                            item.text = `Permintaan: ${permintaanTotal}`;
-                                        }
-
-                                        if (text === 'perbaikan') {
-                                            item.text = `Perbaikan: ${perbaikanTotal}`;
-                                        }
-
-                                        item.fillStyle = item.strokeStyle;
-                                        item.lineWidth = 0;
-                                        return item;
-                                    });
-                                }
                             }
                         },
                         tooltip: {
                             padding: 12,
                             callbacks: {
                                 label: (ctx) =>
-                                    ` ${niceTypeLabel(ctx.dataset.label)}: ${fmt(ctx.parsed.y)}`,
-                                footer: (items) => {
-                                    const total = items.reduce((sum, it) => sum + (it.parsed.y ||
-                                        0), 0);
-                                    return `Total bulan ini: ${fmt(total)}`;
-                                }
+                                    ` ${niceTypeLabel(ctx.dataset.label)}: ${fmt(ctx.parsed.y)}`
                             }
                         }
                     },
@@ -1221,20 +1093,9 @@
                         y: {
                             from: (ctx) => {
                                 const yScale = ctx.chart?.scales?.y;
-                                return yScale ? yScale.getPixelForValue(0) : 0; // baseline pixel
+                                return yScale ? yScale.getPixelForValue(0) : 0;
                             }
                         },
-                        radius: {
-                            from: 0,
-                            duration: prefersReducedMotion ? 0 : Math.round(ANIM_MS * 0.85),
-                            easing: EASING
-                        },
-                        tension: {
-                            duration: prefersReducedMotion ? 0 : 550,
-                            easing: EASING,
-                            from: 0.2,
-                            to: 0.38
-                        }
                     },
 
                     scales: {
