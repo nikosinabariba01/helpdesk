@@ -72,7 +72,7 @@
                     <tbody>
                         @foreach($teknisi_data_ticket as $teknisidataticket)
                         <tr class="align-middle text-sm border border-light" data-created-at="{{ $teknisidataticket->created_at->timestamp }}" data-jenis-pengaduan="{{ $teknisidataticket->Jenis_Pengaduan }}" data-status="{{ $teknisidataticket->status }}" data-subject="{{ $teknisidataticket->subject }}" data-user="{{ $teknisidataticket->user->name }}">
-                            <td class="align-middle text-sm border border-light">
+                            <td class="align-middle text-sm border border-light" data-created-at="{{ $teknisidataticket->created_at->timestamp }}">
                                 <div class="d-flex px-2 py-1">
                                     <div class="d-flex flex-column justify-content-center">
                                         <h6 class="mb-0 text-s text-limit-35" title="Subject">
