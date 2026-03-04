@@ -327,13 +327,6 @@
         </div>
     </div>
 
-    <!-- Modal Confirmation -->
-    <!-- Tombol Close -->
-    <button type="button" class="btn btn-sm btn-outline-danger btn-transparent text-danger" data-bs-toggle="modal"
-        data-bs-target="#modal-confirmation" data-form-id="closeTicketForm-{{ $teknisidataticket->id }}">
-        Close
-    </button>
-
     <!-- Modal Konfirmasi -->
     <div class="modal fade" id="modal-confirmation" tabindex="-1" role="dialog" aria-labelledby="modal-confirmation"
         aria-hidden="true">
