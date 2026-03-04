@@ -329,6 +329,7 @@
 
         // Sorting by date (newest to oldest)
         $(document).on('click', '.page-sort-option', function(e) {
+            e.preventDefault();
             currentSort = $(this).data('sort');
             sortTableByDate(currentSort);
             currentPage = 1;
@@ -426,6 +427,7 @@
 
         // Filter Dropdown: Jenis Pengaduan
         $(document).on('click', '.filter-option[data-filter-type="jenis_pengaduan"]', function(e) {
+            e.preventDefault();
             var filterValue = $(this).data('filter-value');
             $('#filterJenisPengaduanDisplay').text($(this).text()); // Update button text
             filterTable();
@@ -433,6 +435,7 @@
 
         // Filter Dropdown: Status
         $(document).on('click', '.filter-option[data-filter-type="status"]', function(e) {
+            e.preventDefault();
             var filterValue = $(this).data('filter-value');
             $('#filterStatusDisplay').text($(this).text()); // Update button text
             filterTable();
@@ -473,9 +476,6 @@
 
         // Initial load: trigger pagination on page load (using default "Jenis Pengaduan" and "Status")
         updatePagination();
-        // Sort table by date when the page loads
-        sortTableByDate(currentSort); // Default sort by 'created_at' desc (newest first)
-        updatePagination(); // Update pagination after sorting
     });
 </script>
 
