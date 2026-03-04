@@ -848,48 +848,10 @@
 </script>
 
 <style>
-    /* Override Bootstrap's dropdown menu position to ensure it opens upwards */
-    .dropdown-menu {
-        position: absolute !important;
-        /* Force absolute positioning */
-        top: auto;
-        /* Reset the default positioning */
-        bottom: 100%;
-        /* Place it above the button */
-        margin-bottom: 5px;
-        /* Optional, add some space between the dropdown and button */
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        /* Add shadow for better visibility */
-        border-radius: 4px;
-        /* Rounded corners */
-        z-index: 1050;
-        /* Ensure dropdown appears on top of other elements */
-    }
-
     /* Optional: Style the dropdown container to make sure it doesn't overflow */
     .dropdown {
         position: relative;
         overflow: hidden;
         /* Ensure dropdown is constrained within the container */
-    }
-
-    /* Optional: Style the dropdown item to make it more visually appealing */
-    .dropdown-item {
-        padding: 10px 20px;
-        /* Increase padding for better spacing */
-        font-size: 14px;
-        /* Adjust the font size */
-        color: #495057;
-        /* Set the text color */
-        transition: background-color 0.3s ease;
-        /* Smooth transition for hover */
-    }
-
-    /* Optional: Change background color on hover */
-    .dropdown-item:hover {
-        background-color: #f8f9fa;
-        /* Light grey background on hover */
-        color: #007bff;
-        /* Blue text on hover */
     }
 </style>
