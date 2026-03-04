@@ -376,6 +376,11 @@
 
             $('#TicketTable tbody tr').hide(); // Hide all rows first
 
+            // FIX: Jika hasActiveFilter true dan filteredData.length === 0, treat sebagai no match
+            if (hasActiveFilter && filteredData.length === 0) {
+                totalRows = 0;
+            }
+
             if (totalRows === 0) {
                 // Tampilkan pesan jika nol
                 // Hapus pesan lama jika ada
