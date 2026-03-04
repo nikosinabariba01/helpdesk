@@ -311,7 +311,7 @@
             // If search term is empty, restore the original data
             if (searchTerm === '') {
                 // Tampilkan data yang sudah difilter sebelumnya
-                if (filteredData.length > 0) {
+                if (filteredData.length === 0) {
                     // Tampilkan data yang sudah difilter (filteredData) dan pastikan urutannya benar
                     $('#TicketTable tbody').empty().append(filteredData); // Menampilkan kembali data yang sudah difilter
                     sortTableByDate(currentSort); // Urutkan data sesuai urutan yang diinginkan (misalnya berdasarkan tanggal)
