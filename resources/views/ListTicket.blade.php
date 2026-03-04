@@ -399,6 +399,18 @@
             // After searching, re-sort the table by date
         });
 
+        // Menangani pemilihan filter dropdown "Semua"
+        $('.filter-option[data-filter-value=""]').on('click', function() {
+            // Reset filter untuk status dan jenis pengaduan
+            hasActiveFilter = false; // Reset status filter
+            filteredData = []; // Hapus data yang sudah difilter
+
+            // Tampilkan semua data dan reset tampilan
+            $('#TicketTable tbody').empty().append(originalData); // Tampilkan seluruh data asli
+            sortTableByDate(currentSort); // Urutkan data sesuai urutan yang diinginkan
+            updatePagination(); // Update pagination sesuai data yang ditampilkan
+        });
+
         // Sorting by date (newest to oldest)
         $(document).on('click', '.page-sort-option', function(e) {
             e.preventDefault();
