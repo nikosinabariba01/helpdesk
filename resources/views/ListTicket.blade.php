@@ -469,6 +469,7 @@
 
             if (!hasActiveFilter) {
                 $('#TicketTable tbody tr').show(); // Show all data if no filter is applied
+                updatePagination();
             } else {
                 sortTableByDate(currentSort); // Reapply the last sort after filtering
             }
