@@ -333,7 +333,7 @@
         <div class="modal-dialog modal-danger modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h6 class="modal-title" id="modal-title-confirmation">Apakah Anda yakin?</h6>
+                    <h6 class="modal-title" id="modal-title-confirmation">Are you sure?</h6>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
@@ -346,12 +346,27 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-white" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-danger" id="modal-submit-btn">Ya, tutup tiket</button>
+                    <button type="button" class="btn btn-white" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger" id="modal-submit-btn">Ya, close tiket</button>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        // Menangani klik tombol konfirmasi untuk mengirimkan form
+        $('#modal-submit-btn').on('click', function() {
+            var formId = $('#modal-confirmation').data('form-id'); // Ambil form id dari modal
+            $('#' + formId).submit(); // Kirim form yang terkait dengan tombol
+        });
+
+        // Ketika modal ditampilkan, simpan form id yang terkait
+        $('#modal-confirmation').on('show.bs.modal', function(e) {
+            var button = $(e.relatedTarget); // Tombol yang memicu modal
+            var formId = button.data('form-id'); // Ambil form id dari data atribut tombol
+            $(this).data('form-id', formId); // Simpan formId dalam modal untuk digunakan nanti
+        });
+    </script>
 
     <script>
         $(document).ready(function() {
