@@ -310,10 +310,18 @@
             var searchTerm = this.value.toLowerCase();
             // If search term is empty, restore the original data
             if (searchTerm === '') {
-                filteredData = []; // Clear filtered data
-                $('#TicketTable tbody').empty().append(originalData); // Restore original data
-                sortTableByDate(currentSort); // Reapply last sort
-                updatePagination(); // Reapply pagination
+                // Tampilkan data yang sudah difilter sebelumnya
+                if (filteredData.length > 0) {
+                    // Tampilkan data yang sudah difilter (filteredData) dan pastikan urutannya benar
+                    $('#TicketTable tbody').empty().append(filteredData); // Menampilkan kembali data yang sudah difilter
+                    sortTableByDate(currentSort); // Urutkan data sesuai urutan yang diinginkan (misalnya berdasarkan tanggal)
+                    updatePagination(); // Update pagination sesuai data yang ditampilkan
+                } else {
+                    // Jika tidak ada data yang sudah difilter, tampilkan seluruh data asli
+                    $('#TicketTable tbody').empty().append(originalData); // Menampilkan data asli
+                    sortTableByDate(currentSort); // Urutkan data sesuai urutan yang diinginkan
+                    updatePagination(); // Update pagination sesuai data yang ditampilkan
+                }
                 return;
             }
             $.fn.dataTable.ext.search = [];
