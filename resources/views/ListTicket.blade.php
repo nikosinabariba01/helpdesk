@@ -471,7 +471,7 @@
             if (!hasActiveFilter) {
                 $('#TicketTable tbody tr').show();
                 sortTableByDate('desc');
-                currentPage = 1;
+                currentPage = 2;
                 updatePagination();
             }
         }
