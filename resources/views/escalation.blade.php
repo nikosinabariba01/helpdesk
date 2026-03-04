@@ -198,25 +198,6 @@
                                             style="padding: 8px 16px;">Permintaan</a></li>
                                 </ul>
                             </div>
-
-                            <!-- Filter Status Dropdown -->
-                            <div class="dropdown" style="position: relative; display: inline-block;">
-                                <button class="btn btn-sm btn-outline-secondary"
-                                    style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
-                                    type="button" id="filterStatusBtn" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <span id="filterStatusDisplay">Status</span>
-                                    <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="filterStatusBtn"
-                                    style="font-size: 13px; min-width: 150px;">
-                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
-                                            data-filter-value="" style="padding: 8px 16px;">Semua</a></li>
-                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
-                                            data-filter-value="on process" style="padding: 8px 16px;">On Process</a></li>
-                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
-                                            data-filter-value="escalated" style="padding: 8px 16px;">Escalated</a></li>
-                                </ul>
-                            </div>
                         </div>
 
                         <div style="display: flex; gap: 12px; align-items: center;">
@@ -451,33 +432,21 @@
                 filterTable();
             });
 
-            // Filter Dropdown: Status
-            $(document).on('click', '.filter-option[data-filter-type="status"]', function(e) {
-                e.preventDefault();
-                var filterValue = $(this).data('filter-value');
-                $('#filterStatusDisplay').text($(this).text()); // Update button text
-                filterTable();
-            });
-
             function filterTable() {
                 const selectedJenis = $('#filterJenisPengaduanDisplay').text().trim();
-                const selectedStatus = $('#filterStatusDisplay').text().trim();
 
                 const isAllJenis = selectedJenis === 'Jenis Pengaduan' || selectedJenis === 'Semua';
-                const isAllStatus = selectedStatus === 'Status' || selectedStatus === 'Semua';
 
-                hasActiveFilter = !(isAllJenis && isAllStatus); // FIX: Set flag true jika ada filter spesifik
+                hasActiveFilter = !isAllJenis; // FIX: Set flag true jika ada filter spesifik
 
                 filteredData = [];
                 originalData.forEach(function(row) {
                     var $row = $(row);
                     var jenis = $row.data('jenis-pengaduan') || '';
-                    var status = $row.data('status') || '';
 
                     var matchJ = isAllJenis || jenis.toLowerCase().includes(selectedJenis.toLowerCase());
-                    var matchS = isAllStatus || status.toLowerCase().includes(selectedStatus.toLowerCase());
 
-                    if (matchJ && matchS) {
+                    if (matchJ) {
                         filteredData.push(row);
                     }
                 });
