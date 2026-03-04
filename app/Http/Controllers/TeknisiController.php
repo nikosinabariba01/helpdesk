@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
@@ -10,9 +11,11 @@ use Carbon\Carbon; // dompdf
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class TeknisiController extends Controller {
+class TeknisiController extends Controller
+{
 
-    private function getLatestComments() {
+    private function getLatestComments()
+    {
         // Dapatkan ID pengguna yang sedang login
         $userId = Auth::id();
 
@@ -47,413 +50,428 @@ class TeknisiController extends Controller {
         return $latestComments;
     }
 
-public function downloadMonthlyReport(Request $request) {
-    $period = $request->get('period', 'monthly'); // monthly | yearly | all
+    public function downloadMonthlyReport(Request $request)
+    {
+        $period = $request->get('period', 'monthly'); // monthly | yearly | all
 
-    $year  = (int) $request->get('year', now()->year);
-    $month = (int) $request->get('month', now()->month);
-    if ($month < 1 || $month > 12) {
-        $month = now()->month;
-    }
-
-    // =========================
-    // RANGE TANGGAL
-    // =========================
-    if ($period === 'all') {
-        $minDate = Ticket::min('created_at');
-        $maxDate = Ticket::max('created_at');
-
-        $start = $minDate ? Carbon::parse($minDate)->startOfDay() : now()->startOfYear();
-        $end   = $maxDate ? Carbon::parse($maxDate)->endOfDay() : now()->endOfDay();
-
-        $periodeLabel = 'Semua Tahun';
-    } elseif ($period === 'yearly') {
-        $start        = Carbon::create($year, 1, 1)->startOfDay();
-        $end          = Carbon::create($year, 12, 31)->endOfDay();
-        $periodeLabel = "Tahun {$year} (Jan–Des)";
-    } else {
-        $start        = Carbon::create($year, $month, 1)->startOfDay();
-        $end          = (clone $start)->endOfMonth()->endOfDay();
-        $periodeLabel = $start->translatedFormat('F Y');
-    }
-
-    // =========================
-    // FILTER OPSIONAL (GLOBAL)
-    // =========================
-    $status = $request->get('status', 'all');
-    $jenis  = $request->get('jenis', 'all');
-
-    // =========================
-    // BASE QUERY (GLOBAL)
-    // =========================
-    $q = Ticket::query()
-        ->with(['user', 'asignees'])
-        ->whereBetween('created_at', [$start, $end]);
-
-    if ($status !== 'all') {
-        $q->where('status', $status);
-    }
-    if ($jenis !== 'all') {
-        $q->where('Jenis_Pengaduan', $jenis);
-    }
-
-    $tickets = $q->orderBy('created_at', 'asc')->get();
-
-    // =========================
-    // SUMMARY & KPI
-    // =========================
-    $total     = $tickets->count();
-    $open      = $tickets->where('status', 'open')->count();
-    $onProcess = $tickets->where('status', 'on process')->count();
-    $escalated = $tickets->where('status', 'escalated')->count();
-    $close     = $tickets->where('status', 'close')->count();
-
-    $closeRate = $total ? round(($close / $total) * 100, 2) : 0;
-
-    $perbaikan  = $tickets->where('Jenis_Pengaduan', 'perbaikan')->count();
-    $permintaan = $tickets->where('Jenis_Pengaduan', 'permintaan')->count();
-
-    $dominantType = 'perbaikan';
-    if ($permintaan > $perbaikan) {
-        $dominantType = 'permintaan';
-    }
-
-    if ($perbaikan === 0 && $permintaan === 0) {
-        $dominantType = '-';
-    }
-
-    // ===== waktu penyelesaian (created_at -> Tanggal_Selesai) =====
-    $resolvedDays = $tickets
-        ->filter(fn($t) => $t->status === 'close' && ! empty($t->Tanggal_Selesai) && ! empty($t->created_at))
-        ->map(function ($t) {
-            $a = Carbon::parse($t->created_at)->startOfDay();
-            $b = Carbon::parse($t->Tanggal_Selesai)->startOfDay();
-            return max(0, $a->diffInDays($b));
-        })
-        ->values();
-
-    $avgDays    = $resolvedDays->count() ? round($resolvedDays->avg(), 2) : 0;
-    $medianDays = $resolvedDays->count() ? round($this->median($resolvedDays->all()), 2) : 0;
-    $p90Days    = $resolvedDays->count() ? round($this->percentile($resolvedDays->all(), 90), 2) : 0;
-
-    $summary = [
-        'total'                  => $total,
-        'open'                   => $open,
-        'on_process'             => $onProcess,
-        'escalated'              => $escalated,
-        'close'                  => $close,
-        'close_rate'             => $closeRate,
-        'perbaikan'              => $perbaikan,
-        'permintaan'             => $permintaan,
-        'dominant_type'          => $dominantType,
-
-        // dipakai view sesuai period
-        'avg_resolution_days'    => $avgDays,
-        'median_resolution_days' => $medianDays,
-        'p90_resolution_days'    => $p90Days,
-    ];
-
-    // =========================
-    // BY STATUS / BY TYPE
-    // =========================
-    $byStatus = [
-        'open'       => ['count' => $open, 'pct' => $total ? round(($open / $total) * 100, 2) : 0],
-        'on process' => ['count' => $onProcess, 'pct' => $total ? round(($onProcess / $total) * 100, 2) : 0],
-        'escalated'  => ['count' => $escalated, 'pct' => $total ? round(($escalated / $total) * 100, 2) : 0],
-        'close'      => ['count' => $close, 'pct' => $total ? round(($close / $total) * 100, 2) : 0],
-    ];
-
-    $byType = [
-        'perbaikan'  => ['count' => $perbaikan, 'pct' => $total ? round(($perbaikan / $total) * 100, 2) : 0],
-        'permintaan' => ['count' => $permintaan, 'pct' => $total ? round(($permintaan / $total) * 100, 2) : 0],
-    ];
-
-    // =========================
-    // TOP LOCATIONS & SUBJECTS (tanpa raw)
-    // =========================
-    $topLocations = $tickets
-        ->groupBy('Lokasi')
-        ->map(fn($g) => $g->count())
-        ->sortDesc()
-        ->take(8)
-        ->map(fn($count, $lokasi) => ['Lokasi' => $lokasi, 'total' => $count])
-        ->values()
-        ->all();
-
-    $topSubjects = $tickets
-        ->groupBy('subject')
-        ->map(fn($g) => $g->count())
-        ->sortDesc()
-        ->take(8)
-        ->map(fn($count, $subject) => ['subject' => $subject, 'total' => $count])
-        ->values()
-        ->all();
-
-    // =========================
-    // TREN BULANAN (Jan–Des) - untuk yearly
-    // =========================
-    $trendMonthly = [];
-    if ($period === 'yearly') {
-        for ($m = 1; $m <= 12; $m++) {
-            $monthTickets = $tickets->filter(function ($t) use ($m) {
-                return Carbon::parse($t->created_at)->month === $m;
-            });
-
-            $tTotal = $monthTickets->count();
-            $tClose = $monthTickets->where('status', 'close')->count();
-            $tRate  = $tTotal ? round(($tClose / $tTotal) * 100, 2) : 0;
-
-            $trendMonthly[$m] = [
-                'total'      => $tTotal,
-                'close'      => $tClose,
-                'close_rate' => $tRate,
-            ];
+        $year  = (int) $request->get('year', now()->year);
+        $month = (int) $request->get('month', now()->month);
+        if ($month < 1 || $month > 12) {
+            $month = now()->month;
         }
-    }
 
-    // =========================
-    // KPI PER TAHUN - untuk all (lebih masuk akal dari avg global)
-    // =========================
-    $kpiByYear = [];
-    if ($period === 'all') {
-        $ticketsByYear = $tickets->groupBy(function ($t) {
-            return Carbon::parse($t->created_at)->year;
-        })->sortKeys();
+        // =========================
+        // RANGE TANGGAL
+        // =========================
+        if ($period === 'all') {
+            $minDate = Ticket::min('created_at');
+            $maxDate = Ticket::max('created_at');
 
-        $kpiByYear = $ticketsByYear->map(function ($group, $y) {
-            $tTotal = $group->count();
-            $tClose = $group->where('status', 'close')->count();
-            $rate   = $tTotal ? round(($tClose / $tTotal) * 100, 2) : 0;
+            $start = $minDate ? Carbon::parse($minDate)->startOfDay() : now()->startOfYear();
+            $end   = $maxDate ? Carbon::parse($maxDate)->endOfDay() : now()->endOfDay();
 
-            $days = $group->filter(fn($t) => $t->status === 'close' && ! empty($t->Tanggal_Selesai) && ! empty($t->created_at))
-                ->map(function ($t) {
-                    $a = Carbon::parse($t->created_at)->startOfDay();
-                    $b = Carbon::parse($t->Tanggal_Selesai)->startOfDay();
-                    return max(0, $a->diffInDays($b));
-                })->values()->all();
+            $periodeLabel = 'Semua Tahun';
+        } elseif ($period === 'yearly') {
+            $start        = Carbon::create($year, 1, 1)->startOfDay();
+            $end          = Carbon::create($year, 12, 31)->endOfDay();
+            $periodeLabel = "Tahun {$year} (Jan–Des)";
+        } else {
+            $start        = Carbon::create($year, $month, 1)->startOfDay();
+            $end          = (clone $start)->endOfMonth()->endOfDay();
+            $periodeLabel = $start->translatedFormat('F Y');
+        }
 
-            $median = count($days) ? round($this->median($days), 2) : 0;
-            $p90    = count($days) ? round($this->percentile($days, 90), 2) : 0;
+        // =========================
+        // FILTER OPSIONAL (GLOBAL)
+        // =========================
+        $status = $request->get('status', 'all');
+        $jenis  = $request->get('jenis', 'all');
 
-            return [
-                'year'        => (int) $y,
-                'total'       => $tTotal,
-                'close'       => $tClose,
-                'close_rate'  => $rate,
-                'median_days' => $median,
-                'p90_days'    => $p90,
-            ];
-        })->values()->all();
-    }
+        // =========================
+        // BASE QUERY (GLOBAL)
+        // =========================
+        $q = Ticket::query()
+            ->with(['user', 'asignees'])
+            ->whereBetween('created_at', [$start, $end]);
 
-    // =========================
-    // KINERJA PER PENGURUS (pemilik + semua pengurus, pemilik paling atas)
-    // HANYA UNTUK ROLE PEMILIK
-    // =========================
-    $performance = [];
-    if ((Auth::user()->role ?? '') === 'pemilik') {
+        if ($status !== 'all') {
+            $q->where('status', $status);
+        }
+        if ($jenis !== 'all') {
+            $q->where('Jenis_Pengaduan', $jenis);
+        }
 
-        // ambil semua user role pemilik + pengurus (biar handled 0 tetap muncul)
-        $staff = User::query()
-            ->whereIn('role', ['pemilik', 'pengurus'])
-            ->orderByRaw("FIELD(role, 'pemilik', 'pengurus')") // ini bukan DB::raw, ini orderByRaw bawaan eloquent (kalau kamu tetap gak mau raw sama sekali, bilang ya nanti saya ganti manual sort collection)
-            ->orderBy('name')
-            ->get();
+        $tickets = $q->orderBy('created_at', 'asc')->get();
 
-        // ambil pivot assignees yang ticketnya masuk range + filter
-        $assignees = TicketAssignee::query()
-            ->with(['user', 'ticket'])
-            ->whereHas('ticket', function ($qq) use ($start, $end, $status, $jenis) {
-                $qq->whereBetween('created_at', [$start, $end]);
-                if ($status !== 'all') {
-                    $qq->where('status', $status);
-                }
+        // =========================
+        // Calculate totals for "perbaikan" and "permintaan"
+        // =========================
+        $perbaikanTotal  = $tickets->where('Jenis_Pengaduan', 'perbaikan')->count();
+        $permintaanTotal = $tickets->where('Jenis_Pengaduan', 'permintaan')->count();
 
-                if ($jenis !== 'all') {
-                    $qq->where('Jenis_Pengaduan', $jenis);
-                }
+        // Pass these totals to the view
+        $chartData = [
+            'perbaikan_total'  => $perbaikanTotal,
+            'permintaan_total' => $permintaanTotal,
+        ];
 
+        // =========================
+        // SUMMARY & KPI
+        // =========================
+        $total     = $tickets->count();
+        $open      = $tickets->where('status', 'open')->count();
+        $onProcess = $tickets->where('status', 'on process')->count();
+        $escalated = $tickets->where('status', 'escalated')->count();
+        $close     = $tickets->where('status', 'close')->count();
+
+        $closeRate = $total ? round(($close / $total) * 100, 2) : 0;
+
+        $perbaikan  = $tickets->where('Jenis_Pengaduan', 'perbaikan')->count();
+        $permintaan = $tickets->where('Jenis_Pengaduan', 'permintaan')->count();
+
+        $dominantType = 'perbaikan';
+        if ($permintaan > $perbaikan) {
+            $dominantType = 'permintaan';
+        }
+
+        if ($perbaikan === 0 && $permintaan === 0) {
+            $dominantType = '-';
+        }
+
+        // ===== waktu penyelesaian (created_at -> Tanggal_Selesai) =====
+        $resolvedDays = $tickets
+            ->filter(fn($t) => $t->status === 'close' && ! empty($t->Tanggal_Selesai) && ! empty($t->created_at))
+            ->map(function ($t) {
+                $a = Carbon::parse($t->created_at)->startOfDay();
+                $b = Carbon::parse($t->Tanggal_Selesai)->startOfDay();
+                return max(0, $a->diffInDays($b));
             })
-            ->get();
+            ->values();
 
-        $grouped = $assignees->groupBy('user_id');
+        $avgDays    = $resolvedDays->count() ? round($resolvedDays->avg(), 2) : 0;
+        $medianDays = $resolvedDays->count() ? round($this->median($resolvedDays->all()), 2) : 0;
+        $p90Days    = $resolvedDays->count() ? round($this->percentile($resolvedDays->all(), 90), 2) : 0;
 
-        $performance = $staff->map(function ($u) use ($grouped, $period) {
-            $rows = $grouped->get($u->id, collect());
+        $summary = [
+            'total'                  => $total,
+            'open'                   => $open,
+            'on_process'             => $onProcess,
+            'escalated'              => $escalated,
+            'close'                  => $close,
+            'close_rate'             => $closeRate,
+            'perbaikan'              => $perbaikan,
+            'permintaan'             => $permintaan,
+            'dominant_type'          => $dominantType,
 
-            $handledTickets = $rows->pluck('ticket')->filter()->unique('id')->values();
-            $handled        = $handledTickets->count();
+            // dipakai view sesuai period
+            'avg_resolution_days'    => $avgDays,
+            'median_resolution_days' => $medianDays,
+            'p90_resolution_days'    => $p90Days,
+        ];
 
-            $closedTickets = $handledTickets->where('status', 'close');
-            $closed        = $closedTickets->count();
+        // =========================
+        // BY STATUS / BY TYPE
+        // =========================
+        $byStatus = [
+            'open'       => ['count' => $open, 'pct' => $total ? round(($open / $total) * 100, 2) : 0],
+            'on process' => ['count' => $onProcess, 'pct' => $total ? round(($onProcess / $total) * 100, 2) : 0],
+            'escalated'  => ['count' => $escalated, 'pct' => $total ? round(($escalated / $total) * 100, 2) : 0],
+            'close'      => ['count' => $close, 'pct' => $total ? round(($close / $total) * 100, 2) : 0],
+        ];
 
-            $closeRate = $handled ? round(($closed / $handled) * 100, 2) : 0;
+        $byType = [
+            'perbaikan'  => ['count' => $perbaikan, 'pct' => $total ? round(($perbaikan / $total) * 100, 2) : 0],
+            'permintaan' => ['count' => $permintaan, 'pct' => $total ? round(($permintaan / $total) * 100, 2) : 0],
+        ];
 
-            // waktu selesai per user
-            $days = $closedTickets
-                ->filter(fn($t) => ! empty($t->Tanggal_Selesai) && ! empty($t->created_at))
-                ->map(function ($t) {
-                    $a = Carbon::parse($t->created_at)->startOfDay();
-                    $b = Carbon::parse($t->Tanggal_Selesai)->startOfDay();
-                    return max(0, $a->diffInDays($b));
-                })
-                ->values();
-
-            $avg    = $days->count() ? round($days->avg(), 2) : 0;
-            $median = $days->count() ? round($this->median($days->all()), 2) : 0;
-            $p90    = $days->count() ? round($this->percentile($days->all(), 90), 2) : 0;
-
-            return [
-                'user_id'                => $u->id,
-                'name'                   => $u->name,
-                'role'                   => $u->role,
-                'handled'                => $handled,
-                'closed'                 => $closed,
-                'close_rate'             => $closeRate,
-                'avg_resolution_days'    => $avg,
-                'median_resolution_days' => $median,
-                'p90_resolution_days'    => $p90,
-            ];
-        });
-
-        // pastikan pemilik benar-benar di atas (tanpa DB raw)
-        $performance = $performance->sort(function ($a, $b) {
-            // pemilik dulu
-            $ra = ($a['role'] === 'pemilik') ? 0 : 1;
-            $rb = ($b['role'] === 'pemilik') ? 0 : 1;
-            if ($ra !== $rb) {
-                return $ra <=> $rb;
-            }
-
-            // lalu handled desc biar kelihatan yang aktif
-            if (($a['handled'] ?? 0) !== ($b['handled'] ?? 0)) {
-                return ($b['handled'] ?? 0) <=> ($a['handled'] ?? 0);
-            }
-
-            // lalu nama
-            return strcmp($a['name'] ?? '', $b['name'] ?? '');
-        })->values()->all();
-    }
-
-    // =========================
-    // REKAP ESKALASI
-    // tampil hanya jika role pemilik & period monthly/yearly
-    // =========================
-    $escalationSummary = null;
-    if ((Auth::user()->role ?? '') === 'pemilik' && in_array($period, ['monthly', 'yearly'])) {
-
-        $escalatedTickets = $tickets->where('status', 'escalated')->values();
-
-        $topEscLoc = $escalatedTickets
+        // =========================
+        // TOP LOCATIONS & SUBJECTS (tanpa raw)
+        // =========================
+        $topLocations = $tickets
             ->groupBy('Lokasi')
             ->map(fn($g) => $g->count())
             ->sortDesc()
             ->take(8)
-            ->map(fn($count, $lok) => ['Lokasi' => $lok, 'total' => $count])
+            ->map(fn($count, $lokasi) => ['Lokasi' => $lokasi, 'total' => $count])
             ->values()
             ->all();
 
-        $topEscSub = $escalatedTickets
+        $topSubjects = $tickets
             ->groupBy('subject')
             ->map(fn($g) => $g->count())
             ->sortDesc()
             ->take(8)
-            ->map(fn($count, $sub) => ['subject' => $sub, 'total' => $count])
+            ->map(fn($count, $subject) => ['subject' => $subject, 'total' => $count])
             ->values()
             ->all();
 
-        $escalationSummary = [
-            'total'         => $escalatedTickets->count(),
-            'top_locations' => $topEscLoc,
-            'top_subjects'  => $topEscSub,
+        // =========================
+        // TREN BULANAN (Jan–Des) - untuk yearly
+        // =========================
+        $trendMonthly = [];
+        if ($period === 'yearly') {
+            for ($m = 1; $m <= 12; $m++) {
+                $monthTickets = $tickets->filter(function ($t) use ($m) {
+                    return Carbon::parse($t->created_at)->month === $m;
+                });
+
+                $tTotal = $monthTickets->count();
+                $tClose = $monthTickets->where('status', 'close')->count();
+                $tRate  = $tTotal ? round(($tClose / $tTotal) * 100, 2) : 0;
+
+                $trendMonthly[$m] = [
+                    'total'      => $tTotal,
+                    'close'      => $tClose,
+                    'close_rate' => $tRate,
+                ];
+            }
+        }
+
+        // =========================
+        // KPI PER TAHUN - untuk all (lebih masuk akal dari avg global)
+        // =========================
+        $kpiByYear = [];
+        if ($period === 'all') {
+            $ticketsByYear = $tickets->groupBy(function ($t) {
+                return Carbon::parse($t->created_at)->year;
+            })->sortKeys();
+
+            $kpiByYear = $ticketsByYear->map(function ($group, $y) {
+                $tTotal = $group->count();
+                $tClose = $group->where('status', 'close')->count();
+                $rate   = $tTotal ? round(($tClose / $tTotal) * 100, 2) : 0;
+
+                $days = $group->filter(fn($t) => $t->status === 'close' && ! empty($t->Tanggal_Selesai) && ! empty($t->created_at))
+                    ->map(function ($t) {
+                        $a = Carbon::parse($t->created_at)->startOfDay();
+                        $b = Carbon::parse($t->Tanggal_Selesai)->startOfDay();
+                        return max(0, $a->diffInDays($b));
+                    })->values()->all();
+
+                $median = count($days) ? round($this->median($days), 2) : 0;
+                $p90    = count($days) ? round($this->percentile($days, 90), 2) : 0;
+
+                return [
+                    'year'        => (int) $y,
+                    'total'       => $tTotal,
+                    'close'       => $tClose,
+                    'close_rate'  => $rate,
+                    'median_days' => $median,
+                    'p90_days'    => $p90,
+                ];
+            })->values()->all();
+        }
+
+        // =========================
+        // KINERJA PER PENGURUS (pemilik + semua pengurus, pemilik paling atas)
+        // HANYA UNTUK ROLE PEMILIK
+        // =========================
+        $performance = [];
+        if ((Auth::user()->role ?? '') === 'pemilik') {
+
+            // ambil semua user role pemilik + pengurus (biar handled 0 tetap muncul)
+            $staff = User::query()
+                ->whereIn('role', ['pemilik', 'pengurus'])
+                ->orderByRaw("FIELD(role, 'pemilik', 'pengurus')") // ini bukan DB::raw, ini orderByRaw bawaan eloquent (kalau kamu tetap gak mau raw sama sekali, bilang ya nanti saya ganti manual sort collection)
+                ->orderBy('name')
+                ->get();
+
+            // ambil pivot assignees yang ticketnya masuk range + filter
+            $assignees = TicketAssignee::query()
+                ->with(['user', 'ticket'])
+                ->whereHas('ticket', function ($qq) use ($start, $end, $status, $jenis) {
+                    $qq->whereBetween('created_at', [$start, $end]);
+                    if ($status !== 'all') {
+                        $qq->where('status', $status);
+                    }
+
+                    if ($jenis !== 'all') {
+                        $qq->where('Jenis_Pengaduan', $jenis);
+                    }
+                })
+                ->get();
+
+            $grouped = $assignees->groupBy('user_id');
+
+            $performance = $staff->map(function ($u) use ($grouped, $period) {
+                $rows = $grouped->get($u->id, collect());
+
+                $handledTickets = $rows->pluck('ticket')->filter()->unique('id')->values();
+                $handled        = $handledTickets->count();
+
+                $closedTickets = $handledTickets->where('status', 'close');
+                $closed        = $closedTickets->count();
+
+                $closeRate = $handled ? round(($closed / $handled) * 100, 2) : 0;
+
+                // waktu selesai per user
+                $days = $closedTickets
+                    ->filter(fn($t) => ! empty($t->Tanggal_Selesai) && ! empty($t->created_at))
+                    ->map(function ($t) {
+                        $a = Carbon::parse($t->created_at)->startOfDay();
+                        $b = Carbon::parse($t->Tanggal_Selesai)->startOfDay();
+                        return max(0, $a->diffInDays($b));
+                    })
+                    ->values();
+
+                $avg    = $days->count() ? round($days->avg(), 2) : 0;
+                $median = $days->count() ? round($this->median($days->all()), 2) : 0;
+                $p90    = $days->count() ? round($this->percentile($days->all(), 90), 2) : 0;
+
+                return [
+                    'user_id'                => $u->id,
+                    'name'                   => $u->name,
+                    'role'                   => $u->role,
+                    'handled'                => $handled,
+                    'closed'                 => $closed,
+                    'close_rate'             => $closeRate,
+                    'avg_resolution_days'    => $avg,
+                    'median_resolution_days' => $median,
+                    'p90_resolution_days'    => $p90,
+                ];
+            });
+
+            // pastikan pemilik benar-benar di atas (tanpa DB raw)
+            $performance = $performance->sort(function ($a, $b) {
+                // pemilik dulu
+                $ra = ($a['role'] === 'pemilik') ? 0 : 1;
+                $rb = ($b['role'] === 'pemilik') ? 0 : 1;
+                if ($ra !== $rb) {
+                    return $ra <=> $rb;
+                }
+
+                // lalu handled desc biar kelihatan yang aktif
+                if (($a['handled'] ?? 0) !== ($b['handled'] ?? 0)) {
+                    return ($b['handled'] ?? 0) <=> ($a['handled'] ?? 0);
+                }
+
+                // lalu nama
+                return strcmp($a['name'] ?? '', $b['name'] ?? '');
+            })->values()->all();
+        }
+
+        // =========================
+        // REKAP ESKALASI
+        // tampil hanya jika role pemilik & period monthly/yearly
+        // =========================
+        $escalationSummary = null;
+        if ((Auth::user()->role ?? '') === 'pemilik' && in_array($period, ['monthly', 'yearly'])) {
+
+            $escalatedTickets = $tickets->where('status', 'escalated')->values();
+
+            $topEscLoc = $escalatedTickets
+                ->groupBy('Lokasi')
+                ->map(fn($g) => $g->count())
+                ->sortDesc()
+                ->take(8)
+                ->map(fn($count, $lok) => ['Lokasi' => $lok, 'total' => $count])
+                ->values()
+                ->all();
+
+            $topEscSub = $escalatedTickets
+                ->groupBy('subject')
+                ->map(fn($g) => $g->count())
+                ->sortDesc()
+                ->take(8)
+                ->map(fn($count, $sub) => ['subject' => $sub, 'total' => $count])
+                ->values()
+                ->all();
+
+            $escalationSummary = [
+                'total'         => $escalatedTickets->count(),
+                'top_locations' => $topEscLoc,
+                'top_subjects'  => $topEscSub,
+            ];
+        }
+
+        // =========================
+        // FILTER TEXT (header)
+        // =========================
+        $filters   = [];
+        $filters[] = "Periode: {$periodeLabel}";
+        if ($status !== 'all') {
+            $filters[] = "Status: {$status}";
+        }
+
+        if ($jenis !== 'all') {
+            $filters[] = "Jenis: {$jenis}";
+        }
+
+        $filtersText = implode(' • ', $filters);
+
+        // =========================
+        // META
+        // =========================
+        $meta = [
+            'periode_label' => $periodeLabel,
+            'generated_at'  => now()->translatedFormat('d F Y H:i'),
+            'filters_text'  => $filtersText,
+            'user_name'     => Auth::user()->name ?? 'System',
+            'role'          => Auth::user()->role ?? '-',
+            'period'        => $period,
+            'year'          => $year,
+            'month'         => $month,
         ];
+
+        $pdf = Pdf::loadView('ticketsmonthly', compact(
+            'meta',
+            'summary',
+            'byStatus',
+            'byType',
+            'topLocations',
+            'topSubjects',
+            'tickets',
+            'performance',
+            'escalationSummary',
+            'kpiByYear',
+            'trendMonthly'
+        ))->setPaper('a4', 'portrait');
+
+        $fileKey = ($period === 'all') ? 'all-time' : (($period === 'yearly') ? $year : $start->format('Y-m'));
+        return $pdf->download("laporan-keluhan-{$fileKey}.pdf");
     }
 
-    // =========================
-    // FILTER TEXT (header)
-    // =========================
-    $filters   = [];
-    $filters[] = "Periode: {$periodeLabel}";
-    if ($status !== 'all') {
-        $filters[] = "Status: {$status}";
+    /**
+     * Median helper (tanpa raw)
+     */
+    private function median(array $values): float
+    {
+        if (empty($values)) {
+            return 0;
+        }
+
+        sort($values);
+        $count = count($values);
+        $mid   = intdiv($count, 2);
+
+        if ($count % 2) {
+            return (float) $values[$mid];
+        }
+        return ((float) $values[$mid - 1] + (float) $values[$mid]) / 2;
     }
 
-    if ($jenis !== 'all') {
-        $filters[] = "Jenis: {$jenis}";
+    /**
+     * Percentile helper (P90, dll) sederhana
+     */
+    private function percentile(array $values, int $percent): float
+    {
+        if (empty($values)) {
+            return 0;
+        }
+
+        sort($values);
+        $count = count($values);
+
+        // nearest-rank method
+        $rank = (int) ceil(($percent / 100) * $count);
+        $idx  = max(0, min($count - 1, $rank - 1));
+
+        return (float) $values[$idx];
     }
 
-    $filtersText = implode(' • ', $filters);
 
-    // =========================
-    // META
-    // =========================
-    $meta = [
-        'periode_label' => $periodeLabel,
-        'generated_at'  => now()->translatedFormat('d F Y H:i'),
-        'filters_text'  => $filtersText,
-        'user_name'     => Auth::user()->name ?? 'System',
-        'role'          => Auth::user()->role ?? '-',
-        'period'        => $period,
-        'year'          => $year,
-        'month'         => $month,
-    ];
-
-    $pdf = Pdf::loadView('ticketsmonthly', compact(
-        'meta',
-        'summary',
-        'byStatus',
-        'byType',
-        'topLocations',
-        'topSubjects',
-        'tickets',
-        'performance',
-        'escalationSummary',
-        'kpiByYear',
-        'trendMonthly'
-    ))->setPaper('a4', 'portrait');
-
-    $fileKey = ($period === 'all') ? 'all-time' : (($period === 'yearly') ? $year : $start->format('Y-m'));
-    return $pdf->download("laporan-keluhan-{$fileKey}.pdf");
-}
-
-/**
- * Median helper (tanpa raw)
- */
-private function median(array $values): float {
-    if (empty($values)) {
-        return 0;
-    }
-
-    sort($values);
-    $count = count($values);
-    $mid   = intdiv($count, 2);
-
-    if ($count % 2) {
-        return (float) $values[$mid];
-    }
-    return ((float) $values[$mid - 1] + (float) $values[$mid]) / 2;
-}
-
-/**
- * Percentile helper (P90, dll) sederhana
- */
-private function percentile(array $values, int $percent): float {
-    if (empty($values)) {
-        return 0;
-    }
-
-    sort($values);
-    $count = count($values);
-
-    // nearest-rank method
-    $rank = (int) ceil(($percent / 100) * $count);
-    $idx  = max(0, min($count - 1, $rank - 1));
-
-    return (float) $values[$idx];
-}
-
-
-    public function index() {
+    public function index()
+    {
         $user   = Auth::user();
         $userId = $user->id;
         $role   = $user->role;
@@ -614,7 +632,8 @@ private function percentile(array $values, int $percent): float {
     }
 
     // Fungsi untuk menampilkan tiket yang sudah ditugaskan
-    public function viewasigne() {
+    public function viewasigne()
+    {
         // Dapatkan ID pengguna yang sedang login
         $userId = Auth::id();
 
@@ -639,7 +658,8 @@ private function percentile(array $values, int $percent): float {
     }
 
     // Fungsi untuk menampilkan tiket dengan status escalated
-    public function viewEscalation() {
+    public function viewEscalation()
+    {
         // Dapatkan ID pengguna yang sedang login
         $userId = Auth::id();
 
@@ -656,7 +676,8 @@ private function percentile(array $values, int $percent): float {
     }
 
     // Fungsi untuk menampilkan tiket yang telah ditutup
-    public function closeticket() {
+    public function closeticket()
+    {
         // Dapatkan ID pengguna yang sedang login
         $userId = Auth::id();
 
@@ -678,7 +699,8 @@ private function percentile(array $values, int $percent): float {
     }
 
     // Fungsi untuk menampilkan semua tiket
-    public function ListTicket() {
+    public function ListTicket()
+    {
         // Dapatkan ID pengguna yang sedang login
         $userId = Auth::id();
 
