@@ -183,18 +183,21 @@
                                                         </button>
                                                     @endif
                                                 </form>
-                                                <form method="POST"
-                                                    action="{{ route('ticketsteknisi.close', $teknisidataticket->id) }}"
-                                                    id="closeTicketForm-{{ $teknisidataticket->id }}">
-                                                    @method('PUT')
-                                                    @csrf
-                                                    <button type="button"
-                                                        class="btn btn-sm btn-outline-danger btn-transparent text-danger"
-                                                        data-bs-toggle="modal" data-bs-target="#modal-confirmation"
-                                                        data-form-id="closeTicketForm-{{ $teknisidataticket->id }}">
-                                                        Close
-                                                    </button>
-                                                </form>
+                                                <!-- Tombol Close -->
+                                                @if ($teknisidataticket->status != 'escalated')
+                                                    <form method="POST"
+                                                        action="{{ route('ticketsteknisi.close', $teknisidataticket->id) }}"
+                                                        id="closeTicketForm-{{ $teknisidataticket->id }}">
+                                                        @method('PUT')
+                                                        @csrf
+                                                        <button type="button"
+                                                            class="btn btn-sm btn-outline-danger btn-transparent text-danger"
+                                                            data-bs-toggle="modal" data-bs-target="#modal-confirmation"
+                                                            data-form-id="closeTicketForm-{{ $teknisidataticket->id }}">
+                                                            Close
+                                                        </button>
+                                                    </form>
+                                                @endif
                                             @else
                                                 <!-- Jika sudah ada pemilik yang meng-assign, hanya tampilkan tombol Cancel Assign -->
                                                 @if ($teknisidataticket->status != 'escalated')
@@ -209,6 +212,7 @@
                                                     </form>
                                                 @endif
                                                 <!-- Tombol Close -->
+                                                @if ($teknisidataticket->status != 'escalated')
                                                     <form method="POST"
                                                         action="{{ route('ticketsteknisi.close', $teknisidataticket->id) }}"
                                                         id="closeTicketForm-{{ $teknisidataticket->id }}">
@@ -218,17 +222,45 @@
                                                             class="btn btn-sm btn-outline-danger btn-transparent text-danger"
                                                             data-bs-toggle="modal" data-bs-target="#modal-confirmation"
                                                             data-form-id="closeTicketForm-{{ $teknisidataticket->id }}">
-                                                            Closes
+                                                            Close
                                                         </button>
                                                     </form>
+                                                @endif
                                             @endif
                                         </td>
                                         <!-- Detail button -->
                                         <td class="align-middle text-center border border-light">
-                                            <a class="dropdown-item"
-                                                href="{{ route('viewticketteknisi.index', ['id' => $teknisidataticket->id]) }}">
-                                                <i class="fa fa-eye pe-2 text-dark"></i>
-                                            </a>
+                                            <div class="dropdown">
+                                                <a class="btn btn-link" href="#" role="button"
+                                                    id="dropdownMenuLink" data-bs-toggle="dropdown"
+                                                    aria-expanded="false">
+                                                    <i class="fa fa-ellipsis-v fa-sm"></i>
+                                                </a>
+                                                <ul class="dropdown-menu dropdown-menu-end"
+                                                    aria-labelledby="dropdownMenuLink">
+                                                    <li>
+                                                    <li>
+                                                        <a class="dropdown-item text-info"
+                                                            href="{{ route('viewticketteknisi.index', ['id' => $teknisidataticket->id]) }}">
+                                                            <i class="fa fa-eye pe-2 text-info"></i>Detail
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <form method="POST"
+                                                            action="{{ route('ticketsteknisi.close', $teknisidataticket->id) }}"
+                                                            id="closeTicketForm-{{ $teknisidataticket->id }}">
+                                                            @method('PUT')
+                                                            @csrf
+                                                            <button type="button" class="dropdown-item text-danger"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#modal-confirmation"
+                                                                data-form-id="closeTicketForm-{{ $teknisidataticket->id }}">
+                                                                <i class="fa fa-minus pe-2 text-danger"></i>close
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                </ul>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach
