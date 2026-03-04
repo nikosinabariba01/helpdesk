@@ -27,15 +27,17 @@
                         <h5 class="font-weight-bolder mb-0 card-stat-value">{{ $totalTickets }}</h5>
                     </div>
                     <div class="card-stat-icon">
-                        <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle icon-48">
-                            <i class="fa fa-copy text-lg opacity-10"></i>
+                        <div class="icon icon-shape"
+                            style="background-color: rgba(94, 114, 228, 1); box-shadow: 0px 4px 6px rgba(94, 114, 228, 0.5);"
+                            text-center rounded-circle icon-48">
+                            <i class="fa fa-ticket-alt text-lg opacity-10"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Assigned Ticket (On Process) -->
+        <!-- Proceeding Ticket -->
         <div class="col-6 col-sm-6 col-xl-2">
             <div class="card">
                 <div class="card-body p-3 card-stat">
@@ -44,25 +46,10 @@
                         <h5 class="font-weight-bolder mb-0 card-stat-value">{{ $totalOnProcessTickets }}</h5>
                     </div>
                     <div class="card-stat-icon">
-                        <div class="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle icon-48">
-                            <i class="fa fa-clipboard text-lg opacity-10"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Closed Ticket -->
-        <div class="col-6 col-sm-6 col-xl-2">
-            <div class="card">
-                <div class="card-body p-3 card-stat">
-                    <div class="numbers">
-                        <p class="text-sm mb-2 text-uppercase font-weight-bold card-stat-title">Closed Ticket</p>
-                        <h5 class="font-weight-bolder mb-0 card-stat-value">{{ $totalClosedTickets }}</h5>
-                    </div>
-                    <div class="card-stat-icon">
-                        <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle icon-48">
-                            <i class="fa fa-check text-lg opacity-10"></i>
+                        <div class="icon icon-shape"
+                            style="background-color: rgba(245, 158, 11, 1); box-shadow: 0px 4px 6px rgba(245, 158, 11, 0.5);"
+                            text-center rounded-circle icon-48">
+                            <i class="fa fa-spinner text-lg opacity-10"></i>
                         </div>
                     </div>
                 </div>
@@ -78,15 +65,36 @@
                         <h5 class="font-weight-bolder mb-0 card-stat-value">{{ $totalEscalatedTickets }}</h5>
                     </div>
                     <div class="card-stat-icon">
-                        <div class="icon icon-shape bg-gradient-dark shadow-dark text-center rounded-circle icon-48">
-                            <i class="fa fa-exclamation-triangle text-lg opacity-10"></i>
+                        <div class="icon icon-shape"
+                            style="background-color: rgba(46, 204, 113, 1); box-shadow: 0px 4px 6px rgba(46, 204, 113, 0.5);"
+                            text-center rounded-circle icon-48">
+                            <i class="fa fa-exclamation-circle text-lg opacity-10"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Unfinished Ticket (Not Close) -->
+        <!-- Closed Ticket -->
+        <div class="col-6 col-sm-6 col-xl-2">
+            <div class="card">
+                <div class="card-body p-3 card-stat">
+                    <div class="numbers">
+                        <p class="text-sm mb-2 text-uppercase font-weight-bold card-stat-title">Closed Ticket</p>
+                        <h5 class="font-weight-bolder mb-0 card-stat-value">{{ $totalClosedTickets }}</h5>
+                    </div>
+                    <div class="card-stat-icon">
+                        <div class="icon icon-shape"
+                            style="background-color: rgba(255, 0, 0, 1); box-shadow: 0px 4px 6px rgba(255, 0, 0, 0.5);"
+                            text-center rounded-circle icon-48">
+                            <i class="fa fa-check-circle text-lg opacity-10"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Unfinished Ticket -->
         <div class="col-6 col-sm-6 col-xl-2">
             <div class="card">
                 <div class="card-body p-3 card-stat">
@@ -95,7 +103,9 @@
                         <h5 class="font-weight-bolder mb-0 card-stat-value">{{ $totalUnfinishedTickets }}</h5>
                     </div>
                     <div class="card-stat-icon">
-                        <div class="icon icon-shape bg-gradient-info shadow-info text-center rounded-circle icon-48">
+                        <div class="icon icon-shape"
+                            style="background-color: rgba(0, 153, 255, 1); box-shadow: 0px 4px 6px rgba(0, 153, 255, 0.5);"
+                            text-center rounded-circle icon-48">
                             <i class="fa fa-hourglass-half text-lg opacity-10"></i>
                         </div>
                     </div>
@@ -112,7 +122,9 @@
                         <h5 class="font-weight-bolder mb-0 card-stat-value">{{ $totalAllTickets }}</h5>
                     </div>
                     <div class="card-stat-icon">
-                        <div class="icon icon-shape bg-gradient-warning shadow-warning text-center rounded-circle icon-48">
+                        <div class="icon icon-shape"
+                            style="background-color: rgba(255, 165, 0, 1); box-shadow: 0px 4px 6px rgba(255, 165, 0, 0.5);"
+                            text-center rounded-circle icon-48">
                             <i class="fa fa-folder text-lg opacity-10"></i>
                         </div>
                     </div>
