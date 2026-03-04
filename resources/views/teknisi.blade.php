@@ -994,14 +994,15 @@
             window.location.href = url.toString();
         }
 
-        if (yearSelect) yearSelect.addEventListener('change', reloadWithParams);
+        // Hapus event listener reload dengan URL
+        // (karena kita ingin chart diperbarui tanpa reload halaman)
 
         // Event listener untuk scope
         if (scopeSelect) {
             scopeSelect.addEventListener('change', () => {
                 const scopeValue = scopeSelect.value;
                 const yearValue = yearSelect.value;
-                updateLineChart(scopeValue, yearValue);
+                updateLineChart(scopeValue, yearValue); // Memperbarui line chart
             });
         }
 
