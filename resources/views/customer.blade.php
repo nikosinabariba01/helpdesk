@@ -846,12 +846,3 @@
         });
     });
 </script>
-
-<style>
-    /* Optional: Style the dropdown container to make sure it doesn't overflow */
-    .dropdown {
-        position: relative;
-        overflow: hidden;
-        /* Ensure dropdown is constrained within the container */
-    }
-</style>
