@@ -198,25 +198,6 @@
                                             style="padding: 8px 16px;">Permintaan</a></li>
                                 </ul>
                             </div>
-
-                            <!-- Filter Status Dropdown -->
-                            <div class="dropdown" style="position: relative; display: inline-block;">
-                                <button class="btn btn-sm btn-outline-secondary"
-                                    style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
-                                    type="button" id="filterStatusBtn" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <span id="filterStatusDisplay">Status</span>
-                                    <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="filterStatusBtn"
-                                    style="font-size: 13px; min-width: 150px;">
-                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
-                                            data-filter-value="" style="padding: 8px 16px;">Semua</a></li>
-                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
-                                            data-filter-value="on process" style="padding: 8px 16px;">On Process</a></li>
-                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
-                                            data-filter-value="escalated" style="padding: 8px 16px;">Escalated</a></li>
-                                </ul>
-                            </div>
                         </div>
 
                         <div style="display: flex; gap: 12px; align-items: center;">
