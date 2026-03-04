@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
@@ -11,11 +10,9 @@ use Carbon\Carbon; // dompdf
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class TeknisiController extends Controller
-{
+class TeknisiController extends Controller {
 
-    private function getLatestComments()
-    {
+    private function getLatestComments() {
         // Dapatkan ID pengguna yang sedang login
         $userId = Auth::id();
 
@@ -50,8 +47,7 @@ class TeknisiController extends Controller
         return $latestComments;
     }
 
-    public function downloadMonthlyReport(Request $request)
-    {
+    public function downloadMonthlyReport(Request $request) {
         $period = $request->get('period', 'monthly'); // monthly | yearly | all
 
         $year  = (int) $request->get('year', now()->year);
@@ -276,6 +272,7 @@ class TeknisiController extends Controller
                     if ($jenis !== 'all') {
                         $qq->where('Jenis_Pengaduan', $jenis);
                     }
+
                 })
                 ->get();
 
@@ -419,11 +416,10 @@ class TeknisiController extends Controller
         return $pdf->download("laporan-keluhan-{$fileKey}.pdf");
     }
 
-    /**
-     * Median helper (tanpa raw)
-     */
-    private function median(array $values): float
-    {
+/**
+ * Median helper (tanpa raw)
+ */
+    private function median(array $values): float {
         if (empty($values)) {
             return 0;
         }
@@ -438,11 +434,10 @@ class TeknisiController extends Controller
         return ((float) $values[$mid - 1] + (float) $values[$mid]) / 2;
     }
 
-    /**
-     * Percentile helper (P90, dll) sederhana
-     */
-    private function percentile(array $values, int $percent): float
-    {
+/**
+ * Percentile helper (P90, dll) sederhana
+ */
+    private function percentile(array $values, int $percent): float {
         if (empty($values)) {
             return 0;
         }
@@ -457,8 +452,7 @@ class TeknisiController extends Controller
         return (float) $values[$idx];
     }
 
-    public function index()
-    {
+    public function index() {
         $user   = Auth::user();
         $userId = $user->id;
         $role   = $user->role;
@@ -515,8 +509,8 @@ class TeknisiController extends Controller
         // CHART FILTER (Line & Doughnut) - tahun sama
         // =========================
         $selectedYear = (int) request('year', now()->year);
-        $scope        = request('scope', 'all'); // open | close | all | resolved | unresolved
-        if (! in_array($scope, ['resolved', 'unresolved', 'all'], true)) {
+        $scope        = request('scope', 'all'); // open | close | all
+        if (! in_array($scope, ['open', 'close', 'all'], true)) {
             $scope = 'all';
         }
 
@@ -542,57 +536,42 @@ class TeknisiController extends Controller
             ->where('Jenis_Pengaduan', 'permintaan')
             ->count();
 
-        // Menghitung total Resolved dan Unresolved berdasarkan status
-        $resolvedTotal = Ticket::whereYear('created_at', $selectedYear)
-            ->whereIn('status', ['open', 'on process', 'escalated'])
-            ->count();
-
-        $unresolvedTotal = Ticket::whereYear('created_at', $selectedYear)
-            ->where('status', 'close')
-            ->count();
-
-        // Kirimkan total perbaikan, permintaan, resolved, dan unresolved ke view
+        // Kirimkan total perbaikan dan permintaan ke view dengan nama variabel yang berbeda
         $jenisTicketTotal = [
             'perbaikan_total'  => $perbaikanTotal,
             'permintaan_total' => $permintaanTotal,
-            'resolved_total'   => $resolvedTotal,
-            'unresolved_total' => $unresolvedTotal,
         ];
 
         // =========================
-        // LINE CHART: Resolved vs Unresolved per bulan (berdasarkan scope)
+        // LINE CHART: Permintaan vs Perbaikan per bulan (berdasarkan scope)
         // =========================
         $labels = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-        $types  = ['resolved', 'unresolved'];
+        $types  = ['perbaikan', 'permintaan'];
 
         $monthlyByType = [
-            'resolved'   => array_fill(0, 12, 0),
-            'unresolved' => array_fill(0, 12, 0),
+            'perbaikan'  => array_fill(0, 12, 0),
+            'permintaan' => array_fill(0, 12, 0),
         ];
 
-        $q = Ticket::selectRaw('MONTH(created_at) AS bulan, status, COUNT(*) AS total')
+        $q = Ticket::selectRaw('MONTH(created_at) AS bulan, Jenis_Pengaduan AS jenis, COUNT(*) AS total')
             ->whereYear('created_at', $selectedYear)
-            ->whereIn('status', ['open', 'on process', 'escalated', 'close']); // All statuses
+            ->whereIn('Jenis_Pengaduan', $types);
 
-        if ($scope === 'resolved') {
-            $q->whereIn('status', ['open', 'on process', 'escalated']);
-        } elseif ($scope === 'unresolved') {
+        if ($scope === 'open') {
+            $q->where('status', 'open');
+        } elseif ($scope === 'close') {
             $q->where('status', 'close');
         } else {
-            // all = open + on process + escalated + close
-            $q->whereIn('status', ['open', 'on process', 'escalated', 'close']);
+            // all = open + close saja
+            $q->whereIn('status', ['open', 'close']);
         }
 
-        $rows = $q->groupBy('bulan', 'status')->get();
+        $rows = $q->groupBy('bulan', 'jenis')->get();
 
         foreach ($rows as $r) {
             $idx = (int) $r->bulan - 1;
-            if ($idx >= 0 && $idx < 12) {
-                if (in_array($r->status, ['open', 'on process', 'escalated'])) {
-                    $monthlyByType['resolved'][$idx] = (int) $r->total;
-                } else if ($r->status === 'close') {
-                    $monthlyByType['unresolved'][$idx] = (int) $r->total;
-                }
+            if ($idx >= 0 && $idx < 12 && isset($monthlyByType[$r->jenis])) {
+                $monthlyByType[$r->jenis][$idx] = (int) $r->total;
             }
         }
 
@@ -607,7 +586,7 @@ class TeknisiController extends Controller
         // =========================
         // DOUGHNUT DATA: Status per bulan (tahun sama)
         // =========================
-        $statuses = ['resolved', 'unresolved'];
+        $statuses = ['open', 'on process', 'close', 'escalated'];
 
         $monthlyByStatus = [];
         foreach ($statuses as $s) {
@@ -648,14 +627,13 @@ class TeknisiController extends Controller
             'selectedYear',
             'scope',
             'chartLine',
-            'jenisTicketTotal', // Mengirimkan total perbaikan, permintaan, resolved, unresolved
+            'jenisTicketTotal', // Mengirimkan total perbaikan dan permintaan
             'chartData'
         ));
     }
 
     // Fungsi untuk menampilkan tiket yang sudah ditugaskan
-    public function viewasigne()
-    {
+    public function viewasigne() {
         // Dapatkan ID pengguna yang sedang login
         $userId = Auth::id();
 
@@ -680,8 +658,7 @@ class TeknisiController extends Controller
     }
 
     // Fungsi untuk menampilkan tiket dengan status escalated
-    public function viewEscalation()
-    {
+    public function viewEscalation() {
         // Dapatkan ID pengguna yang sedang login
         $userId = Auth::id();
 
@@ -698,8 +675,7 @@ class TeknisiController extends Controller
     }
 
     // Fungsi untuk menampilkan tiket yang telah ditutup
-    public function closeticket()
-    {
+    public function closeticket() {
         // Dapatkan ID pengguna yang sedang login
         $userId = Auth::id();
 
@@ -721,8 +697,7 @@ class TeknisiController extends Controller
     }
 
     // Fungsi untuk menampilkan semua tiket
-    public function ListTicket()
-    {
+    public function ListTicket() {
         // Dapatkan ID pengguna yang sedang login
         $userId = Auth::id();
 

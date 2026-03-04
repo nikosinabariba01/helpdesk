@@ -132,17 +132,16 @@
                         <h6 class="mb-0">Tickets per Bulan (Permintaan vs Perbaikan)</h6>
                         <small class="text-secondary">
                             Tahun: {{ $selectedYear }} • Scope:
-                            <b>{{ $scope === 'all' ? 'All (Resolved+Unresolved)' : strtoupper($scope) }}</b>
+                            <b>{{ $scope === 'all' ? 'All (Open+Close)' : strtoupper($scope) }}</b>
                         </small>
                     </div>
 
                     <div class="d-flex align-items-center gap-2 flex-wrap chart-controls">
                         <!-- Dropdown scope -->
                         <select id="scopeSelect" class="form-select form-select-sm">
-                            <option value="all" {{ $scope === 'all' ? 'selected' : '' }}>All (Resolved+Unresolved)
-                            </option>
-                            <option value="resolved" {{ $scope === 'resolved' ? 'selected' : '' }}>Resolved</option>
-                            <option value="unresolved" {{ $scope === 'unresolved' ? 'selected' : '' }}>Unresolved</option>
+                            <option value="all" {{ $scope === 'all' ? 'selected' : '' }}>All (Open+Close)</option>
+                            <option value="open" {{ $scope === 'open' ? 'selected' : '' }}>Open</option>
+                            <option value="close" {{ $scope === 'close' ? 'selected' : '' }}>Close</option>
                         </select>
 
                         <!-- Dropdown tahun -->
@@ -980,6 +979,9 @@
         // =========================
         // YEAR + SCOPE SELECT (reload)
         // =========================
+        const chartYearEl = document.getElementById('chartYear');
+        if (chartYearEl) chartYearEl.textContent = chartLine?.year ?? '';
+
         const yearSelect = document.getElementById('yearSelect');
         const scopeSelect = document.getElementById('scopeSelect');
 
@@ -989,7 +991,6 @@
             if (scopeSelect) url.searchParams.set('scope', scopeSelect.value);
             window.location.href = url.toString();
         }
-
         if (yearSelect) yearSelect.addEventListener('change', reloadWithParams);
         if (scopeSelect) scopeSelect.addEventListener('change', reloadWithParams);
 
@@ -1098,17 +1099,17 @@
             const types = chartLine.types;
 
             const typeColors = {
-                resolved: {
-                    stroke: "rgba(34,193,195,1)", // Resolved color
+                perbaikan: {
+                    stroke: "rgba(34,193,195,1)", // Modify color for 'perbaikan'
                     fillTop: "rgba(34,193,195,.20)"
                 },
-                unresolved: {
-                    stroke: "rgba(253,38,138,1)", // Unresolved color
+                permintaan: {
+                    stroke: "rgba(253,38,138,1)", // Modify color for 'permintaan'
                     fillTop: "rgba(253,38,138,.18)"
-                }
+                },
             };
 
-            const niceTypeLabel = (t) => (t === 'resolved' ? 'Resolved' : 'Unresolved');
+            const niceTypeLabel = (t) => (t === 'permintaan' ? 'Permintaan' : 'Perbaikan');
 
             const lineDatasets = types.map((t) => ({
                 label: t,
@@ -1166,20 +1167,20 @@
                                     const original = Chart.defaults.plugins.legend.labels
                                         .generateLabels(chart);
 
-                                    // Mengambil total resolved dan unresolved dari controller
-                                    const resolvedTotal = @json($jenisTicketTotal['resolved_total']);
-                                    const unresolvedTotal = @json($jenisTicketTotal['unresolved_total']);
+                                    // Mengambil total perbaikan dan permintaan dari controller
+                                    const perbaikanTotal = @json($jenisTicketTotal['perbaikan_total']);
+                                    const permintaanTotal = @json($jenisTicketTotal['permintaan_total']);
 
                                     return original.map((item) => {
                                         const text = (item.text || '').toLowerCase();
 
-                                        // Menambahkan total resolved dan unresolved ke label chart
-                                        if (text === 'resolved') {
-                                            item.text = `Resolved: ${resolvedTotal}`;
+                                        // Menambahkan total perbaikan dan permintaan ke label chart
+                                        if (text === 'permintaan') {
+                                            item.text = `Permintaan: ${permintaanTotal}`;
                                         }
 
-                                        if (text === 'unresolved') {
-                                            item.text = `Unresolved: ${unresolvedTotal}`;
+                                        if (text === 'perbaikan') {
+                                            item.text = `Perbaikan: ${perbaikanTotal}`;
                                         }
 
                                         item.fillStyle = item.strokeStyle;
@@ -1210,10 +1211,32 @@
                             left: 6
                         }
                     },
+
+                    // ✅ muncul dari BAWAH (baseline y=0)
                     animation: {
                         duration: ANIM_MS,
                         easing: EASING
                     },
+                    animations: {
+                        y: {
+                            from: (ctx) => {
+                                const yScale = ctx.chart?.scales?.y;
+                                return yScale ? yScale.getPixelForValue(0) : 0; // baseline pixel
+                            }
+                        },
+                        radius: {
+                            from: 0,
+                            duration: prefersReducedMotion ? 0 : Math.round(ANIM_MS * 0.85),
+                            easing: EASING
+                        },
+                        tension: {
+                            duration: prefersReducedMotion ? 0 : 550,
+                            easing: EASING,
+                            from: 0.2,
+                            to: 0.38
+                        }
+                    },
+
                     scales: {
                         x: {
                             grid: {
