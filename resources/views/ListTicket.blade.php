@@ -469,7 +469,7 @@
 
             // FIX: Jika reset ke Semua, pastikan fallback ke semua data dan show
             if (!hasActiveFilter) {
-                $('#TicketTable tbody tr').show();
+                $('#TicketTable tbody tr').hide();
                 currentPage = 1;
                 updatePagination();
                 // Sort table by date when the page loads
