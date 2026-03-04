@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
@@ -11,11 +10,9 @@ use Carbon\Carbon; // dompdf
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class TeknisiController extends Controller
-{
+class TeknisiController extends Controller {
 
-    private function getLatestComments()
-    {
+    private function getLatestComments() {
         // Dapatkan ID pengguna yang sedang login
         $userId = Auth::id();
 
@@ -50,8 +47,7 @@ class TeknisiController extends Controller
         return $latestComments;
     }
 
-    public function downloadMonthlyReport(Request $request)
-    {
+    public function downloadMonthlyReport(Request $request) {
         $period = $request->get('period', 'monthly'); // monthly | yearly | all
 
         $year  = (int) $request->get('year', now()->year);
@@ -102,18 +98,6 @@ class TeknisiController extends Controller
         }
 
         $tickets = $q->orderBy('created_at', 'asc')->get();
-
-        // =========================
-        // Calculate totals for "perbaikan" and "permintaan"
-        // =========================
-        $perbaikanTotal  = $tickets->where('Jenis_Pengaduan', 'perbaikan')->count();
-        $permintaanTotal = $tickets->where('Jenis_Pengaduan', 'permintaan')->count();
-
-        // Pass these totals to the view
-        $chartData = [
-            'perbaikan_total'  => $perbaikanTotal,
-            'permintaan_total' => $permintaanTotal,
-        ];
 
         // =========================
         // SUMMARY & KPI
@@ -288,6 +272,7 @@ class TeknisiController extends Controller
                     if ($jenis !== 'all') {
                         $qq->where('Jenis_Pengaduan', $jenis);
                     }
+
                 })
                 ->get();
 
@@ -431,11 +416,10 @@ class TeknisiController extends Controller
         return $pdf->download("laporan-keluhan-{$fileKey}.pdf");
     }
 
-    /**
-     * Median helper (tanpa raw)
-     */
-    private function median(array $values): float
-    {
+/**
+ * Median helper (tanpa raw)
+ */
+    private function median(array $values): float {
         if (empty($values)) {
             return 0;
         }
@@ -450,11 +434,10 @@ class TeknisiController extends Controller
         return ((float) $values[$mid - 1] + (float) $values[$mid]) / 2;
     }
 
-    /**
-     * Percentile helper (P90, dll) sederhana
-     */
-    private function percentile(array $values, int $percent): float
-    {
+/**
+ * Percentile helper (P90, dll) sederhana
+ */
+    private function percentile(array $values, int $percent): float {
         if (empty($values)) {
             return 0;
         }
@@ -469,9 +452,7 @@ class TeknisiController extends Controller
         return (float) $values[$idx];
     }
 
-
-    public function index()
-    {
+    public function index() {
         $user   = Auth::user();
         $userId = $user->id;
         $role   = $user->role;
@@ -545,6 +526,23 @@ class TeknisiController extends Controller
         }
 
         // =========================
+        // Hitung total perbaikan dan permintaan berdasarkan tahun yang dipilih
+        // =========================
+        $perbaikanTotal = Ticket::whereYear('created_at', $selectedYear)
+            ->where('Jenis_Pengaduan', 'perbaikan')
+            ->count();
+
+        $permintaanTotal = Ticket::whereYear('created_at', $selectedYear)
+            ->where('Jenis_Pengaduan', 'permintaan')
+            ->count();
+
+        // Kirimkan total perbaikan dan permintaan ke view dengan nama variabel yang berbeda
+        $jenisTicketTotal = [
+            'perbaikan_total'  => $perbaikanTotal,
+            'permintaan_total' => $permintaanTotal,
+        ];
+
+        // =========================
         // LINE CHART: Permintaan vs Perbaikan per bulan (berdasarkan scope)
         // =========================
         $labels = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
@@ -607,6 +605,7 @@ class TeknisiController extends Controller
             }
         }
 
+        // Kirimkan chartData yang sudah diproses ke view
         $chartData = [
             'year'            => $selectedYear,
             'labels'          => $labels,
@@ -614,6 +613,7 @@ class TeknisiController extends Controller
             'monthlyByStatus' => $monthlyByStatus,
         ];
 
+        // Kirimkan semua data yang diproses ke view
         return view('teknisi', compact(
             'teknisi_data_ticket',
             'totalTickets',
@@ -627,13 +627,13 @@ class TeknisiController extends Controller
             'selectedYear',
             'scope',
             'chartLine',
+            'jenisTicketTotal', // Mengirimkan total perbaikan dan permintaan
             'chartData'
         ));
     }
 
     // Fungsi untuk menampilkan tiket yang sudah ditugaskan
-    public function viewasigne()
-    {
+    public function viewasigne() {
         // Dapatkan ID pengguna yang sedang login
         $userId = Auth::id();
 
@@ -658,8 +658,7 @@ class TeknisiController extends Controller
     }
 
     // Fungsi untuk menampilkan tiket dengan status escalated
-    public function viewEscalation()
-    {
+    public function viewEscalation() {
         // Dapatkan ID pengguna yang sedang login
         $userId = Auth::id();
 
@@ -676,8 +675,7 @@ class TeknisiController extends Controller
     }
 
     // Fungsi untuk menampilkan tiket yang telah ditutup
-    public function closeticket()
-    {
+    public function closeticket() {
         // Dapatkan ID pengguna yang sedang login
         $userId = Auth::id();
 
@@ -699,8 +697,7 @@ class TeknisiController extends Controller
     }
 
     // Fungsi untuk menampilkan semua tiket
-    public function ListTicket()
-    {
+    public function ListTicket() {
         // Dapatkan ID pengguna yang sedang login
         $userId = Auth::id();
 

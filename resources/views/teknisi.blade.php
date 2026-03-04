@@ -1167,14 +1167,14 @@
                                     const original = Chart.defaults.plugins.legend.labels
                                         .generateLabels(chart);
 
-                                    // Get the total counts for perbaikan and permintaan from the meta object passed by the controller
+                                    // Mengambil total perbaikan dan permintaan dari controller
                                     const perbaikanTotal = @json($chartData['perbaikan_total']);
                                     const permintaanTotal = @json($chartData['permintaan_total']);
 
                                     return original.map((item) => {
                                         const text = (item.text || '').toLowerCase();
 
-                                        // Modify the labels to show the totals next to the labels
+                                        // Menambahkan total perbaikan dan permintaan ke label chart
                                         if (text === 'permintaan') {
                                             item.text = `Permintaan: ${permintaanTotal}`;
                                         }
