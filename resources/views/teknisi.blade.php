@@ -132,7 +132,7 @@
                         <h6 class="mb-0">Tickets per Bulan (Permintaan vs Perbaikan)</h6>
                         <small class="text-secondary">
                             Tahun: {{ $selectedYear }} • Scope:
-                            <b>{{ $scope === 'all' ? 'All (Open+Close)' : strtoupper($scope) }}</b>
+                            <b>{{ $scope === 'all' ? 'All (Resolved+Unresolved)' : strtoupper($scope) }}</b>
                         </small>
                     </div>
 
