@@ -1168,8 +1168,8 @@
                                         .generateLabels(chart);
 
                                     // Mengambil total perbaikan dan permintaan dari controller
-                                    const perbaikanTotal = @json($chartData['perbaikan_total']);
-                                    const permintaanTotal = @json($chartData['permintaan_total']);
+                                    const perbaikanTotal = @json($jenisTicketTotal['perbaikan_total']);
+                                    const permintaanTotal = @json($jenisTicketTotal['permintaan_total']);
 
                                     return original.map((item) => {
                                         const text = (item.text || '').toLowerCase();
