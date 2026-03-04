@@ -1168,7 +1168,7 @@
                                         .generateLabels(chart);
                                     return original.map((item) => {
                                         const text = (item.text || '').toLowerCase();
-                                        if (text === 'permintaan') item.text = 'Permintaan';
+                                        if (text === 'permintaan') item.text = 'Permintaan : 15';
                                         if (text === 'perbaikan') item.text = 'Perbaikan';
                                         item.fillStyle = item.strokeStyle;
                                         item.lineWidth = 0;
