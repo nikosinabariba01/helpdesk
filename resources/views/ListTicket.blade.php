@@ -465,6 +465,7 @@
             });
 
             currentPage = 1;
+            sortTableByDate(currentSort);
             updatePagination();
 
             // FIX: Jika reset ke Semua, pastikan fallback ke semua data dan show
