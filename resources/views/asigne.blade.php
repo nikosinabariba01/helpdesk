@@ -327,7 +327,7 @@
         </div>
     </div>
 
-    <!-- Modal Konfirmasi -->
+    <!-- Modal Confirmation -->
     <div class="modal fade" id="modal-confirmation" tabindex="-1" role="dialog" aria-labelledby="modal-confirmation"
         aria-hidden="true">
         <div class="modal-dialog modal-danger modal-dialog-centered" role="document">
@@ -444,7 +444,7 @@
                             filteredData); // Menampilkan kembali data yang sudah difilter
                         sortTableByDate(
                             currentSort
-                        ); // Urutkan data sesuai urutan yang diinginkan (misalnya berdasarkan tanggal)
+                            ); // Urutkan data sesuai urutan yang diinginkan (misalnya berdasarkan tanggal)
                         updatePagination(); // Update pagination sesuai data yang ditampilkan
                     } else {
                         // Jika tidak ada data yang sudah difilter, tampilkan seluruh data asli
@@ -631,18 +631,4 @@
         });
     </script>
 
-    <script>
-        // Menangani klik tombol konfirmasi untuk mengirimkan form
-        $('#modal-submit-btn').on('click', function() {
-            var formId = $('#modal-confirmation').data('form-id'); // Ambil form id dari modal
-            $('#' + formId).submit(); // Kirim form yang terkait dengan tombol
-        });
-
-        // Ketika modal ditampilkan, simpan form id yang terkait
-        $('#modal-confirmation').on('show.bs.modal', function(e) {
-            var button = $(e.relatedTarget); // Tombol yang memicu modal
-            var formId = button.data('form-id'); // Ambil form id dari data atribut tombol
-            $(this).data('form-id', formId); // Simpan formId dalam modal untuk digunakan nanti
-        });
-    </script>
 @endsection
