@@ -232,8 +232,7 @@
                         <div
                             style="padding: 15px 16px; border-top: 1px solid #e4e4e4; display: flex; justify-content: space-between; align-items: center; background-color: #ffffff;">
                             <div style="display: flex; gap: 12px; align-items: center;">
-
-                                <!-- Pagination Info (Dropdown Terbaru/Terlambat) - tetap sebagai patokan -->
+                                <!-- Pagination Info as Dropdown -->
                                 <div class="dropdown" style="position: relative;">
                                     <button class="btn btn-sm btn-outline-secondary"
                                         style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
@@ -252,11 +251,10 @@
                                             </a></li>
                                     </ul>
                                 </div>
-
-                                <!-- Filter Jenis Pengaduan Dropdown - padding disesuaikan agar seimbang -->
+                                <!-- Filter Jenis Pengaduan Dropdown -->
                                 <div class="dropdown" style="position: relative; display: inline-block;">
                                     <button class="btn btn-sm btn-outline-secondary"
-                                        style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 14px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
+                                        style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
                                         type="button" id="filterJenisPengaduanBtn" data-bs-toggle="dropdown"
                                         aria-expanded="false">
                                         <span id="filterJenisPengaduanDisplay">Jenis Pengaduan</span>
@@ -276,10 +274,10 @@
                                     </ul>
                                 </div>
 
-                                <!-- Filter Status Dropdown - padding disesuaikan agar seimbang -->
+                                <!-- Filter Status Dropdown -->
                                 <div class="dropdown" style="position: relative; display: inline-block;">
                                     <button class="btn btn-sm btn-outline-secondary"
-                                        style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 14px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
+                                        style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
                                         type="button" id="filterStatusBtn" data-bs-toggle="dropdown"
                                         aria-expanded="false">
                                         <span id="filterStatusDisplay">Status</span>
@@ -305,7 +303,6 @@
                                     </ul>
                                 </div>
                             </div>
-
                             <div style="display: flex; gap: 12px; align-items: center;">
                                 <!-- Pagination Navigation -->
                                 <div style="display: flex; gap: 6px;">
