@@ -477,7 +477,7 @@
             // FIX: Jika reset ke Semua, pastikan fallback ke semua data dan show
             if (!hasActiveFilter) {
                 $('#TicketTable tbody tr').show();
-                sortTableByDate('asc');
+                updatePagination();
             }
         }
 
