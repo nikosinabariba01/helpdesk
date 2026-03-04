@@ -231,19 +231,16 @@
                         <!-- Pagination and Sorting Controls -->
                         <div
                             style="padding: 15px 16px; border-top: 1px solid #e4e4e4; display: flex; justify-content: space-between; align-items: center; background-color: #ffffff;">
-
-                            <div style="display: flex; gap: 10px; align-items: center;">
-
-                                <!-- Pagination Info as Dropdown (tetap sebagai acuan) -->
+                            <div style="display: flex; gap: 12px; align-items: center;">
+                                <!-- Pagination Info as Dropdown -->
                                 <div class="dropdown" style="position: relative;">
                                     <button class="btn btn-sm btn-outline-secondary"
-                                        style="min-width: 148px; border: 1px solid #dee2e6; color: #495057; background-color: white; padding: 6px 12px; font-size: 13px; border-radius: 6px; display: flex; align-items: center; justify-content: space-between; gap: 8px; cursor: pointer; white-space: nowrap;"
+                                        style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
                                         data-bs-toggle="dropdown" aria-expanded="false">
                                         <span id="paginationDisplay">1-10 dari {{ $data_ticket->count() }}</span>
-                                        <i class="fa fa-chevron-down" style="font-size: 10px; opacity: 0.7;"></i>
+                                        <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
                                     </button>
-                                    <ul class="dropdown-menu"
-                                        style="font-size: 13px; min-width: 160px; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+                                    <ul class="dropdown-menu" style="font-size: 13px; min-width: 150px;">
                                         <li><a class="dropdown-item page-sort-option" href="#" data-sort="desc"
                                                 style="padding: 8px 16px;">
                                                 <i class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru
@@ -255,76 +252,21 @@
                                     </ul>
                                 </div>
 
-                                <!-- Filter Jenis Pengaduan Dropdown -->
-                                <div class="dropdown" style="position: relative;">
-                                    <button class="btn btn-sm btn-outline-secondary"
-                                        style="min-width: 148px; border: 1px solid #dee2e6; color: #495057; background-color: white; padding: 6px 12px; font-size: 13px; border-radius: 6px; display: flex; align-items: center; justify-content: space-between; gap: 8px; cursor: pointer; white-space: nowrap;"
-                                        type="button" id="filterJenisPengaduanBtn" data-bs-toggle="dropdown"
-                                        aria-expanded="false">
-                                        <span id="filterJenisPengaduanDisplay">Jenis Pengaduan</span>
-                                        <i class="fa fa-chevron-down" style="font-size: 10px; opacity: 0.7;"></i>
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="filterJenisPengaduanBtn"
-                                        style="font-size: 13px; min-width: 160px; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
-                                        <li><a class="dropdown-item filter-option" href="#"
-                                                data-filter-type="jenis_pengaduan" data-filter-value=""
-                                                style="padding: 8px 16px;">Semua</a></li>
-                                        <li><a class="dropdown-item filter-option" href="#"
-                                                data-filter-type="jenis_pengaduan" data-filter-value="perbaikan"
-                                                style="padding: 8px 16px;">Perbaikan</a></li>
-                                        <li><a class="dropdown-item filter-option" href="#"
-                                                data-filter-type="jenis_pengaduan" data-filter-value="permintaan"
-                                                style="padding: 8px 16px;">Permintaan</a></li>
-                                    </ul>
-                                </div>
-
-                                <!-- Filter Status Dropdown -->
-                                <div class="dropdown" style="position: relative;">
-                                    <button class="btn btn-sm btn-outline-secondary"
-                                        style="min-width: 148px; border: 1px solid #dee2e6; color: #495057; background-color: white; padding: 6px 12px; font-size: 13px; border-radius: 6px; display: flex; align-items: center; justify-content: space-between; gap: 8px; cursor: pointer; white-space: nowrap;"
-                                        type="button" id="filterStatusBtn" data-bs-toggle="dropdown"
-                                        aria-expanded="false">
-                                        <span id="filterStatusDisplay">Status</span>
-                                        <i class="fa fa-chevron-down" style="font-size: 10px; opacity: 0.7;"></i>
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="filterStatusBtn"
-                                        style="font-size: 13px; min-width: 160px; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
-                                        <li><a class="dropdown-item filter-option" href="#"
-                                                data-filter-type="status" data-filter-value=""
-                                                style="padding: 8px 16px;">Semua</a></li>
-                                        <li><a class="dropdown-item filter-option" href="#"
-                                                data-filter-type="status" data-filter-value="open"
-                                                style="padding: 8px 16px;">Open</a></li>
-                                        <li><a class="dropdown-item filter-option" href="#"
-                                                data-filter-type="status" data-filter-value="on process"
-                                                style="padding: 8px 16px;">On Process</a></li>
-                                        <li><a class="dropdown-item filter-option" href="#"
-                                                data-filter-type="status" data-filter-value="escalated"
-                                                style="padding: 8px 16px;">Escalated</a></li>
-                                        <li><a class="dropdown-item filter-option" href="#"
-                                                data-filter-type="status" data-filter-value="close"
-                                                style="padding: 8px 16px;">Close</a></li>
-                                    </ul>
-                                </div>
-
                             </div>
-
-                            <div style="display: flex; gap: 10px; align-items: center;">
-
+                            <div style="display: flex; gap: 12px; align-items: center;">
                                 <!-- Pagination Navigation -->
                                 <div style="display: flex; gap: 6px;">
                                     <button id="prevPage" class="btn btn-sm btn-outline-secondary"
-                                        style="border: 1px solid #dee2e6; color: #495057; background-color: white; padding: 6px 0; font-size: 13px; border-radius: 6px; display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; cursor: pointer;"
+                                        style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;"
                                         title="Halaman Sebelumnya">
                                         <i class="fa fa-chevron-left" style="font-size: 11px;"></i>
                                     </button>
                                     <button id="nextPage" class="btn btn-sm btn-outline-secondary"
-                                        style="border: 1px solid #dee2e6; color: #495057; background-color: white; padding: 6px 0; font-size: 13px; border-radius: 6px; display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; cursor: pointer;"
+                                        style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;"
                                         title="Halaman Berikutnya">
                                         <i class="fa fa-chevron-right" style="font-size: 11px;"></i>
                                     </button>
                                 </div>
-
                             </div>
                         </div>
                     @endif
