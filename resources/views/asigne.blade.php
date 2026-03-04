@@ -194,7 +194,7 @@
                                                             class="btn btn-sm btn-outline-danger btn-transparent text-danger"
                                                             data-bs-toggle="modal" data-bs-target="#modal-confirmation"
                                                             data-form-id="closeTicketForm-{{ $teknisidataticket->id }}">
-                                                            Closes
+                                                            Close
                                                         </button>
                                                     </form>
                                                 @endif
