@@ -93,7 +93,7 @@
                                 {{ $teknisidataticket->user->name }}
                             </td>
                             <td class="align-middle text-center text-sm border border-light">
-                                <x-status-badge :status="$teknisidataticket->status"/>
+                                <x-status-badge :status="$teknisidataticket->status" />
                             </td>
                             <td class="align-middle text-center text-limit-30 border border-light">
                                 <span class="text-secondary text-xs font-weight-bold ">{{ $teknisidataticket->Detail }}</span>
@@ -470,6 +470,9 @@
             // FIX: Jika reset ke Semua, pastikan fallback ke semua data dan show
             if (!hasActiveFilter) {
                 $('#TicketTable tbody tr').show();
+                sortTableByDate(currentSort);
+                currentPage = 1;
+                updatePagination();
             }
         }
 
