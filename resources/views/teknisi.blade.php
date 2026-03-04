@@ -963,8 +963,8 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const chartLine = @json($chartLine);
-        const chartData = @json($chartData);
+        const chartLine = @json($chartLine); // Data chart yang diteruskan dari controller
+        const chartData = @json($chartData); // Data chart yang diteruskan dari controller
 
         const fmt = (n) => new Intl.NumberFormat('id-ID').format(n);
 
@@ -978,120 +978,40 @@
         });
 
         // =========================
-        // YEAR + SCOPE SELECT (reload)
+        // EVENT LISTENER UNTUK MEMILIH TAHUN DAN SCOPE
         // =========================
-        const chartYearEl = document.getElementById('chartYear');
-        if (chartYearEl) chartYearEl.textContent = chartLine?.year ?? '';
-
         const yearSelect = document.getElementById('yearSelect');
         const scopeSelect = document.getElementById('scopeSelect');
 
-        function reloadWithParams() {
-            const url = new URL(window.location.href);
-            if (yearSelect) url.searchParams.set('year', yearSelect.value);
-            if (scopeSelect) url.searchParams.set('scope', scopeSelect.value);
-            window.location.href = url.toString();
+        // Update data chart berdasarkan pilihan tahun dan scope
+        function updateChartData() {
+            const selectedYear = yearSelect.value;
+            const scope = scopeSelect.value;
+
+            // Ambil data chart yang sudah difilter berdasarkan tahun dan scope
+            fetchChartData(selectedYear, scope);
         }
-        if (yearSelect) yearSelect.addEventListener('change', reloadWithParams);
-        if (scopeSelect) scopeSelect.addEventListener('change', reloadWithParams);
+
+        // Ambil dan filter data berdasarkan tahun dan scope
+        function fetchChartData(year, scope) {
+            const filteredData = chartData.filter(data => {
+                return data.year === parseInt(year) && data.scope === scope;
+            });
+
+            const updatedChartData = filteredData.length ? filteredData[0] : chartData[
+            0]; // Default ke data pertama jika tidak ada filter yang cocok
+
+            // Update data chart untuk line chart
+            chartLine.labels = updatedChartData.labels;
+            chartLine.monthlyByType = updatedChartData.monthlyByType;
+
+            // Update chart dengan data baru
+            updateLineChart();
+        }
 
         // =========================
-        // PLUGIN: hover crosshair (line)
+        // LINE CHART (Memperbarui Data Tanpa Refresh)
         // =========================
-        const hoverLinePlugin = {
-            id: 'hoverLine',
-            afterDatasetsDraw(chart) {
-                const active = chart.tooltip?.getActiveElements?.() || [];
-                if (!active.length) return;
-
-                const {
-                    ctx,
-                    chartArea: {
-                        top,
-                        bottom
-                    }
-                } = chart;
-                const x = active[0].element.x;
-
-                ctx.save();
-                ctx.beginPath();
-                ctx.moveTo(x, top);
-                ctx.lineTo(x, bottom);
-                ctx.setLineDash([4, 4]);
-                ctx.lineWidth = 1;
-                ctx.strokeStyle = 'rgba(0,0,0,.12)';
-                ctx.stroke();
-                ctx.restore();
-            }
-        };
-
-        // =========================
-        // PLUGIN: center text (doughnut)
-        // =========================
-        const centerTextPlugin = {
-            id: 'centerText',
-            afterDraw(chart, args, opts) {
-                if (chart.config.type !== 'doughnut') return;
-
-                const {
-                    ctx
-                } = chart;
-                const meta = chart.getDatasetMeta(0);
-                if (!meta?.data?.length) return;
-
-                const x = meta.data[0].x;
-                const y = meta.data[0].y;
-
-                const data = chart.data.datasets[0].data || [];
-                const total = data.reduce((a, b) => a + b, 0);
-
-                const closeIndex = chart.data.labels.indexOf('close');
-                const closed = closeIndex >= 0 ? (data[closeIndex] || 0) : 0;
-                const closeRate = total ? (closed / total * 100) : 0;
-
-                const topText = opts?.topText ?? 'Total Ticket';
-                const midText = opts?.midText ?? fmt(total);
-                const botText = opts?.botText ?? `Close rate ${closeRate.toFixed(1)}%`;
-
-                const isPhone = window.matchMedia('(max-width: 576px)').matches;
-
-                // ✅ lebih kecil lagi di HP
-                const topSize = opts?.topSize ?? (isPhone ? 8 : 12);
-                const midSize = opts?.midSize ?? (isPhone ? 14 : 22);
-                const botSize = opts?.botSize ?? (isPhone ? 8 : 12);
-
-                // jarak antar teks juga diperkecil di HP
-                const topOffset = isPhone ? 12 : 18;
-                const botOffset = isPhone ? 14 : 22;
-
-                ctx.save();
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-
-                ctx.fillStyle = 'rgba(52,71,103,.70)';
-                ctx.font =
-                    `600 ${topSize}px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial`;
-                ctx.fillText(topText, x, y - topOffset);
-
-                ctx.fillStyle = 'rgba(52,71,103,.95)';
-                ctx.font =
-                    `800 ${midSize}px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial`;
-                ctx.fillText(midText, x, y + 1);
-
-                ctx.fillStyle = 'rgba(52,71,103,.70)';
-                ctx.font =
-                    `600 ${botSize}px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial`;
-                ctx.fillText(botText, x, y + botOffset);
-
-                ctx.restore();
-            }
-        };
-
-        Chart.register(hoverLinePlugin, centerTextPlugin);
-
-        // ==========================================================
-        // ✅ LINE CHART
-        // ==========================================================
         const lineEl = document.getElementById('ticketsLineChart');
         if (lineEl) {
             const lineCtx = lineEl.getContext('2d');
@@ -1101,16 +1021,14 @@
 
             const typeColors = {
                 perbaikan: {
-                    stroke: "rgba(34,193,195,1)", // Modify color for 'perbaikan'
+                    stroke: "rgba(34,193,195,1)",
                     fillTop: "rgba(34,193,195,.20)"
                 },
                 permintaan: {
-                    stroke: "rgba(253,38,138,1)", // Modify color for 'permintaan'
+                    stroke: "rgba(253,38,138,1)",
                     fillTop: "rgba(253,38,138,.18)"
                 },
             };
-
-            const niceTypeLabel = (t) => (t === 'permintaan' ? 'Permintaan' : 'Perbaikan');
 
             const lineDatasets = types.map((t) => ({
                 label: t,
@@ -1138,131 +1056,142 @@
                 pointBorderWidth: 0,
             }));
 
-            new Chart(lineCtx, {
-                type: 'line',
-                data: {
-                    labels: lineLabels,
-                    datasets: lineDatasets
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: {
-                        mode: 'index',
-                        intersect: false
+            function updateLineChart() {
+                // Clear the existing chart
+                lineCtx.clearRect(0, 0, lineEl.width, lineEl.height);
+
+                // Create a new chart with the updated data
+                new Chart(lineCtx, {
+                    type: 'line',
+                    data: {
+                        labels: lineLabels,
+                        datasets: lineDatasets
                     },
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                usePointStyle: false,
-                                boxWidth: 14,
-                                boxHeight: 10,
-                                padding: 16,
-                                color: 'rgba(52,71,103,.85)',
-                                font: {
-                                    size: 12,
-                                    weight: '600'
-                                },
-                                generateLabels: (chart) => {
-                                    const original = Chart.defaults.plugins.legend.labels
-                                        .generateLabels(chart);
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    usePointStyle: false,
+                                    boxWidth: 14,
+                                    boxHeight: 10,
+                                    padding: 16,
+                                    color: 'rgba(52,71,103,.85)',
+                                    font: {
+                                        size: 12,
+                                        weight: '600'
+                                    },
+                                    generateLabels: (chart) => {
+                                        const original = Chart.defaults.plugins.legend.labels
+                                            .generateLabels(chart);
 
-                                    // Mengambil total perbaikan dan permintaan dari controller
-                                    const perbaikanTotal = @json($jenisTicketTotal['perbaikan_total']);
-                                    const permintaanTotal = @json($jenisTicketTotal['permintaan_total']);
+                                        // Menambahkan total perbaikan dan permintaan dari controller
+                                        const perbaikanTotal = @json($jenisTicketTotal['perbaikan_total']);
+                                        const permintaanTotal = @json($jenisTicketTotal['permintaan_total']);
 
-                                    return original.map((item) => {
-                                        const text = (item.text || '').toLowerCase();
+                                        return original.map((item) => {
+                                            const text = (item.text || '').toLowerCase();
 
-                                        // Menambahkan total perbaikan dan permintaan ke label chart
-                                        if (text === 'permintaan') {
-                                            item.text = `Permintaan: ${permintaanTotal}`;
-                                        }
+                                            // Menambahkan total perbaikan dan permintaan ke label chart
+                                            if (text === 'permintaan') {
+                                                item.text =
+                                                `Permintaan: ${permintaanTotal}`;
+                                            }
 
-                                        if (text === 'perbaikan') {
-                                            item.text = `Perbaikan: ${perbaikanTotal}`;
-                                        }
+                                            if (text === 'perbaikan') {
+                                                item.text = `Perbaikan: ${perbaikanTotal}`;
+                                            }
 
-                                        item.fillStyle = item.strokeStyle;
-                                        item.lineWidth = 0;
-                                        return item;
-                                    });
+                                            item.fillStyle = item.strokeStyle;
+                                            item.lineWidth = 0;
+                                            return item;
+                                        });
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                padding: 12,
+                                callbacks: {
+                                    label: (ctx) =>
+                                        ` ${niceTypeLabel(ctx.dataset.label)}: ${fmt(ctx.parsed.y)}`,
+                                    footer: (items) => {
+                                        const total = items.reduce((sum, it) => sum + (it.parsed
+                                            .y || 0), 0);
+                                        return `Total bulan ini: ${fmt(total)}`;
+                                    }
                                 }
                             }
                         },
-                        tooltip: {
-                            padding: 12,
-                            callbacks: {
-                                label: (ctx) =>
-                                    ` ${niceTypeLabel(ctx.dataset.label)}: ${fmt(ctx.parsed.y)}`,
-                                footer: (items) => {
-                                    const total = items.reduce((sum, it) => sum + (it.parsed.y ||
-                                        0), 0);
-                                    return `Total bulan ini: ${fmt(total)}`;
-                                }
-                            }
-                        }
-                    },
-                    layout: {
-                        padding: {
-                            top: 6,
-                            right: 10,
-                            bottom: 0,
-                            left: 6
-                        }
-                    },
-
-                    // ✅ muncul dari BAWAH (baseline y=0)
-                    animation: {
-                        duration: ANIM_MS,
-                        easing: EASING
-                    },
-                    animations: {
-                        y: {
-                            from: (ctx) => {
-                                const yScale = ctx.chart?.scales?.y;
-                                return yScale ? yScale.getPixelForValue(0) : 0; // baseline pixel
+                        layout: {
+                            padding: {
+                                top: 6,
+                                right: 10,
+                                bottom: 0,
+                                left: 6
                             }
                         },
-                        radius: {
-                            from: 0,
-                            duration: prefersReducedMotion ? 0 : Math.round(ANIM_MS * 0.85),
+
+                        animation: {
+                            duration: ANIM_MS,
                             easing: EASING
                         },
-                        tension: {
-                            duration: prefersReducedMotion ? 0 : 550,
-                            easing: EASING,
-                            from: 0.2,
-                            to: 0.38
-                        }
-                    },
-
-                    scales: {
-                        x: {
-                            grid: {
-                                display: false
-                            },
-                            ticks: {
-                                color: 'rgba(52,71,103,.65)'
+                        animations: {
+                            y: {
+                                from: (ctx) => {
+                                    const yScale = ctx.chart?.scales?.y;
+                                    return yScale ? yScale.getPixelForValue(0) :
+                                    0; // baseline pixel
+                                }
                             }
                         },
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                precision: 0,
-                                color: 'rgba(52,71,103,.65)',
-                                callback: (v) => fmt(v)
+
+                        scales: {
+                            x: {
+                                grid: {
+                                    display: false
+                                },
+                                ticks: {
+                                    color: 'rgba(52,71,103,.65)'
+                                }
                             },
-                            grid: {
-                                color: 'rgba(0,0,0,.06)',
-                                borderDash: [6, 4]
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    precision: 0,
+                                    color: 'rgba(52,71,103,.65)',
+                                    callback: (v) => fmt(v)
+                                },
+                                grid: {
+                                    color: 'rgba(0,0,0,.06)',
+                                    borderDash: [6, 4]
+                                }
                             }
                         }
                     }
-                }
-            });
+                });
+            }
+
+            // Initialize chart
+            updateLineChart();
         }
+
+        // =========================
+        // Handle dropdown change
+        // =========================
+        if (yearSelect) {
+            yearSelect.addEventListener('change', updateChartData); // Update chart without page reload
+        }
+
+        if (scopeSelect) {
+            scopeSelect.addEventListener('change', updateChartData); // Update chart without page reload
+        }
+
 
         // ==========================================================
         // ✅ DOUGHNUT CHART (animasi dipaksa tampil)
