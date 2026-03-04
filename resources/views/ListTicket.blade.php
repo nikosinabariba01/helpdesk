@@ -472,6 +472,9 @@
                 $('#TicketTable tbody tr').show();
                 currentPage = 1;
                 updatePagination();
+                // Sort table by date when the page loads
+                sortTableByDate('desc'); // Default sort by 'created_at' desc (newest first)
+                updatePagination(); // Update pagination after sorting
             }
         }
 
