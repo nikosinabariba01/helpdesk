@@ -469,7 +469,7 @@
 
             // FIX: Jika reset ke Semua, pastikan fallback ke semua data dan show
             if (!hasActiveFilter) {
-                $('#TicketTable tbody tr').hide();
+                $('#TicketTable tbody').empty().append(originalData);
             }
         }
 
