@@ -231,9 +231,7 @@
                         <!-- Pagination and Sorting Controls -->
                         <div
                             style="padding: 15px 16px; border-top: 1px solid #e4e4e4; display: flex; justify-content: space-between; align-items: center; background-color: #ffffff;">
-
                             <div style="display: flex; gap: 12px; align-items: center;">
-
                                 <!-- Pagination Info as Dropdown -->
                                 <div class="dropdown" style="position: relative;">
                                     <button class="btn btn-sm btn-outline-secondary"
@@ -253,20 +251,17 @@
                                             </a></li>
                                     </ul>
                                 </div>
-
-                                <!-- Filter Jenis Pengaduan Dropdown – SUDAH DITAMBAH атрибут POPPER -->
+                                <!-- Filter Jenis Pengaduan Dropdown -->
                                 <div class="dropdown" style="position: relative; display: inline-block;">
                                     <button class="btn btn-sm btn-outline-secondary"
                                         style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
                                         type="button" id="filterJenisPengaduanBtn" data-bs-toggle="dropdown"
-                                        data-bs-boundary="window" <!-- ← TAMBAHAN: batasi terhadap window -->
-                                        data-bs-display="dynamic" <!-- ← TAMBAHAN UTAMA: aktifkan flip otomatis -->
                                         aria-expanded="false">
                                         <span id="filterJenisPengaduanDisplay">Jenis Pengaduan</span>
                                         <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
                                     </button>
-                                    <ul class="dropdown-menu" aria-labelledby="filterJenisPengaduanBtn"
-                                        style="font-size: 13px; min-width: 150px;">
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="filterJenisPengaduanBtn"
+                                        style="font-size: 13px; min-width: 150px; max-height: 200px; overflow-y: auto;">
                                         <li><a class="dropdown-item filter-option" href="#"
                                                 data-filter-type="jenis_pengaduan" data-filter-value=""
                                                 style="padding: 8px 16px;">Semua</a></li>
@@ -279,19 +274,17 @@
                                     </ul>
                                 </div>
 
-                                <!-- Filter Status Dropdown – SUDAH DITAMBAH атрибут POPPER -->
+                                <!-- Filter Status Dropdown -->
                                 <div class="dropdown" style="position: relative; display: inline-block;">
                                     <button class="btn btn-sm btn-outline-secondary"
                                         style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
                                         type="button" id="filterStatusBtn" data-bs-toggle="dropdown"
-                                        data-bs-boundary="window" <!-- ← TAMBAHAN -->
-                                        data-bs-display="dynamic" <!-- ← TAMBAHAN UTAMA -->
                                         aria-expanded="false">
                                         <span id="filterStatusDisplay">Status</span>
                                         <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
                                     </button>
-                                    <ul class="dropdown-menu" aria-labelledby="filterStatusBtn"
-                                        style="font-size: 13px; min-width: 150px;">
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="filterStatusBtn"
+                                        style="font-size: 13px; min-width: 150px; max-height: 200px; overflow-y: auto;">
                                         <li><a class="dropdown-item filter-option" href="#"
                                                 data-filter-type="status" data-filter-value=""
                                                 style="padding: 8px 16px;">Semua</a></li>
@@ -310,7 +303,6 @@
                                     </ul>
                                 </div>
                             </div>
-
                             <div style="display: flex; gap: 12px; align-items: center;">
                                 <!-- Pagination Navigation -->
                                 <div style="display: flex; gap: 6px;">
