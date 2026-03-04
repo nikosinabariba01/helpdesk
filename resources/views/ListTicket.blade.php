@@ -93,7 +93,7 @@
                                 {{ $teknisidataticket->user->name }}
                             </td>
                             <td class="align-middle text-center text-sm border border-light">
-                                <x-status-badge :status="$teknisidataticket->status" />
+                                <x-status-badge :status="$teknisidataticket->status"/>
                             </td>
                             <td class="align-middle text-center text-limit-30 border border-light">
                                 <span class="text-secondary text-xs font-weight-bold ">{{ $teknisidataticket->Detail }}</span>
@@ -465,15 +465,11 @@
             });
 
             currentPage = 1;
-            updatePagination(); // Recalculate pagination after filter
+            updatePagination();
 
+            // FIX: Jika reset ke Semua, pastikan fallback ke semua data dan show
             if (!hasActiveFilter) {
-                $('#TicketTable tbody tr').show(); // Show all data if no filter is applied
-                updatePagination();
-                sortTableByDate(currentSort);
-            } else {
-                sortTableByDate(currentSort); // Reapply the last sort after filtering
-                updatePagination();
+                $('#TicketTable tbody tr').show();
             }
         }
 
