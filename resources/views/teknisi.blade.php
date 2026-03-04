@@ -986,25 +986,14 @@
         const yearSelect = document.getElementById('yearSelect');
         const scopeSelect = document.getElementById('scopeSelect');
 
-        // Event listener untuk tahun
         function reloadWithParams() {
             const url = new URL(window.location.href);
             if (yearSelect) url.searchParams.set('year', yearSelect.value);
             if (scopeSelect) url.searchParams.set('scope', scopeSelect.value);
             window.location.href = url.toString();
         }
-
-        // Hapus event listener reload dengan URL
-        // (karena kita ingin chart diperbarui tanpa reload halaman)
-
-        // Event listener untuk scope
-        if (scopeSelect) {
-            scopeSelect.addEventListener('change', () => {
-                const scopeValue = scopeSelect.value;
-                const yearValue = yearSelect.value;
-                updateLineChart(scopeValue, yearValue); // Memperbarui line chart
-            });
-        }
+        if (yearSelect) yearSelect.addEventListener('change', reloadWithParams);
+        if (scopeSelect) scopeSelect.addEventListener('change', reloadWithParams);
 
         // =========================
         // PLUGIN: hover crosshair (line)
@@ -1104,70 +1093,56 @@
         // ✅ LINE CHART
         // ==========================================================
         const lineEl = document.getElementById('ticketsLineChart');
-        let lineChart;
-
         if (lineEl) {
             const lineCtx = lineEl.getContext('2d');
+
             const lineLabels = chartLine.labels;
             const types = chartLine.types;
 
             const typeColors = {
                 perbaikan: {
-                    stroke: "rgba(34,193,195,1)",
+                    stroke: "rgba(34,193,195,1)", // Modify color for 'perbaikan'
                     fillTop: "rgba(34,193,195,.20)"
                 },
                 permintaan: {
-                    stroke: "rgba(253,38,138,1)",
+                    stroke: "rgba(253,38,138,1)", // Modify color for 'permintaan'
                     fillTop: "rgba(253,38,138,.18)"
                 },
             };
 
             const niceTypeLabel = (t) => (t === 'permintaan' ? 'Permintaan' : 'Perbaikan');
 
-            const updateLineChartData = (types, chartData, scope) => {
-                const lineDatasets = types.map((t) => ({
-                    label: t,
-                    data: chartData[t] || Array(12).fill(0),
-                    borderColor: typeColors[t].stroke,
-                    backgroundColor: (context) => {
-                        const chart = context.chart;
-                        const {
-                            ctx,
-                            chartArea
-                        } = chart;
-                        if (!chartArea) return typeColors[t].fillTop;
-                        const g = ctx.createLinearGradient(0, chartArea.top, 0, chartArea
-                            .bottom);
-                        g.addColorStop(0, typeColors[t].fillTop);
-                        g.addColorStop(1, 'rgba(255,255,255,0)');
-                        return g;
-                    },
-                    fill: true,
-                    tension: 0.38,
-                    borderWidth: 2,
-                    pointRadius: 2.8,
-                    pointHoverRadius: 6,
-                    pointHitRadius: 12,
-                    pointBorderWidth: 0,
-                }));
+            const lineDatasets = types.map((t) => ({
+                label: t,
+                data: chartLine.monthlyByType[t] || Array(12).fill(0),
+                borderColor: typeColors[t].stroke,
+                backgroundColor: (context) => {
+                    const chart = context.chart;
+                    const {
+                        ctx,
+                        chartArea
+                    } = chart;
+                    if (!chartArea) return typeColors[t].fillTop;
 
-                return lineDatasets;
-            };
+                    const g = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+                    g.addColorStop(0, typeColors[t].fillTop);
+                    g.addColorStop(1, 'rgba(255,255,255,0)');
+                    return g;
+                },
+                fill: true,
+                tension: 0.38,
+                borderWidth: 2,
+                pointRadius: 2.8,
+                pointHoverRadius: 6,
+                pointHitRadius: 12,
+                pointBorderWidth: 0,
+            }));
 
-            // Update chart with new data dynamically
-            const updateChart = (scope) => {
-                const filteredData = chartLine.monthlyByType;
-
-                lineChart.data.datasets = updateLineChartData(types, filteredData, scope);
-                lineChart.update();
-            };
-
-            // Initial chart rendering
-            lineChart = new Chart(lineCtx, {
+            new Chart(lineCtx, {
                 type: 'line',
                 data: {
                     labels: lineLabels,
-                    datasets: updateLineChartData(types, chartLine.monthlyByType, 'all'),
+                    datasets: lineDatasets
                 },
                 options: {
                     responsive: true,
@@ -1192,22 +1167,29 @@
                                 generateLabels: (chart) => {
                                     const original = Chart.defaults.plugins.legend.labels
                                         .generateLabels(chart);
+
+                                    // Mengambil total perbaikan dan permintaan dari controller
                                     const perbaikanTotal = @json($jenisTicketTotal['perbaikan_total']);
                                     const permintaanTotal = @json($jenisTicketTotal['permintaan_total']);
+
                                     return original.map((item) => {
                                         const text = (item.text || '').toLowerCase();
+
+                                        // Menambahkan total perbaikan dan permintaan ke label chart
                                         if (text === 'permintaan') {
                                             item.text = `Permintaan: ${permintaanTotal}`;
                                         }
+
                                         if (text === 'perbaikan') {
                                             item.text = `Perbaikan: ${perbaikanTotal}`;
                                         }
+
                                         item.fillStyle = item.strokeStyle;
                                         item.lineWidth = 0;
                                         return item;
                                     });
-                                },
-                            },
+                                }
+                            }
                         },
                         tooltip: {
                             padding: 12,
@@ -1218,10 +1200,44 @@
                                     const total = items.reduce((sum, it) => sum + (it.parsed.y ||
                                         0), 0);
                                     return `Total bulan ini: ${fmt(total)}`;
-                                },
-                            },
-                        },
+                                }
+                            }
+                        }
                     },
+                    layout: {
+                        padding: {
+                            top: 6,
+                            right: 10,
+                            bottom: 0,
+                            left: 6
+                        }
+                    },
+
+                    // ✅ muncul dari BAWAH (baseline y=0)
+                    animation: {
+                        duration: ANIM_MS,
+                        easing: EASING
+                    },
+                    animations: {
+                        y: {
+                            from: (ctx) => {
+                                const yScale = ctx.chart?.scales?.y;
+                                return yScale ? yScale.getPixelForValue(0) : 0; // baseline pixel
+                            }
+                        },
+                        radius: {
+                            from: 0,
+                            duration: prefersReducedMotion ? 0 : Math.round(ANIM_MS * 0.85),
+                            easing: EASING
+                        },
+                        tension: {
+                            duration: prefersReducedMotion ? 0 : 550,
+                            easing: EASING,
+                            from: 0.2,
+                            to: 0.38
+                        }
+                    },
+
                     scales: {
                         x: {
                             grid: {
@@ -1236,19 +1252,15 @@
                             ticks: {
                                 precision: 0,
                                 color: 'rgba(52,71,103,.65)',
-                                callback: (v) => fmt(v),
+                                callback: (v) => fmt(v)
                             },
                             grid: {
                                 color: 'rgba(0,0,0,.06)',
                                 borderDash: [6, 4]
-                            },
-                        },
-                    },
-                    animation: {
-                        duration: ANIM_MS,
-                        easing: EASING
-                    },
-                },
+                            }
+                        }
+                    }
+                }
             });
         }
 
@@ -1259,19 +1271,21 @@
         if (pieEl) {
             const pieCtx = pieEl.getContext('2d');
             const pieMonthSelect = document.getElementById('pieMonthSelect');
-            const statuses = ['open', 'on process', 'escalated', 'close'];
+
+            const statuses = ['open', 'on process', 'escalated', 'close']; // Corrected order
+
             const statusColors = {
                 "open": {
-                    stroke: "rgba(94,114,228,1)"
+                    stroke: "rgba(94,114,228,1)" // Success color
                 },
                 "on process": {
-                    stroke: "rgba(245,158,11,1)"
+                    stroke: "rgba(245,158,11,1)" // Warning color
                 },
                 "close": {
-                    stroke: "rgba(255,0,0,1)"
+                    stroke: "rgba(255,0,0,1)" // Danger color
                 },
                 "escalated": {
-                    stroke: "rgba(46,204,113,1)"
+                    stroke: "rgba(46,204,113,1)" // Info color
                 }
             };
 
@@ -1296,7 +1310,8 @@
             }
 
             function pieTopText(m) {
-                return m === 0 ? `Komposisi Status (${chartData.year})` :
+                return m === 0 ?
+                    `Komposisi Status (${chartData.year})` :
                     `Komposisi Status (${MONTHS_FULL[m - 1]} ${chartData.year})`;
             }
 
@@ -1362,6 +1377,8 @@
                                 botText: closeRateText(initialData)
                             }
                         },
+
+                        // ✅ animasi “muncul” yang kerasa
                         animation: {
                             duration: ANIM_MS,
                             easing: EASING,
