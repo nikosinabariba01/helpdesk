@@ -515,7 +515,7 @@ class TeknisiController extends Controller
         // CHART FILTER (Line & Doughnut) - tahun sama
         // =========================
         $selectedYear = (int) request('year', now()->year);
-        $scope        = request('scope', 'all'); // open | close | all (resolved/unresolved)
+        $scope        = request('scope', 'all'); // resolved | unresolved | all (resolved/unresolved)
         if (! in_array($scope, ['resolved', 'unresolved', 'all'], true)) {
             $scope = 'all';
         }
@@ -532,15 +532,37 @@ class TeknisiController extends Controller
         }
 
         // =========================
-        // Hitung total perbaikan dan permintaan berdasarkan tahun yang dipilih
+        // Hitung total perbaikan dan permintaan berdasarkan tahun yang dipilih dan scope
         // =========================
-        $perbaikanTotal = Ticket::whereYear('created_at', $selectedYear)
-            ->where('Jenis_Pengaduan', 'perbaikan')
-            ->count();
+        $perbaikanTotalQuery = Ticket::whereYear('created_at', $selectedYear)
+            ->where('Jenis_Pengaduan', 'perbaikan');
 
-        $permintaanTotal = Ticket::whereYear('created_at', $selectedYear)
-            ->where('Jenis_Pengaduan', 'permintaan')
-            ->count();
+        // Adjust perbaikan count based on the scope
+        if ($scope === 'resolved') {
+            $perbaikanTotalQuery->whereIn('status', ['open', 'on process', 'escalated']);
+        } elseif ($scope === 'unresolved') {
+            $perbaikanTotalQuery->where('status', 'close');
+        } else {
+            // all = resolved + unresolved
+            $perbaikanTotalQuery->whereIn('status', ['open', 'on process', 'escalated', 'close']);
+        }
+
+        $perbaikanTotal = $perbaikanTotalQuery->count();
+
+        $permintaanTotalQuery = Ticket::whereYear('created_at', $selectedYear)
+            ->where('Jenis_Pengaduan', 'permintaan');
+
+        // Adjust permintaan count based on the scope
+        if ($scope === 'resolved') {
+            $permintaanTotalQuery->whereIn('status', ['open', 'on process', 'escalated']);
+        } elseif ($scope === 'unresolved') {
+            $permintaanTotalQuery->where('status', 'close');
+        } else {
+            // all = resolved + unresolved
+            $permintaanTotalQuery->whereIn('status', ['open', 'on process', 'escalated', 'close']);
+        }
+
+        $permintaanTotal = $permintaanTotalQuery->count();
 
         $jenisTicketTotal = [
             'perbaikan_total'  => $perbaikanTotal,
@@ -634,7 +656,7 @@ class TeknisiController extends Controller
             'selectedYear',
             'scope',
             'chartLine',
-            'jenisTicketTotal', // Mengirimkan total perbaikan dan permintaan
+            'jenisTicketTotal', // Mengirimkan total perbaikan dan permintaan berdasarkan scope
             'chartData'
         ));
     }
