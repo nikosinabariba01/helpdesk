@@ -232,7 +232,8 @@
                         <div
                             style="padding: 15px 16px; border-top: 1px solid #e4e4e4; display: flex; justify-content: space-between; align-items: center; background-color: #ffffff;">
                             <div style="display: flex; gap: 12px; align-items: center;">
-                                <!-- Pagination Info as Dropdown -->
+
+                                <!-- Pagination Info (Dropdown Terbaru/Terlambat) - tetap sebagai patokan -->
                                 <div class="dropdown" style="position: relative;">
                                     <button class="btn btn-sm btn-outline-secondary"
                                         style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
@@ -252,7 +253,59 @@
                                     </ul>
                                 </div>
 
+                                <!-- Filter Jenis Pengaduan Dropdown - padding disesuaikan agar seimbang -->
+                                <div class="dropdown" style="position: relative; display: inline-block;">
+                                    <button class="btn btn-sm btn-outline-secondary"
+                                        style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 14px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
+                                        type="button" id="filterJenisPengaduanBtn" data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                        <span id="filterJenisPengaduanDisplay">Jenis Pengaduan</span>
+                                        <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="filterJenisPengaduanBtn"
+                                        style="font-size: 13px; min-width: 150px;">
+                                        <li><a class="dropdown-item filter-option" href="#"
+                                                data-filter-type="jenis_pengaduan" data-filter-value=""
+                                                style="padding: 8px 16px;">Semua</a></li>
+                                        <li><a class="dropdown-item filter-option" href="#"
+                                                data-filter-type="jenis_pengaduan" data-filter-value="perbaikan"
+                                                style="padding: 8px 16px;">Perbaikan</a></li>
+                                        <li><a class="dropdown-item filter-option" href="#"
+                                                data-filter-type="jenis_pengaduan" data-filter-value="permintaan"
+                                                style="padding: 8px 16px;">Permintaan</a></li>
+                                    </ul>
+                                </div>
+
+                                <!-- Filter Status Dropdown - padding disesuaikan agar seimbang -->
+                                <div class="dropdown" style="position: relative; display: inline-block;">
+                                    <button class="btn btn-sm btn-outline-secondary"
+                                        style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 14px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
+                                        type="button" id="filterStatusBtn" data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                        <span id="filterStatusDisplay">Status</span>
+                                        <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="filterStatusBtn"
+                                        style="font-size: 13px; min-width: 150px;">
+                                        <li><a class="dropdown-item filter-option" href="#"
+                                                data-filter-type="status" data-filter-value=""
+                                                style="padding: 8px 16px;">Semua</a></li>
+                                        <li><a class="dropdown-item filter-option" href="#"
+                                                data-filter-type="status" data-filter-value="open"
+                                                style="padding: 8px 16px;">Open</a></li>
+                                        <li><a class="dropdown-item filter-option" href="#"
+                                                data-filter-type="status" data-filter-value="on process"
+                                                style="padding: 8px 16px;">On Process</a></li>
+                                        <li><a class="dropdown-item filter-option" href="#"
+                                                data-filter-type="status" data-filter-value="escalated"
+                                                style="padding: 8px 16px;">Escalated</a></li>
+                                        <li><a class="dropdown-item filter-option" href="#"
+                                                data-filter-type="status" data-filter-value="close"
+                                                style="padding: 8px 16px;">Close</a></li>
+                                    </ul>
+                                </div>
                             </div>
+
                             <div style="display: flex; gap: 12px; align-items: center;">
                                 <!-- Pagination Navigation -->
                                 <div style="display: flex; gap: 6px;">
