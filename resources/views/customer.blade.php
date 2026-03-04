@@ -260,8 +260,8 @@
                                         <span id="filterJenisPengaduanDisplay">Jenis Pengaduan</span>
                                         <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
                                     </button>
-                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="filterJenisPengaduanBtn"
-                                        style="font-size: 13px; min-width: 150px; max-height: 200px; overflow-y: auto;">
+                                    <ul class="dropdown-menu" aria-labelledby="filterJenisPengaduanBtn"
+                                        style="font-size: 13px; min-width: 150px;">
                                         <li><a class="dropdown-item filter-option" href="#"
                                                 data-filter-type="jenis_pengaduan" data-filter-value=""
                                                 style="padding: 8px 16px;">Semua</a></li>
@@ -279,12 +279,12 @@
                                     <button class="btn btn-sm btn-outline-secondary"
                                         style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
                                         type="button" id="filterStatusBtn" data-bs-toggle="dropdown"
-                                        aria-expanded="false">
+                                        data-bs-popper="static" aria-expanded="false">
                                         <span id="filterStatusDisplay">Status</span>
                                         <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
                                     </button>
-                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="filterStatusBtn"
-                                        style="font-size: 13px; min-width: 150px; max-height: 200px; overflow-y: auto;">
+                                    <ul class="dropdown-menu" aria-labelledby="filterStatusBtn"
+                                        style="font-size: 13px; min-width: 150px;">
                                         <li><a class="dropdown-item filter-option" href="#"
                                                 data-filter-type="status" data-filter-value=""
                                                 style="padding: 8px 16px;">Semua</a></li>
