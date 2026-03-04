@@ -1084,12 +1084,12 @@
 
             const typeColors = {
                 perbaikan: {
-                    stroke: "rgba(94,114,228,1)",
-                    fillTop: "rgba(94,114,228,.20)"
+                    stroke: "rgba(34,193,195,1)",  // Modify color for 'perbaikan'
+                    fillTop: "rgba(34,193,195,.20)"
                 },
                 permintaan: {
-                    stroke: "rgba(245,158,11,1)",
-                    fillTop: "rgba(245,158,11,.18)"
+                    stroke: "rgba(253,38,138,1)",  // Modify color for 'permintaan'
+                    fillTop: "rgba(253,38,138,.18)"
                 },
             };
 
@@ -1246,16 +1246,16 @@
 
             const statusColors = {
                 "open": {
-                    stroke: "rgba(94,114,228,1)"
+                    stroke: "rgba(94,114,228,1)" // Success color
                 },
                 "on process": {
-                    stroke: "rgba(245,158,11,1)"
+                    stroke: "rgba(245,158,11,1)" // Warning color
                 },
                 "close": {
-                    stroke: "rgba(46,204,113,1)"
+                    stroke: "rgba(255,0,0,1)" // Danger color
                 },
                 "escalated": {
-                    stroke: "rgba(231,76,60,1)"
+                    stroke: "rgba(46,204,113,1)" // Info color
                 }
             };
 
@@ -1280,7 +1280,7 @@
             }
 
             function pieTopText(m) {
-                return m === 0 ?
+                return m === 0 ? 
                     `Komposisi Status (${chartData.year})` :
                     `Komposisi Status (${MONTHS_FULL[m - 1]} ${chartData.year})`;
             }
