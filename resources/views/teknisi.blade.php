@@ -29,7 +29,7 @@
                     <div class="card-stat-icon">
                         <!-- Warna diubah ke RGB: 94,114,228 (Biru) -->
                         <div class="icon icon-shape shadow-primary text-center rounded-circle icon-48"
-                            style="background: rgba(94,114,228,1);">
+                            style="background: rgba(46,204,113,1);">
                             <!-- Icon diganti: fa-ticket -->
                             <i class="fa fa-ticket text-lg opacity-10"></i>
                         </div>
@@ -69,7 +69,7 @@
                     <div class="card-stat-icon">
                         <!-- Warna diubah ke RGB: 46,204,113 (Hijau) -->
                         <div class="icon icon-shape shadow-success text-center rounded-circle icon-48"
-                            style="background: rgba(46,204,113,1);">
+                            style="background: rgba(94,114,228,1);">
                             <!-- Icon diganti: fa-flag (mengibarkan bendera/naik level) -->
                             <i class="fa fa-flag text-lg opacity-10"></i>
                         </div>
@@ -1294,7 +1294,7 @@
 
             const statusColors = {
                 "open": {
-                    stroke: "rgba(94,114,228,1)" // Success color
+                    stroke: "rgba(46,204,113,1)" // Info color
                 },
                 "on process": {
                     stroke: "rgba(245,158,11,1)" // Warning color
@@ -1303,7 +1303,7 @@
                     stroke: "rgba(255,0,0,1)" // Danger color
                 },
                 "escalated": {
-                    stroke: "rgba(46,204,113,1)" // Info color
+                    stroke: "rgba(94,114,228,1)" // Success color
                 }
             };
 
