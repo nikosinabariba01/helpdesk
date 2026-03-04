@@ -93,7 +93,7 @@
                                 {{ $teknisidataticket->user->name }}
                             </td>
                             <td class="align-middle text-center text-sm border border-light">
-                                <x-status-badge :status="$teknisidataticket->status" />
+                                <x-status-badge :status="$teknisidataticket->status"/>
                             </td>
                             <td class="align-middle text-center text-limit-30 border border-light">
                                 <span class="text-secondary text-xs font-weight-bold ">{{ $teknisidataticket->Detail }}</span>
@@ -348,79 +348,6 @@
             });
         }
 
-
-
-        $('#prevPage').on('click', function() {
-            if (currentPage > 1) {
-                currentPage--;
-                updatePagination();
-            }
-        });
-
-        $('#nextPage').on('click', function() {
-            const totalRows = filteredData.length || $('#TicketTable tbody tr').length;
-            const totalPages = Math.ceil(totalRows / itemsPerPage);
-            if (currentPage < totalPages) {
-                currentPage++;
-                updatePagination();
-            }
-        });
-
-        // Filter Dropdown: Jenis Pengaduan
-        $(document).on('click', '.filter-option[data-filter-type="jenis_pengaduan"]', function(e) {
-            e.preventDefault();
-            var filterValue = $(this).data('filter-value');
-            $('#filterJenisPengaduanDisplay').text($(this).text()); // Update button text
-            filterTable();
-        });
-
-        // Filter Dropdown: Status
-        $(document).on('click', '.filter-option[data-filter-type="status"]', function(e) {
-            e.preventDefault();
-            var filterValue = $(this).data('filter-value');
-            $('#filterStatusDisplay').text($(this).text()); // Update button text
-            filterTable();
-        });
-
-        function filterTable() {
-            const selectedJenis = $('#filterJenisPengaduanDisplay').text().trim();
-            const selectedStatus = $('#filterStatusDisplay').text().trim();
-
-            const isAllJenis = selectedJenis === 'Jenis Pengaduan' || selectedJenis === 'Semua';
-            const isAllStatus = selectedStatus === 'Status' || selectedStatus === 'Semua';
-
-            hasActiveFilter = !(isAllJenis && isAllStatus); // FIX: Set flag true jika ada filter spesifik
-
-            filteredData = [];
-            originalData.forEach(function(row) {
-                var $row = $(row);
-                var jenis = $row.data('jenis-pengaduan') || '';
-                var status = $row.data('status') || '';
-
-                var matchJ = isAllJenis || jenis.toLowerCase().includes(selectedJenis.toLowerCase());
-                var matchS = isAllStatus || status.toLowerCase().includes(selectedStatus.toLowerCase());
-
-                if (matchJ && matchS) {
-                    filteredData.push(row);
-                }
-            });
-
-            currentPage = 1;
-            sortTableByDate(currentSort);
-            updatePagination();
-
-            // FIX: Jika reset ke Semua, pastikan fallback ke semua data dan show
-            if (!hasActiveFilter) {
-                $('#TicketTable tbody tr').show();
-            }
-        }
-
-        // Initial load: trigger pagination on page load (using default "Jenis Pengaduan" and "Status")
-        updatePagination();
-        // Sort table by date when the page loads
-        sortTableByDate('desc'); // Default sort by 'created_at' desc (newest first)
-        updatePagination(); // Update pagination after sorting
-
         // Update Pagination (dengan fix untuk no match)
         function updatePagination() {
             let totalRows;
@@ -481,6 +408,73 @@
             $('#prevPage').prop('disabled', currentPage === 1).css('opacity', currentPage === 1 ? '0.5' : '1').css('cursor', currentPage === 1 ? 'not-allowed' : 'pointer');
             $('#nextPage').prop('disabled', currentPage === totalPages || totalRows === 0).css('opacity', currentPage === totalPages || totalRows === 0 ? '0.5' : '1').css('cursor', currentPage === totalPages || totalRows === 0 ? 'not-allowed' : 'pointer');
         }
+
+        $('#prevPage').on('click', function() {
+            if (currentPage > 1) {
+                currentPage--;
+                updatePagination();
+            }
+        });
+
+        $('#nextPage').on('click', function() {
+            const totalRows = filteredData.length || $('#TicketTable tbody tr').length;
+            const totalPages = Math.ceil(totalRows / itemsPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                updatePagination();
+            }
+        });
+
+        // Filter Dropdown: Jenis Pengaduan
+        $(document).on('click', '.filter-option[data-filter-type="jenis_pengaduan"]', function(e) {
+            e.preventDefault();
+            var filterValue = $(this).data('filter-value');
+            $('#filterJenisPengaduanDisplay').text($(this).text()); // Update button text
+            filterTable();
+        });
+
+        // Filter Dropdown: Status
+        $(document).on('click', '.filter-option[data-filter-type="status"]', function(e) {
+            e.preventDefault();
+            var filterValue = $(this).data('filter-value');
+            $('#filterStatusDisplay').text($(this).text()); // Update button text
+            filterTable();
+        });
+
+        function filterTable() {
+            const selectedJenis = $('#filterJenisPengaduanDisplay').text().trim();
+            const selectedStatus = $('#filterStatusDisplay').text().trim();
+
+            const isAllJenis = selectedJenis === 'Jenis Pengaduan' || selectedJenis === 'Semua';
+            const isAllStatus = selectedStatus === 'Status' || selectedStatus === 'Semua';
+
+            hasActiveFilter = !(isAllJenis && isAllStatus); // FIX: Set flag true jika ada filter spesifik
+
+            filteredData = [];
+            originalData.forEach(function(row) {
+                var $row = $(row);
+                var jenis = $row.data('jenis-pengaduan') || '';
+                var status = $row.data('status') || '';
+
+                var matchJ = isAllJenis || jenis.toLowerCase().includes(selectedJenis.toLowerCase());
+                var matchS = isAllStatus || status.toLowerCase().includes(selectedStatus.toLowerCase());
+
+                if (matchJ && matchS) {
+                    filteredData.push(row);
+                }
+            });
+
+            currentPage = 1;
+            sortTableByDate('desc'); // Default sort by 'created_at' desc (newest first)
+            updatePagination();
+
+            // FIX: Jika reset ke Semua, pastikan fallback ke semua data dan show
+            if (!hasActiveFilter) {
+                $('#TicketTable tbody tr').show();
+            }
+        }
+
+        updatePagination(); // Update pagination after sorting
     });
 </script>
 
