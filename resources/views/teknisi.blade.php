@@ -1447,7 +1447,7 @@
 
     /* controls width desktop */
     .chart-controls #scopeSelect {
-        width: 165px;
+        width: 195px;
     }
 
     .chart-controls #yearSelect {
