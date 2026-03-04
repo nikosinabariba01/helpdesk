@@ -93,7 +93,7 @@
                                 {{ $teknisidataticket->user->name }}
                             </td>
                             <td class="align-middle text-center text-sm border border-light">
-                                <x-status-badge :status="$teknisidataticket->status"/>
+                                <x-status-badge :status="$teknisidataticket->status" />
                             </td>
                             <td class="align-middle text-center text-limit-30 border border-light">
                                 <span class="text-secondary text-xs font-weight-bold ">{{ $teknisidataticket->Detail }}</span>
@@ -361,6 +361,13 @@
                 totalRows = $('#TicketTable tbody tr').length;
                 rowsToDisplay = $('#TicketTable tbody tr').get();
             }
+
+            // Sort the data first before pagination
+            rowsToDisplay.sort(function(a, b) {
+                var aTimestamp = parseInt($(a).data('created-at')) || 0;
+                var bTimestamp = parseInt($(b).data('created-at')) || 0;
+                return currentSort === 'desc' ? bTimestamp - aTimestamp : aTimestamp - bTimestamp;
+            });
 
             const totalPages = Math.ceil(totalRows / itemsPerPage);
             if (currentPage > totalPages) {
