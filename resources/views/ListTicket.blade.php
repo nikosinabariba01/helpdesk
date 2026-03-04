@@ -233,7 +233,7 @@
         const itemsPerPage = 10;
         let filteredData = []; // To store filtered data
         let originalData = []; // To store original data (before filtering or searching)
-        let hasActiveFilter = false; // FIX: Flag baru untuk track jika filter spesifik applied (bukan Semua)
+        let hasActiveFilter = false; // Flag to track if any specific filter is applied
 
         var table = $('#TicketTable').DataTable({
             searching: true,
@@ -308,7 +308,6 @@
         // Search filter (TIDAK DISENTUH, tetap seperti asli)
         $('#search').on('keyup', function() {
             var searchTerm = this.value.toLowerCase();
-            // If search term is empty, restore the original data
             if (searchTerm === '') {
                 filteredData = []; // Clear filtered data
                 $('#TicketTable tbody').empty().append(originalData); // Restore original data
@@ -324,7 +323,6 @@
             currentPage = 1;
             sortTableByDate(currentSort); // Ensure latest items are first
             updatePagination();
-            // After searching, re-sort the table by date
         });
 
         // Sorting by date (newest to oldest)
@@ -337,7 +335,7 @@
         });
 
         function sortTableByDate(direction) {
-            var rows = $('#TicketTable tbody tr').get();
+            var rows = filteredData.length > 0 ? filteredData : $('#TicketTable tbody tr').get();
             rows.sort(function(a, b) {
                 var aTimestamp = parseInt($(a).data('created-at')) || 0;
                 var bTimestamp = parseInt($(b).data('created-at')) || 0;
@@ -357,7 +355,6 @@
                 totalRows = filteredData.length;
                 rowsToDisplay = filteredData;
             } else {
-                // Jika filteredData kosong → check jika filter active
                 totalRows = $('#TicketTable tbody tr').length;
                 rowsToDisplay = $('#TicketTable tbody tr').get();
             }
@@ -369,21 +366,11 @@
 
             $('#TicketTable tbody tr').hide(); // Hide all rows first
 
-            // FIX: Jika hasActiveFilter true dan filteredData.length === 0, treat sebagai no match
-            if (hasActiveFilter && filteredData.length === 0) {
-                totalRows = 0;
-            }
-
             if (totalRows === 0) {
-                // Tampilkan pesan jika nol
-                // Hapus pesan lama jika ada
                 $('.no-data-row').remove();
-                $('#TicketTable tbody').append(
-                    '<tr class="no-data-row"><td colspan="6" class="text-center text-secondary py-4">Tidak ada data ditemukan</td></tr>'
-                );
+                $('#TicketTable tbody').append('<tr class="no-data-row"><td colspan="6" class="text-center text-secondary py-4">Tidak ada data ditemukan</td></tr>');
                 $('#paginationDisplay').text('0-0 dari 0');
             } else {
-                // Hapus pesan no-data jika ada
                 $('.no-data-row').remove();
 
                 var startIndex = (currentPage - 1) * itemsPerPage;
@@ -428,7 +415,6 @@
         // Filter Dropdown: Jenis Pengaduan
         $(document).on('click', '.filter-option[data-filter-type="jenis_pengaduan"]', function(e) {
             e.preventDefault();
-            var filterValue = $(this).data('filter-value');
             $('#filterJenisPengaduanDisplay').text($(this).text()); // Update button text
             filterTable();
         });
@@ -436,7 +422,6 @@
         // Filter Dropdown: Status
         $(document).on('click', '.filter-option[data-filter-type="status"]', function(e) {
             e.preventDefault();
-            var filterValue = $(this).data('filter-value');
             $('#filterStatusDisplay').text($(this).text()); // Update button text
             filterTable();
         });
@@ -448,7 +433,7 @@
             const isAllJenis = selectedJenis === 'Jenis Pengaduan' || selectedJenis === 'Semua';
             const isAllStatus = selectedStatus === 'Status' || selectedStatus === 'Semua';
 
-            hasActiveFilter = !(isAllJenis && isAllStatus); // FIX: Set flag true jika ada filter spesifik
+            hasActiveFilter = !(isAllJenis && isAllStatus);
 
             filteredData = [];
             originalData.forEach(function(row) {
@@ -465,7 +450,7 @@
             });
 
             currentPage = 1;
-            updatePagination(); // Recalculate pagination after filter
+            updatePagination();
 
             if (!hasActiveFilter) {
                 $('#TicketTable tbody tr').show(); // Show all data if no filter is applied
