@@ -211,6 +211,21 @@
                                                             Process</button>
                                                     </form>
                                                 @endif
+                                                <!-- Tombol Close -->
+                                                @if ($teknisidataticket->status != 'escalated')
+                                                    <form method="POST"
+                                                        action="{{ route('ticketsteknisi.close', $teknisidataticket->id) }}"
+                                                        id="closeTicketForm-{{ $teknisidataticket->id }}">
+                                                        @method('PUT')
+                                                        @csrf
+                                                        <button type="button"
+                                                            class="btn btn-sm btn-outline-danger btn-transparent text-danger"
+                                                            data-bs-toggle="modal" data-bs-target="#modal-confirmation"
+                                                            data-form-id="closeTicketForm-{{ $teknisidataticket->id }}">
+                                                            Close
+                                                        </button>
+                                                    </form>
+                                                @endif
                                             @endif
                                         </td>
                                         <!-- Detail button -->
