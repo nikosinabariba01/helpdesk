@@ -381,8 +381,12 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($teknisi_data_ticket as $teknisidataticket)
-                                        <tr class="align-middle text-sm border border-light" data-created-at="{{ $teknisidataticket->created_at->timestamp }}" data-jenis-pengaduan="{{ $teknisidataticket->Jenis_Pengaduan }}" data-status="{{ $teknisidataticket->status }}">
-                                            <td class="align-middle text-sm border border-light" data-subject="{{ $teknisidataticket->subject }}">
+                                        <tr class="align-middle text-sm border border-light"
+                                            data-created-at="{{ $teknisidataticket->created_at->timestamp }}"
+                                            data-jenis-pengaduan="{{ $teknisidataticket->Jenis_Pengaduan }}"
+                                            data-status="{{ $teknisidataticket->status }}">
+                                            <td class="align-middle text-sm border border-light"
+                                                data-subject="{{ $teknisidataticket->subject }}">
                                                 <div class="d-flex px-2 py-1">
                                                     <div class="d-flex flex-column justify-content-center">
                                                         <h6 class="mb-0 text-s text-limit-35" title="Subject">
@@ -408,10 +412,12 @@
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td class="align-middle text-center text-sm text-limit-20 border border-light" data-user="{{ $teknisidataticket->user->name }}">
+                                            <td class="align-middle text-center text-sm text-limit-20 border border-light"
+                                                data-user="{{ $teknisidataticket->user->name }}">
                                                 {{ $teknisidataticket->user->name }}
                                             </td>
-                                            <td class="align-middle text-center text-sm border border-light" data-status="{{ $teknisidataticket->status }}">
+                                            <td class="align-middle text-center text-sm border border-light"
+                                                data-status="{{ $teknisidataticket->status }}">
                                                 <x-status-badge :status="$teknisidataticket->status" />
                                             </td>
                                             <td class="align-middle text-center text-limit-30 border border-light">
@@ -464,14 +470,24 @@
                                 </div>
                                 <!-- Filter Jenis Pengaduan Dropdown -->
                                 <div class="dropdown" style="position: relative; display: inline-block;">
-                                    <button class="btn btn-sm btn-outline-secondary" style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;" type="button" id="filterJenisPengaduanBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <button class="btn btn-sm btn-outline-secondary"
+                                        style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
+                                        type="button" id="filterJenisPengaduanBtn" data-bs-toggle="dropdown"
+                                        aria-expanded="false">
                                         <span id="filterJenisPengaduanDisplay">Jenis Pengaduan</span>
                                         <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
                                     </button>
-                                    <ul class="dropdown-menu" aria-labelledby="filterJenisPengaduanBtn" style="font-size: 13px; min-width: 150px;">
-                                        <li><a class="dropdown-item filter-option" href="#" data-filter-type="jenis_pengaduan" data-filter-value="" style="padding: 8px 16px;">Semua</a></li>
-                                        <li><a class="dropdown-item filter-option" href="#" data-filter-type="jenis_pengaduan" data-filter-value="perbaikan" style="padding: 8px 16px;">Perbaikan</a></li>
-                                        <li><a class="dropdown-item filter-option" href="#" data-filter-type="jenis_pengaduan" data-filter-value="permintaan" style="padding: 8px 16px;">Permintaan</a></li>
+                                    <ul class="dropdown-menu" aria-labelledby="filterJenisPengaduanBtn"
+                                        style="font-size: 13px; min-width: 150px;">
+                                        <li><a class="dropdown-item filter-option" href="#"
+                                                data-filter-type="jenis_pengaduan" data-filter-value=""
+                                                style="padding: 8px 16px;">Semua</a></li>
+                                        <li><a class="dropdown-item filter-option" href="#"
+                                                data-filter-type="jenis_pengaduan" data-filter-value="perbaikan"
+                                                style="padding: 8px 16px;">Perbaikan</a></li>
+                                        <li><a class="dropdown-item filter-option" href="#"
+                                                data-filter-type="jenis_pengaduan" data-filter-value="permintaan"
+                                                style="padding: 8px 16px;">Permintaan</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -1084,11 +1100,11 @@
 
             const typeColors = {
                 perbaikan: {
-                    stroke: "rgba(34,193,195,1)",  // Modify color for 'perbaikan'
+                    stroke: "rgba(34,193,195,1)", // Modify color for 'perbaikan'
                     fillTop: "rgba(34,193,195,.20)"
                 },
                 permintaan: {
-                    stroke: "rgba(253,38,138,1)",  // Modify color for 'permintaan'
+                    stroke: "rgba(253,38,138,1)", // Modify color for 'permintaan'
                     fillTop: "rgba(253,38,138,.18)"
                 },
             };
@@ -1242,7 +1258,7 @@
             const pieCtx = pieEl.getContext('2d');
             const pieMonthSelect = document.getElementById('pieMonthSelect');
 
-            const statuses = chartData.statuses;
+            const statuses = ['open', 'on process', 'escalated', 'close']; // Corrected order
 
             const statusColors = {
                 "open": {
@@ -1280,7 +1296,7 @@
             }
 
             function pieTopText(m) {
-                return m === 0 ? 
+                return m === 0 ?
                     `Komposisi Status (${chartData.year})` :
                     `Komposisi Status (${MONTHS_FULL[m - 1]} ${chartData.year})`;
             }
