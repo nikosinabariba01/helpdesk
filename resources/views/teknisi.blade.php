@@ -978,24 +978,6 @@
         });
 
         // =========================
-        // YEAR + SCOPE SELECT (reload)
-        // =========================
-        const chartYearEl = document.getElementById('chartYear');
-        if (chartYearEl) chartYearEl.textContent = chartLine?.year ?? '';
-
-        const yearSelect = document.getElementById('yearSelect');
-        const scopeSelect = document.getElementById('scopeSelect');
-
-        function reloadWithParams() {
-            const url = new URL(window.location.href);
-            if (yearSelect) url.searchParams.set('year', yearSelect.value);
-            if (scopeSelect) url.searchParams.set('scope', scopeSelect.value);
-            window.location.href = url.toString();
-        }
-        if (yearSelect) yearSelect.addEventListener('change', reloadWithParams);
-        if (scopeSelect) scopeSelect.addEventListener('change', reloadWithParams);
-
-        // =========================
         // PLUGIN: hover crosshair (line)
         // =========================
         const hoverLinePlugin = {
@@ -1055,12 +1037,10 @@
 
                 const isPhone = window.matchMedia('(max-width: 576px)').matches;
 
-                // ✅ lebih kecil lagi di HP
                 const topSize = opts?.topSize ?? (isPhone ? 8 : 12);
                 const midSize = opts?.midSize ?? (isPhone ? 14 : 22);
                 const botSize = opts?.botSize ?? (isPhone ? 8 : 12);
 
-                // jarak antar teks juga diperkecil di HP
                 const topOffset = isPhone ? 12 : 18;
                 const botOffset = isPhone ? 14 : 22;
 
@@ -1101,11 +1081,11 @@
 
             const typeColors = {
                 perbaikan: {
-                    stroke: "rgba(34,193,195,1)", // Modify color for 'perbaikan'
+                    stroke: "rgba(34,193,195,1)",
                     fillTop: "rgba(34,193,195,.20)"
                 },
                 permintaan: {
-                    stroke: "rgba(253,38,138,1)", // Modify color for 'permintaan'
+                    stroke: "rgba(253,38,138,1)",
                     fillTop: "rgba(253,38,138,.18)"
                 },
             };
@@ -1168,14 +1148,12 @@
                                     const original = Chart.defaults.plugins.legend.labels
                                         .generateLabels(chart);
 
-                                    // Mengambil total perbaikan dan permintaan dari controller
                                     const perbaikanTotal = @json($jenisTicketTotal['perbaikan_total']);
                                     const permintaanTotal = @json($jenisTicketTotal['permintaan_total']);
 
                                     return original.map((item) => {
                                         const text = (item.text || '').toLowerCase();
 
-                                        // Menambahkan total perbaikan dan permintaan ke label chart
                                         if (text === 'permintaan') {
                                             item.text = `Permintaan: ${permintaanTotal}`;
                                         }
@@ -1212,8 +1190,6 @@
                             left: 6
                         }
                     },
-
-                    // ✅ muncul dari BAWAH (baseline y=0)
                     animation: {
                         duration: ANIM_MS,
                         easing: EASING
@@ -1222,7 +1198,7 @@
                         y: {
                             from: (ctx) => {
                                 const yScale = ctx.chart?.scales?.y;
-                                return yScale ? yScale.getPixelForValue(0) : 0; // baseline pixel
+                                return yScale ? yScale.getPixelForValue(0) : 0;
                             }
                         },
                         radius: {
@@ -1237,7 +1213,6 @@
                             to: 0.38
                         }
                     },
-
                     scales: {
                         x: {
                             grid: {
@@ -1272,20 +1247,20 @@
             const pieCtx = pieEl.getContext('2d');
             const pieMonthSelect = document.getElementById('pieMonthSelect');
 
-            const statuses = ['open', 'on process', 'escalated', 'close']; // Corrected order
+            const statuses = ['open', 'on process', 'escalated', 'close'];
 
             const statusColors = {
                 "open": {
-                    stroke: "rgba(94,114,228,1)" // Success color
+                    stroke: "rgba(94,114,228,1)"
                 },
                 "on process": {
-                    stroke: "rgba(245,158,11,1)" // Warning color
+                    stroke: "rgba(245,158,11,1)"
                 },
                 "close": {
-                    stroke: "rgba(255,0,0,1)" // Danger color
+                    stroke: "rgba(255,0,0,1)"
                 },
                 "escalated": {
-                    stroke: "rgba(46,204,113,1)" // Info color
+                    stroke: "rgba(46,204,113,1)"
                 }
             };
 
@@ -1328,7 +1303,6 @@
             const initialMonth = pieMonthSelect ? Number(pieMonthSelect.value) : currentMonth;
             const initialData = getPieData(initialMonth);
 
-            // ✅ render setelah 1 frame biar animasi “keliatan”
             requestAnimationFrame(() => {
                 const doughnutChart = new Chart(pieCtx, {
                     type: 'doughnut',
@@ -1378,7 +1352,6 @@
                             }
                         },
 
-                        // ✅ animasi “muncul” yang kerasa
                         animation: {
                             duration: ANIM_MS,
                             easing: EASING,
@@ -1400,7 +1373,6 @@
                     }
                 });
 
-                // ✅ update bulan dengan animasi yang kerasa
                 if (pieMonthSelect) {
                     pieMonthSelect.addEventListener('change', () => {
                         const m = Number(pieMonthSelect.value);
@@ -1412,7 +1384,7 @@
                             b) => a + b, 0));
                         doughnutChart.options.plugins.centerText.botText = closeRateText(data);
 
-                        doughnutChart.update('active'); // 🔥 anim lebih kerasa
+                        doughnutChart.update('active');
                     });
                 }
             });
