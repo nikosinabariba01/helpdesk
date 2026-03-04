@@ -459,13 +459,12 @@ class TeknisiController extends Controller
 
     public function index()
     {
-        // Ambil data pengguna yang login
         $user   = Auth::user();
         $userId = $user->id;
         $role   = $user->role;
 
         // =========================
-        // LIST TABEL: tiket open yang belum di-assign (global)
+        // LIST TABEL: tiket open yg belum di-assign (global)
         // =========================
         $teknisi_data_ticket = Ticket::with('user')
             ->whereDoesntHave('asignees')
@@ -517,13 +516,11 @@ class TeknisiController extends Controller
         // =========================
         $selectedYear = (int) request('year', now()->year);
         $scope        = request('scope', 'all'); // resolved | unresolved | all (resolved/unresolved)
-
-        // Validasi scope
         if (! in_array($scope, ['resolved', 'unresolved', 'all'], true)) {
             $scope = 'all';
         }
 
-        // Daftar tahun dari DB untuk dropdown
+        // daftar tahun dari DB untuk dropdown
         $years = Ticket::selectRaw('YEAR(created_at) as year')
             ->whereNotNull('created_at')
             ->distinct()
