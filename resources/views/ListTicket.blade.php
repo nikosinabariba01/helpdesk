@@ -226,6 +226,32 @@
     </div>
 </div>
 
+<!-- Modal Confirmation -->
+<div class="modal fade" id="modal-confirmation" tabindex="-1" role="dialog" aria-labelledby="modal-confirmation"
+    aria-hidden="true">
+    <div class="modal-dialog modal-danger modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="modal-title-confirmation">Are you sure?</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="py-3 text-center">
+                    <i class="ni ni-bell-55 ni-3x"></i>
+                    <h4 class="text-gradient text-danger mt-4">Tindakan ini akan menandai tiket sebagai ditutup</h4>
+                    <p>Apakah Anda yakin ingin menutup tiket ini ?</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-danger" id="modal-submit-btn">Ya, close tiket</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     // Menangani klik tombol konfirmasi untuk mengirimkan form
     $('#modal-submit-btn').on('click', function() {
