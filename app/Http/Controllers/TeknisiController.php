@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
@@ -10,9 +11,11 @@ use Carbon\Carbon; // dompdf
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class TeknisiController extends Controller {
+class TeknisiController extends Controller
+{
 
-    private function getLatestComments() {
+    private function getLatestComments()
+    {
         // Dapatkan ID pengguna yang sedang login
         $userId = Auth::id();
 
@@ -47,7 +50,8 @@ class TeknisiController extends Controller {
         return $latestComments;
     }
 
-    public function downloadMonthlyReport(Request $request) {
+    public function downloadMonthlyReport(Request $request)
+    {
         $period = $request->get('period', 'monthly'); // monthly | yearly | all
 
         $year  = (int) $request->get('year', now()->year);
@@ -418,7 +422,8 @@ class TeknisiController extends Controller {
     /**
      * Median helper (tanpa raw)
      */
-    private function median(array $values): float {
+    private function median(array $values): float
+    {
         if (empty($values)) {
             return 0;
         }
@@ -436,7 +441,8 @@ class TeknisiController extends Controller {
     /**
      * Percentile helper (P90, dll) sederhana
      */
-    private function percentile(array $values, int $percent): float {
+    private function percentile(array $values, int $percent): float
+    {
         if (empty($values)) {
             return 0;
         }
@@ -451,7 +457,8 @@ class TeknisiController extends Controller {
         return (float) $values[$idx];
     }
 
-    public function index() {
+    public function index()
+    {
         $user   = Auth::user();
         $userId = $user->id;
         $role   = $user->role;
@@ -485,21 +492,6 @@ class TeknisiController extends Controller {
         $latestComments = $this->getLatestComments();
 
         // =========================
-        // ✅ CARD BARU 1: Unfinished (GLOBAL)
-        // =========================
-        $totalUnfinishedTickets = Ticket::where(function ($query) use ($userId) {
-            $query->whereDoesntHave('assignees')
-                ->where('status', 'open')
-                ->where('user_id', $userId);
-            $query->orWhere(function ($q) use ($userId) {
-                $q->whereHas('assignees', function ($q) use ($userId) {
-                    $q->where('user_id', $userId);
-                })
-                    ->whereIn('status', ['open', 'on process', 'escalated']);
-            });
-        })->count();
-
-        // =========================
         // ✅ CARD BARU 2: Escalated (conditional)
         // pemilik => global
         // admin/pengurus => escalated yg assigned ke dia
@@ -513,6 +505,11 @@ class TeknisiController extends Controller {
         } else {
             $totalEscalatedTickets = Ticket::where('status', 'escalated')->count();
         }
+
+        // =========================
+        // ✅ CARD BARU 1: Unfinished (GLOBAL)
+        // =========================
+        $totalUnfinishedTickets = $totalTickets + $totalOnProcessTickets + $totalEscalatedTickets;
 
         // =========================
         // CHART FILTER (Line & Doughnut) - tahun sama
@@ -665,7 +662,8 @@ class TeknisiController extends Controller {
     }
 
     // Fungsi untuk menampilkan tiket yang sudah ditugaskan
-    public function viewasigne() {
+    public function viewasigne()
+    {
         // Dapatkan ID pengguna yang sedang login
         $userId = Auth::id();
 
@@ -690,7 +688,8 @@ class TeknisiController extends Controller {
     }
 
     // Fungsi untuk menampilkan tiket dengan status escalated
-    public function viewEscalation() {
+    public function viewEscalation()
+    {
         // Dapatkan ID pengguna yang sedang login
         $userId = Auth::id();
 
@@ -707,7 +706,8 @@ class TeknisiController extends Controller {
     }
 
     // Fungsi untuk menampilkan tiket yang telah ditutup
-    public function closeticket() {
+    public function closeticket()
+    {
         // Dapatkan ID pengguna yang sedang login
         $userId = Auth::id();
 
@@ -729,7 +729,8 @@ class TeknisiController extends Controller {
     }
 
     // Fungsi untuk menampilkan semua tiket
-    public function ListTicket() {
+    public function ListTicket()
+    {
         // Dapatkan ID pengguna yang sedang login
         $userId = Auth::id();
 
