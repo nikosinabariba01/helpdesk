@@ -183,21 +183,18 @@
                                                         </button>
                                                     @endif
                                                 </form>
-                                                <!-- Tombol Close -->
-                                                @if ($teknisidataticket->status != 'escalated')
-                                                    <form method="POST"
-                                                        action="{{ route('ticketsteknisi.close', $teknisidataticket->id) }}"
-                                                        id="closeTicketForm-{{ $teknisidataticket->id }}">
-                                                        @method('PUT')
-                                                        @csrf
-                                                        <button type="button"
-                                                            class="btn btn-sm btn-outline-danger btn-transparent text-danger"
-                                                            data-bs-toggle="modal" data-bs-target="#modal-confirmation"
-                                                            data-form-id="closeTicketForm-{{ $teknisidataticket->id }}">
-                                                            Close
-                                                        </button>
-                                                    </form>
-                                                @endif
+                                                <form method="POST"
+                                                    action="{{ route('ticketsteknisi.close', $teknisidataticket->id) }}"
+                                                    id="closeTicketForm-{{ $teknisidataticket->id }}">
+                                                    @method('PUT')
+                                                    @csrf
+                                                    <button type="button"
+                                                        class="btn btn-sm btn-outline-danger btn-transparent text-danger"
+                                                        data-bs-toggle="modal" data-bs-target="#modal-confirmation"
+                                                        data-form-id="closeTicketForm-{{ $teknisidataticket->id }}">
+                                                        Close
+                                                    </button>
+                                                </form>
                                             @else
                                                 <!-- Jika sudah ada pemilik yang meng-assign, hanya tampilkan tombol Cancel Assign -->
                                                 @if ($teknisidataticket->status != 'escalated')
@@ -212,7 +209,6 @@
                                                     </form>
                                                 @endif
                                                 <!-- Tombol Close -->
-                                                @if ($teknisidataticket->status != 'escalated')
                                                     <form method="POST"
                                                         action="{{ route('ticketsteknisi.close', $teknisidataticket->id) }}"
                                                         id="closeTicketForm-{{ $teknisidataticket->id }}">
@@ -225,7 +221,6 @@
                                                             Close
                                                         </button>
                                                     </form>
-                                                @endif
                                             @endif
                                         </td>
                                         <!-- Detail button -->
@@ -441,9 +436,10 @@
                     if (filteredData.length === 0) {
                         // Tampilkan data yang sudah difilter (filteredData) dan pastikan urutannya benar
                         $('#TicketTable tbody').empty().append(
-                        filteredData); // Menampilkan kembali data yang sudah difilter
+                            filteredData); // Menampilkan kembali data yang sudah difilter
                         sortTableByDate(
-                        currentSort); // Urutkan data sesuai urutan yang diinginkan (misalnya berdasarkan tanggal)
+                            currentSort
+                            ); // Urutkan data sesuai urutan yang diinginkan (misalnya berdasarkan tanggal)
                         updatePagination(); // Update pagination sesuai data yang ditampilkan
                     } else {
                         // Jika tidak ada data yang sudah difilter, tampilkan seluruh data asli
