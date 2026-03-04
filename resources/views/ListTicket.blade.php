@@ -227,6 +227,21 @@
 </div>
 
 <script>
+    // Menangani klik tombol konfirmasi untuk mengirimkan form
+    $('#modal-submit-btn').on('click', function() {
+        var formId = $('#modal-confirmation').data('form-id'); // Ambil form id dari modal
+        $('#' + formId).submit(); // Kirim form yang terkait dengan tombol
+    });
+
+    // Ketika modal ditampilkan, simpan form id yang terkait
+    $('#modal-confirmation').on('show.bs.modal', function(e) {
+        var button = $(e.relatedTarget); // Tombol yang memicu modal
+        var formId = button.data('form-id'); // Ambil form id dari data atribut tombol
+        $(this).data('form-id', formId); // Simpan formId dalam modal untuk digunakan nanti
+    });
+</script>
+
+<script>
     $(document).ready(function() {
         let currentSort = 'desc'; // Set default sorting to 'desc'
         let currentPage = 1;
