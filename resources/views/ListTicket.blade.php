@@ -472,7 +472,6 @@
             });
 
             currentPage = 1;
-            updatePagination();
 
             // FIX: Jika reset ke Semua, pastikan fallback ke semua data dan show
             if (!hasActiveFilter) {
