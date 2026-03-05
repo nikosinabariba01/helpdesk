@@ -352,7 +352,6 @@
             } else {
                 $(this).removeClass('sorting').addClass('sorting_asc');
             }
-            updatePagination();
             sortAllDataByColumn(columnIndex, !isAsc);
             currentPage = 1;
         });
