@@ -679,6 +679,16 @@ class TeknisiController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
+        $teknisi_data_ticket->each(function ($ticket) use ($userId) {
+            // User saat ini belum assign
+            $ticket->isNotAssigned = ! $ticket->asignees->contains($userId);
+
+            // Cek apakah sudah ada assignee yang role-nya pemilik
+            $ticket->hasOwnerAssignee = $ticket->asignees->contains(function ($assignee) {
+                return $assignee->role === 'pemilik';
+            });
+        });
+
         $totalTickets = $teknisi_data_ticket->count();
 
         // Mengambil komentar terbaru

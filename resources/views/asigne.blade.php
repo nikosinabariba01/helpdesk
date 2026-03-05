@@ -151,7 +151,7 @@
                                         </td>
                                         <td class="align-middle text-center text-sm border border-light">
                                             <!-- Cek apakah tiket sudah diassign oleh pemilik -->
-                                            @if ($teknisidataticket->asignees->where('role', 'pemilik')->isEmpty())
+                                            @if (!$teknisidataticket->hasOwnerAssignee)
                                                 <!-- Jika belum ada pemilik yang meng-assign, tampilkan tombol cancel assign -->
                                                 @if ($teknisidataticket->status != 'escalated')
                                                     <form
