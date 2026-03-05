@@ -728,6 +728,7 @@ class TeknisiController extends Controller
         return view('closed', compact('teknisi_data_ticket', 'totalTickets', 'latestComments'));
     }
 
+    // Fungsi untuk menampilkan semua tiket
     public function ListTicket()
     {
         // Dapatkan ID pengguna yang sedang login
@@ -741,19 +742,6 @@ class TeknisiController extends Controller
         // Mengambil komentar terbaru
         $latestComments = $this->getLatestComments();
 
-        // Tambahkan logika untuk menandai tiket yang belum memiliki asignee dari pengguna yang sedang login
-        foreach ($teknisi_data_ticket as $ticket) {
-            // Memanggil fungsi untuk memeriksa apakah tombol "Contribute" perlu ditampilkan
-            $ticket->show_contribute_button = $this->shouldShowContributeButton($ticket, $userId);
-        }
-
         return view('ListTicket', compact('teknisi_data_ticket', 'latestComments'));
-    }
-
-    private function shouldShowContributeButton($ticket, $userId)
-    {
-        return $ticket->asignees->every(function ($assignee) use ($userId) {
-            return $assignee->user_id != $userId;
-        });
     }
 }

@@ -101,7 +101,7 @@
                             <td class="align-middle text-center text-sm border border-light">
                                 @if($teknisidataticket->status == 'on process')
                                 <!-- Jika tiket sudah di-assign oleh teknisi lain, hanya tampilkan tombol Contribute -->
-                                @if($teknisidataticket->show_contribute_button)
+                                @if(!$teknisidataticket->asignees->isEmpty() && $teknisidataticket->asignees->first()->id != Auth::id())
                                 <form action="{{ route('tickets.assign', $teknisidataticket->id) }}" method="POST">
                                     @csrf
                                     @method('PUT')
