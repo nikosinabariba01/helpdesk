@@ -322,13 +322,6 @@
             paging: false, // We will handle pagination manually
             lengthChange: false,
             info: false,
-            columnDefs: [{
-                targets: [0, 1, 2],
-                orderable: true
-            }, {
-                targets: [3, 4, 5],
-                orderable: false
-            }]
         });
 
         $('#TicketTable_filter').hide();
@@ -339,7 +332,7 @@
         });
 
         // Handle column header sorting
-        $('#TicketTable thead th').slice(0, 2).on('click', function() {
+        $('#TicketTable thead th').slice(0, 3).on('click', function() {
             var columnIndex = $(this).index();
             var isAsc = $(this).hasClass('sorting_asc');
 
