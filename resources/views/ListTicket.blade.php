@@ -318,6 +318,7 @@
 
         var table = $('#TicketTable').DataTable({
             searching: true,
+            order: [],
             ordering: true,
             paging: false, // We will handle pagination manually
             lengthChange: false,
@@ -352,8 +353,10 @@
             } else {
                 $(this).removeClass('sorting').addClass('sorting_asc');
             }
+
             sortAllDataByColumn(columnIndex, !isAsc);
             currentPage = 1;
+            updatePagination();
         });
 
         function sortAllDataByColumn(columnIndex, isAsc) {
