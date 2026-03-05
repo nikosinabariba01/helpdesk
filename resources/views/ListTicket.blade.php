@@ -89,10 +89,10 @@
                                     </div>
                                 </div>
                             </td>
-                            <td class="align-middle text-center text-sm text-limit-20 border border-light data-user="{{ $teknisidataticket->user->name }}"">
+                            <td class="align-middle text-center text-sm text-limit-20 border border-light">
                                 {{ $teknisidataticket->user->name }}
                             </td>
-                            <td class="align-middle text-center text-sm border border-light data-status="{{ $teknisidataticket->status }}">
+                            <td class="align-middle text-center text-sm border border-light">
                                 <x-status-badge :status="$teknisidataticket->status" />
                             </td>
                             <td class="align-middle text-center text-limit-30 border border-light">
