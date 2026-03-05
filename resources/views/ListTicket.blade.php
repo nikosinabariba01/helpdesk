@@ -355,7 +355,6 @@
 
             sortAllDataByColumn(columnIndex, !isAsc);
             currentPage = 1;
-            updatePagination();
         });
 
         function sortAllDataByColumn(columnIndex, isAsc) {
@@ -384,9 +383,6 @@
             $.each(rows, function(index, row) {
                 $('#TicketTable tbody').append(row);
             });
-            // 💡 Panggil updatePagination di sini agar sorting langsung meng-update page view
-            currentPage = 1; // reset ke halaman pertama setelah sort
-            updatePagination();
         }
 
         // Search filter (TIDAK DISENTUH, tetap seperti asli)
