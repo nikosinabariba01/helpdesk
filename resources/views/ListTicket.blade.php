@@ -352,9 +352,9 @@
             } else {
                 $(this).removeClass('sorting').addClass('sorting_asc');
             }
-
-            sortAllDataByColumn(columnIndex, !isAsc);
             updatePagination();
+            sortAllDataByColumn(columnIndex, !isAsc);
+            currentPage = 1;
         });
 
         function sortAllDataByColumn(columnIndex, isAsc) {
