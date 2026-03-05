@@ -99,9 +99,10 @@
                                 <span class="text-secondary text-xs font-weight-bold ">{{ $teknisidataticket->Detail }}</span>
                             </td>
                             <td class="align-middle text-center text-sm border border-light">
+
                                 @if($teknisidataticket->status == 'on process')
-                                <!-- Jika tiket sudah di-assign oleh teknisi lain, hanya tampilkan tombol Contribute -->
                                 @if($teknisidataticket->isNotAssigned)
+                                <!-- Tombol Contribute untuk user yang belum assign -->
                                 <form action="{{ route('tickets.contribute', $teknisidataticket->id) }}" method="POST">
                                     @csrf
                                     @method('PUT')
@@ -110,7 +111,8 @@
                                     </button>
                                 </form>
                                 @else
-                                <!-- Status: On Process - tombol Cancel Process, Escalate, Close disembunyikan -->
+                                @if(Auth::user()->role == 'admin' || Auth::user()->role == 'pengurus')
+                                <!-- Admin/Pengurus: Cancel Process, Escalate, Close -->
                                 <form action="{{ route('tickets.cancel_assign', $teknisidataticket->id) }}" method="POST" class="mb-2">
                                     @csrf
                                     @method('PUT')
@@ -127,13 +129,36 @@
                                 <form method="POST" action="{{ route('ticketsteknisi.close', $teknisidataticket->id) }}" id="closeTicketForm-{{ $teknisidataticket->id }}" class="mb-2">
                                     @method('PUT')
                                     @csrf
-                                    <button type="button" class="btn btn-sm btn-outline-danger btn-transparent text-danger" data-bs-toggle="modal" data-bs-target="#modal-confirmation" data-form-id="closeTicketForm-{{ $teknisidataticket->id }}">
+                                    <button type="button" class="btn btn-sm btn-outline-danger btn-transparent text-danger"
+                                        data-bs-toggle="modal" data-bs-target="#modal-confirmation"
+                                        data-form-id="closeTicketForm-{{ $teknisidataticket->id }}">
+                                        Close
+                                    </button>
+                                </form>
+                                @elseif(Auth::user()->role == 'pemilik')
+                                <!-- Pemilik: Cancel Process dan Close -->
+                                <form action="{{ route('tickets.cancel_assign', $teknisidataticket->id) }}" method="POST" class="mb-2">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="submit" class="btn btn-sm btn-outline-warning btn-transparent text-warning">
+                                        Cancel Process
+                                    </button>
+                                </form>
+                                <form method="POST" action="{{ route('ticketsteknisi.close', $teknisidataticket->id) }}" id="closeTicketForm-{{ $teknisidataticket->id }}" class="mb-2">
+                                    @method('PUT')
+                                    @csrf
+                                    <button type="button" class="btn btn-sm btn-outline-danger btn-transparent text-danger"
+                                        data-bs-toggle="modal" data-bs-target="#modal-confirmation"
+                                        data-form-id="closeTicketForm-{{ $teknisidataticket->id }}">
                                         Close
                                     </button>
                                 </form>
                                 @endif
+                                @endif
+
                                 @elseif($teknisidataticket->status == 'escalated')
-                                <!-- Status: Escalated - tampilkan Cancel Escalation -->
+                                @if(Auth::user()->role == 'admin' || Auth::user()->role == 'pengurus')
+                                <!-- Escalated: Cancel Escalation -->
                                 <form method="POST" action="{{ route('ticketsteknisi.cancelRequestFollowUp', $teknisidataticket->id) }}">
                                     @csrf
                                     @method('PUT')
@@ -141,6 +166,17 @@
                                         Cancel Escalation
                                     </button>
                                 </form>
+                                @elseif(Auth::user()->role == 'pemilik')
+                                <!-- Pemilik: Accept Escalation -->
+                                <form action="{{ route('tickets.accept_escalation', $teknisidataticket->id) }}" method="POST" class="mb-2">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="submit" class="btn btn-sm btn-outline-success btn-transparent text-success">
+                                        <i class="fa fa-check pe-2 text-success"></i> Accept Escalation
+                                    </button>
+                                </form>
+                                @endif
+
                                 @elseif($teknisidataticket->status == 'close')
                                 <!-- Status: Close - tampilkan Reprocess -->
                                 <form action="{{ route('tickets.assign', $teknisidataticket->id) }}" method="POST">
@@ -150,6 +186,7 @@
                                         Reprocess
                                     </button>
                                 </form>
+
                                 @elseif($teknisidataticket->status == 'open')
                                 <!-- Status: Open - tampilkan Proceed -->
                                 <form action="{{ route('tickets.assign', $teknisidataticket->id) }}" method="POST">
@@ -160,6 +197,7 @@
                                     </button>
                                 </form>
                                 @endif
+
                             </td>
                             <!-- "Edit" button within a dropdown -->
                             <td class="align-middle text-center border border-light">
@@ -171,7 +209,6 @@
                         </tr>
                         @endforeach
                     </tbody>
-
                 </table>
             </div>
             <div style="padding: 15px 16px; border-top: 1px solid #e4e4e4; display: flex; justify-content: space-between; align-items: center; background-color: #ffffff;">
