@@ -89,10 +89,10 @@
                                     </div>
                                 </div>
                             </td>
-                            <td class="align-middle text-center text-sm text-limit-20 border border-light">
+                            <td class="align-middle text-center text-sm text-limit-20 border border-light data-user="{{ $teknisidataticket->user->name }}"">
                                 {{ $teknisidataticket->user->name }}
                             </td>
-                            <td class="align-middle text-center text-sm border border-light">
+                            <td class="align-middle text-center text-sm border border-light data-status="{{ $teknisidataticket->status }}">
                                 <x-status-badge :status="$teknisidataticket->status" />
                             </td>
                             <td class="align-middle text-center text-limit-30 border border-light">
@@ -355,6 +355,7 @@
 
             sortAllDataByColumn(columnIndex, !isAsc);
             currentPage = 1;
+            updatePagination();
         });
 
         function sortAllDataByColumn(columnIndex, isAsc) {
