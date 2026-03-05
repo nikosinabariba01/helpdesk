@@ -359,9 +359,11 @@
         });
 
         function sortAllDataByColumn(columnIndex, isAsc) {
-            var rows = $('#TicketTable tbody tr').get();
-            rows.sort(function(a, b) {
-                var aVal, bVal;
+            // Gunakan originalData / filteredData sebagai sumber
+            let rowsToSort = filteredData.length > 0 ? filteredData : originalData.slice(); // copy array
+
+            rowsToSort.sort(function(a, b) {
+                let aVal, bVal;
                 if (columnIndex === 0) {
                     aVal = $(a).data('subject') || '';
                     bVal = $(b).data('subject') || '';
@@ -372,18 +374,21 @@
                     aVal = $(a).data('status') || '';
                     bVal = $(b).data('status') || '';
                 }
-                // Case-insensitive string comparison
                 aVal = String(aVal).toLowerCase();
                 bVal = String(bVal).toLowerCase();
-                if (isAsc) {
-                    return aVal.localeCompare(bVal);
-                } else {
-                    return bVal.localeCompare(aVal);
-                }
+                return isAsc ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
             });
-            $.each(rows, function(index, row) {
-                $('#TicketTable tbody').append(row);
-            });
+
+            // Simpan kembali ke filteredData / originalData jika perlu
+            if (filteredData.length > 0) {
+                filteredData = rowsToSort;
+            } else {
+                originalData = rowsToSort;
+            }
+
+            // Reset ke halaman 1
+            currentPage = 1;
+            updatePagination(); // tampilkan page 1 dari hasil sort
         }
 
         // Search filter (TIDAK DISENTUH, tetap seperti asli)
