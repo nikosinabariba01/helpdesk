@@ -100,8 +100,10 @@
                             </td>
                             <td class="align-middle text-center text-sm border border-light">
                                 @if($teknisidataticket->status == 'on process')
-                                @if(!$teknisidataticket->asignees->isEmpty() && $teknisidataticket->asignees->first()->id != Auth::id())
-                                <!-- Contribute Button -->
+                                <!-- Cek apakah user BUKAN assignee (dan ada assignee) -->
+                                <!-- Menggunakan pluck('id') untuk mengambil daftar ID assignee -->
+                                @if(!$teknisidataticket->asignees->isEmpty() && !$teknisidataticket->asignees->pluck('id')->contains(Auth::id()))
+                                <!-- Tampilkan Contribute -->
                                 <form action="{{ route('tickets.assign', $teknisidataticket->id) }}" method="POST">
                                     @csrf
                                     @method('PUT')
@@ -110,9 +112,9 @@
                                     </button>
                                 </form>
                                 @else
-                                <!-- Assignee is Current User -->
+                                <!-- User adalah Assignee, Cek Role -->
                                 @if(in_array(Auth::user()->role, ['admin', 'pengurus']))
-                                <!-- Admin/Pengurus Logic -->
+                                <!-- Role Admin/Pengurus -->
                                 <form action="{{ route('tickets.cancel_assign', $teknisidataticket->id) }}" method="POST" class="mb-2">
                                     @csrf
                                     @method('PUT')
@@ -134,7 +136,7 @@
                                     </button>
                                 </form>
                                 @elseif(Auth::user()->role == 'pemilik')
-                                <!-- Pemilik Logic -->
+                                <!-- Role Pemilik -->
                                 <form action="{{ route('tickets.cancel_assign', $teknisidataticket->id) }}" method="POST" class="mb-2">
                                     @csrf
                                     @method('PUT')
@@ -151,18 +153,11 @@
                                 </form>
                                 @endif
                                 @endif
+
                                 @elseif($teknisidataticket->status == 'escalated')
-                                @if(!$teknisidataticket->asignees->isEmpty() && $teknisidataticket->asignees->first()->id != Auth::id())
-                                <!-- Contribute? The prompt says Contribute only if not assignee. Does it apply to escalated?
-                 The prompt says "tombol contribute hanya muncul jika user_id yang diambil dari asignees nya tidak sama dengan id user yang sedang login sekarang".
-                 It doesn't explicitly restrict this to 'on process'. So I should apply this logic generally if status allows.
-                 However, the prompt details specific logic for 'escalated' when Assignee == Current User.
-                 If Assignee != Current User for 'escalated', should Contribute show?
-                 Original code for 'escalated' showed "Cancel Escalation" regardless of assignee.
-                 New requirement: "tombol contribute hanya muncul jika... tidak sama".
-                 So if Assignee != Current User, show Contribute.
-                 If Assignee == Current User, show specific buttons based on role.
-             -->
+                                <!-- Cek apakah user BUKAN assignee (dan ada assignee) -->
+                                @if(!$teknisidataticket->asignees->isEmpty() && !$teknisidataticket->asignees->pluck('id')->contains(Auth::id()))
+                                <!-- Tampilkan Contribute -->
                                 <form action="{{ route('tickets.assign', $teknisidataticket->id) }}" method="POST">
                                     @csrf
                                     @method('PUT')
@@ -171,8 +166,9 @@
                                     </button>
                                 </form>
                                 @else
-                                <!-- Assignee is Current User -->
+                                <!-- User adalah Assignee, Cek Role -->
                                 @if(in_array(Auth::user()->role, ['admin', 'pengurus']))
+                                <!-- Role Admin/Pengurus -->
                                 <form method="POST" action="{{ route('ticketsteknisi.cancelRequestFollowUp', $teknisidataticket->id) }}">
                                     @csrf
                                     @method('PUT')
@@ -181,6 +177,7 @@
                                     </button>
                                 </form>
                                 @elseif(Auth::user()->role == 'pemilik')
+                                <!-- Role Pemilik -->
                                 <form action="{{ route('tickets.accept_escalation', $teknisidataticket->id) }}" method="POST" class="mb-2">
                                     @csrf
                                     @method('PUT')
@@ -190,8 +187,9 @@
                                 </form>
                                 @endif
                                 @endif
+
                                 @elseif($teknisidataticket->status == 'close')
-                                <!-- Keep original logic -->
+                                <!-- Logika Close (Tetap) -->
                                 <form action="{{ route('tickets.assign', $teknisidataticket->id) }}" method="POST">
                                     @csrf
                                     @method('PUT')
@@ -199,8 +197,9 @@
                                         Reprocess
                                     </button>
                                 </form>
+
                                 @elseif($teknisidataticket->status == 'open')
-                                <!-- Keep original logic -->
+                                <!-- Logika Open (Tetap) -->
                                 <form action="{{ route('tickets.assign', $teknisidataticket->id) }}" method="POST">
                                     @csrf
                                     @method('PUT')
