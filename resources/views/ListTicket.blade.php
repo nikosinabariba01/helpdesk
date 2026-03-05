@@ -120,12 +120,15 @@
                                         Cancel Process
                                     </button>
                                 </form>
+                                <!-- Tombol Escalate hanya muncul jika belum ada assignee pemilik -->
+                                @if(!$teknisidataticket->hasOwnerAssignee)
                                 <form method="POST" action="{{ route('ticketsteknisi.requestFollowup', $teknisidataticket->id) }}" class="mb-2">
                                     @csrf
                                     <button type="submit" class="btn btn-sm btn-outline-info btn-transparent text-info">
                                         Escalate
                                     </button>
                                 </form>
+                                @endif
                                 <form method="POST" action="{{ route('ticketsteknisi.close', $teknisidataticket->id) }}" id="closeTicketForm-{{ $teknisidataticket->id }}" class="mb-2">
                                     @method('PUT')
                                     @csrf

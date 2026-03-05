@@ -739,10 +739,14 @@ class TeknisiController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        // Tambahkan properti isNotAssigned untuk tiap tiket
         $teknisi_data_ticket->each(function ($ticket) use ($userId) {
-            // true jika user saat ini belum ada di daftar asignees
-            $ticket->isNotAssigned = !$ticket->asignees->contains($userId);
+            // User saat ini belum assign
+            $ticket->isNotAssigned = ! $ticket->asignees->contains($userId);
+
+            // Cek apakah sudah ada assignee yang role-nya pemilik
+            $ticket->hasOwnerAssignee = $ticket->asignees->contains(function ($assignee) {
+                return $assignee->role === 'pemilik';
+            });
         });
 
         // Mengambil komentar terbaru
