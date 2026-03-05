@@ -318,7 +318,6 @@
 
         var table = $('#TicketTable').DataTable({
             searching: true,
-            order: [],
             ordering: true,
             paging: false, // We will handle pagination manually
             lengthChange: false,
@@ -329,9 +328,11 @@
             }, {
                 targets: [3, 4, 5],
                 orderable: false
-            }]
+            }],
+            "initComplete": function(settings, json) {
+                $('#TicketTable thead th').removeClass('sorting sorting_asc sorting_desc');
+            }
         });
-
         $('#TicketTable_filter').hide();
 
         // Store original data (before filter or search)
