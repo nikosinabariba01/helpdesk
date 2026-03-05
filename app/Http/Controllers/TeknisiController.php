@@ -734,14 +734,21 @@ class TeknisiController extends Controller
         // Dapatkan ID pengguna yang sedang login
         $userId = Auth::id();
 
-        // Mengambil tiket yang memiliki asignees dan diurutkan berdasarkan 'created_at'
+        // Mengambil tiket beserta relasinya (user dan asignees)
         $teknisi_data_ticket = Ticket::with('user', 'asignees')
             ->orderBy('created_at', 'desc')
             ->get();
 
+        // Tambahkan properti isNotAssigned untuk tiap tiket
+        $teknisi_data_ticket->each(function ($ticket) use ($userId) {
+            // true jika user saat ini belum ada di daftar asignees
+            $ticket->isNotAssigned = !$ticket->asignees->contains($userId);
+        });
+
         // Mengambil komentar terbaru
         $latestComments = $this->getLatestComments();
 
+        // Kirim data ke view
         return view('ListTicket', compact('teknisi_data_ticket', 'latestComments'));
     }
 }

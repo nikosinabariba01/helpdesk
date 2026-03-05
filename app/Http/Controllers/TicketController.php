@@ -161,6 +161,23 @@ class TicketController extends Controller
         return redirect()->back()->with('success', 'Tiket berhasil dikembalikan ke status "on process" dengan pemilik sebagai asignee.');
     }
 
+        public function contribute($id)
+    {
+        $ticket = Ticket::findOrFail($id);
+
+        // Cek apakah sudah ada pemilik yang mengassign
+        if (!$ticket->asignees->contains(Auth::id())) {
+            // Menambahkan pemilik yang sedang login sebagai asignee
+            $ticket->asignees()->attach(Auth::id());  // Menambahkan pemilik yang login
+        }
+
+        // Ubah status tiket kembali ke "on process"
+        $ticket->status = 'on process';
+        $ticket->save();  // Simpan perubahan ke database
+
+        return redirect()->back()->with('success', 'Tiket berhasil dikembalikan ke status "on process" dengan pemilik sebagai asignee.');
+    }
+
 
 
     public function closeticket(Request $request, $id)
