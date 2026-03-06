@@ -339,11 +339,12 @@
             originalData.push(this); // Store all rows as original data
         });
 
-        // Menyimpan seluruh data dalam tabel
-        var allRows = $('#TicketTable tbody tr').get(); // Mengambil seluruh baris data
+
 
         // Mengurutkan berdasarkan kolom pertama secara default (kolom pertama, misalnya abjad A-Z)
         function sortTableByColumn(columnIndex, direction = 'asc') {
+            // Menyimpan seluruh data dalam tabel
+            var allRows = $('#TicketTable tbody tr').get(); // Mengambil seluruh baris data
             allRows.sort(function(a, b) {
                 var dataA = $(a).children('td').eq(columnIndex).text().toLowerCase();
                 var dataB = $(b).children('td').eq(columnIndex).text().toLowerCase();
@@ -577,7 +578,7 @@
             }
         }
         updatePagination(); // Update pagination after sorting
-        sortTableByColumn(2, 'asc'); // Mengurutkan kolom pertama (misalnya berdasarkan abjad A-Z)
+        sortTableByColumn(1, 'asc'); // Mengurutkan kolom pertama (misalnya berdasarkan abjad A-Z)
         sortTableByDate('desc');
     });
 </script>
