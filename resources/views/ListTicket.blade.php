@@ -319,7 +319,7 @@
         var table = $('#TicketTable').DataTable({
             searching: true,
             ordering: true,
-            paging: true, // We will handle pagination manually
+            paging: false, // We will handle pagination manually
             lengthChange: false,
             info: false,
             columnDefs: [{
