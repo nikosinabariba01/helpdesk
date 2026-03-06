@@ -327,7 +327,7 @@
             paging: true, // We will handle pagination manually
             pageLength: itemsPerPage,
             lengthChange: false,
-            info: true,
+            info: false,
             columnDefs: [{
                 targets: [0, 1, 2],
                 orderable: true
