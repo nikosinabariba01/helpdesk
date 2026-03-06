@@ -324,13 +324,6 @@
             paging: false, // We will handle pagination manually
             lengthChange: false,
             info: false,
-            columnDefs: [{
-                targets: [0, 1, 2],
-                orderable: true
-            }, {
-                targets: [3, 4, 5],
-                orderable: false
-            }],
         });
 
         $('#TicketTable_filter').hide();
