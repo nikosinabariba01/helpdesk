@@ -509,23 +509,24 @@
             $('#nextPage').prop('disabled', currentPage === totalPages || totalRows === 0).css('opacity', currentPage === totalPages || totalRows === 0 ? '0.5' : '1').css('cursor', currentPage === totalPages || totalRows === 0 ? 'not-allowed' : 'pointer');
         }
 
+        // Tombol "Previous" custom
         $('#prevPage').on('click', function() {
-            if (currentPage > 1) {
-                currentPage--;
-                updatePagination();
-                sortTableByColumn(1, 'asc'); // Mengurutkan lagi setelah berpindah halaman
-                sortTableByDate('desc');
+            var currentPage = table.page(); // Ambil halaman saat ini
+            if (currentPage > 0) {
+                table.page(currentPage - 1).draw('page'); // Pindah ke halaman sebelumnya menggunakan DataTables API
+                updatePagination(); // Perbarui tampilan pagination
+                sortTableByDate('desc'); // Jalankan pengurutan berdasarkan tanggal (desc)
             }
         });
 
+        // Tombol "Next" custom
         $('#nextPage').on('click', function() {
-            const totalRows = filteredData.length || $('#TicketTable tbody tr').length;
-            const totalPages = Math.ceil(totalRows / itemsPerPage);
-            if (currentPage < totalPages) {
-                currentPage++;
-                updatePagination();
-                sortTableByColumn(1, 'asc'); // Mengurutkan lagi setelah berpindah halaman
-                sortTableByDate('desc');
+            var currentPage = table.page(); // Ambil halaman saat ini
+            var totalPages = table.page.info().pages; // Ambil total halaman
+            if (currentPage < totalPages - 1) {
+                table.page(currentPage + 1).draw('page'); // Pindah ke halaman berikutnya menggunakan DataTables API
+                updatePagination(); // Perbarui tampilan pagination
+                sortTableByDate('desc'); // Jalankan pengurutan berdasarkan tanggal (desc)
             }
         });
 
