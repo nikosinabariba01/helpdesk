@@ -552,7 +552,7 @@
             }
         }
         updatePagination(); // Update pagination after sorting
-        sortTableByDate('desc');
+        sortTableByDate('asc');
     });
 </script>
 
