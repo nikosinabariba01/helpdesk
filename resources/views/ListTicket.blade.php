@@ -577,7 +577,7 @@
             }
         }
         updatePagination(); // Update pagination after sorting
-        sortTableByColumn(0, 'asc'); // Mengurutkan kolom pertama (misalnya berdasarkan abjad A-Z)
+        sortTableByColumn(2, 'asc'); // Mengurutkan kolom pertama (misalnya berdasarkan abjad A-Z)
         sortTableByDate('desc');
     });
 </script>
