@@ -339,6 +339,27 @@
             originalData.push(this); // Store all rows as original data
         });
 
+        // Menyimpan seluruh data dalam tabel
+        var allRows = $('#TicketTable tbody tr').get(); // Mengambil seluruh baris data
+
+        // Mengurutkan berdasarkan kolom pertama secara default (kolom pertama, misalnya abjad A-Z)
+        function sortTableByColumn(columnIndex, direction = 'asc') {
+            allRows.sort(function(a, b) {
+                var dataA = $(a).children('td').eq(columnIndex).text().toLowerCase();
+                var dataB = $(b).children('td').eq(columnIndex).text().toLowerCase();
+                if (direction === 'asc') {
+                    return dataA.localeCompare(dataB); // Ascending (A-Z)
+                } else {
+                    return dataB.localeCompare(dataA); // Descending (Z-A)
+                }
+            });
+
+            // Masukkan baris yang sudah diurutkan kembali ke dalam tabel
+            $.each(allRows, function(index, row) {
+                $('#TicketTable tbody').append(row);
+            });
+        }
+
 
         // Search filter (TIDAK DISENTUH, tetap seperti asli)
         $('#search').on('keyup', function() {
@@ -491,6 +512,7 @@
             if (currentPage > 1) {
                 currentPage--;
                 updatePagination();
+                sortTableByColumn(0, 'asc'); // Mengurutkan lagi setelah berpindah halaman
                 sortTableByDate('desc');
             }
         });
@@ -501,6 +523,7 @@
             if (currentPage < totalPages) {
                 currentPage++;
                 updatePagination();
+                sortTableByColumn(0, 'asc'); // Mengurutkan lagi setelah berpindah halaman
                 sortTableByDate('desc');
             }
         });
@@ -554,6 +577,7 @@
             }
         }
         updatePagination(); // Update pagination after sorting
+        sortTableByColumn(0, 'asc'); // Mengurutkan kolom pertama (misalnya berdasarkan abjad A-Z)
         sortTableByDate('desc');
     });
 </script>
