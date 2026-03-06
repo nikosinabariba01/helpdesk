@@ -491,6 +491,7 @@
             if (currentPage > 1) {
                 currentPage--;
                 updatePagination();
+                sortTableByDate('asc');
             }
         });
 
@@ -552,7 +553,7 @@
             }
         }
         updatePagination(); // Update pagination after sorting
-        sortTableByDate('asc');
+        sortTableByDate('desc');
     });
 </script>
 
