@@ -64,9 +64,9 @@
                             <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">subject</th>
                             <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">User</th>
                             <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Status</th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Deskripsi</th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Aksi Status</th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">aksi</th>
+                            <th class="sorting-notvisible text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Deskripsi</th>
+                            <th class="sorting-notvisible text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Aksi Status</th>
+                            <th class="sorting-notvisible text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -342,7 +342,7 @@
         });
 
         // Handle column header sorting
-        $('#TicketTable thead th').slice(0, 4).on('click', function() {
+        $('#TicketTable thead th').slice(0, 3).on('click', function() {
             var columnIndex = $(this).index();
             var isAsc = $(this).hasClass('sorting_asc');
 
@@ -623,5 +623,18 @@
         sortTableByDate('desc');
     });
 </script>
+
+<style>
+    /* Menyembunyikan ikon panah sorting pada kolom dengan class sorting-notvisible */
+    #TicketTable th.sorting-notvisible {
+        pointer-events: none;
+        /* Menonaktifkan interaksi klik pada kolom ini */
+    }
+
+    #TicketTable th.sorting-notvisible:after {
+        content: none;
+        /* Menghapus ikon panah sorting */
+    }
+</style>
 
 @endsection
