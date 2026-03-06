@@ -325,7 +325,7 @@
             columnDefs: [{
                     targets: [0, 1, 2],
                     orderable: true
-                },
+                }, 
                 {
                     targets: [3, 4, 5],
                     orderable: false
@@ -338,9 +338,7 @@
             pageLength: 10, // Number of rows per page
             drawCallback: function(settings) {
                 var api = this.api();
-                var rows = api.rows({
-                    order: 'applied'
-                }).data(); // Get rows sorted by applied filters
+                var rows = api.rows({ order: 'applied' }).data();  // Get rows sorted by applied filters
                 // Handle manual sorting after drawing the table
                 api.rows().every(function() {
                     var row = this.node();
@@ -352,7 +350,6 @@
                 sortTableByDate(currentSort);
             }
         });
-        
 
         // Function to sort the entire dataset (including all pages) by date
         function sortTableByDate(direction) {
@@ -363,7 +360,7 @@
                 return direction === 'desc' ? bTimestamp - aTimestamp : aTimestamp - bTimestamp;
             });
             $.each(rows, function(index, row) {
-                $('#TicketTable tbody').append(row); // Append sorted rows back
+                $('#TicketTable tbody').append(row);  // Append sorted rows back
             });
         }
 
@@ -494,7 +491,6 @@
                 $('#TicketTable tbody').append('<tr class="no-data-row"><td colspan="6" class="text-center text-secondary py-4">Tidak ada data ditemukan</td></tr>');
                 $('#paginationDisplay').text('0-0 dari 0');
             } else {
-                // Hapus pesan no-data jika ada
                 $('.no-data-row').remove();
 
                 var startIndex = (currentPage - 1) * itemsPerPage;
@@ -507,13 +503,7 @@
                 var displayStart = startIndex + 1;
                 var displayEnd = Math.min(endIndex, totalRows);
 
-                if (currentSort === 'desc') {
-                    $('#paginationDisplay').text(displayStart + '-' + displayEnd + ' dari ' + totalRows);
-                } else {
-                    const reversedStart = totalRows - startIndex;
-                    const reversedEnd = Math.max(reversedStart - (itemsPerPage - 1), 1);
-                    $('#paginationDisplay').text(reversedStart + '-' + reversedEnd + ' dari ' + totalRows);
-                }
+                $('#paginationDisplay').text(displayStart + '-' + displayEnd + ' dari ' + totalRows);
             }
 
             $('#prevPage').prop('disabled', currentPage === 1);
