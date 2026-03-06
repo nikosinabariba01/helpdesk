@@ -353,6 +353,8 @@
             }
         });
 
+        $('#TicketTable_filter').hide();
+
         // Function to sort the entire dataset (including all pages) by date
         function sortTableByDate(direction) {
             var rows = $('#TicketTable tbody tr').get();
