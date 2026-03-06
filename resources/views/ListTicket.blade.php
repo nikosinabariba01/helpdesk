@@ -355,7 +355,6 @@
             }
 
             sortAllDataByColumn(columnIndex, !isAsc);
-            currentPage = 1;
             updatePagination();
         });
 
