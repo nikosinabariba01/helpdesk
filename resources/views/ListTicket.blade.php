@@ -557,7 +557,7 @@
                 updatePagination();
             }
         }
-        sortTableByDate('desc'); // Default sort by 'created_at' desc (newest first)
+        sortTableByDate('asc'); // Default sort by 'created_at' desc (newest first)
         updatePagination(); // Update pagination after sorting
     });
 </script>
