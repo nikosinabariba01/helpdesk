@@ -24,7 +24,7 @@
                 <!-- Kolom Pencarian dengan input-group -->
                 <div class="input-group input-group-sm">
                     <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
-                    <input type="text" id="search" class="form-control" placeholder="Search" onfocus="focused(this)" onfocusout="defocused(this)">
+                    <input type="text" id="searchs" class="form-control" placeholder="Search" onfocus="focused(this)" onfocusout="defocused(this)">
                 </div>
             </div>
         </div>
@@ -314,12 +314,12 @@
         const itemsPerPage = 10;
         let filteredData = []; // To store filtered data
         let originalData = []; // To store original data (before filtering or searching)
-        let hasActiveFilter = false; // Flag to track if a specific filter is applied
+        let hasActiveFilter = false; // FIX: Flag baru untuk track jika filter spesifik applied (bukan Semua)
 
         var table = $('#TicketTable').DataTable({
-            searching: false, // Disable default search
+            searching: true,
             ordering: true,
-            paging: true, // Enable pagination but manage it manually
+            paging: true, // We will handle pagination manually
             lengthChange: false,
             info: false,
             columnDefs: [{
@@ -328,70 +328,92 @@
             }, {
                 targets: [3, 4, 5],
                 orderable: false
-            }],
-            stateSave: true, // Save table state (sorting, pagination)
-            order: [
-                [0, 'desc']
-            ], // Default sorting for the first column (subject) descending
-            pageLength: 10, // Number of rows per page
-            drawCallback: function(settings) {
-                // Trigger pagination and sorting manually after DataTable draws
-                sortTableByDate(currentSort);
-                updatePagination();
-            }
+            }]
         });
 
-        // Hide the DataTables default search bar
         $('#TicketTable_filter').hide();
-        $('#TicketTable_paginate').hide(); // Hide the default pagination controls
+        $('#TicketTable_paginate').hide();
 
         // Store original data (before filter or search)
         $('#TicketTable tbody tr').each(function() {
             originalData.push(this); // Store all rows as original data
         });
 
-        // Custom search filter (keyup event)
+
+        // Search filter (TIDAK DISENTUH, tetap seperti asli)
         $('#search').on('keyup', function() {
             var searchTerm = this.value.toLowerCase();
+            $('#search').on('keyup', function() {
+                var searchTerm = this.value.toLowerCase();
 
-            // If search term is empty and no active filter
-            if (searchTerm === '' && !hasActiveFilter) {
-                $('#TicketTable tbody').empty().append(originalData); // Show all data
-                sortTableByDate(currentSort); // Sort data according to desired order
-                updatePagination(); // Update pagination based on displayed data
-                return;
-            }
+                // Jika search term kosong dan tidak ada filter yang aktif
+                if (searchTerm === '' && !hasActiveFilter) {
+                    // Tampilkan data asli (originalData) ketika search dikosongkan dan tidak ada filter aktif
+                    $('#TicketTable tbody').empty().append(originalData); // Menampilkan data asli
+                    sortTableByDate(currentSort); // Urutkan data sesuai urutan yang diinginkan
+                    updatePagination(); // Update pagination sesuai data yang ditampilkan
+                    return;
+                }
 
-            // If search term is not empty, apply search filter
+                // Jika search term kosong tapi ada filter yang aktif
+                if (searchTerm === '') {
+                    // Tampilkan data yang sudah difilter sebelumnya
+                    if (filteredData.length > 0) {
+                        // Tampilkan data yang sudah difilter (filteredData) dan pastikan urutannya benar
+                        $('#TicketTable tbody').empty().append(filteredData); // Menampilkan kembali data yang sudah difilter
+                        sortTableByDate(currentSort); // Urutkan data sesuai urutan yang diinginkan (misalnya berdasarkan tanggal)
+                        updatePagination(); // Update pagination sesuai data yang ditampilkan
+                    } else {
+                        // Jika tidak ada data yang sudah difilter, tampilkan seluruh data asli
+                        $('#TicketTable tbody').empty().append(originalData); // Menampilkan data asli
+                        sortTableByDate(currentSort); // Urutkan data sesuai urutan yang diinginkan
+                        updatePagination(); // Update pagination sesuai data yang ditampilkan
+                    }
+                    return;
+                }
+
+                // Jika search term tidak kosong, lakukan pencarian dan filter ulang
+                $.fn.dataTable.ext.search = [];
+                $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+                    return data[0].toLowerCase().includes(searchTerm) || data[1].toLowerCase().includes(searchTerm);
+                });
+                table.draw();
+                currentPage = 1;
+                sortTableByDate(currentSort); // Urutkan berdasarkan tanggal (terbaru ke terlama)
+                updatePagination(); // Update pagination sesuai data yang ditampilkan
+            });
             $.fn.dataTable.ext.search = [];
             $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
                 return data[0].toLowerCase().includes(searchTerm) || data[1].toLowerCase().includes(searchTerm);
             });
             table.draw();
-            currentPage = 1; // Reset to the first page
-            sortTableByDate(currentSort); // Re-sort by date after search
+            currentPage = 1;
+            sortTableByDate(currentSort); // Ensure latest items are first
             updatePagination();
+            // After searching, re-sort the table by date
         });
 
-        // Reset filters when "Semua" filter is selected
+        // Menangani pemilihan filter dropdown "Semua"
         $('.filter-option[data-filter-value=""]').on('click', function() {
-            hasActiveFilter = false;
-            filteredData = [];
-            $('#TicketTable tbody').empty().append(originalData); // Show all data
-            sortTableByDate(currentSort); // Sort data according to desired order
-            updatePagination(); // Update pagination based on displayed data
+            // Reset filter untuk status dan jenis pengaduan
+            hasActiveFilter = false; // Reset status filter
+            filteredData = []; // Hapus data yang sudah difilter
+
+            // Tampilkan semua data dan reset tampilan
+            $('#TicketTable tbody').empty().append(originalData); // Tampilkan seluruh data asli
+            sortTableByDate(currentSort); // Urutkan data sesuai urutan yang diinginkan
+            updatePagination(); // Update pagination sesuai data yang ditampilkan
         });
 
         // Sorting by date (newest to oldest)
         $(document).on('click', '.page-sort-option', function(e) {
             e.preventDefault();
             currentSort = $(this).data('sort');
-            sortTableByDate(currentSort); // Sort by date after click
+            sortTableByDate(currentSort);
             currentPage = 1;
             updatePagination();
         });
 
-        // Function to sort the table by date
         function sortTableByDate(direction) {
             var rows = $('#TicketTable tbody tr').get();
             rows.sort(function(a, b) {
@@ -400,25 +422,25 @@
                 return direction === 'desc' ? bTimestamp - aTimestamp : aTimestamp - bTimestamp;
             });
             $.each(rows, function(index, row) {
-                $('#TicketTable tbody').append(row); // Append sorted rows back
+                $('#TicketTable tbody').append(row);
             });
         }
 
-        // Update pagination manually
+        // Update Pagination (dengan fix untuk no match)
         function updatePagination() {
             let totalRows;
             let rowsToDisplay;
 
-            // Use filtered data if available
             if (filteredData.length > 0) {
                 totalRows = filteredData.length;
                 rowsToDisplay = filteredData;
             } else {
+                // Jika filteredData kosong → check jika filter active
                 totalRows = $('#TicketTable tbody tr').length;
                 rowsToDisplay = $('#TicketTable tbody tr').get();
             }
 
-            // Sort rows before pagination
+            // Sort the data first before pagination
             rowsToDisplay.sort(function(a, b) {
                 var aTimestamp = parseInt($(a).data('created-at')) || 0;
                 var bTimestamp = parseInt($(b).data('created-at')) || 0;
@@ -432,12 +454,21 @@
 
             $('#TicketTable tbody tr').hide(); // Hide all rows first
 
+            // FIX: Jika hasActiveFilter true dan filteredData.length === 0, treat sebagai no match
+            if (hasActiveFilter && filteredData.length === 0) {
+                totalRows = 0;
+            }
+
             if (totalRows === 0) {
-                // Display message if no rows match the filter
+                // Tampilkan pesan jika nol
+                // Hapus pesan lama jika ada
                 $('.no-data-row').remove();
-                $('#TicketTable tbody').append('<tr class="no-data-row"><td colspan="6" class="text-center text-secondary py-4">Tidak ada data ditemukan</td></tr>');
+                $('#TicketTable tbody').append(
+                    '<tr class="no-data-row"><td colspan="6" class="text-center text-secondary py-4">Tidak ada data ditemukan</td></tr>'
+                );
                 $('#paginationDisplay').text('0-0 dari 0');
             } else {
+                // Hapus pesan no-data jika ada
                 $('.no-data-row').remove();
 
                 var startIndex = (currentPage - 1) * itemsPerPage;
@@ -450,14 +481,19 @@
                 var displayStart = startIndex + 1;
                 var displayEnd = Math.min(endIndex, totalRows);
 
-                $('#paginationDisplay').text(displayStart + '-' + displayEnd + ' dari ' + totalRows);
+                if (currentSort === 'desc') {
+                    $('#paginationDisplay').text(displayStart + '-' + displayEnd + ' dari ' + totalRows);
+                } else {
+                    const reversedStart = totalRows - startIndex;
+                    const reversedEnd = Math.max(reversedStart - (itemsPerPage - 1), 1);
+                    $('#paginationDisplay').text(reversedStart + '-' + reversedEnd + ' dari ' + totalRows);
+                }
             }
 
             $('#prevPage').prop('disabled', currentPage === 1).css('opacity', currentPage === 1 ? '0.5' : '1').css('cursor', currentPage === 1 ? 'not-allowed' : 'pointer');
             $('#nextPage').prop('disabled', currentPage === totalPages || totalRows === 0).css('opacity', currentPage === totalPages || totalRows === 0 ? '0.5' : '1').css('cursor', currentPage === totalPages || totalRows === 0 ? 'not-allowed' : 'pointer');
         }
 
-        // Pagination controls
         $('#prevPage').on('click', function() {
             if (currentPage > 1) {
                 currentPage--;
@@ -474,9 +510,59 @@
             }
         });
 
-        // Initial load
+        // Filter Dropdown: Jenis Pengaduan
+        $(document).on('click', '.filter-option[data-filter-type="jenis_pengaduan"]', function(e) {
+            e.preventDefault();
+            var filterValue = $(this).data('filter-value');
+            $('#filterJenisPengaduanDisplay').text($(this).text()); // Update button text
+            filterTable();
+        });
+
+        // Filter Dropdown: Status
+        $(document).on('click', '.filter-option[data-filter-type="status"]', function(e) {
+            e.preventDefault();
+            var filterValue = $(this).data('filter-value');
+            $('#filterStatusDisplay').text($(this).text()); // Update button text
+            filterTable();
+        });
+
+        function filterTable() {
+            const selectedJenis = $('#filterJenisPengaduanDisplay').text().trim();
+            const selectedStatus = $('#filterStatusDisplay').text().trim();
+
+            const isAllJenis = selectedJenis === 'Jenis Pengaduan' || selectedJenis === 'Semua';
+            const isAllStatus = selectedStatus === 'Status' || selectedStatus === 'Semua';
+
+            hasActiveFilter = !(isAllJenis && isAllStatus); // FIX: Set flag true jika ada filter spesifik
+
+            filteredData = [];
+            originalData.forEach(function(row) {
+                var $row = $(row);
+                var jenis = $row.data('jenis-pengaduan') || '';
+                var status = $row.data('status') || '';
+
+                var matchJ = isAllJenis || jenis.toLowerCase().includes(selectedJenis.toLowerCase());
+                var matchS = isAllStatus || status.toLowerCase().includes(selectedStatus.toLowerCase());
+
+                if (matchJ && matchS) {
+                    filteredData.push(row);
+                }
+            });
+
+            currentPage = 1;
+            updatePagination();
+
+            // FIX: Jika reset ke Semua, pastikan fallback ke semua data dan show
+            if (!hasActiveFilter) {
+                $('#TicketTable tbody tr').show();
+                updatePagination();
+            }
+        }
+
+        // Initial load: trigger pagination on page load (using default "Jenis Pengaduan" and "Status")
         updatePagination();
-        sortTableByDate('desc'); // Default sort by 'created_at' desc
+        // Sort table by date when the page loads
+        sortTableByDate('desc'); // Default sort by 'created_at' desc (newest first)
         updatePagination(); // Update pagination after sorting
     });
 </script>
