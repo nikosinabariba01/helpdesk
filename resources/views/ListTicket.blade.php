@@ -316,11 +316,6 @@
         let originalData = []; // To store original data (before filtering or searching)
         let hasActiveFilter = false; // FIX: Flag baru untuk track jika filter spesifik applied (bukan Semua)
 
-        // Store original data (before filter or search)
-        $('#TicketTable tbody tr').each(function() {
-            originalData.push(this); // Store all rows as original data
-        });
-
         var table = $('#TicketTable').DataTable({
             searching: true,
             ordering: true,
@@ -337,6 +332,12 @@
         });
 
         $('#TicketTable_filter').hide();
+        $('#TicketTable_paginate').hide();
+
+        // Store original data (before filter or search)
+        $('#TicketTable tbody tr').each(function() {
+            originalData.push(this); // Store all rows as original data
+        });
 
 
         // Search filter (TIDAK DISENTUH, tetap seperti asli)
