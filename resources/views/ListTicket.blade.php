@@ -318,7 +318,7 @@
 
         var table = $('#TicketTable').DataTable({
             searching: true,
-            ordering: false,
+            ordering: true,
             paging: false, // We will handle pagination manually
             lengthChange: false,
             info: false,
@@ -338,53 +338,6 @@
             originalData.push(this); // Store all rows as original data
         });
 
-                // Handle column header sorting
-        $('#TicketTable thead th').slice(0, 3).on('click', function() {
-            var columnIndex = $(this).index();
-            var isAsc = $(this).hasClass('sorting_asc');
-
-            // Remove all sorting classes
-            $('#TicketTable thead th').removeClass('sorting_asc sorting_desc').addClass('sorting');
-
-            // Add sorting class to current column
-            if (isAsc) {
-                $(this).removeClass('sorting').addClass('sorting_desc');
-            } else {
-                $(this).removeClass('sorting').addClass('sorting_asc');
-            }
-
-            sortAllDataByColumn(columnIndex, !isAsc);
-            currentPage = 1;
-            updatePagination();
-        });
-
-        function sortAllDataByColumn(columnIndex, isAsc) {
-            var rows = $('#TicketTable tbody tr').get();
-            rows.sort(function(a, b) {
-                var aVal, bVal;
-                if (columnIndex === 0) {
-                    aVal = $(a).data('subject') || '';
-                    bVal = $(b).data('subject') || '';
-                } else if (columnIndex === 1) {
-                    aVal = $(a).data('user') || '';
-                    bVal = $(b).data('user') || '';
-                } else if (columnIndex === 2) {
-                    aVal = $(a).data('status') || '';
-                    bVal = $(b).data('status') || '';
-                }
-                // Case-insensitive string comparison
-                aVal = String(aVal).toLowerCase();
-                bVal = String(bVal).toLowerCase();
-                if (isAsc) {
-                    return aVal.localeCompare(bVal);
-                } else {
-                    return bVal.localeCompare(aVal);
-                }
-            });
-            $.each(rows, function(index, row) {
-                $('#TicketTable tbody').append(row);
-            });
-        }
 
         // Search filter (TIDAK DISENTUH, tetap seperti asli)
         $('#search').on('keyup', function() {
