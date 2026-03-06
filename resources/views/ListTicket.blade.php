@@ -326,10 +326,12 @@
             info: false,
             columnDefs: [{
                 targets: [0, 1, 2],
-                orderable: true
+                orderable: true,
+                visible: true
             }, {
                 targets: [3, 4, 5],
-                orderable: false
+                orderable: false,
+                visible: false
             }],
             order: []
         });
