@@ -342,7 +342,7 @@
         });
 
         // Handle column header sorting
-        $('#TicketTable thead th').slice(0, 3).on('click', function() {
+        $('#TicketTable thead th').slice(0, 4).on('click', function() {
             var columnIndex = $(this).index();
             var isAsc = $(this).hasClass('sorting_asc');
 
