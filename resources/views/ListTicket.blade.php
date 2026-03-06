@@ -352,8 +352,7 @@
                 sortTableByDate(currentSort);
             }
         });
-
-        $('#TicketTable_filter') . hide();
+        
 
         // Function to sort the entire dataset (including all pages) by date
         function sortTableByDate(direction) {
