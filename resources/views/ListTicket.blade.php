@@ -512,7 +512,6 @@
         $('#prevPage').on('click', function() {
             if (currentPage > 1) {
                 currentPage--;
-                updatePagination();
                 sortTableByColumn(1, 'asc'); // Mengurutkan lagi setelah berpindah halaman
                 sortTableByDate('desc');
             }
@@ -523,6 +522,7 @@
             const totalPages = Math.ceil(totalRows / itemsPerPage);
             if (currentPage < totalPages) {
                 currentPage++;
+                updatePagination();
                 sortTableByColumn(1, 'asc'); // Mengurutkan lagi setelah berpindah halaman
                 sortTableByDate('desc');
             }
