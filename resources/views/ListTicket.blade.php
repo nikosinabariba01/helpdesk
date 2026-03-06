@@ -64,9 +64,9 @@
                             <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">subject</th>
                             <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">User</th>
                             <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Status</th>
-                            <th class="sorting-notvisible text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Deskripsi</th>
-                            <th class="sorting-notvisible text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Aksi Status</th>
-                            <th class="sorting-notvisible text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">aksi</th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Deskripsi</th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Aksi Status</th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -323,15 +323,7 @@
             ordering: false,
             paging: false, // We will handle pagination manually
             lengthChange: false,
-            info: false,
-            columnDefs: [{
-                targets: [0, 1, 2],
-                orderable: true
-            }, {
-                targets: [3, 4, 5],
-                orderable: false
-            }],
-            order: []
+            info: false
         });
 
         $('#TicketTable_filter').hide();
@@ -623,18 +615,5 @@
         sortTableByDate('desc');
     });
 </script>
-
-<style>
-    /* Menyembunyikan ikon panah sorting pada kolom dengan class sorting-notvisible */
-    #TicketTable th.sorting-notvisible {
-        pointer-events: none;
-        /* Menonaktifkan interaksi klik pada kolom ini */
-    }
-
-    #TicketTable th.sorting-notvisible:after {
-        content: none;
-        /* Menghapus ikon panah sorting */
-    }
-</style>
 
 @endsection
