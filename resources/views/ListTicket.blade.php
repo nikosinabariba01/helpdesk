@@ -501,6 +501,7 @@
             if (currentPage < totalPages) {
                 currentPage++;
                 updatePagination();
+                sortTableByDate('asc');
             }
         });
 
