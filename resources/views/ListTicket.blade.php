@@ -319,56 +319,16 @@
         var table = $('#TicketTable').DataTable({
             searching: true,
             ordering: true,
-            paging: false, // Kami akan menangani pagination secara manual
+            paging: false, // We will handle pagination manually
             lengthChange: false,
             info: false,
             columnDefs: [{
-                    targets: [0, 1, 2],
-                    orderable: true
-                }, // Mengizinkan pengurutan untuk kolom 0, 1, 2
-                {
-                    targets: [3, 4, 5],
-                    orderable: false
-                } // Menonaktifkan pengurutan untuk kolom 3, 4, 5
-            ],
-            stateSave: true, // Menyimpan status tabel (urutan, pagination) di antara reload halaman
-            order: [
-                [0, 'desc']
-            ], // Urutan default untuk kolom pertama (subject) secara descending
-            pageLength: 10, // Jumlah baris per halaman
-            drawCallback: function(settings) {
-                var api = this.api();
-                var rows = api.rows({
-                    order: 'applied'
-                }).data(); // Mengambil baris yang diurutkan sesuai filter/sort yang diterapkan
-                // Menangani pengurutan manual setelah tabel digambar
-                api.rows().every(function() {
-                    var row = this.node();
-                    var timestamp = $(row).data('created-at');
-                    $(row).data('timestamp', timestamp); // Menyimpan timestamp pada atribut data
-                });
-
-                // Mengurutkan data setelah menggambar tabel
-                sortTableByDate('desc');
-            }
-        });
-
-        // Fungsi untuk mengurutkan seluruh dataset (termasuk seluruh halaman) berdasarkan tanggal
-        function sortTableByDate(direction) {
-            var rows = $('#TicketTable tbody tr').get();
-            rows.sort(function(a, b) {
-                var aTimestamp = parseInt($(a).data('created-at')) || 0;
-                var bTimestamp = parseInt($(b).data('created-at')) || 0;
-                return direction === 'desc' ? bTimestamp - aTimestamp : aTimestamp - bTimestamp;
-            });
-            $.each(rows, function(index, row) {
-                $('#TicketTable tbody').append(row);
-            });
-        }
-
-        // Memicu pengurutan berdasarkan tanggal setiap kali tabel digambar ulang
-        table.on('draw', function() {
-            sortTableByDate('desc'); // Memastikan tabel terurut berdasarkan tanggal setelah setiap perubahan halaman
+                targets: [0, 1, 2],
+                orderable: true
+            }, {
+                targets: [3, 4, 5],
+                orderable: false
+            }]
         });
 
         $('#TicketTable_filter').hide();
