@@ -315,6 +315,7 @@
         let filteredData = []; // To store filtered data
         let originalData = []; // To store original data (before filtering or searching)
         let hasActiveFilter = false; // FIX: Flag baru untuk track jika filter spesifik applied (bukan Semua)
+        let isSortedByCustom = false; // Flag untuk track apakah pengurutan sudah disesuaikan
 
         var table = $('#TicketTable').DataTable({
             searching: true,
@@ -353,7 +354,7 @@
             } else {
                 $(this).removeClass('sorting').addClass('sorting_asc');
             }
-
+            isSortedByCustom = true; // Mark that sorting is custom
             sortAllDataByColumn(columnIndex, !isAsc);
             updatePagination();
         });
@@ -456,7 +457,9 @@
         $(document).on('click', '.page-sort-option', function(e) {
             e.preventDefault();
             currentSort = $(this).data('sort');
-            sortTableByDate(currentSort);
+            if (isSortedByCustom) {
+                sortTableByDate(currentSort); // Ensure latest items are first
+            }
             currentPage = 1;
             updatePagination();
         });
@@ -537,8 +540,10 @@
         $('#prevPage').on('click', function() {
             if (currentPage > 1) {
                 currentPage--;
+                if (isSortedByCustom) {
+                    sortTableByDate(currentSort); // Maintain custom sorting when going to prev page
+                }
                 updatePagination();
-                sortTableByDate('desc');
             }
         });
 
@@ -547,8 +552,10 @@
             const totalPages = Math.ceil(totalRows / itemsPerPage);
             if (currentPage < totalPages) {
                 currentPage++;
+                if (isSortedByCustom) {
+                    sortTableByDate(currentSort); // Maintain custom sorting when going to prev page
+                }
                 updatePagination();
-                sortTableByDate('desc');
             }
         });
 
