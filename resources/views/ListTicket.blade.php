@@ -559,6 +559,7 @@
         }
 
         // Initial load: trigger pagination on page load (using default "Jenis Pengaduan" and "Status")
+        updatePagination();
     });
 </script>
 
