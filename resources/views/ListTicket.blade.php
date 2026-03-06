@@ -316,6 +316,7 @@
         let originalData = []; // To store original data (before filtering or searching)
         let hasActiveFilter = false; // FIX: Flag baru untuk track jika filter spesifik applied (bukan Semua)
         let isSortedByCustom = false; // Flag untuk track apakah pengurutan sudah disesuaikan
+        let lastSortedColumn = 0;
 
         var table = $('#TicketTable').DataTable({
             searching: true,
@@ -345,6 +346,8 @@
             var columnIndex = $(this).index();
             var isAsc = $(this).hasClass('sorting_asc');
 
+            // Set last sorted column
+            lastSortedColumn = columnIndex;
             // Remove all sorting classes
             $('#TicketTable thead th').removeClass('sorting_asc sorting_desc').addClass('sorting');
 
@@ -457,8 +460,11 @@
         $(document).on('click', '.page-sort-option', function(e) {
             e.preventDefault();
             currentSort = $(this).data('sort');
+            // Jika pengurutan kustom diaktifkan, lanjutkan pengurutan yang sudah dilakukan sebelumnya
             if (isSortedByCustom) {
-                sortTableByDate(currentSort); // Ensure latest items are first
+                sortAllDataByColumn(lastSortedColumn, currentSort === 'asc'); // Menjaga pengurutan tetap aktif
+            } else {
+                sortTableByDate(currentSort); // Pengurutan berdasarkan tanggal (jika tidak ada pengurutan kustom)
             }
             currentPage = 1;
             updatePagination();
@@ -540,8 +546,11 @@
         $('#prevPage').on('click', function() {
             if (currentPage > 1) {
                 currentPage--;
+                // Jika pengurutan kustom diaktifkan, lanjutkan pengurutan yang sudah dilakukan sebelumnya
                 if (isSortedByCustom) {
-                    sortTableByDate(currentSort); // Maintain custom sorting when going to prev page
+                    sortAllDataByColumn(lastSortedColumn, currentSort === 'asc'); // Menjaga pengurutan tetap aktif
+                } else {
+                    sortTableByDate(currentSort); // Pengurutan berdasarkan tanggal (jika tidak ada pengurutan kustom)
                 }
                 updatePagination();
             }
@@ -552,8 +561,11 @@
             const totalPages = Math.ceil(totalRows / itemsPerPage);
             if (currentPage < totalPages) {
                 currentPage++;
+                // Jika pengurutan kustom diaktifkan, lanjutkan pengurutan yang sudah dilakukan sebelumnya
                 if (isSortedByCustom) {
-                    sortTableByDate(currentSort); // Maintain custom sorting when going to prev page
+                    sortAllDataByColumn(lastSortedColumn, currentSort === 'asc'); // Menjaga pengurutan tetap aktif
+                } else {
+                    sortTableByDate(currentSort); // Pengurutan berdasarkan tanggal (jika tidak ada pengurutan kustom)
                 }
                 updatePagination();
             }
