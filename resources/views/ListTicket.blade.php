@@ -441,6 +441,16 @@
             currentPage = 1;
             sortTableByDate(currentSort); // Ensure latest items are first
             updatePagination();
+
+            // Cek apakah ada data yang cocok dengan pencarian
+            var noMatchFound = $('#TicketTable tbody tr').length === 0;
+            if (noMatchFound) {
+                // Tampilkan pesan "Tidak ada data ditemukan"
+                $('#TicketTable tbody').append(
+                    '<tr class="no-data-row"><td colspan="6" class="text-center text-secondary py-4">Tidak ada data ditemukan</td></tr>'
+                );
+                $('#paginationDisplay').text('0-0 dari 0'); // Menyembunyikan pagination jika tidak ada data
+            }
             // After searching, re-sort the table by date
         });
 
