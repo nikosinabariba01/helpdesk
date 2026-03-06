@@ -559,10 +559,8 @@
         }
 
         // Initial load: trigger pagination on page load (using default "Jenis Pengaduan" and "Status")
-        updatePagination();
         // Sort table by date when the page loads
         sortTableByDate('asc'); // Default sort by 'created_at' desc (newest first)
-        updatePagination(); // Update pagination after sorting
     });
 </script>
 
