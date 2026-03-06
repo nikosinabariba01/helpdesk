@@ -61,9 +61,9 @@
                 <table class="table align-items-center mb-0" id="TicketTable">
                     <thead>
                         <tr>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">subject</th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">User</th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Status</th>
+                            <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">subject</th>
+                            <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">User</th>
+                            <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Status</th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Deskripsi</th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Aksi Status</th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">aksi</th>
@@ -326,18 +326,12 @@
             info: false,
             columnDefs: [{
                 targets: [0, 1, 2],
-                orderable: true,
+                orderable: true
             }, {
                 targets: [3, 4, 5],
                 orderable: false
             }],
             order: []
-        });
-
-        $('#TicketTable thead th').each(function() {
-            if (!$(this).hasClass('sorting') && !$(this).hasClass('sorting_asc') && !$(this).hasClass('sorting_desc')) {
-                $(this).addClass('sorting'); // Menambahkan tombol sorting default
-            }
         });
 
         $('#TicketTable_filter').hide();
