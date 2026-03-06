@@ -314,22 +314,22 @@
         const itemsPerPage = 10;
         let filteredData = []; // To store filtered data
         let originalData = []; // To store original data (before filtering or searching)
-        let hasActiveFilter = false; // Flag to track if a specific filter is applied
+        let hasActiveFilter = false; // Flag for tracking active filter
 
         var table = $('#TicketTable').DataTable({
             searching: true,
             ordering: true,
-            paging: false, // Kami akan menangani pagination secara manual
+            paging: false, // Manual pagination
             lengthChange: false,
             info: false,
             columnDefs: [{
                     targets: [0, 1, 2],
                     orderable: true
-                }, // Enable ordering for columns 0, 1, 2
+                },
                 {
                     targets: [3, 4, 5],
                     orderable: false
-                } // Disable ordering for columns 3, 4, 5
+                }
             ],
             stateSave: true, // Save table state (sorting, pagination)
             order: [
@@ -341,7 +341,7 @@
                 var rows = api.rows({
                     order: 'applied'
                 }).data(); // Get rows sorted by applied filters
-                // Handle manual sorting after table is drawn
+                // Handle manual sorting after drawing the table
                 api.rows().every(function() {
                     var row = this.node();
                     var timestamp = $(row).data('created-at');
@@ -352,8 +352,6 @@
                 sortTableByDate(currentSort);
             }
         });
-
-        $('#TicketTable_filter').hide();
 
         // Function to sort the entire dataset (including all pages) by date
         function sortTableByDate(direction) {
@@ -377,11 +375,10 @@
         $('#search').on('keyup', function() {
             var searchTerm = this.value.toLowerCase();
 
-            // If search term is empty and no active filter
             if (searchTerm === '' && !hasActiveFilter) {
-                $('#TicketTable tbody').empty().append(originalData); // Show all data
-                sortTableByDate(currentSort); // Sort data according to desired order
-                updatePagination(); // Update pagination based on displayed data
+                $('#TicketTable tbody').empty().append(originalData);
+                sortTableByDate(currentSort);
+                updatePagination();
                 return;
             }
 
@@ -400,16 +397,16 @@
         $('.filter-option[data-filter-value=""]').on('click', function() {
             hasActiveFilter = false;
             filteredData = [];
-            $('#TicketTable tbody').empty().append(originalData); // Show all data
-            sortTableByDate(currentSort); // Sort data according to desired order
-            updatePagination(); // Update pagination based on displayed data
+            $('#TicketTable tbody').empty().append(originalData);
+            sortTableByDate(currentSort);
+            updatePagination();
         });
 
         // Sorting by date (newest to oldest)
         $(document).on('click', '.page-sort-option', function(e) {
             e.preventDefault();
             currentSort = $(this).data('sort');
-            sortTableByDate(currentSort); // Sort by date after click
+            sortTableByDate(currentSort);
             currentPage = 1;
             updatePagination();
         });
@@ -464,12 +461,11 @@
             }
         }
 
-        // Update Pagination based on filtered data or original data
+        // Pagination and update logic
         function updatePagination() {
             let totalRows;
             let rowsToDisplay;
 
-            // Use filtered data if available
             if (filteredData.length > 0) {
                 totalRows = filteredData.length;
                 rowsToDisplay = filteredData;
@@ -523,7 +519,6 @@
             $('#nextPage').prop('disabled', currentPage === totalPages);
         }
 
-        // Pagination controls
         $('#prevPage').on('click', function() {
             if (currentPage > 1) {
                 currentPage--;
