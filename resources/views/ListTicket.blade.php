@@ -314,47 +314,45 @@
         const itemsPerPage = 10;
         let filteredData = []; // To store filtered data
         let originalData = []; // To store original data (before filtering or searching)
-        let hasActiveFilter = false; // Flag for tracking if a specific filter is applied
+        let hasActiveFilter = false; // Flag to track if specific filter is applied
 
+        // Initialize DataTable (with basic settings)
         var table = $('#TicketTable').DataTable({
             searching: true,
-            ordering: true,  // Enable ordering
-            paging: true,    // Enable pagination
+            ordering: true,
+            paging: false, // We will handle pagination manually
             lengthChange: false,
             info: false,
             columnDefs: [{
                 targets: [0, 1, 2],
-                orderable: true // Enable sorting for these columns
+                orderable: true
             }, {
                 targets: [3, 4, 5],
-                orderable: false // Disable sorting for these columns
+                orderable: false
             }],
-            order: []  // Disable default sorting when table first loads
+            order: []
         });
 
-        $('#TicketTable_filter').hide();
+        $('#TicketTable_filter').hide(); // Hide default search input
 
         // Store original data (before filter or search)
         $('#TicketTable tbody tr').each(function() {
             originalData.push(this); // Store all rows as original data
         });
 
-        // Sorting by column using DataTables API
-        function sortTableByColumn(columnIndex, direction = 'asc') {
-            table.order([columnIndex, direction]).draw();
-        }
-
-        // Search filter (do not touch, original behavior)
+        // Search filter
         $('#search').on('keyup', function() {
             var searchTerm = this.value.toLowerCase();
+
             if (searchTerm === '' && !hasActiveFilter) {
                 // Show original data when search is cleared and no filter is active
-                $('#TicketTable tbody').empty().append(originalData); // Display original data
-                sortTableByDate(currentSort); // Sort by default order
-                updatePagination(); // Update pagination based on the data displayed
+                $('#TicketTable tbody').empty().append(originalData);
+                sortTableByDate(currentSort); // Sort by date (newest to oldest)
+                updatePagination(); // Update pagination
                 return;
             }
 
+            // Filter data based on search term
             $.fn.dataTable.ext.search = [];
             $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
                 return data[0].toLowerCase().includes(searchTerm) || data[1].toLowerCase().includes(searchTerm);
@@ -362,15 +360,6 @@
             table.draw();
             currentPage = 1;
             sortTableByDate(currentSort);
-            updatePagination();
-        });
-
-        // Handling dropdown filter "All"
-        $('.filter-option[data-filter-value=""]').on('click', function() {
-            hasActiveFilter = false;
-            filteredData = [];
-            $('#TicketTable tbody').empty().append(originalData); // Show all data
-            sortTableByDate(currentSort); // Sort by default order
             updatePagination();
         });
 
@@ -383,19 +372,21 @@
             updatePagination();
         });
 
+        // Sort table by date (latest first or oldest first)
         function sortTableByDate(direction) {
-            var rows = $('#TicketTable tbody tr').get();
+            var rows = originalData.slice(); // Create a copy of the original data array
             rows.sort(function(a, b) {
                 var aTimestamp = parseInt($(a).data('created-at')) || 0;
                 var bTimestamp = parseInt($(b).data('created-at')) || 0;
                 return direction === 'desc' ? bTimestamp - aTimestamp : aTimestamp - bTimestamp;
             });
-            $.each(rows, function(index, row) {
-                $('#TicketTable tbody').append(row);
-            });
+
+            // Update table body with sorted rows
+            $('#TicketTable tbody').empty().append(rows);
+            updatePagination(); // Update pagination after sorting
         }
 
-        // Custom Pagination (with fix for no match)
+        // Update pagination (handle no match case)
         function updatePagination() {
             let totalRows;
             let rowsToDisplay;
@@ -404,8 +395,8 @@
                 totalRows = filteredData.length;
                 rowsToDisplay = filteredData;
             } else {
-                totalRows = $('#TicketTable tbody tr').length;
-                rowsToDisplay = $('#TicketTable tbody tr').get();
+                totalRows = originalData.length; // Use original data for total rows
+                rowsToDisplay = originalData; // Use original data for pagination
             }
 
             const totalPages = Math.ceil(totalRows / itemsPerPage);
@@ -416,28 +407,34 @@
             $('#TicketTable tbody tr').hide(); // Hide all rows first
 
             if (totalRows === 0) {
+                // Show message if no data found
                 $('.no-data-row').remove();
-                $('#TicketTable tbody').append('<tr class="no-data-row"><td colspan="6" class="text-center text-secondary py-4">No data found</td></tr>');
-                $('#paginationDisplay').text('0-0 of 0');
+                $('#TicketTable tbody').append(
+                    '<tr class="no-data-row"><td colspan="6" class="text-center text-secondary py-4">Tidak ada data ditemukan</td></tr>'
+                );
+                $('#paginationDisplay').text('0-0 dari 0');
             } else {
                 $('.no-data-row').remove();
+
                 var startIndex = (currentPage - 1) * itemsPerPage;
                 var endIndex = startIndex + itemsPerPage;
 
+                // Show rows for the current page
                 for (let i = startIndex; i < endIndex && i < totalRows; i++) {
                     $(rowsToDisplay[i]).show();
                 }
 
                 var displayStart = startIndex + 1;
                 var displayEnd = Math.min(endIndex, totalRows);
-                $('#paginationDisplay').text(displayStart + '-' + displayEnd + ' of ' + totalRows);
+
+                $('#paginationDisplay').text(displayStart + '-' + displayEnd + ' dari ' + totalRows);
             }
 
             $('#prevPage').prop('disabled', currentPage === 1).css('opacity', currentPage === 1 ? '0.5' : '1').css('cursor', currentPage === 1 ? 'not-allowed' : 'pointer');
             $('#nextPage').prop('disabled', currentPage === totalPages || totalRows === 0).css('opacity', currentPage === totalPages || totalRows === 0 ? '0.5' : '1').css('cursor', currentPage === totalPages || totalRows === 0 ? 'not-allowed' : 'pointer');
         }
 
-        // Handling custom page navigation (Previous and Next)
+        // Handle pagination buttons (prev & next)
         $('#prevPage').on('click', function() {
             if (currentPage > 1) {
                 currentPage--;
@@ -479,7 +476,7 @@
             const isAllJenis = selectedJenis === 'Jenis Pengaduan' || selectedJenis === 'Semua';
             const isAllStatus = selectedStatus === 'Status' || selectedStatus === 'Semua';
 
-            hasActiveFilter = !(isAllJenis && isAllStatus); // Set flag true if there is a specific filter
+            hasActiveFilter = !(isAllJenis && isAllStatus); // Set flag true if specific filter is applied
 
             filteredData = [];
             originalData.forEach(function(row) {
@@ -504,6 +501,7 @@
             }
         }
 
+        // Update pagination and sort initially
         updatePagination(); // Update pagination after sorting
         sortTableByDate('desc');
     });
