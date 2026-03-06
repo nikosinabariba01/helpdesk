@@ -491,7 +491,7 @@
             if (currentPage > 1) {
                 currentPage--;
                 updatePagination();
-                sortTableByDate('asc');
+                sortTableByDate('desc');
             }
         });
 
@@ -501,7 +501,7 @@
             if (currentPage < totalPages) {
                 currentPage++;
                 updatePagination();
-                sortTableByDate('asc');
+                sortTableByDate('desc');
             }
         });
 
