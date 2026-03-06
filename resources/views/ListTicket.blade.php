@@ -331,7 +331,6 @@
                 targets: [3, 4, 5],
                 orderable: false
             }],
-            order: []
         });
 
         $('#TicketTable_filter').hide();
@@ -360,7 +359,6 @@
             isSortedByCustom = true; // Mark that sorting is custom
             sortAllDataByColumn(columnIndex, !isAsc);
             updatePagination();
-            sortAllDataByColumn(columnIndex, !isAsc);
         });
 
         function sortAllDataByColumn(columnIndex, isAsc) {
