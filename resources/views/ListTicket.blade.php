@@ -439,12 +439,6 @@
                 rowsToDisplay = $('#TicketTable tbody tr').get();
             }
 
-            // Sort the data first before pagination
-            rowsToDisplay.sort(function(a, b) {
-                var aTimestamp = parseInt($(a).data('created-at')) || 0;
-                var bTimestamp = parseInt($(b).data('created-at')) || 0;
-                return currentSort === 'desc' ? bTimestamp - aTimestamp : aTimestamp - bTimestamp;
-            });
 
             const totalPages = Math.ceil(totalRows / itemsPerPage);
             if (currentPage > totalPages) {
@@ -557,7 +551,7 @@
                 updatePagination();
             }
         }
-        sortTableByDate('asc'); // Default sort by 'created_at' desc (newest first)
+        sortTableByDate('desc'); // Default sort by 'created_at' desc (newest first)
         updatePagination(); // Update pagination after sorting
     });
 </script>
