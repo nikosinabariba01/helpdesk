@@ -319,7 +319,7 @@
         var table = $('#TicketTable').DataTable({
             searching: true,
             ordering: true,
-            paging: false, // We will handle pagination manually
+            paging: true, // We will handle pagination manually
             lengthChange: false,
             info: false,
             columnDefs: [{
@@ -512,6 +512,7 @@
         $('#prevPage').on('click', function() {
             if (currentPage > 1) {
                 currentPage--;
+                updatePagination();
                 sortTableByColumn(1, 'asc'); // Mengurutkan lagi setelah berpindah halaman
                 sortTableByDate('desc');
             }
