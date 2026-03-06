@@ -325,7 +325,6 @@
             searching: true,
             ordering: true,
             paging: true, // We will handle pagination manually
-            pageLength: itemsPerPage,
             lengthChange: false,
             info: false,
             columnDefs: [{
