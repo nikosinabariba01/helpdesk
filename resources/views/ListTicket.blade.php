@@ -551,6 +551,7 @@
                 updatePagination();
             }
         }
+        sortTableByDate('asc')
         updatePagination(); // Update pagination after sorting
     });
 </script>
