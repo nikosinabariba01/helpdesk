@@ -423,6 +423,8 @@
             $.each(rows, function(index, row) {
                 $('#TicketTable tbody').append(row);
             });
+            currentPage = 1;
+            updatePagination();
         }
 
         // Update Pagination (dengan fix untuk no match)
@@ -558,8 +560,7 @@
             }
         }
 
-        // Initial load: trigger pagination on page load (using default "Jenis Pengaduan" and "Status")
-        updatePagination();
+
         // Sort table by date when the page loads
         sortTableByDate('asc'); // Default sort by 'created_at' desc (newest first)
     });
