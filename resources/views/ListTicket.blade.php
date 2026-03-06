@@ -317,7 +317,7 @@
         let hasActiveFilter = false; // FIX: Flag baru untuk track jika filter spesifik applied (bukan Semua)
 
         var table = $('#TicketTable').DataTable({
-            searching: true,
+            searching: false,
             ordering: true,
             paging: true, // We will handle pagination manually
             lengthChange: false,
