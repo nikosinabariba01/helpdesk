@@ -360,6 +360,7 @@
             isSortedByCustom = true; // Mark that sorting is custom
             sortAllDataByColumn(columnIndex, !isAsc);
             updatePagination();
+            sortAllDataByColumn(columnIndex, !isAsc);
         });
 
         function sortAllDataByColumn(columnIndex, isAsc) {
