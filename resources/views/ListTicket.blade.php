@@ -513,7 +513,7 @@
             if (currentPage > 1) {
                 currentPage--;
                 updatePagination();
-                sortTableByColumn(0, 'asc'); // Mengurutkan lagi setelah berpindah halaman
+                sortTableByColumn(1, 'asc'); // Mengurutkan lagi setelah berpindah halaman
                 sortTableByDate('desc');
             }
         });
@@ -524,7 +524,7 @@
             if (currentPage < totalPages) {
                 currentPage++;
                 updatePagination();
-                sortTableByColumn(0, 'asc'); // Mengurutkan lagi setelah berpindah halaman
+                sortTableByColumn(1, 'asc'); // Mengurutkan lagi setelah berpindah halaman
                 sortTableByDate('desc');
             }
         });
