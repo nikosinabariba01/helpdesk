@@ -334,6 +334,12 @@
             order: []
         });
 
+        $('#TicketTable thead th').each(function() {
+            if (!$(this).hasClass('sorting') && !$(this).hasClass('sorting_asc') && !$(this).hasClass('sorting_desc')) {
+                $(this).addClass('sorting'); // Menambahkan tombol sorting default
+            }
+        });
+
         $('#TicketTable_filter').hide();
 
         // Store original data (before filter or search)
