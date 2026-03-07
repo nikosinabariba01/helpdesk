@@ -61,9 +61,9 @@
                 <table class="table align-items-center mb-0" id="TicketTable">
                     <thead>
                         <tr>
-                            <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">subject</th>
-                            <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">User</th>
-                            <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Status</th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">subject</th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">User</th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Status</th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Deskripsi</th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Aksi Status</th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">aksi</th>
@@ -323,7 +323,15 @@
             ordering: false,
             paging: false, // We will handle pagination manually
             lengthChange: false,
-            info: false
+            info: false,
+            columnDefs: [{
+                targets: [0, 1, 2],
+                orderable: true
+            }, {
+                targets: [3, 4, 5],
+                orderable: false
+            }],
+            order: []
         });
 
         $('#TicketTable_filter').hide();
@@ -341,7 +349,7 @@
             // Set last sorted column
             lastSortedColumn = columnIndex;
             // Remove all sorting classes
-            $('#TicketTable thead th').removeClass('sorting_asc sorting_desc');
+            $('#TicketTable thead th').removeClass('sorting_asc sorting_desc').addClass('sorting');
 
             // Add sorting class to current column
             if (isAsc) {
@@ -448,7 +456,6 @@
             updatePagination(); // Update pagination sesuai data yang ditampilkan
         });
 
-        // Sorting by date (newest to oldest)
         // Sorting by date (newest to oldest)
         $(document).on('click', '.page-sort-option', function(e) {
             e.preventDefault();
