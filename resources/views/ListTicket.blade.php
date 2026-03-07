@@ -309,9 +309,6 @@
 
 <script>
     $(document).ready(function() {
-        // ========================
-        // 0. Inisialisasi Variabel
-        // ========================
         const rowsPerPage = 10;
         let ticketsData = [];
         let currentPage = 1;
@@ -326,25 +323,6 @@
         };
         let currentSearch = '';
 
-        // ========================
-        // 0.5 Inisialisasi DataTables untuk pseudo-element sort icon
-        // ========================
-        $('#TicketTable').DataTable({
-            paging: false, // kita pakai pagination custom
-            searching: false, // kita pakai search custom
-            info: false, // disable info
-            ordering: true, // aktifkan pseudo-element sort
-            columnDefs: [{
-                    orderable: true,
-                    targets: [0, 1, 2]
-                },
-                {
-                    orderable: false,
-                    targets: [3, 4, 5]
-                }
-            ]
-        });
-
         // Ambil semua row ke array
         $('#TicketTable tbody tr').each(function() {
             const $tr = $(this);
@@ -358,9 +336,7 @@
             });
         });
 
-        // ========================
-        // 1. Filter
-        // ========================
+        // Filter seluruh dataset
         function applyFilters(data) {
             return data.filter(item => {
                 const matchStatus = currentFilters.status ? item.status === currentFilters.status : true;
@@ -369,9 +345,7 @@
             });
         }
 
-        // ========================
-        // 2. Search
-        // ========================
+        // Search seluruh dataset
         function applySearch(data) {
             if (!currentSearch) return data;
             const keyword = currentSearch.toLowerCase();
@@ -380,15 +354,14 @@
             );
         }
 
-        // ========================
-        // 3. Sort
-        // ========================
+        // Sorting seluruh dataset yang relevan
         function applySort(data) {
             const sorted = [...data];
             const {
                 column,
                 order
             } = currentSort;
+
             sorted.sort((a, b) => {
                 let valA = a[column];
                 let valB = b[column];
@@ -405,17 +378,19 @@
                 if (valA > valB) return order === 'asc' ? 1 : -1;
                 return 0;
             });
+
             return sorted;
         }
 
-        // ========================
-        // 4. Render Table & Pagination
-        // ========================
         function renderTable() {
+            // 1. Filter
             let filteredData = applyFilters(ticketsData);
+            // 2. Search
             filteredData = applySearch(filteredData);
+            // 3. Sort seluruh dataset relevan
             filteredData = applySort(filteredData);
 
+            // Pagination
             totalPages = Math.ceil(filteredData.length / rowsPerPage);
             if (currentPage > totalPages) currentPage = totalPages || 1;
 
@@ -423,9 +398,11 @@
             const endIndex = startIndex + rowsPerPage;
             const pageData = filteredData.slice(startIndex, endIndex);
 
+            // Hide all rows, show only pageData
             $('#TicketTable tbody tr').hide();
             pageData.forEach(item => item.trElement.show());
 
+            // Update pagination display
             const startDisplay = filteredData.length === 0 ? 0 : startIndex + 1;
             const endDisplay = Math.min(endIndex, filteredData.length);
             $('#paginationDisplay').text(`${startDisplay}-${endDisplay} dari ${filteredData.length}`);
@@ -433,20 +410,19 @@
             $('#prevPage').prop('disabled', currentPage <= 1);
             $('#nextPage').prop('disabled', currentPage >= totalPages);
 
-            // Tambahkan class sorting_asc / sorting_desc untuk pseudo-element DataTables
+            // Sorting icons (DataTables pseudo-element)
             $('#TicketTable thead th.sorting').removeClass('sorting_asc sorting_desc');
             let th;
             if (currentSort.column === 'subject') th = $('#TicketTable thead th').filter((i, el) => $(el).text().trim().toLowerCase() === 'subject');
             if (currentSort.column === 'user') th = $('#TicketTable thead th').filter((i, el) => $(el).text().trim().toLowerCase() === 'user');
             if (currentSort.column === 'status') th = $('#TicketTable thead th').filter((i, el) => $(el).text().trim().toLowerCase() === 'status');
-
             if (th) {
                 th.addClass(currentSort.order === 'asc' ? 'sorting_asc' : 'sorting_desc');
             }
         }
 
         // ========================
-        // 5. Event Handlers
+        // Event Handlers
         // ========================
         $('#search').on('input', function() {
             currentSearch = $(this).val().toLowerCase();
@@ -493,7 +469,6 @@
             renderTable();
         });
 
-        // Initial render
         renderTable();
     });
 </script>
