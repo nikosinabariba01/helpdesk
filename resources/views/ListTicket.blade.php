@@ -309,9 +309,6 @@
 
 <script>
     $(document).ready(function() {
-        // ========================
-        // 0. Inisialisasi Variabel
-        // ========================
         const rowsPerPage = 10;
         let ticketsData = [];
         let currentPage = 1;
@@ -319,7 +316,7 @@
         let currentSort = {
             column: 'createdAt',
             order: 'desc'
-        }; // default sort by createdAt
+        };
         let currentFilters = {
             status: '',
             jenis_pengaduan: ''
@@ -339,20 +336,16 @@
             });
         });
 
-        // ========================
-        // 1. Fungsi Filter
-        // ========================
+        // Filter
         function applyFilters(data) {
             return data.filter(item => {
-                const matchStatus = currentFilters.status ? item.status === currentFilters.status : true;
-                const matchJenis = currentFilters.jenis_pengaduan ? item.jenis_pengaduan === currentFilters.jenis_pengaduan : true;
+                let matchStatus = currentFilters.status ? item.status === currentFilters.status : true;
+                let matchJenis = currentFilters.jenis_pengaduan ? item.jenis_pengaduan === currentFilters.jenis_pengaduan : true;
                 return matchStatus && matchJenis;
             });
         }
 
-        // ========================
-        // 2. Fungsi Search
-        // ========================
+        // Search
         function applySearch(data) {
             if (!currentSearch) return data;
             const keyword = currentSearch.toLowerCase();
@@ -361,21 +354,16 @@
             );
         }
 
-        // ========================
-        // 3. Fungsi Sort
-        // ========================
+        // Sort
         function applySort(data) {
             const sorted = [...data];
             const {
                 column,
                 order
             } = currentSort;
-
             sorted.sort((a, b) => {
                 let valA = a[column];
                 let valB = b[column];
-
-                // Untuk string: subject, user, status → alfabetis
                 if (typeof valA === 'string') {
                     valA = valA.toLowerCase();
                     valB = valB.toLowerCase();
@@ -383,19 +371,14 @@
                     if (valA > valB) return order === 'asc' ? 1 : -1;
                     return 0;
                 }
-
-                // Untuk number: createdAt
                 if (valA < valB) return order === 'asc' ? -1 : 1;
                 if (valA > valB) return order === 'asc' ? 1 : -1;
                 return 0;
             });
-
             return sorted;
         }
 
-        // ========================
-        // 4. Render Table & Pagination
-        // ========================
+        // Render Table & Pagination
         function renderTable() {
             let filteredData = applyFilters(ticketsData);
             filteredData = applySearch(filteredData);
@@ -417,11 +400,22 @@
 
             $('#prevPage').prop('disabled', currentPage <= 1);
             $('#nextPage').prop('disabled', currentPage >= totalPages);
-        }
 
-        // ========================
-        // 5. Event Handlers
-        // ========================
+            // Update ikon panah di th
+            $('#TicketTable thead th.sorting').each(function() {
+                $(this).find('.sort-arrow').remove(); // hapus panah lama
+            });
+
+            let th;
+            if (currentSort.column === 'subject') th = $('#TicketTable thead th').filter((i, el) => $(el).text().trim().toLowerCase() === 'subject');
+            if (currentSort.column === 'user') th = $('#TicketTable thead th').filter((i, el) => $(el).text().trim().toLowerCase() === 'user');
+            if (currentSort.column === 'status') th = $('#TicketTable thead th').filter((i, el) => $(el).text().trim().toLowerCase() === 'status');
+
+            if (th) {
+                const arrow = currentSort.order === 'asc' ? '↑' : '↓';
+                th.append(` <span class="sort-arrow">${arrow}</span>`);
+            }
+        }
 
         // Search
         $('#search').on('input', function() {
@@ -440,7 +434,7 @@
             renderTable();
         });
 
-        // Sorting dropdown (terbaru/terlama)
+        // Sorting dropdown terbaru/terlama
         $('.page-sort-option').click(function(e) {
             e.preventDefault();
             const sortOrder = $(this).data('sort');
@@ -450,32 +444,27 @@
             renderTable();
         });
 
-        // Sorting klik th (subject, user, status)
+        // Sorting klik th
         $('#TicketTable thead th.sorting').click(function() {
             const colText = $(this).text().trim().toLowerCase();
             if (colText === 'subject') currentSort.column = 'subject';
             else if (colText === 'user') currentSort.column = 'user';
             else if (colText === 'status') currentSort.column = 'status';
-            else return; // ignore kolom lain
+            else return;
 
-            // toggle order jika klik lagi
             currentSort.order = (currentSort.order === 'asc') ? 'desc' : 'asc';
             currentPage = 1;
             renderTable();
         });
 
-        // Pagination Prev/Next
+        // Pagination
         $('#prevPage').click(function() {
-            if (currentPage > 1) {
-                currentPage--;
-                renderTable();
-            }
+            if (currentPage > 1) currentPage--;
+            renderTable();
         });
         $('#nextPage').click(function() {
-            if (currentPage < totalPages) {
-                currentPage++;
-                renderTable();
-            }
+            if (currentPage < totalPages) currentPage++;
+            renderTable();
         });
 
         // Render awal
