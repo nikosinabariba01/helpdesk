@@ -452,7 +452,7 @@
         });
 
         // Search
-        $('#searchInput').on('input', function() {
+        $('#search').on('input', function() {
             currentSearch = $(this).val().toLowerCase();
             currentPage = 1;
             renderTable();
