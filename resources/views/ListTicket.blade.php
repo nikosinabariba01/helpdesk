@@ -309,6 +309,9 @@
 
 <script>
     $(document).ready(function() {
+        // ========================
+        // 0. Inisialisasi Variabel
+        // ========================
         const rowsPerPage = 10;
         let ticketsData = [];
         let currentPage = 1;
@@ -322,6 +325,25 @@
             jenis_pengaduan: ''
         };
         let currentSearch = '';
+
+        // ========================
+        // 0.5 Inisialisasi DataTables untuk pseudo-element sort icon
+        // ========================
+        $('#TicketTable').DataTable({
+            paging: false, // kita pakai pagination custom
+            searching: false, // kita pakai search custom
+            info: false, // disable info
+            ordering: true, // aktifkan pseudo-element sort
+            columnDefs: [{
+                    orderable: true,
+                    targets: [0, 1, 2]
+                },
+                {
+                    orderable: false,
+                    targets: [3, 4, 5]
+                }
+            ]
+        });
 
         // Ambil semua row ke array
         $('#TicketTable tbody tr').each(function() {
@@ -337,7 +359,7 @@
         });
 
         // ========================
-        // Filter
+        // 1. Filter
         // ========================
         function applyFilters(data) {
             return data.filter(item => {
@@ -348,7 +370,7 @@
         }
 
         // ========================
-        // Search
+        // 2. Search
         // ========================
         function applySearch(data) {
             if (!currentSearch) return data;
@@ -359,7 +381,7 @@
         }
 
         // ========================
-        // Sort
+        // 3. Sort
         // ========================
         function applySort(data) {
             const sorted = [...data];
@@ -387,7 +409,7 @@
         }
 
         // ========================
-        // Render Table & Pagination
+        // 4. Render Table & Pagination
         // ========================
         function renderTable() {
             let filteredData = applyFilters(ticketsData);
@@ -411,10 +433,8 @@
             $('#prevPage').prop('disabled', currentPage <= 1);
             $('#nextPage').prop('disabled', currentPage >= totalPages);
 
-            // Hapus class sorting_asc/sorting_desc lama
+            // Tambahkan class sorting_asc / sorting_desc untuk pseudo-element DataTables
             $('#TicketTable thead th.sorting').removeClass('sorting_asc sorting_desc');
-
-            // Tambahkan class sesuai sort sekarang agar DataTables menampilkan ikon segitiga
             let th;
             if (currentSort.column === 'subject') th = $('#TicketTable thead th').filter((i, el) => $(el).text().trim().toLowerCase() === 'subject');
             if (currentSort.column === 'user') th = $('#TicketTable thead th').filter((i, el) => $(el).text().trim().toLowerCase() === 'user');
@@ -426,7 +446,7 @@
         }
 
         // ========================
-        // Event Handlers
+        // 5. Event Handlers
         // ========================
         $('#search').on('input', function() {
             currentSearch = $(this).val().toLowerCase();
@@ -473,6 +493,7 @@
             renderTable();
         });
 
+        // Initial render
         renderTable();
     });
 </script>
