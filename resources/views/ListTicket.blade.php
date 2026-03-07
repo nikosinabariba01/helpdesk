@@ -317,16 +317,16 @@
         let currentPage = 1;
         let totalPages = 1;
         let currentSort = {
-            column: 'created-at',
+            column: 'createdAt',
             order: 'desc'
-        }; // default sorting
+        }; // default sort by createdAt
         let currentFilters = {
             status: '',
             jenis_pengaduan: ''
         };
         let currentSearch = '';
 
-        // Ambil data awal dari table dan simpan ke array JS
+        // Ambil semua row ke array
         $('#TicketTable tbody tr').each(function() {
             const $tr = $(this);
             ticketsData.push({
@@ -335,7 +335,7 @@
                 user: $tr.data('user').toString().toLowerCase(),
                 status: $tr.data('status').toString().toLowerCase(),
                 jenis_pengaduan: $tr.data('jenis-pengaduan').toString().toLowerCase(),
-                createdAt: parseInt($tr.data('created-at')) // timestamp
+                createdAt: parseInt($tr.data('created-at'))
             });
         });
 
@@ -344,8 +344,8 @@
         // ========================
         function applyFilters(data) {
             return data.filter(item => {
-                let matchStatus = currentFilters.status ? item.status === currentFilters.status : true;
-                let matchJenis = currentFilters.jenis_pengaduan ? item.jenis_pengaduan === currentFilters.jenis_pengaduan : true;
+                const matchStatus = currentFilters.status ? item.status === currentFilters.status : true;
+                const matchJenis = currentFilters.jenis_pengaduan ? item.jenis_pengaduan === currentFilters.jenis_pengaduan : true;
                 return matchStatus && matchJenis;
             });
         }
@@ -370,26 +370,26 @@
                 column,
                 order
             } = currentSort;
+
             sorted.sort((a, b) => {
-                let valA, valB;
-                if (column === 'subject') {
-                    valA = a.subject;
-                    valB = b.subject;
-                } else if (column === 'user') {
-                    valA = a.user;
-                    valB = b.user;
-                } else if (column === 'status') {
-                    valA = a.status;
-                    valB = b.status;
-                } else {
-                    valA = a.createdAt;
-                    valB = b.createdAt;
+                let valA = a[column];
+                let valB = b[column];
+
+                // Untuk string: subject, user, status → alfabetis
+                if (typeof valA === 'string') {
+                    valA = valA.toLowerCase();
+                    valB = valB.toLowerCase();
+                    if (valA < valB) return order === 'asc' ? -1 : 1;
+                    if (valA > valB) return order === 'asc' ? 1 : -1;
+                    return 0;
                 }
 
+                // Untuk number: createdAt
                 if (valA < valB) return order === 'asc' ? -1 : 1;
                 if (valA > valB) return order === 'asc' ? 1 : -1;
                 return 0;
             });
+
             return sorted;
         }
 
@@ -397,12 +397,10 @@
         // 4. Render Table & Pagination
         // ========================
         function renderTable() {
-            // Apply filter, search, sort
             let filteredData = applyFilters(ticketsData);
             filteredData = applySearch(filteredData);
             filteredData = applySort(filteredData);
 
-            // Update pagination
             totalPages = Math.ceil(filteredData.length / rowsPerPage);
             if (currentPage > totalPages) currentPage = totalPages || 1;
 
@@ -410,20 +408,13 @@
             const endIndex = startIndex + rowsPerPage;
             const pageData = filteredData.slice(startIndex, endIndex);
 
-            // Hide all rows first
             $('#TicketTable tbody tr').hide();
+            pageData.forEach(item => item.trElement.show());
 
-            // Show only rows yang sesuai
-            pageData.forEach(item => {
-                item.trElement.show();
-            });
-
-            // Update pagination display
             const startDisplay = filteredData.length === 0 ? 0 : startIndex + 1;
             const endDisplay = Math.min(endIndex, filteredData.length);
             $('#paginationDisplay').text(`${startDisplay}-${endDisplay} dari ${filteredData.length}`);
 
-            // Enable/disable tombol Prev/Next
             $('#prevPage').prop('disabled', currentPage <= 1);
             $('#nextPage').prop('disabled', currentPage >= totalPages);
         }
@@ -432,11 +423,9 @@
         // 5. Event Handlers
         // ========================
 
-        // Sorting
-        $('.page-sort-option').click(function(e) {
-            e.preventDefault();
-            const sortOrder = $(this).data('sort');
-            currentSort.order = sortOrder;
+        // Search
+        $('#search').on('input', function() {
+            currentSearch = $(this).val().toLowerCase();
             currentPage = 1;
             renderTable();
         });
@@ -451,9 +440,26 @@
             renderTable();
         });
 
-        // Search
-        $('#searchInput').on('input', function() {
-            currentSearch = $(this).val().toLowerCase();
+        // Sorting dropdown (terbaru/terlama)
+        $('.page-sort-option').click(function(e) {
+            e.preventDefault();
+            const sortOrder = $(this).data('sort');
+            currentSort.column = 'createdAt';
+            currentSort.order = sortOrder;
+            currentPage = 1;
+            renderTable();
+        });
+
+        // Sorting klik th (subject, user, status)
+        $('#TicketTable thead th.sorting').click(function() {
+            const colText = $(this).text().trim().toLowerCase();
+            if (colText === 'subject') currentSort.column = 'subject';
+            else if (colText === 'user') currentSort.column = 'user';
+            else if (colText === 'status') currentSort.column = 'status';
+            else return; // ignore kolom lain
+
+            // toggle order jika klik lagi
+            currentSort.order = (currentSort.order === 'asc') ? 'desc' : 'asc';
             currentPage = 1;
             renderTable();
         });
@@ -472,7 +478,7 @@
             }
         });
 
-        // Inisialisasi awal
+        // Render awal
         renderTable();
     });
 </script>
