@@ -319,7 +319,7 @@
             let lastSortedColumn = 0;
 
             var table = $('#TicketTable').DataTable({
-                searching: true,
+                searching: false,
                 ordering: false,
                 paging: false, // We will handle pagination manually
                 lengthChange: false,
