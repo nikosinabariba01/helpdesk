@@ -309,86 +309,171 @@
 
 <script>
     $(document).ready(function() {
-        // =========================
-        // 1. Inisialisasi DataTable
-        // =========================
-        const table = $('#TicketTable').DataTable({
-            pageLength: 10,
-            lengthChange: false,
-            ordering: true,
-            order: [
-                [0, "desc"]
-            ], // default sort by subject
-            columnDefs: [{
-                    orderable: true,
-                    targets: [0, 1, 2]
-                }, // subject, user, status sortable
-                {
-                    orderable: false,
-                    targets: [3, 4, 5]
-                } // other columns non-sortable
-            ],
-            dom: 'rt<"custom-footer"ip>', // pagination at bottom
-            language: {
-                paginate: {
-                    previous: "<i class='fa fa-chevron-left'></i>",
-                    next: "<i class='fa fa-chevron-right'></i>"
-                },
-                info: "_START_ - _END_ dari _TOTAL_"
-            }
+        const rowsPerPage = 10;
+        let ticketsData = [];
+        let currentPage = 1;
+        let totalPages = 1;
+        let currentSort = {
+            column: 'createdAt',
+            order: 'desc'
+        };
+        let currentFilters = {
+            status: '',
+            jenis_pengaduan: ''
+        };
+        let currentSearch = '';
+
+        // Ambil semua row ke array
+        $('#TicketTable tbody tr').each(function() {
+            const $tr = $(this);
+            ticketsData.push({
+                trElement: $tr,
+                subject: $tr.data('subject').toString().toLowerCase(),
+                user: $tr.data('user').toString().toLowerCase(),
+                status: $tr.data('status').toString().toLowerCase(),
+                jenis_pengaduan: $tr.data('jenis-pengaduan').toString().toLowerCase(),
+                createdAt: parseInt($tr.data('created-at'))
+            });
         });
 
-        // =========================
-        // 2. Custom Filter
-        // =========================
-        function applyCustomFilter() {
-            const statusFilter = $('#filterStatusDisplay').text().toLowerCase() || '';
-            const jenisFilter = $('#filterJenisPengaduanDisplay').text().toLowerCase() || '';
-
-            table.rows().every(function() {
-                const rowNode = $(this.node());
-                const rowStatus = rowNode.find('td').eq(2).text().toLowerCase();
-                const rowJenis = rowNode.data('jenis-pengaduan').toString().toLowerCase();
-
-                let show = true;
-                if (statusFilter && statusFilter !== 'semua' && rowStatus !== statusFilter) show = false;
-                if (jenisFilter && jenisFilter !== 'semua' && rowJenis !== jenisFilter) show = false;
-
-                if (show) rowNode.show();
-                else rowNode.hide();
+        // ========================
+        // Filter
+        // ========================
+        function applyFilters(data) {
+            return data.filter(item => {
+                const matchStatus = currentFilters.status ? item.status === currentFilters.status : true;
+                const matchJenis = currentFilters.jenis_pengaduan ? item.jenis_pengaduan === currentFilters.jenis_pengaduan : true;
+                return matchStatus && matchJenis;
             });
-            table.draw();
         }
 
-        // Filter event
+        // ========================
+        // Search
+        // ========================
+        function applySearch(data) {
+            if (!currentSearch) return data;
+            const keyword = currentSearch.toLowerCase();
+            return data.filter(item =>
+                item.subject.includes(keyword) || item.user.includes(keyword)
+            );
+        }
+
+        // ========================
+        // Sort
+        // ========================
+        function applySort(data) {
+            const sorted = [...data];
+            const {
+                column,
+                order
+            } = currentSort;
+            sorted.sort((a, b) => {
+                let valA = a[column];
+                let valB = b[column];
+
+                if (typeof valA === 'string') {
+                    valA = valA.toLowerCase();
+                    valB = valB.toLowerCase();
+                    if (valA < valB) return order === 'asc' ? -1 : 1;
+                    if (valA > valB) return order === 'asc' ? 1 : -1;
+                    return 0;
+                }
+
+                if (valA < valB) return order === 'asc' ? -1 : 1;
+                if (valA > valB) return order === 'asc' ? 1 : -1;
+                return 0;
+            });
+            return sorted;
+        }
+
+        // ========================
+        // Render Table & Pagination
+        // ========================
+        function renderTable() {
+            let filteredData = applyFilters(ticketsData);
+            filteredData = applySearch(filteredData);
+            filteredData = applySort(filteredData);
+
+            totalPages = Math.ceil(filteredData.length / rowsPerPage);
+            if (currentPage > totalPages) currentPage = totalPages || 1;
+
+            const startIndex = (currentPage - 1) * rowsPerPage;
+            const endIndex = startIndex + rowsPerPage;
+            const pageData = filteredData.slice(startIndex, endIndex);
+
+            $('#TicketTable tbody tr').hide();
+            pageData.forEach(item => item.trElement.show());
+
+            const startDisplay = filteredData.length === 0 ? 0 : startIndex + 1;
+            const endDisplay = Math.min(endIndex, filteredData.length);
+            $('#paginationDisplay').text(`${startDisplay}-${endDisplay} dari ${filteredData.length}`);
+
+            $('#prevPage').prop('disabled', currentPage <= 1);
+            $('#nextPage').prop('disabled', currentPage >= totalPages);
+
+            // Hapus class sorting_asc/sorting_desc lama
+            $('#TicketTable thead th.sorting').removeClass('sorting_asc sorting_desc');
+
+            // Tambahkan class sesuai sort sekarang agar DataTables menampilkan ikon segitiga
+            let th;
+            if (currentSort.column === 'subject') th = $('#TicketTable thead th').filter((i, el) => $(el).text().trim().toLowerCase() === 'subject');
+            if (currentSort.column === 'user') th = $('#TicketTable thead th').filter((i, el) => $(el).text().trim().toLowerCase() === 'user');
+            if (currentSort.column === 'status') th = $('#TicketTable thead th').filter((i, el) => $(el).text().trim().toLowerCase() === 'status');
+
+            if (th) {
+                th.addClass(currentSort.order === 'asc' ? 'sorting_asc' : 'sorting_desc');
+            }
+        }
+
+        // ========================
+        // Event Handlers
+        // ========================
+        $('#search').on('input', function() {
+            currentSearch = $(this).val().toLowerCase();
+            currentPage = 1;
+            renderTable();
+        });
+
         $('.filter-option').click(function(e) {
             e.preventDefault();
             const filterType = $(this).data('filter-type');
-            const filterValue = $(this).text();
-
-            if (filterType === 'status') $('#filterStatusDisplay').text(filterValue);
-            if (filterType === 'jenis_pengaduan') $('#filterJenisPengaduanDisplay').text(filterValue);
-
-            applyCustomFilter();
+            const filterValue = $(this).data('filter-value')?.toLowerCase() || '';
+            currentFilters[filterType] = filterValue;
+            currentPage = 1;
+            renderTable();
         });
 
-        // =========================
-        // 3. Search
-        // =========================
-        $('#search').on('input', function() {
-            table.search(this.value).draw();
+        $('.page-sort-option').click(function(e) {
+            e.preventDefault();
+            const sortOrder = $(this).data('sort');
+            currentSort.column = 'createdAt';
+            currentSort.order = sortOrder;
+            currentPage = 1;
+            renderTable();
         });
 
-        // =========================
-        // 4. Preserve Blade Buttons
-        // =========================
-        // Semua tombol aksi Blade tetap utuh karena DataTables tidak mengubah DOM tombol
+        $('#TicketTable thead th.sorting').click(function() {
+            const colText = $(this).text().trim().toLowerCase();
+            if (colText === 'subject') currentSort.column = 'subject';
+            else if (colText === 'user') currentSort.column = 'user';
+            else if (colText === 'status') currentSort.column = 'status';
+            else return;
 
-        // =========================
-        // 5. Styling Sort Icons (optional)
-        // =========================
-        $('#TicketTable thead th').css('cursor', 'pointer'); // pointer hover
-        // ikon DataTables otomatis muncul, bisa ditambah CSS jika ingin lebih kecil
+            currentSort.order = currentSort.order === 'asc' ? 'desc' : 'asc';
+            currentPage = 1;
+            renderTable();
+        });
+
+        $('#prevPage').click(function() {
+            if (currentPage > 1) currentPage--;
+            renderTable();
+        });
+        $('#nextPage').click(function() {
+            if (currentPage < totalPages) currentPage++;
+            renderTable();
+        });
+
+        renderTable();
     });
 </script>
 
