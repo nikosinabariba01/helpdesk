@@ -323,7 +323,7 @@
         };
         let currentSearch = '';
 
-        // Ambil semua row
+        // Ambil semua row ke array JS
         $('#TicketTable tbody tr').each(function() {
             const $tr = $(this);
             ticketsData.push({
@@ -336,6 +336,7 @@
             });
         });
 
+        // Filter dataset
         function applyFilters(data) {
             return data.filter(item => {
                 const matchStatus = currentFilters.status ? item.status === currentFilters.status : true;
@@ -344,6 +345,7 @@
             });
         }
 
+        // Search dataset
         function applySearch(data) {
             if (!currentSearch) return data;
             const keyword = currentSearch.toLowerCase();
@@ -352,6 +354,7 @@
             );
         }
 
+        // Sort dataset
         function applySort(data) {
             const sorted = [...data];
             const {
@@ -365,7 +368,9 @@
                 if (typeof valA === 'string') {
                     valA = valA.toLowerCase();
                     valB = valB.toLowerCase();
-                    return order === 'asc' ? (valA < valB ? -1 : valA > valB ? 1 : 0) : (valA < valB ? 1 : valA > valB ? -1 : 0);
+                    return order === 'asc' ?
+                        (valA < valB ? -1 : valA > valB ? 1 : 0) :
+                        (valA < valB ? 1 : valA > valB ? -1 : 0);
                 }
 
                 return order === 'asc' ? valA - valB : valB - valA;
@@ -373,6 +378,7 @@
             return sorted;
         }
 
+        // Render table + pagination + sort icons
         function renderTable() {
             let filteredData = applyFilters(ticketsData);
             filteredData = applySearch(filteredData);
@@ -385,6 +391,7 @@
             const endIndex = startIndex + rowsPerPage;
             const pageData = filteredData.slice(startIndex, endIndex);
 
+            // Tampilkan page
             $('#TicketTable tbody tr').hide();
             pageData.forEach(item => item.trElement.show());
 
@@ -392,27 +399,30 @@
             $('#prevPage').prop('disabled', currentPage <= 1);
             $('#nextPage').prop('disabled', currentPage >= totalPages);
 
-            // Hapus semua ikon sorting
-            $('#TicketTable thead th.sorting i.sort-icon').remove();
+            // Hapus ikon lama
+            $('#TicketTable thead th.sorting').removeClass('sorting_asc sorting_desc');
+            $('#TicketTable thead th.sorting .sort-icons').remove();
 
-            // Tambahkan ikon sorting untuk kolom selain createdAt
+            // Tambahkan ikon segitiga untuk kolom sortable (subject, user, status)
             $('#TicketTable thead th.sorting').each(function() {
                 const colText = $(this).text().trim().toLowerCase();
-                if (colText === currentSort.column) {
-                    // ascending / descending icon
-                    const iconClass = currentSort.order === 'asc' ? 'fa fa-sort-asc sort-icon' : 'fa fa-sort-desc sort-icon';
-                    $(this).append(' <i class="' + iconClass + '"></i>');
+                if (currentSort.column === colText) {
+                    $(this).addClass(currentSort.order === 'asc' ? 'sorting_asc' : 'sorting_desc');
+                }
+                if (!$(this).find('.sort-icons').length) {
+                    $(this).append('<span class="sort-icons"></span>');
                 }
             });
         }
 
-        // Event Handlers
+        // Search input
         $('#search').on('input', function() {
             currentSearch = $(this).val().toLowerCase();
             currentPage = 1;
             renderTable();
         });
 
+        // Filter dropdown
         $('.filter-option').click(function(e) {
             e.preventDefault();
             const filterType = $(this).data('filter-type');
@@ -421,10 +431,11 @@
             renderTable();
         });
 
+        // Dropdown Terbaru/Terlama (tanggal)
         $('.page-sort-option').click(function(e) {
             e.preventDefault();
             const sortOrder = $(this).data('sort');
-            currentSort.column = 'createdAt'; // tetap column tanggal
+            currentSort.column = 'createdAt';
             currentSort.order = sortOrder === 'asc' ? 'asc' : 'desc';
             currentPage = 1;
             renderTable();
@@ -433,17 +444,20 @@
             $(this).addClass('active');
         });
 
+        // Klik kolom sortable (subject/user/status)
         $('#TicketTable thead th.sorting').click(function() {
             const colText = $(this).text().trim().toLowerCase();
             if (colText === 'subject') currentSort.column = 'subject';
             else if (colText === 'user') currentSort.column = 'user';
             else if (colText === 'status') currentSort.column = 'status';
             else return;
+
             currentSort.order = currentSort.order === 'asc' ? 'desc' : 'asc';
             currentPage = 1;
             renderTable();
         });
 
+        // Prev/Next pagination
         $('#prevPage').click(function() {
             if (currentPage > 1) currentPage--;
             renderTable();
@@ -453,8 +467,71 @@
             renderTable();
         });
 
+        // Initial render
         renderTable();
     });
 </script>
+
+<style>
+    /* =========================
+   DataTables-style sort icons
+   ========================= */
+    th.sorting {
+        position: relative;
+        cursor: pointer;
+        user-select: none;
+        padding-right: 20px;
+        /* space for icons */
+    }
+
+    /* icon container */
+    th.sorting .sort-icons {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        font-size: 0.6em;
+        line-height: 0.6em;
+    }
+
+    /* default segitiga abu-abu */
+    th.sorting .sort-icons::before,
+    th.sorting .sort-icons::after {
+        color: #ccc;
+    }
+
+    /* ascending active */
+    th.sorting.sorting_asc .sort-icons::before {
+        color: #000;
+        /* atas hitam */
+    }
+
+    th.sorting.sorting_asc .sort-icons::after {
+        color: #ccc;
+        /* bawah abu */
+    }
+
+    /* descending active */
+    th.sorting.sorting_desc .sort-icons::before {
+        color: #ccc;
+        /* atas abu */
+    }
+
+    th.sorting.sorting_desc .sort-icons::after {
+        color: #000;
+        /* bawah hitam */
+    }
+
+    /* content segitiga */
+    th.sorting .sort-icons::before {
+        content: "▲";
+    }
+
+    th.sorting .sort-icons::after {
+        content: "▼";
+    }
+</style>
 
 @endsection
