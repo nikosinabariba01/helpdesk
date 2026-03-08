@@ -426,9 +426,6 @@
             })));
 
 
-            // Tampilkan row
-            pageData.forEach(item => item.trElement.show());
-
             // ========================
             // Update pagination display (asc/desc)
             // ========================
