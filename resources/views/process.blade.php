@@ -43,13 +43,13 @@
 
                             <thead>
                                 <tr>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
+                                    <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
                                         style="padding: 10px;">subject</th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
+                                    <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
                                         style="padding: 10px;">Status</th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
                                         style="padding: 10px;">Deskripsi</th>
-                                    <th class="text-secondary text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
                                         style="padding: 10px;">aksi</th>
                                 </tr>
                             </thead>
@@ -58,9 +58,8 @@
                                     <tr class="align-middle text-sm border border-light"
                                         data-created-at="{{ $dataticket->created_at->timestamp }}"
                                         data-jenis-pengaduan="{{ $dataticket->Jenis_Pengaduan }}"
-                                        data-status="{{ $dataticket->status }}">
-                                        <td class="align-middle text-sm border border-light"
-                                            data-subject="{{ $dataticket->subject }}">
+                                        data-status="{{ $dataticket->status }}" data-subject="{{ $dataticket->subject }}">
+                                        <td class="align-middle text-sm border border-light">
                                             <div class="d-flex px-2 py-1">
                                                 <div class="d-flex flex-column justify-content-center">
                                                     <h6 class="mb-0 text-s text-limit-35" title="Subject">
@@ -86,8 +85,7 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="align-middle text-center text-sm border border-light"
-                                            data-status="{{ $dataticket->status }}">
+                                        <td class="align-middle text-center text-sm border border-light">
                                             <x-status-badge :status="$dataticket->status" />
                                         </td>
                                         <td class="align-middle text-center text-limit-30 border border-light">
@@ -154,14 +152,16 @@
                                 <button class="btn btn-sm btn-outline-secondary"
                                     style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
                                     data-bs-toggle="dropdown" aria-expanded="false">
-                                    <span id="paginationDisplay">1-10 dari {{ $teknisi_data_ticket->count() }}</span>
+                                    <span id="paginationDisplay">1-10 dari {{ $data_ticket->count() }}</span>
                                     <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
                                 </button>
                                 <ul class="dropdown-menu" style="font-size: 13px; min-width: 150px;">
                                     <li><a class="dropdown-item page-sort-option" href="#" data-sort="desc"><i
-                                                class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru</a></li>
+                                                class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru</a>
+                                    </li>
                                     <li><a class="dropdown-item page-sort-option" href="#" data-sort="asc"><i
-                                                class="fa fa-arrow-up me-2" style="color: #6c757d;"></i>Terlama</a></li>
+                                                class="fa fa-arrow-up me-2" style="color: #6c757d;"></i>Terlama</a>
+                                    </li>
                                 </ul>
                             </div>
 
@@ -186,30 +186,7 @@
                                             data-filter-value="permintaan">Permintaan</a></li>
                                 </ul>
                             </div>
-
-                            <!-- Filter Status -->
-                            <div class="dropdown" style="position: relative; display: inline-block;">
-                                <button class="btn btn-sm btn-outline-secondary"
-                                    style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
-                                    type="button" id="filterStatusBtn" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <span id="filterStatusDisplay">Status</span>
-                                    <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="filterStatusBtn"
-                                    style="font-size: 13px; min-width: 150px;">
-                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
-                                            data-filter-value="">Semua</a></li>
-                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
-                                            data-filter-value="open">Open</a></li>
-                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
-                                            data-filter-value="on process">On Process</a></li>
-                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
-                                            data-filter-value="escalated">Escalated</a></li>
-                                </ul>
-                            </div>
                         </div>
-
-
 
                         <!-- Right side: Pagination -->
                         <div style="display: flex; gap: 6px; flex-wrap: wrap;">

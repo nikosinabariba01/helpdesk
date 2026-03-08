@@ -238,7 +238,7 @@
                                     <button class="btn btn-sm btn-outline-secondary"
                                         style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
                                         data-bs-toggle="dropdown" aria-expanded="false">
-                                        <span id="paginationDisplay">1-10 dari {{ $teknisi_data_ticket->count() }}</span>
+                                        <span id="paginationDisplay">1-10 dari {{ $data_ticket->count() }}</span>
                                         <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
                                     </button>
                                     <ul class="dropdown-menu" style="font-size: 13px; min-width: 150px;">
