@@ -500,12 +500,26 @@
             renderTable();
         });
 
-        // Filter
+        // Filter dropdown
         $('.filter-option').click(function(e) {
             e.preventDefault();
-            const filterType = $(this).data('filter-type');
-            const filterValue = $(this).data('filter-value')?.toLowerCase() || '';
-            currentFilters[filterType] = filterValue;
+
+            const filterType = $(this).data('filter-type'); // "status" atau "jenis_pengaduan"
+            const filterValue = $(this).data('filter-value') || '';
+
+            // Simpan filter
+            currentFilters[filterType] = filterValue.toLowerCase();
+
+            // Update teks dropdown
+            if (filterType === 'status') {
+                const displayText = filterValue ? `Status: ${$(this).text()}` : 'Status';
+                $('#filterStatusDisplay').text(displayText);
+            } else if (filterType === 'jenis_pengaduan') {
+                const displayText = filterValue ? `Jenis Pengaduan: ${$(this).text()}` : 'Jenis Pengaduan';
+                $('#filterJenisPengaduanDisplay').text(displayText);
+            }
+
+            // Reset page ke 1
             currentPage = 1;
             renderTable();
         });
