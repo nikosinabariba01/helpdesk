@@ -378,15 +378,15 @@
                 if (typeof valA === 'string') {
                     valA = valA.toLowerCase();
                     valB = valB.toLowerCase();
-                    if (valA < valB) return order === 'desc' ? -1 : 1;
-                    if (valA > valB) return order === 'desc' ? 1 : -1;
+                    if (valA < valB) return order === 'asc' ? -1 : 1;
+                    if (valA > valB) return order === 'asc' ? 1 : -1;
                     // tie-break dengan createdAt
                     return order === 'asc' ? a.createdAt - b.createdAt : b.createdAt - a.createdAt;
                 }
 
                 // Number (createdAt)
                 if (valA < valB) return order === 'asc' ? -1 : 1;
-                if (valA > valB) return order === 'asc' ? 1 : -1;
+                if (valA > valB) return order === 'desc' ? 1 : -1;
                 return 0;
             });
             return sorted;
