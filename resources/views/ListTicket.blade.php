@@ -411,7 +411,7 @@
             const endIndex = startIndex + rowsPerPage;
 
             // Ambil subset data untuk halaman ini
-            const pageData = filteredData.slice(startIndex, endIndex);
+            const pageData = filteredData.slice(startIndex, endIndex).reverse();
 
             // Tampilkan row
             pageData.forEach(item => item.trElement.show());
