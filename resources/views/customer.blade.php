@@ -511,6 +511,7 @@
                     trElement: $tr,
                     subject: $tr.data('subject').toString().toLowerCase(),
                     status: $tr.data('status').toString().toLowerCase(),
+                    user: $tr.data('user').toString().toLowerCase(),
                     jenis_pengaduan: $tr.data('jenis-pengaduan').toString().toLowerCase(),
                     createdAt: parseInt($tr.data('created-at'))
                 });
