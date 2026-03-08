@@ -401,8 +401,14 @@
             filteredData = applySort(filteredData);
 
             if (currentSort.order === 'asc') {
-                filteredData = filteredData.reverse();
+                filteredData = filteredData.slice().reverse();
             }
+
+            // Debug: lihat urutan seluruh data setelah reverse
+            console.log('=== filteredData after reverse ===');
+            filteredData.forEach((item, index) => {
+                console.log(index + 1, item.createdAt, item.subject, item.user);
+            });
 
             totalPages = Math.ceil(filteredData.length / rowsPerPage);
             if (currentPage > totalPages) currentPage = totalPages || 1;
