@@ -739,17 +739,14 @@ class TeknisiController extends Controller
     }
 
     // Fungsi untuk menampilkan semua tiket
-    public function ListTicket(Request $request)
+    public function ListTicket()
     {
         // Dapatkan ID pengguna yang sedang login
         $userId = Auth::id();
 
-        // Ambil sort param, default 'desc'
-        $sort = $request->query('sort', 'desc'); // 'asc' = Terlama, 'desc' = Terbaru
-
-        // Ambil tiket beserta relasi
+        // Mengambil tiket beserta relasinya (user dan asignees)
         $teknisi_data_ticket = Ticket::with('user', 'asignees')
-            ->orderBy('created_at', $sort) // dinamis sesuai param
+            ->orderBy('created_at', 'desc')
             ->get();
 
         $teknisi_data_ticket->each(function ($ticket) use ($userId) {
