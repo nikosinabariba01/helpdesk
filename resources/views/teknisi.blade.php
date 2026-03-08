@@ -294,85 +294,39 @@
                 </div>
 
                 {{-- ROW 2 --}}
-                <div style="padding: 15px 16px; border-top: 1px solid #e4e4e4; background-color: #ffffff;"
-                    class="d-flex flex-column flex-md-row justify-content-between align-items-center flex-wrap">
-
-                    <!-- Left side: Filters / Dropdowns -->
-                    <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-                        <!-- Sort Dropdown -->
-                        <div class="dropdown" style="position: relative;">
-                            <button class="btn btn-sm btn-outline-secondary"
-                                style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                <span id="paginationDisplay">1-10 dari {{ $teknisi_data_ticket->count() }}</span>
-                                <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
-                            </button>
-                            <ul class="dropdown-menu" style="font-size: 13px; min-width: 150px;">
-                                <li><a class="dropdown-item page-sort-option" href="#" data-sort="desc"><i
-                                            class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru</a></li>
-                                <li><a class="dropdown-item page-sort-option" href="#" data-sort="asc"><i
-                                            class="fa fa-arrow-up me-2" style="color: #6c757d;"></i>Terlama</a></li>
-                            </ul>
-                        </div>
-
-                        <!-- Filter Jenis Pengaduan -->
-                        <div class="dropdown" style="position: relative; display: inline-block;">
-                            <button class="btn btn-sm btn-outline-secondary"
-                                style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
-                                type="button" id="filterJenisPengaduanBtn" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                <span id="filterJenisPengaduanDisplay">Jenis Pengaduan</span>
-                                <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="filterJenisPengaduanBtn"
-                                style="font-size: 13px; min-width: 150px;">
-                                <li><a class="dropdown-item filter-option" href="#"
-                                        data-filter-type="jenis_pengaduan" data-filter-value="">Semua</a></li>
-                                <li><a class="dropdown-item filter-option" href="#"
-                                        data-filter-type="jenis_pengaduan" data-filter-value="perbaikan">Perbaikan</a>
-                                </li>
-                                <li><a class="dropdown-item filter-option" href="#"
-                                        data-filter-type="jenis_pengaduan" data-filter-value="permintaan">Permintaan</a>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <!-- Filter Status -->
-                        <div class="dropdown" style="position: relative; display: inline-block;">
-                            <button class="btn btn-sm btn-outline-secondary"
-                                style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
-                                type="button" id="filterStatusBtn" data-bs-toggle="dropdown" aria-expanded="false">
-                                <span id="filterStatusDisplay">Status</span>
-                                <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="filterStatusBtn"
-                                style="font-size: 13px; min-width: 150px;">
-                                <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
-                                        data-filter-value="">Semua</a></li>
-                                <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
-                                        data-filter-value="open">Open</a></li>
-                                <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
-                                        data-filter-value="on process">On Process</a></li>
-                                <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
-                                        data-filter-value="escalated">Escalated</a></li>
-                                <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
-                                        data-filter-value="close">Close</a></li>
-                            </ul>
-                        </div>
+                <div class="row g-3 align-items-end mt-1">
+                    <div class="col-12 col-md-4">
+                        <label class="form-label mb-1">Status (opsional)</label>
+                        @php $status = request('status','all'); @endphp
+                        <select name="status" class="form-select form-select-sm">
+                            <option value="all" {{ $status === 'all' ? 'selected' : '' }}>Semua Status</option>
+                            <option value="open" {{ $status === 'open' ? 'selected' : '' }}>Open</option>
+                            <option value="on process" {{ $status === 'on process' ? 'selected' : '' }}>On Process
+                            </option>
+                            <option value="close" {{ $status === 'close' ? 'selected' : '' }}>Close</option>
+                            <option value="escalated" {{ $status === 'escalated' ? 'selected' : '' }}>Escalated</option>
+                        </select>
                     </div>
 
-                    <!-- Right side: Pagination -->
-                    <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-                        <button id="prevPage" class="btn btn-sm btn-outline-secondary"
-                            style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;"
-                            title="Halaman Sebelumnya">
-                            <i class="fa fa-chevron-left" style="font-size: 11px;"></i>
-                        </button>
-                        <button id="nextPage" class="btn btn-sm btn-outline-secondary"
-                            style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;"
-                            title="Halaman Berikutnya">
-                            <i class="fa fa-chevron-right" style="font-size: 11px;"></i>
-                        </button>
+                    <div class="col-12 col-md-4">
+                        <label class="form-label mb-1">Jenis (opsional)</label>
+                        @php $jenis = request('jenis','all'); @endphp
+                        <select name="jenis" class="form-select form-select-sm">
+                            <option value="all" {{ $jenis === 'all' ? 'selected' : '' }}>Semua Jenis</option>
+                            <option value="perbaikan" {{ $jenis === 'perbaikan' ? 'selected' : '' }}>Perbaikan</option>
+                            <option value="permintaan" {{ $jenis === 'permintaan' ? 'selected' : '' }}>Permintaan</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 col-md-5">
+                        <div class="d-flex gap-2 justify-content-md-start flex-column flex-md-row">
+                            <a href="{{ url()->current() }}" class="btn btn-soft btn-sm">
+                                <i class="fa fa-rotate-left me-1"></i> Reset
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-sm">
+                                <i class="fa fa-download me-1"></i> Download PDF
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -512,10 +466,12 @@
 
                             </table>
                         </div>
-                        <div
-                            style="padding: 15px 16px; border-top: 1px solid #e4e4e4; display: flex; justify-content: space-between; align-items: center; background-color: #ffffff;">
-                            <div style="display: flex; gap: 12px; align-items: center;">
-                                <!-- Pagination Info as Dropdown -->
+                        <div style="padding: 15px 16px; border-top: 1px solid #e4e4e4; background-color: #ffffff;"
+                            class="d-flex flex-column flex-md-row justify-content-between align-items-center flex-wrap">
+
+                            <!-- Left side: Filters / Dropdowns -->
+                            <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                                <!-- Sort Dropdown -->
                                 <div class="dropdown" style="position: relative;">
                                     <button class="btn btn-sm btn-outline-secondary"
                                         style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
@@ -524,17 +480,16 @@
                                         <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
                                     </button>
                                     <ul class="dropdown-menu" style="font-size: 13px; min-width: 150px;">
-                                        <li><a class="dropdown-item page-sort-option" href="#" data-sort="desc"
-                                                style="padding: 8px 16px;">
-                                                <i class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru
-                                            </a></li>
-                                        <li><a class="dropdown-item page-sort-option" href="#" data-sort="asc"
-                                                style="padding: 8px 16px;">
-                                                <i class="fa fa-arrow-up me-2" style="color: #6c757d;"></i>Terlama
-                                            </a></li>
+                                        <li><a class="dropdown-item page-sort-option" href="#" data-sort="desc"><i
+                                                    class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru</a>
+                                        </li>
+                                        <li><a class="dropdown-item page-sort-option" href="#" data-sort="asc"><i
+                                                    class="fa fa-arrow-up me-2" style="color: #6c757d;"></i>Terlama</a>
+                                        </li>
                                     </ul>
                                 </div>
-                                <!-- Filter Jenis Pengaduan Dropdown -->
+
+                                <!-- Filter Jenis Pengaduan -->
                                 <div class="dropdown" style="position: relative; display: inline-block;">
                                     <button class="btn btn-sm btn-outline-secondary"
                                         style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
@@ -546,32 +501,29 @@
                                     <ul class="dropdown-menu" aria-labelledby="filterJenisPengaduanBtn"
                                         style="font-size: 13px; min-width: 150px;">
                                         <li><a class="dropdown-item filter-option" href="#"
-                                                data-filter-type="jenis_pengaduan" data-filter-value=""
-                                                style="padding: 8px 16px;">Semua</a></li>
+                                                data-filter-type="jenis_pengaduan" data-filter-value="">Semua</a></li>
                                         <li><a class="dropdown-item filter-option" href="#"
-                                                data-filter-type="jenis_pengaduan" data-filter-value="perbaikan"
-                                                style="padding: 8px 16px;">Perbaikan</a></li>
+                                                data-filter-type="jenis_pengaduan"
+                                                data-filter-value="perbaikan">Perbaikan</a></li>
                                         <li><a class="dropdown-item filter-option" href="#"
-                                                data-filter-type="jenis_pengaduan" data-filter-value="permintaan"
-                                                style="padding: 8px 16px;">Permintaan</a></li>
+                                                data-filter-type="jenis_pengaduan"
+                                                data-filter-value="permintaan">Permintaan</a></li>
                                     </ul>
                                 </div>
                             </div>
 
-                            <div style="display: flex; gap: 12px; align-items: center;">
-                                <!-- Pagination Navigation -->
-                                <div style="display: flex; gap: 6px;">
-                                    <button id="prevPage" class="btn btn-sm btn-outline-secondary"
-                                        style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;"
-                                        title="Halaman Sebelumnya">
-                                        <i class="fa fa-chevron-left" style="font-size: 11px;"></i>
-                                    </button>
-                                    <button id="nextPage" class="btn btn-sm btn-outline-secondary"
-                                        style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;"
-                                        title="Halaman Berikutnya">
-                                        <i class="fa fa-chevron-right" style="font-size: 11px;"></i>
-                                    </button>
-                                </div>
+                            <!-- Right side: Pagination -->
+                            <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                                <button id="prevPage" class="btn btn-sm btn-outline-secondary"
+                                    style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;"
+                                    title="Halaman Sebelumnya">
+                                    <i class="fa fa-chevron-left" style="font-size: 11px;"></i>
+                                </button>
+                                <button id="nextPage" class="btn btn-sm btn-outline-secondary"
+                                    style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;"
+                                    title="Halaman Berikutnya">
+                                    <i class="fa fa-chevron-right" style="font-size: 11px;"></i>
+                                </button>
                             </div>
                         </div>
                     @endif
@@ -694,241 +646,246 @@
 
     </div>
 
-<script>
-    $(document).ready(function() {
-        // ========================
-        // 0. Inisialisasi Variabel
-        // ========================
-        const rowsPerPage = 10;
-        let ticketsData = [];
-        let currentPage = 1;
-        let totalPages = 1;
-        let currentSort = {
-            column: 'createdAt',
-            order: 'desc'
-        };
-        let currentFilters = {
-            status: '',
-            jenis_pengaduan: ''
-        };
-        let currentSearch = '';
+    <script>
+        $(document).ready(function() {
+            // ========================
+            // 0. Inisialisasi Variabel
+            // ========================
+            const rowsPerPage = 10;
+            let ticketsData = [];
+            let currentPage = 1;
+            let totalPages = 1;
+            let currentSort = {
+                column: 'createdAt',
+                order: 'desc'
+            };
+            let currentFilters = {
+                status: '',
+                jenis_pengaduan: ''
+            };
+            let currentSearch = '';
 
-        // Ambil semua row ke array
-        $('#TicketTable tbody tr').each(function() {
-            const $tr = $(this);
-            ticketsData.push({
-                trElement: $tr,
-                subject: $tr.data('subject').toString().toLowerCase(),
-                user: $tr.data('user').toString().toLowerCase(),
-                status: $tr.data('status').toString().toLowerCase(),
-                jenis_pengaduan: $tr.data('jenis-pengaduan').toString().toLowerCase(),
-                createdAt: parseInt($tr.data('created-at'))
+            // Ambil semua row ke array
+            $('#TicketTable tbody tr').each(function() {
+                const $tr = $(this);
+                ticketsData.push({
+                    trElement: $tr,
+                    subject: $tr.data('subject').toString().toLowerCase(),
+                    user: $tr.data('user').toString().toLowerCase(),
+                    status: $tr.data('status').toString().toLowerCase(),
+                    jenis_pengaduan: $tr.data('jenis-pengaduan').toString().toLowerCase(),
+                    createdAt: parseInt($tr.data('created-at'))
+                });
             });
-        });
 
-        // ========================
-        // 1. Filter
-        // ========================
-        function applyFilters(data) {
-            return data.filter(item => {
-                const matchStatus = currentFilters.status ? item.status === currentFilters.status : true;
-                const matchJenis = currentFilters.jenis_pengaduan ? item.jenis_pengaduan === currentFilters.jenis_pengaduan : true;
-                return matchStatus && matchJenis;
-            });
-        }
+            // ========================
+            // 1. Filter
+            // ========================
+            function applyFilters(data) {
+                return data.filter(item => {
+                    const matchStatus = currentFilters.status ? item.status === currentFilters.status :
+                    true;
+                    const matchJenis = currentFilters.jenis_pengaduan ? item.jenis_pengaduan ===
+                        currentFilters.jenis_pengaduan : true;
+                    return matchStatus && matchJenis;
+                });
+            }
 
-        // ========================
-        // 2. Search
-        // ========================
-        function applySearch(data) {
-            if (!currentSearch) return data;
-            const keyword = currentSearch.toLowerCase();
-            return data.filter(item =>
-                item.subject.includes(keyword) || item.user.includes(keyword)
-            );
-        }
+            // ========================
+            // 2. Search
+            // ========================
+            function applySearch(data) {
+                if (!currentSearch) return data;
+                const keyword = currentSearch.toLowerCase();
+                return data.filter(item =>
+                    item.subject.includes(keyword) || item.user.includes(keyword)
+                );
+            }
 
-        // ========================
-        // 3. Sort
-        // ========================
-        function applySort(data) {
-            const sorted = [...data];
-            const {
-                column,
-                order
-            } = currentSort;
-            sorted.sort((a, b) => {
-                let valA = a[column];
-                let valB = b[column];
+            // ========================
+            // 3. Sort
+            // ========================
+            function applySort(data) {
+                const sorted = [...data];
+                const {
+                    column,
+                    order
+                } = currentSort;
+                sorted.sort((a, b) => {
+                    let valA = a[column];
+                    let valB = b[column];
 
-                // String (subject, user, status) -> alfabetis
-                if (typeof valA === 'string') {
-                    valA = valA.toLowerCase();
-                    valB = valB.toLowerCase();
+                    // String (subject, user, status) -> alfabetis
+                    if (typeof valA === 'string') {
+                        valA = valA.toLowerCase();
+                        valB = valB.toLowerCase();
+                        if (valA < valB) return order === 'asc' ? -1 : 1;
+                        if (valA > valB) return order === 'asc' ? 1 : -1;
+                        // tie-break dengan createdAt
+                        return order === 'asc' ? a.createdAt - b.createdAt : b.createdAt - a.createdAt;
+                    }
+
+                    // Number (createdAt)
                     if (valA < valB) return order === 'asc' ? -1 : 1;
                     if (valA > valB) return order === 'asc' ? 1 : -1;
-                    // tie-break dengan createdAt
-                    return order === 'asc' ? a.createdAt - b.createdAt : b.createdAt - a.createdAt;
-                }
-
-                // Number (createdAt)
-                if (valA < valB) return order === 'asc' ? -1 : 1;
-                if (valA > valB) return order === 'asc' ? 1 : -1;
-                return 0;
-            });
-            return sorted;
-        }
-
-        // ========================
-        // 4. Render Table & Pagination
-        // ========================
-        function renderTable() {
-            let filteredData = applyFilters(ticketsData);
-            filteredData = applySearch(filteredData);
-            filteredData = applySort(filteredData);
-
-
-            totalPages = Math.ceil(filteredData.length / rowsPerPage);
-            if (currentPage > totalPages) currentPage = totalPages || 1;
-
-            // Hide all rows first
-            $('#TicketTable tbody tr').hide();
-
-            // Hitung start & end index
-            const startIndex = (currentPage - 1) * rowsPerPage;
-            const endIndex = startIndex + rowsPerPage;
-
-            // Ambil subset data untuk halaman ini
-            const pageData = filteredData.slice(startIndex, endIndex);
-            const $tbody = $('#TicketTable tbody');
-            const rowsToShow = pageData.map(item => item.trElement.detach()); // lepaskan row dari DOM
-            $tbody.append(rowsToShow); // append kembali
-            rowsToShow.forEach(r => r.show()); // tampilkan
-            // ===== DEBUG: urutan data per page =====
-            console.log('--- Page', currentPage, 'data per page ---');
-            console.table(pageData.map(item => ({
-                createdAt: item.createdAt,
-                subject: item.subject,
-                user: item.user
-            })));
-
+                    return 0;
+                });
+                return sorted;
+            }
 
             // ========================
-            // Update pagination display (asc/desc)
+            // 4. Render Table & Pagination
             // ========================
-            const totalRows = filteredData.length;
+            function renderTable() {
+                let filteredData = applyFilters(ticketsData);
+                filteredData = applySearch(filteredData);
+                filteredData = applySort(filteredData);
 
-            if (totalRows === 0) {
-                $('#paginationDisplay').text('0-0 dari 0');
-            } else {
-                const displayStart = startIndex + 1;
-                const displayEnd = Math.min(endIndex, totalRows);
 
-                if (currentSort.column === 'createdAt' && currentSort.order === 'desc') {
-                    // Descending → terbaru di atas
-                    $('#paginationDisplay').text(`${displayStart}-${displayEnd} dari ${totalRows}`);
-                } else if (currentSort.column === 'createdAt' && currentSort.order === 'asc') {
-                    // Ascending → terlama di atas → nomor tampilan dibalik
-                    const reversedStart = totalRows - startIndex;
-                    const reversedEnd = Math.max(reversedStart - (rowsPerPage - 1), 1);
-                    $('#paginationDisplay').text(`${reversedStart}-${reversedEnd} dari ${totalRows}`);
+                totalPages = Math.ceil(filteredData.length / rowsPerPage);
+                if (currentPage > totalPages) currentPage = totalPages || 1;
+
+                // Hide all rows first
+                $('#TicketTable tbody tr').hide();
+
+                // Hitung start & end index
+                const startIndex = (currentPage - 1) * rowsPerPage;
+                const endIndex = startIndex + rowsPerPage;
+
+                // Ambil subset data untuk halaman ini
+                const pageData = filteredData.slice(startIndex, endIndex);
+                const $tbody = $('#TicketTable tbody');
+                const rowsToShow = pageData.map(item => item.trElement.detach()); // lepaskan row dari DOM
+                $tbody.append(rowsToShow); // append kembali
+                rowsToShow.forEach(r => r.show()); // tampilkan
+                // ===== DEBUG: urutan data per page =====
+                console.log('--- Page', currentPage, 'data per page ---');
+                console.table(pageData.map(item => ({
+                    createdAt: item.createdAt,
+                    subject: item.subject,
+                    user: item.user
+                })));
+
+
+                // ========================
+                // Update pagination display (asc/desc)
+                // ========================
+                const totalRows = filteredData.length;
+
+                if (totalRows === 0) {
+                    $('#paginationDisplay').text('0-0 dari 0');
                 } else {
-                    // Kolom selain createdAt → numbering normal
-                    $('#paginationDisplay').text(`${displayStart}-${displayEnd} dari ${totalRows}`);
+                    const displayStart = startIndex + 1;
+                    const displayEnd = Math.min(endIndex, totalRows);
+
+                    if (currentSort.column === 'createdAt' && currentSort.order === 'desc') {
+                        // Descending → terbaru di atas
+                        $('#paginationDisplay').text(`${displayStart}-${displayEnd} dari ${totalRows}`);
+                    } else if (currentSort.column === 'createdAt' && currentSort.order === 'asc') {
+                        // Ascending → terlama di atas → nomor tampilan dibalik
+                        const reversedStart = totalRows - startIndex;
+                        const reversedEnd = Math.max(reversedStart - (rowsPerPage - 1), 1);
+                        $('#paginationDisplay').text(`${reversedStart}-${reversedEnd} dari ${totalRows}`);
+                    } else {
+                        // Kolom selain createdAt → numbering normal
+                        $('#paginationDisplay').text(`${displayStart}-${displayEnd} dari ${totalRows}`);
+                    }
                 }
+
+                // Enable/disable Prev/Next
+                $('#prevPage').prop('disabled', currentPage <= 1).css('opacity', currentPage <= 1 ? 0.5 : 1).css(
+                    'cursor', currentPage <= 1 ? 'not-allowed' : 'pointer');
+                $('#nextPage').prop('disabled', currentPage >= totalPages).css('opacity', currentPage >=
+                    totalPages ? 0.5 : 1).css('cursor', currentPage >= totalPages ? 'not-allowed' : 'pointer');
+
+                // Hapus ikon lama
+                $('#TicketTable thead th.sorting').removeClass('sorting_asc sorting_desc');
+                $('#TicketTable thead th.sorting .sort-icons').remove();
+
+                // Tambahkan ikon segitiga untuk kolom sortable (subject, user, status)
+                $('#TicketTable thead th.sorting').each(function() {
+                    const colText = $(this).text().trim().toLowerCase();
+                    if (currentSort.column === colText) {
+                        $(this).addClass(currentSort.order === 'asc' ? 'sorting_asc' : 'sorting_desc');
+                    }
+                    if (!$(this).find('.sort-icons').length) {
+                        $(this).append('<span class="sort-icons"></span>');
+                    }
+                });
             }
+            // ========================
+            // 5. Event Handlers
+            // ========================
 
-            // Enable/disable Prev/Next
-            $('#prevPage').prop('disabled', currentPage <= 1).css('opacity', currentPage <= 1 ? 0.5 : 1).css('cursor', currentPage <= 1 ? 'not-allowed' : 'pointer');
-            $('#nextPage').prop('disabled', currentPage >= totalPages).css('opacity', currentPage >= totalPages ? 0.5 : 1).css('cursor', currentPage >= totalPages ? 'not-allowed' : 'pointer');
-
-            // Hapus ikon lama
-            $('#TicketTable thead th.sorting').removeClass('sorting_asc sorting_desc');
-            $('#TicketTable thead th.sorting .sort-icons').remove();
-
-            // Tambahkan ikon segitiga untuk kolom sortable (subject, user, status)
-            $('#TicketTable thead th.sorting').each(function() {
-                const colText = $(this).text().trim().toLowerCase();
-                if (currentSort.column === colText) {
-                    $(this).addClass(currentSort.order === 'asc' ? 'sorting_asc' : 'sorting_desc');
-                }
-                if (!$(this).find('.sort-icons').length) {
-                    $(this).append('<span class="sort-icons"></span>');
-                }
+            // Search
+            $('#search').on('input', function() {
+                currentSearch = $(this).val().toLowerCase();
+                currentPage = 1;
+                renderTable();
             });
-        }
-        // ========================
-        // 5. Event Handlers
-        // ========================
 
-        // Search
-        $('#search').on('input', function() {
-            currentSearch = $(this).val().toLowerCase();
-            currentPage = 1;
+            // Filter dropdown
+            $('.filter-option').click(function(e) {
+                e.preventDefault();
+
+                const filterType = $(this).data('filter-type'); // "status" atau "jenis_pengaduan"
+                const filterValue = $(this).data('filter-value') || '';
+
+                // Simpan filter
+                currentFilters[filterType] = filterValue.toLowerCase();
+
+                // Update teks dropdown
+                if (filterType === 'status') {
+                    const displayText = filterValue ? `Status: ${$(this).text()}` : 'Status';
+                    $('#filterStatusDisplay').text(displayText);
+                } else if (filterType === 'jenis_pengaduan') {
+                    const displayText = filterValue ? `Jenis Pengaduan: ${$(this).text()}` :
+                        'Jenis Pengaduan';
+                    $('#filterJenisPengaduanDisplay').text(displayText);
+                }
+
+                // Reset page ke 1
+                currentPage = 1;
+                renderTable();
+            });
+
+            // Dropdown sort terbaru/terlama
+            $('.page-sort-option').click(function(e) {
+                e.preventDefault();
+                const sortOrder = $(this).data('sort');
+                currentSort.column = 'createdAt';
+                currentSort.order = sortOrder;
+                currentPage = 1;
+                renderTable();
+            });
+
+            // Sorting klik th
+            $('#TicketTable thead th.sorting').click(function() {
+                const colText = $(this).text().trim().toLowerCase();
+                if (colText === 'subject') currentSort.column = 'subject';
+                else if (colText === 'user') currentSort.column = 'user';
+                else if (colText === 'status') currentSort.column = 'status';
+                else return;
+
+                currentSort.order = (currentSort.order === 'asc') ? 'desc' : 'asc';
+                currentPage = 1;
+                renderTable();
+            });
+
+            // Pagination Prev/Next
+            $('#prevPage').click(function() {
+                if (currentPage > 1) currentPage--;
+                renderTable();
+            });
+            $('#nextPage').click(function() {
+                if (currentPage < totalPages) currentPage++;
+                renderTable();
+            });
+
+            // Initial render
             renderTable();
         });
-
-        // Filter dropdown
-        $('.filter-option').click(function(e) {
-            e.preventDefault();
-
-            const filterType = $(this).data('filter-type'); // "status" atau "jenis_pengaduan"
-            const filterValue = $(this).data('filter-value') || '';
-
-            // Simpan filter
-            currentFilters[filterType] = filterValue.toLowerCase();
-
-            // Update teks dropdown
-            if (filterType === 'status') {
-                const displayText = filterValue ? `Status: ${$(this).text()}` : 'Status';
-                $('#filterStatusDisplay').text(displayText);
-            } else if (filterType === 'jenis_pengaduan') {
-                const displayText = filterValue ? `Jenis Pengaduan: ${$(this).text()}` : 'Jenis Pengaduan';
-                $('#filterJenisPengaduanDisplay').text(displayText);
-            }
-
-            // Reset page ke 1
-            currentPage = 1;
-            renderTable();
-        });
-
-        // Dropdown sort terbaru/terlama
-        $('.page-sort-option').click(function(e) {
-            e.preventDefault();
-            const sortOrder = $(this).data('sort');
-            currentSort.column = 'createdAt';
-            currentSort.order = sortOrder;
-            currentPage = 1;
-            renderTable();
-        });
-
-        // Sorting klik th
-        $('#TicketTable thead th.sorting').click(function() {
-            const colText = $(this).text().trim().toLowerCase();
-            if (colText === 'subject') currentSort.column = 'subject';
-            else if (colText === 'user') currentSort.column = 'user';
-            else if (colText === 'status') currentSort.column = 'status';
-            else return;
-
-            currentSort.order = (currentSort.order === 'asc') ? 'desc' : 'asc';
-            currentPage = 1;
-            renderTable();
-        });
-
-        // Pagination Prev/Next
-        $('#prevPage').click(function() {
-            if (currentPage > 1) currentPage--;
-            renderTable();
-        });
-        $('#nextPage').click(function() {
-            if (currentPage < totalPages) currentPage++;
-            renderTable();
-        });
-
-        // Initial render
-        renderTable();
-    });
-</script>
+    </script>
 
     <style>
         /* Tetapkan space untuk ikon supaya kolom tidak bergeser */
