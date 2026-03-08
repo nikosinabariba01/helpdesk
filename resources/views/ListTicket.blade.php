@@ -388,19 +388,22 @@
             $('#TicketTable tbody tr').hide();
             pageData.forEach(item => item.trElement.show());
 
-            const startDisplay = filteredData.length === 0 ? 0 : startIndex + 1;
-            const endDisplay = Math.min(endIndex, filteredData.length);
-            $('#paginationDisplay').text(`${startDisplay}-${endDisplay} dari ${filteredData.length}`);
-
+            $('#paginationDisplay').text(`${startIndex + 1}-${Math.min(endIndex, filteredData.length)} dari ${filteredData.length}`);
             $('#prevPage').prop('disabled', currentPage <= 1);
             $('#nextPage').prop('disabled', currentPage >= totalPages);
 
-            $('#TicketTable thead th.sorting').removeClass('sorting_asc sorting_desc');
-            let th;
-            if (currentSort.column === 'subject') th = $('#TicketTable thead th').filter((i, el) => $(el).text().trim().toLowerCase() === 'subject');
-            if (currentSort.column === 'user') th = $('#TicketTable thead th').filter((i, el) => $(el).text().trim().toLowerCase() === 'user');
-            if (currentSort.column === 'status') th = $('#TicketTable thead th').filter((i, el) => $(el).text().trim().toLowerCase() === 'status');
-            if (th) th.addClass(currentSort.order === 'asc' ? 'sorting_asc' : 'sorting_desc');
+            // Hapus semua ikon sorting
+            $('#TicketTable thead th.sorting i.sort-icon').remove();
+
+            // Tambahkan ikon sorting untuk kolom selain createdAt
+            $('#TicketTable thead th.sorting').each(function() {
+                const colText = $(this).text().trim().toLowerCase();
+                if (colText === currentSort.column) {
+                    // ascending / descending icon
+                    const iconClass = currentSort.order === 'asc' ? 'fa fa-sort-asc sort-icon' : 'fa fa-sort-desc sort-icon';
+                    $(this).append(' <i class="' + iconClass + '"></i>');
+                }
+            });
         }
 
         // Event Handlers
@@ -409,6 +412,7 @@
             currentPage = 1;
             renderTable();
         });
+
         $('.filter-option').click(function(e) {
             e.preventDefault();
             const filterType = $(this).data('filter-type');
@@ -420,7 +424,7 @@
         $('.page-sort-option').click(function(e) {
             e.preventDefault();
             const sortOrder = $(this).data('sort');
-            currentSort.column = 'createdAt';
+            currentSort.column = 'createdAt'; // tetap column tanggal
             currentSort.order = sortOrder === 'asc' ? 'asc' : 'desc';
             currentPage = 1;
             renderTable();
