@@ -413,16 +413,11 @@
 
             // Ambil subset data untuk halaman ini
             const pageData = filteredData.slice(startIndex, endIndex);
-            // ===== DEBUG: urutan data per page =====
-            console.log('--- Page', currentPage, 'data per page ---');
-            console.table(pageData.map(item => ({
-                createdAt: item.createdAt,
-                subject: item.subject,
-                user: item.user
-            })));
 
             // Tampilkan row
-            pageData.forEach(item => item.trElement.show());
+            const $tbody = $('#TicketTable tbody');
+            $tbody.empty(); // Kosongkan tbody dulu
+            pageData.forEach(item => $tbody.append(item.trElement));
 
             // ========================
             // Update pagination display (asc/desc)
