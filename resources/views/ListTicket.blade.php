@@ -336,9 +336,7 @@
             });
         });
 
-        // ========================
         // Filter dataset
-        // ========================
         function applyFilters(data) {
             return data.filter(item => {
                 const matchStatus = currentFilters.status ? item.status === currentFilters.status : true;
@@ -347,9 +345,7 @@
             });
         }
 
-        // ========================
         // Search dataset
-        // ========================
         function applySearch(data) {
             if (!currentSearch) return data;
             const keyword = currentSearch.toLowerCase();
@@ -358,9 +354,7 @@
             );
         }
 
-        // ========================
         // Sort seluruh dataset relevan
-        // ========================
         function applySort(data) {
             const sorted = [...data];
             const {
@@ -386,9 +380,7 @@
             return sorted;
         }
 
-        // ========================
-        // Render Table & Pagination
-        // ========================
+        // Render table & pagination
         function renderTable() {
             let filteredData = applyFilters(ticketsData);
             filteredData = applySearch(filteredData);
@@ -400,32 +392,27 @@
             let startIndex, endIndex, pageData;
 
             if (currentSort.order === 'asc') {
-                // Slice untuk terlama → page 1 menampilkan data tertua
                 startIndex = filteredData.length - currentPage * rowsPerPage;
                 startIndex = Math.max(0, startIndex);
                 endIndex = startIndex + rowsPerPage;
                 pageData = filteredData.slice(startIndex, endIndex);
             } else {
-                // Slice untuk terbaru
                 startIndex = (currentPage - 1) * rowsPerPage;
                 endIndex = startIndex + rowsPerPage;
                 pageData = filteredData.slice(startIndex, endIndex);
             }
 
-            // Show hanya pageData
             $('#TicketTable tbody tr').hide();
             pageData.forEach(item => item.trElement.show());
 
-            // Update pagination display
             const startDisplay = filteredData.length === 0 ? 0 : startIndex + 1;
             const endDisplay = Math.min(endIndex, filteredData.length);
             $('#paginationDisplay').text(`${startDisplay}-${endDisplay} dari ${filteredData.length}`);
 
-            // Enable/disable Prev/Next
             $('#prevPage').prop('disabled', currentPage <= 1);
             $('#nextPage').prop('disabled', currentPage >= totalPages);
 
-            // Update sort icons DataTables
+            // Sorting icons DataTables
             $('#TicketTable thead th.sorting').removeClass('sorting_asc sorting_desc');
             let th;
             if (currentSort.column === 'subject') th = $('#TicketTable thead th').filter((i, el) => $(el).text().trim().toLowerCase() === 'subject');
@@ -436,9 +423,7 @@
             }
         }
 
-        // ========================
         // Event Handlers
-        // ========================
         $('#search').on('input', function() {
             currentSearch = $(this).val().toLowerCase();
             currentPage = 1;
@@ -457,7 +442,7 @@
         // Dropdown Terbaru/Terlama
         $('.page-sort-option').click(function(e) {
             e.preventDefault();
-            const sortOrder = $(this).data('sort'); // "asc" atau "desc"
+            const sortOrder = $(this).data('sort');
             currentSort.column = 'createdAt';
             currentSort.order = sortOrder === 'asc' ? 'asc' : 'desc';
             currentPage = 1;
