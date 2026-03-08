@@ -40,16 +40,15 @@
                     <div class="table-responsive margin-right: 15px;"
                         style="height: 400px; max-height: 400px; overflow-y: auto;">
                         <table class="table align-items-center mb-0 " id="TicketTable">
-
                             <thead>
                                 <tr>
-                                    <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
                                         style="padding: 10px;">subject</th>
-                                    <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
                                         style="padding: 10px;">Status</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
                                         style="padding: 10px;">Deskripsi</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
+                                    <th class="text-secondary text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
                                         style="padding: 10px;">aksi</th>
                                 </tr>
                             </thead>
@@ -58,8 +57,9 @@
                                     <tr class="align-middle text-sm border border-light"
                                         data-created-at="{{ $dataticket->created_at->timestamp }}"
                                         data-jenis-pengaduan="{{ $dataticket->Jenis_Pengaduan }}"
-                                        data-status="{{ $dataticket->status }}" data-subject="{{ $dataticket->subject }}">
-                                        <td class="align-middle text-sm border border-light">
+                                        data-status="{{ $dataticket->status }}">
+                                        <td class="align-middle text-sm border border-light"
+                                            data-subject="{{ $dataticket->subject }}">
                                             <div class="d-flex px-2 py-1">
                                                 <div class="d-flex flex-column justify-content-center">
                                                     <h6 class="mb-0 text-s text-limit-35" title="Subject">
@@ -85,7 +85,8 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="align-middle text-center text-sm border border-light">
+                                        <td class="align-middle text-center text-sm border border-light"
+                                            data-status="{{ $dataticket->status }}">
                                             <x-status-badge :status="$dataticket->status" />
                                         </td>
                                         <td class="align-middle text-center text-limit-30 border border-light">
@@ -142,12 +143,10 @@
                         </table>
                     </div>
                     <!-- Pagination and Sorting Controls -->
-                    <div style="padding: 15px 16px; border-top: 1px solid #e4e4e4; background-color: #ffffff;"
-                        class="d-flex flex-column flex-md-row justify-content-between align-items-center flex-wrap">
-
-                        <!-- Left side: Filters / Dropdowns -->
-                        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-                            <!-- Sort Dropdown -->
+                    <div
+                        style="padding: 15px 16px; border-top: 1px solid #e4e4e4; display: flex; justify-content: space-between; align-items: center; background-color: #ffffff;">
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <!-- Pagination Info as Dropdown -->
                             <div class="dropdown" style="position: relative;">
                                 <button class="btn btn-sm btn-outline-secondary"
                                     style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
@@ -156,16 +155,17 @@
                                     <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
                                 </button>
                                 <ul class="dropdown-menu" style="font-size: 13px; min-width: 150px;">
-                                    <li><a class="dropdown-item page-sort-option" href="#" data-sort="desc"><i
-                                                class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru</a>
-                                    </li>
-                                    <li><a class="dropdown-item page-sort-option" href="#" data-sort="asc"><i
-                                                class="fa fa-arrow-up me-2" style="color: #6c757d;"></i>Terlama</a>
-                                    </li>
+                                    <li><a class="dropdown-item page-sort-option" href="#" data-sort="desc"
+                                            style="padding: 8px 16px;">
+                                            <i class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru
+                                        </a></li>
+                                    <li><a class="dropdown-item page-sort-option" href="#" data-sort="asc"
+                                            style="padding: 8px 16px;">
+                                            <i class="fa fa-arrow-up me-2" style="color: #6c757d;"></i>Terlama
+                                        </a></li>
                                 </ul>
                             </div>
-
-                            <!-- Filter Jenis Pengaduan -->
+                            <!-- Filter Jenis Pengaduan Dropdown -->
                             <div class="dropdown" style="position: relative; display: inline-block;">
                                 <button class="btn btn-sm btn-outline-secondary"
                                     style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
@@ -177,29 +177,54 @@
                                 <ul class="dropdown-menu" aria-labelledby="filterJenisPengaduanBtn"
                                     style="font-size: 13px; min-width: 150px;">
                                     <li><a class="dropdown-item filter-option" href="#"
-                                            data-filter-type="jenis_pengaduan" data-filter-value="">Semua</a></li>
+                                            data-filter-type="jenis_pengaduan" data-filter-value=""
+                                            style="padding: 8px 16px;">Semua</a></li>
                                     <li><a class="dropdown-item filter-option" href="#"
-                                            data-filter-type="jenis_pengaduan" data-filter-value="perbaikan">Perbaikan</a>
-                                    </li>
+                                            data-filter-type="jenis_pengaduan" data-filter-value="perbaikan"
+                                            style="padding: 8px 16px;">Perbaikan</a></li>
                                     <li><a class="dropdown-item filter-option" href="#"
-                                            data-filter-type="jenis_pengaduan"
-                                            data-filter-value="permintaan">Permintaan</a></li>
+                                            data-filter-type="jenis_pengaduan" data-filter-value="permintaan"
+                                            style="padding: 8px 16px;">Permintaan</a></li>
+                                </ul>
+                            </div>
+
+                            <!-- Filter Status Dropdown -->
+                            <div class="dropdown" style="position: relative; display: inline-block;">
+                                <button class="btn btn-sm btn-outline-secondary"
+                                    style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
+                                    type="button" id="filterStatusBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span id="filterStatusDisplay">Status</span>
+                                    <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="filterStatusBtn"
+                                    style="font-size: 13px; min-width: 150px;">
+                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
+                                            data-filter-value="" style="padding: 8px 16px;">Semua</a></li>
+                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
+                                            data-filter-value="open" style="padding: 8px 16px;">Open</a></li>
+                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
+                                            data-filter-value="on process" style="padding: 8px 16px;">On Process</a></li>
+                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
+                                            data-filter-value="escalated" style="padding: 8px 16px;">Escalated</a></li>
+                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
+                                            data-filter-value="close" style="padding: 8px 16px;">Close</a></li>
                                 </ul>
                             </div>
                         </div>
-
-                        <!-- Right side: Pagination -->
-                        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-                            <button id="prevPage" class="btn btn-sm btn-outline-secondary"
-                                style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;"
-                                title="Halaman Sebelumnya">
-                                <i class="fa fa-chevron-left" style="font-size: 11px;"></i>
-                            </button>
-                            <button id="nextPage" class="btn btn-sm btn-outline-secondary"
-                                style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;"
-                                title="Halaman Berikutnya">
-                                <i class="fa fa-chevron-right" style="font-size: 11px;"></i>
-                            </button>
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <!-- Pagination Navigation -->
+                            <div style="display: flex; gap: 6px;">
+                                <button id="prevPage" class="btn btn-sm btn-outline-secondary"
+                                    style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;"
+                                    title="Halaman Sebelumnya">
+                                    <i class="fa fa-chevron-left" style="font-size: 11px;"></i>
+                                </button>
+                                <button id="nextPage" class="btn btn-sm btn-outline-secondary"
+                                    style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;"
+                                    title="Halaman Berikutnya">
+                                    <i class="fa fa-chevron-right" style="font-size: 11px;"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 @endif
