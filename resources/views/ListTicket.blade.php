@@ -400,7 +400,7 @@
             filteredData = applySearch(filteredData);
             filteredData = applySort(filteredData);
 
-            if (currentSort.order === 'asc') {
+            if (currentSort.order === 'desc') {
                 filteredData = filteredData.slice().reverse();
             }
 
