@@ -91,7 +91,8 @@ class CustomerController extends Controller
             ->where('user_id', $userId)
             ->where(function ($query) {
                 $query->where('status', 'open')
-                    ->orWhere('status', 'on process');
+                    ->orWhere('status', 'on process')
+                    ->orWhere('status', 'escalated');
             })
             ->orderBy('created_at', 'desc')
             ->get();
