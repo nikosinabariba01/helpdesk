@@ -316,14 +316,14 @@
         let currentSort = {
             column: 'createdAt',
             order: 'desc'
-        }; // default Terbaru
+        };
         let currentFilters = {
             status: '',
             jenis_pengaduan: ''
         };
         let currentSearch = '';
 
-        // Ambil semua row dari DOM ke array JS
+        // Ambil semua row ke array JS
         $('#TicketTable tbody tr').each(function() {
             const $tr = $(this);
             ticketsData.push({
@@ -336,9 +336,7 @@
             });
         });
 
-        // =====================
-        // Filter
-        // =====================
+        // Filter dataset
         function applyFilters(data) {
             return data.filter(item => {
                 const matchStatus = currentFilters.status ? item.status === currentFilters.status : true;
@@ -347,9 +345,7 @@
             });
         }
 
-        // =====================
-        // Search
-        // =====================
+        // Search dataset
         function applySearch(data) {
             if (!currentSearch) return data;
             const keyword = currentSearch.toLowerCase();
@@ -358,16 +354,13 @@
             );
         }
 
-        // =====================
-        // Sort (termasuk createdAt untuk Terbaru/Terlama)
-        // =====================
+        // Sort dataset
         function applySort(data) {
             const sorted = [...data];
             const {
                 column,
                 order
             } = currentSort;
-
             sorted.sort((a, b) => {
                 let valA = a[column];
                 let valB = b[column];
@@ -380,16 +373,12 @@
                         (valA < valB ? 1 : valA > valB ? -1 : 0);
                 }
 
-                // sorting numeric (createdAt)
                 return order === 'asc' ? valA - valB : valB - valA;
             });
-
-            return sorted.reverse();
+            return sorted;
         }
 
-        // =====================
-        // Render Table + Pagination + Sort Icons
-        // =====================
+        // Render table + pagination + sort icons
         function renderTable() {
             let filteredData = applyFilters(ticketsData);
             filteredData = applySearch(filteredData);
@@ -402,6 +391,12 @@
             const endIndex = startIndex + rowsPerPage;
             const pageData = filteredData.slice(startIndex, endIndex);
 
+            // Reverse per page jika sorting asc pada createdAt
+            if (currentSort.column === 'createdAt' && currentSort.order === 'asc') {
+                pageData.reverse();
+            }
+
+            // Tampilkan page
             $('#TicketTable tbody tr').hide();
             pageData.forEach(item => item.trElement.show());
 
@@ -409,12 +404,11 @@
             $('#prevPage').prop('disabled', currentPage <= 1);
             $('#nextPage').prop('disabled', currentPage >= totalPages);
 
-            // =====================
-            // Sort Icons
-            // =====================
+            // Hapus ikon lama
             $('#TicketTable thead th.sorting').removeClass('sorting_asc sorting_desc');
             $('#TicketTable thead th.sorting .sort-icons').remove();
 
+            // Tambahkan ikon segitiga untuk kolom sortable (subject, user, status)
             $('#TicketTable thead th.sorting').each(function() {
                 const colText = $(this).text().trim().toLowerCase();
                 if (currentSort.column === colText) {
@@ -426,15 +420,14 @@
             });
         }
 
-        // =====================
-        // Event Handlers
-        // =====================
+        // Search input
         $('#search').on('input', function() {
             currentSearch = $(this).val().toLowerCase();
             currentPage = 1;
             renderTable();
         });
 
+        // Filter dropdown
         $('.filter-option').click(function(e) {
             e.preventDefault();
             const filterType = $(this).data('filter-type');
@@ -443,6 +436,7 @@
             renderTable();
         });
 
+        // Dropdown Terbaru/Terlama (tanggal)
         $('.page-sort-option').click(function(e) {
             e.preventDefault();
             const sortOrder = $(this).data('sort');
@@ -455,6 +449,7 @@
             $(this).addClass('active');
         });
 
+        // Klik kolom sortable (subject/user/status)
         $('#TicketTable thead th.sorting').click(function() {
             const colText = $(this).text().trim().toLowerCase();
             if (colText === 'subject') currentSort.column = 'subject';
@@ -467,6 +462,7 @@
             renderTable();
         });
 
+        // Prev/Next pagination
         $('#prevPage').click(function() {
             if (currentPage > 1) currentPage--;
             renderTable();
@@ -476,6 +472,7 @@
             renderTable();
         });
 
+        // Initial render
         renderTable();
     });
 </script>
