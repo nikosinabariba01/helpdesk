@@ -391,7 +391,7 @@
             const endIndex = startIndex + rowsPerPage;
             const pageData = filteredData.slice(startIndex, endIndex);
             // Jika sorting Terlama (asc) untuk createdAt, reverse pageData saja
-            if (currentSort.column === 'createdAt' && currentSort.order === 'asc') {
+            if (currentSort.column === 'createdAt' && currentSort.order === 'desc') {
                 pageData.reverse(); // <- reverse hanya per page
             }
 
