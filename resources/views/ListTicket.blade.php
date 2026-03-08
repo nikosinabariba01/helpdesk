@@ -400,19 +400,19 @@
             let startIndex, endIndex, pageData;
 
             if (currentSort.order === 'asc') {
-                // Slice dari belakang untuk terlama
+                // Slice untuk terlama → page 1 menampilkan data tertua
                 startIndex = filteredData.length - currentPage * rowsPerPage;
                 startIndex = Math.max(0, startIndex);
                 endIndex = startIndex + rowsPerPage;
                 pageData = filteredData.slice(startIndex, endIndex);
             } else {
-                // Slice normal untuk terbaru
+                // Slice untuk terbaru
                 startIndex = (currentPage - 1) * rowsPerPage;
                 endIndex = startIndex + rowsPerPage;
                 pageData = filteredData.slice(startIndex, endIndex);
             }
 
-            // Tampilkan data di tabel
+            // Show hanya pageData
             $('#TicketTable tbody tr').hide();
             pageData.forEach(item => item.trElement.show());
 
@@ -454,15 +454,21 @@
             renderTable();
         });
 
+        // Dropdown Terbaru/Terlama
         $('.page-sort-option').click(function(e) {
             e.preventDefault();
-            const sortOrder = $(this).data('sort');
+            const sortOrder = $(this).data('sort'); // "asc" atau "desc"
             currentSort.column = 'createdAt';
-            currentSort.order = sortOrder;
+            currentSort.order = sortOrder === 'asc' ? 'asc' : 'desc';
             currentPage = 1;
             renderTable();
+
+            // Highlight dropdown aktif
+            $('.page-sort-option').removeClass('active');
+            $(this).addClass('active');
         });
 
+        // Klik th untuk sort kolom
         $('#TicketTable thead th.sorting').click(function() {
             const colText = $(this).text().trim().toLowerCase();
             if (colText === 'subject') currentSort.column = 'subject';
