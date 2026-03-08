@@ -400,8 +400,8 @@
             filteredData = applySearch(filteredData);
             filteredData = applySort(filteredData);
 
-            if (currentSort.order === 'desc') {
-                filteredData = filteredData.slice().reverse();
+            if (currentSort.order === 'asc') {
+                filteredData = filteredData.reverse();
             }
 
             totalPages = Math.ceil(filteredData.length / rowsPerPage);
