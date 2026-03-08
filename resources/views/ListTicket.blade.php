@@ -316,7 +316,7 @@
         let currentSort = {
             column: 'createdAt',
             order: 'desc'
-        };
+        }; // default Terbaru
         let currentFilters = {
             status: '',
             jenis_pengaduan: ''
@@ -336,6 +336,10 @@
             });
         });
 
+        // Inisialisasi default: urut terbaru
+        ticketsData.sort((a, b) => b.createdAt - a.createdAt);
+
+        // =========================
         // Filter dataset
         function applyFilters(data) {
             return data.filter(item => {
@@ -345,6 +349,7 @@
             });
         }
 
+        // =========================
         // Search dataset
         function applySearch(data) {
             if (!currentSearch) return data;
@@ -354,6 +359,7 @@
             );
         }
 
+        // =========================
         // Sort dataset
         function applySort(data) {
             const sorted = [...data];
@@ -361,23 +367,23 @@
                 column,
                 order
             } = currentSort;
+
+            if (column === 'createdAt') {
+                return sorted.sort((a, b) => order === 'asc' ? a[column] - b[column] : b[column] - a[column]);
+            }
+
+            // Sorting alfabetis untuk kolom lainnya
             sorted.sort((a, b) => {
-                let valA = a[column];
-                let valB = b[column];
-
-                if (typeof valA === 'string') {
-                    valA = valA.toLowerCase();
-                    valB = valB.toLowerCase();
-                    return order === 'asc' ?
-                        (valA < valB ? -1 : valA > valB ? 1 : 0) :
-                        (valA < valB ? 1 : valA > valB ? -1 : 0);
-                }
-
-                return order === 'asc' ? valA - valB : valB - valA;
+                let valA = a[column].toLowerCase();
+                let valB = b[column].toLowerCase();
+                return order === 'asc' ?
+                    (valA < valB ? -1 : valA > valB ? 1 : 0) :
+                    (valA < valB ? 1 : valA > valB ? -1 : 0);
             });
             return sorted;
         }
 
+        // =========================
         // Render table + pagination + sort icons
         function renderTable() {
             let filteredData = applyFilters(ticketsData);
@@ -389,12 +395,18 @@
 
             const startIndex = (currentPage - 1) * rowsPerPage;
             const endIndex = startIndex + rowsPerPage;
-            const pageData = filteredData.slice(startIndex, endIndex);
+            let pageData = filteredData.slice(startIndex, endIndex);
+
+            // Reverse per page jika Terlama (asc) untuk UX
+            if (currentSort.column === 'createdAt' && currentSort.order === 'asc') {
+                pageData.reverse();
+            }
 
             // Tampilkan page
             $('#TicketTable tbody tr').hide();
             pageData.forEach(item => item.trElement.show());
 
+            // Update pagination
             $('#paginationDisplay').text(`${startIndex + 1}-${Math.min(endIndex, filteredData.length)} dari ${filteredData.length}`);
             $('#prevPage').prop('disabled', currentPage <= 1);
             $('#nextPage').prop('disabled', currentPage >= totalPages);
@@ -415,14 +427,17 @@
             });
         }
 
-        // Search input
+        // =========================
+        // Event Handlers
+
+        // Search
         $('#search').on('input', function() {
             currentSearch = $(this).val().toLowerCase();
             currentPage = 1;
             renderTable();
         });
 
-        // Filter dropdown
+        // Filter
         $('.filter-option').click(function(e) {
             e.preventDefault();
             const filterType = $(this).data('filter-type');
@@ -457,7 +472,7 @@
             renderTable();
         });
 
-        // Prev/Next pagination
+        // Pagination Prev/Next
         $('#prevPage').click(function() {
             if (currentPage > 1) currentPage--;
             renderTable();
@@ -473,55 +488,65 @@
 </script>
 
 <style>
-/* Tetapkan space untuk ikon supaya kolom tidak bergeser */
-th.sorting {
-    position: relative;
-    cursor: pointer;
-    user-select: none;
-    padding-right: 30px; /* space tetap untuk ikon */
-    width: 150px; /* opsional, bisa disesuaikan lebar kolom */
-}
+    /* Tetapkan space untuk ikon supaya kolom tidak bergeser */
+    th.sorting {
+        position: relative;
+        cursor: pointer;
+        user-select: none;
+        padding-right: 30px;
+        /* space tetap untuk ikon */
+        width: 150px;
+        /* opsional, bisa disesuaikan lebar kolom */
+    }
 
-/* container ikon */
-th.sorting .sort-icons {
-    position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    display: flex;
-    flex-direction: column;
-    font-size: 1em;
-    line-height: 0.7em;
-    width: 16px;   /* fix width ikon supaya tidak memengaruhi layout */
-    height: 16px;  /* fix height juga */
-}
+    /* container ikon */
+    th.sorting .sort-icons {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        font-size: 1em;
+        line-height: 0.7em;
+        width: 16px;
+        /* fix width ikon supaya tidak memengaruhi layout */
+        height: 16px;
+        /* fix height juga */
+    }
 
-/* default abu-abu */
-th.sorting .sort-icons::before,
-th.sorting .sort-icons::after {
-    color: #ccc;
-}
+    /* default abu-abu */
+    th.sorting .sort-icons::before,
+    th.sorting .sort-icons::after {
+        color: #ccc;
+    }
 
-/* ascending active */
-th.sorting.sorting_asc .sort-icons::before {
-    color: #000;
-}
-th.sorting.sorting_asc .sort-icons::after {
-    color: #ccc;
-}
+    /* ascending active */
+    th.sorting.sorting_asc .sort-icons::before {
+        color: #000;
+    }
 
-/* descending active */
-th.sorting.sorting_desc .sort-icons::before {
-    color: #ccc;
-}
-th.sorting.sorting_desc .sort-icons::after {
-    color: #000;
-}
+    th.sorting.sorting_asc .sort-icons::after {
+        color: #ccc;
+    }
 
-/* isi segitiga */
-th.sorting .sort-icons::before { content: "▲"; }
-th.sorting .sort-icons::after { content: "▼"; }
-    
+    /* descending active */
+    th.sorting.sorting_desc .sort-icons::before {
+        color: #ccc;
+    }
+
+    th.sorting.sorting_desc .sort-icons::after {
+        color: #000;
+    }
+
+    /* isi segitiga */
+    th.sorting .sort-icons::before {
+        content: "▲";
+    }
+
+    th.sorting .sort-icons::after {
+        content: "▼";
+    }
 </style>
 
 @endsection
