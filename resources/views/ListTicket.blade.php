@@ -400,6 +400,10 @@
             filteredData = applySearch(filteredData);
             filteredData = applySort(filteredData);
 
+            if (currentSort.order === 'asc') {
+                filteredData = filteredData.slice().reverse();
+            }
+
             totalPages = Math.ceil(filteredData.length / rowsPerPage);
             if (currentPage > totalPages) currentPage = totalPages || 1;
 
@@ -411,7 +415,7 @@
             const endIndex = startIndex + rowsPerPage;
 
             // Ambil subset data untuk halaman ini
-            const pageData = filteredData.slice(startIndex, endIndex).reverse();
+            const pageData = filteredData.slice(startIndex, endIndex);
 
             // Tampilkan row
             pageData.forEach(item => item.trElement.show());
