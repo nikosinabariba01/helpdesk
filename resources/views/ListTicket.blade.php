@@ -473,65 +473,54 @@
 </script>
 
 <style>
-    /* =========================
-   DataTables-style sort icons
+/* =========================
+   DataTables-style sort icons - diperbesar
    ========================= */
-    th.sorting {
-        position: relative;
-        cursor: pointer;
-        user-select: none;
-        padding-right: 20px;
-        /* space for icons */
-    }
+th.sorting {
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+    padding-right: 25px; /* space lebih besar untuk ikon */
+}
 
-    /* icon container */
-    th.sorting .sort-icons {
-        position: absolute;
-        right: 8px;
-        top: 50%;
-        transform: translateY(-50%);
-        display: flex;
-        flex-direction: column;
-        font-size: 0.6em;
-        line-height: 0.6em;
-    }
+/* container ikon */
+th.sorting .sort-icons {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    font-size: 1em; /* diperbesar dari 0.6em */
+    line-height: 0.7em;
+}
 
-    /* default segitiga abu-abu */
-    th.sorting .sort-icons::before,
-    th.sorting .sort-icons::after {
-        color: #ccc;
-    }
+/* default abu-abu */
+th.sorting .sort-icons::before,
+th.sorting .sort-icons::after {
+    color: #ccc;
+}
 
-    /* ascending active */
-    th.sorting.sorting_asc .sort-icons::before {
-        color: #000;
-        /* atas hitam */
-    }
+/* ascending active */
+th.sorting.sorting_asc .sort-icons::before {
+    color: #000; /* atas hitam */
+}
+th.sorting.sorting_asc .sort-icons::after {
+    color: #ccc; /* bawah abu */
+}
 
-    th.sorting.sorting_asc .sort-icons::after {
-        color: #ccc;
-        /* bawah abu */
-    }
+/* descending active */
+th.sorting.sorting_desc .sort-icons::before {
+    color: #ccc; /* atas abu */
+}
+th.sorting.sorting_desc .sort-icons::after {
+    color: #000; /* bawah hitam */
+}
 
-    /* descending active */
-    th.sorting.sorting_desc .sort-icons::before {
-        color: #ccc;
-        /* atas abu */
-    }
-
-    th.sorting.sorting_desc .sort-icons::after {
-        color: #000;
-        /* bawah hitam */
-    }
-
-    /* content segitiga */
-    th.sorting .sort-icons::before {
-        content: "▲";
-    }
-
-    th.sorting .sort-icons::after {
-        content: "▼";
-    }
+/* isi segitiga */
+th.sorting .sort-icons::before { content: "▲"; }
+th.sorting .sort-icons::after { content: "▼"; }
+    
 </style>
 
 @endsection
