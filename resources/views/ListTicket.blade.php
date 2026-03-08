@@ -368,6 +368,15 @@
                 order
             } = currentSort;
 
+            if (column === 'createdAt') {
+                // Sorting tanggal: jika asc, balik array karena controller sudah desc
+                if (order === 'asc') {
+                    return sorted.reverse();
+                }
+
+                return sorted; // desc tetap seperti di controller
+            }
+
             sorted.sort((a, b) => {
                 let valA = a[column];
                 let valB = b[column];
