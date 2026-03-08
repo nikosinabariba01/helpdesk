@@ -415,7 +415,7 @@
             const pageData = filteredData.slice(startIndex, endIndex);
 
             // Tampilkan row
-            pageData.forEach(item => item.trElement.append());
+            pageData.forEach(item => item.trElement.append(row));
 
             // ========================
             // Update pagination display (asc/desc)
