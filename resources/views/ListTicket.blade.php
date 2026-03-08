@@ -214,28 +214,34 @@
                     </tbody>
                 </table>
             </div>
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center p-3 border-top bg-white">
-                <!-- Left side: Filters -->
-                <div class="d-flex flex-wrap align-items-center gap-2 mb-2 mb-md-0">
-                    <!-- Sort Dropdown Terbaru/Terlama -->
-                    <div class="dropdown">
-                        <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1" type="button" id="paginationSortBtn" data-bs-toggle="dropdown" aria-expanded="false">
+            <div style="padding: 15px 16px; border-top: 1px solid #e4e4e4; background-color: #ffffff;"
+                class="d-flex flex-column flex-md-row justify-content-between align-items-center flex-wrap">
+
+                <!-- Left side: Filters / Dropdowns -->
+                <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                    <!-- Sort Dropdown -->
+                    <div class="dropdown" style="position: relative;">
+                        <button class="btn btn-sm btn-outline-secondary"
+                            style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
+                            data-bs-toggle="dropdown" aria-expanded="false">
                             <span id="paginationDisplay">1-10 dari {{ $teknisi_data_ticket->count() }}</span>
-                            <i class="fa fa-chevron-down fs-6"></i>
+                            <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
                         </button>
-                        <ul class="dropdown-menu" aria-labelledby="paginationSortBtn">
-                            <li><a class="dropdown-item page-sort-option" href="#" data-sort="desc"><i class="fa fa-arrow-down me-2"></i>Terbaru</a></li>
-                            <li><a class="dropdown-item page-sort-option" href="#" data-sort="asc"><i class="fa fa-arrow-up me-2"></i>Terlama</a></li>
+                        <ul class="dropdown-menu" style="font-size: 13px; min-width: 150px;">
+                            <li><a class="dropdown-item page-sort-option" href="#" data-sort="desc"><i class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru</a></li>
+                            <li><a class="dropdown-item page-sort-option" href="#" data-sort="asc"><i class="fa fa-arrow-up me-2" style="color: #6c757d;"></i>Terlama</a></li>
                         </ul>
                     </div>
 
                     <!-- Filter Jenis Pengaduan -->
-                    <div class="dropdown">
-                        <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1" type="button" id="filterJenisPengaduanBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                    <div class="dropdown" style="position: relative; display: inline-block;">
+                        <button class="btn btn-sm btn-outline-secondary"
+                            style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
+                            type="button" id="filterJenisPengaduanBtn" data-bs-toggle="dropdown" aria-expanded="false">
                             <span id="filterJenisPengaduanDisplay">Jenis Pengaduan</span>
-                            <i class="fa fa-chevron-down fs-6"></i>
+                            <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
                         </button>
-                        <ul class="dropdown-menu" aria-labelledby="filterJenisPengaduanBtn">
+                        <ul class="dropdown-menu" aria-labelledby="filterJenisPengaduanBtn" style="font-size: 13px; min-width: 150px;">
                             <li><a class="dropdown-item filter-option" href="#" data-filter-type="jenis_pengaduan" data-filter-value="">Semua</a></li>
                             <li><a class="dropdown-item filter-option" href="#" data-filter-type="jenis_pengaduan" data-filter-value="perbaikan">Perbaikan</a></li>
                             <li><a class="dropdown-item filter-option" href="#" data-filter-type="jenis_pengaduan" data-filter-value="permintaan">Permintaan</a></li>
@@ -243,12 +249,14 @@
                     </div>
 
                     <!-- Filter Status -->
-                    <div class="dropdown">
-                        <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1" type="button" id="filterStatusBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                    <div class="dropdown" style="position: relative; display: inline-block;">
+                        <button class="btn btn-sm btn-outline-secondary"
+                            style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
+                            type="button" id="filterStatusBtn" data-bs-toggle="dropdown" aria-expanded="false">
                             <span id="filterStatusDisplay">Status</span>
-                            <i class="fa fa-chevron-down fs-6"></i>
+                            <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
                         </button>
-                        <ul class="dropdown-menu" aria-labelledby="filterStatusBtn">
+                        <ul class="dropdown-menu" aria-labelledby="filterStatusBtn" style="font-size: 13px; min-width: 150px;">
                             <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="">Semua</a></li>
                             <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="open">Open</a></li>
                             <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="on process">On Process</a></li>
@@ -258,13 +266,17 @@
                     </div>
                 </div>
 
-                <!-- Right side: Pagination Buttons -->
-                <div class="d-flex gap-2">
-                    <button id="prevPage" class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center" title="Halaman Sebelumnya">
-                        <i class="fa fa-chevron-left fs-6"></i>
+                <!-- Right side: Pagination -->
+                <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                    <button id="prevPage" class="btn btn-sm btn-outline-secondary"
+                        style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;"
+                        title="Halaman Sebelumnya">
+                        <i class="fa fa-chevron-left" style="font-size: 11px;"></i>
                     </button>
-                    <button id="nextPage" class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center" title="Halaman Berikutnya">
-                        <i class="fa fa-chevron-right fs-6"></i>
+                    <button id="nextPage" class="btn btn-sm btn-outline-secondary"
+                        style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;"
+                        title="Halaman Berikutnya">
+                        <i class="fa fa-chevron-right" style="font-size: 11px;"></i>
                     </button>
                 </div>
             </div>
