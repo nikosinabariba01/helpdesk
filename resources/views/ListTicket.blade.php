@@ -400,10 +400,6 @@
             filteredData = applySearch(filteredData);
             filteredData = applySort(filteredData);
 
-            if (currentSort.order === 'desc') {
-                filteredData = filteredData.slice().reverse();
-            }
-
             // Debug: lihat urutan seluruh data setelah reverse
             console.log('=== filteredData after reverse ===');
             filteredData.forEach((item, index) => {
