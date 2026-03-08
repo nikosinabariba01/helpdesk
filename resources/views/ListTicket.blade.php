@@ -416,7 +416,6 @@
 
             // Tampilkan row
             const $tbody = $('#TicketTable tbody');
-            $tbody.empty(); // Kosongkan tbody dulu
             pageData.forEach(item => $tbody.append(item.trElement));
 
             // ========================
