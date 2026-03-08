@@ -385,7 +385,7 @@
                 }
 
                 // Number (createdAt)
-                if (valA < valB) return order === 'desc' ? -1 : 1;
+                if (valA < valB) return order === 'asc' ? -1 : 1;
                 if (valA > valB) return order === 'asc' ? 1 : -1;
                 return 0;
             });
