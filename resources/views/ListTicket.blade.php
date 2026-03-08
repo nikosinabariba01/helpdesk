@@ -353,24 +353,19 @@
         }
 
         function applySort(data) {
-            const sorted = [...data];
-            const {
-                column,
-                order
-            } = currentSort;
-            sorted.sort((a, b) => {
-                let valA = a[column];
-                let valB = b[column];
+            return [...data].sort((a, b) => {
+                let valA = a[currentSort.column];
+                let valB = b[currentSort.column];
 
                 if (typeof valA === 'string') {
                     valA = valA.toLowerCase();
                     valB = valB.toLowerCase();
-                    return order === 'asc' ? (valA < valB ? -1 : valA > valB ? 1 : 0) : (valA < valB ? 1 : valA > valB ? -1 : 0);
+                    return currentSort.order === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
                 }
 
-                return order === 'asc' ? valA - valB : valB - valA;
+                // Number (timestamp)
+                return currentSort.order === 'asc' ? valA - valB : valB - valA;
             });
-            return sorted;
         }
 
         function renderTable() {
