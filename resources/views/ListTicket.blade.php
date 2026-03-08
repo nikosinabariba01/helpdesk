@@ -316,18 +316,26 @@
         let currentSort = {
             column: 'createdAt',
             order: 'desc'
-        }; // default Terbaru
+        };
         let currentFilters = {
             status: '',
             jenis_pengaduan: ''
         };
         let currentSearch = '';
 
-        // Inisialisasi default: urut terbaru
-        ticketsData.sort((a, b) => b.createdAt - a.createdAt);
+        // Ambil semua row
+        $('#TicketTable tbody tr').each(function() {
+            const $tr = $(this);
+            ticketsData.push({
+                trElement: $tr,
+                subject: $tr.data('subject').toString().toLowerCase(),
+                user: $tr.data('user').toString().toLowerCase(),
+                status: $tr.data('status').toString().toLowerCase(),
+                jenis_pengaduan: $tr.data('jenis-pengaduan').toString().toLowerCase(),
+                createdAt: parseInt($tr.data('created-at'))
+            });
+        });
 
-        // =========================
-        // Filter dataset
         function applyFilters(data) {
             return data.filter(item => {
                 const matchStatus = currentFilters.status ? item.status === currentFilters.status : true;
@@ -336,8 +344,6 @@
             });
         }
 
-        // =========================
-        // Search dataset
         function applySearch(data) {
             if (!currentSearch) return data;
             const keyword = currentSearch.toLowerCase();
@@ -346,32 +352,27 @@
             );
         }
 
-        // =========================
-        // Sort dataset
         function applySort(data) {
             const sorted = [...data];
             const {
                 column,
                 order
             } = currentSort;
-
-            if (column === 'createdAt') {
-                return sorted.sort((a, b) => order === 'asc' ? a[column] - b[column] : b[column] - a[column]);
-            }
-
-            // Sorting alfabetis untuk kolom lainnya
             sorted.sort((a, b) => {
-                let valA = a[column].toLowerCase();
-                let valB = b[column].toLowerCase();
-                return order === 'asc' ?
-                    (valA < valB ? -1 : valA > valB ? 1 : 0) :
-                    (valA < valB ? 1 : valA > valB ? -1 : 0);
+                let valA = a[column];
+                let valB = b[column];
+
+                if (typeof valA === 'string') {
+                    valA = valA.toLowerCase();
+                    valB = valB.toLowerCase();
+                    return order === 'asc' ? (valA < valB ? -1 : valA > valB ? 1 : 0) : (valA < valB ? 1 : valA > valB ? -1 : 0);
+                }
+
+                return order === 'asc' ? valA - valB : valB - valA;
             });
             return sorted;
         }
 
-        // =========================
-        // Render table + pagination + sort icons
         function renderTable() {
             let filteredData = applyFilters(ticketsData);
             filteredData = applySearch(filteredData);
@@ -382,49 +383,32 @@
 
             const startIndex = (currentPage - 1) * rowsPerPage;
             const endIndex = startIndex + rowsPerPage;
-            let pageData = filteredData.slice(startIndex, endIndex);
+            const pageData = filteredData.slice(startIndex, endIndex);
 
-            // Reverse per page jika Terlama (asc) untuk UX
-            if (currentSort.column === 'createdAt' && currentSort.order === 'asc') {
-                pageData.reverse();
-            }
-
-            // Tampilkan page
             $('#TicketTable tbody tr').hide();
             pageData.forEach(item => item.trElement.show());
 
-            // Update pagination
-            $('#paginationDisplay').text(`${startIndex + 1}-${Math.min(endIndex, filteredData.length)} dari ${filteredData.length}`);
+            const startDisplay = filteredData.length === 0 ? 0 : startIndex + 1;
+            const endDisplay = Math.min(endIndex, filteredData.length);
+            $('#paginationDisplay').text(`${startDisplay}-${endDisplay} dari ${filteredData.length}`);
+
             $('#prevPage').prop('disabled', currentPage <= 1);
             $('#nextPage').prop('disabled', currentPage >= totalPages);
 
-            // Hapus ikon lama
             $('#TicketTable thead th.sorting').removeClass('sorting_asc sorting_desc');
-            $('#TicketTable thead th.sorting .sort-icons').remove();
-
-            // Tambahkan ikon segitiga untuk kolom sortable (subject, user, status)
-            $('#TicketTable thead th.sorting').each(function() {
-                const colText = $(this).text().trim().toLowerCase();
-                if (currentSort.column === colText) {
-                    $(this).addClass(currentSort.order === 'asc' ? 'sorting_asc' : 'sorting_desc');
-                }
-                if (!$(this).find('.sort-icons').length) {
-                    $(this).append('<span class="sort-icons"></span>');
-                }
-            });
+            let th;
+            if (currentSort.column === 'subject') th = $('#TicketTable thead th').filter((i, el) => $(el).text().trim().toLowerCase() === 'subject');
+            if (currentSort.column === 'user') th = $('#TicketTable thead th').filter((i, el) => $(el).text().trim().toLowerCase() === 'user');
+            if (currentSort.column === 'status') th = $('#TicketTable thead th').filter((i, el) => $(el).text().trim().toLowerCase() === 'status');
+            if (th) th.addClass(currentSort.order === 'asc' ? 'sorting_asc' : 'sorting_desc');
         }
 
-        // =========================
         // Event Handlers
-
-        // Search
         $('#search').on('input', function() {
             currentSearch = $(this).val().toLowerCase();
             currentPage = 1;
             renderTable();
         });
-
-        // Filter
         $('.filter-option').click(function(e) {
             e.preventDefault();
             const filterType = $(this).data('filter-type');
@@ -433,7 +417,6 @@
             renderTable();
         });
 
-        // Dropdown Terbaru/Terlama (tanggal)
         $('.page-sort-option').click(function(e) {
             e.preventDefault();
             const sortOrder = $(this).data('sort');
@@ -446,20 +429,17 @@
             $(this).addClass('active');
         });
 
-        // Klik kolom sortable (subject/user/status)
         $('#TicketTable thead th.sorting').click(function() {
             const colText = $(this).text().trim().toLowerCase();
             if (colText === 'subject') currentSort.column = 'subject';
             else if (colText === 'user') currentSort.column = 'user';
             else if (colText === 'status') currentSort.column = 'status';
             else return;
-
             currentSort.order = currentSort.order === 'asc' ? 'desc' : 'asc';
             currentPage = 1;
             renderTable();
         });
 
-        // Pagination Prev/Next
         $('#prevPage').click(function() {
             if (currentPage > 1) currentPage--;
             renderTable();
@@ -469,7 +449,6 @@
             renderTable();
         });
 
-        // Initial render
         renderTable();
     });
 </script>
