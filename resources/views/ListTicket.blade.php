@@ -373,7 +373,7 @@
                         (valA < valB ? 1 : valA > valB ? -1 : 0);
                 }
 
-                return order === 'asc' ? valA - valB : valB - valA;
+                return order.reverse === 'asc' ? valA - valB : valB - valA;
             });
             return sorted;
         }
@@ -390,11 +390,6 @@
             const startIndex = (currentPage - 1) * rowsPerPage;
             const endIndex = startIndex + rowsPerPage;
             const pageData = filteredData.slice(startIndex, endIndex);
-
-            // Reverse per page jika sorting asc pada createdAt
-            if (currentSort.column === 'createdAt' && currentSort.order === 'asc') {
-                pageData.reverse();
-            }
 
             // Tampilkan page
             $('#TicketTable tbody tr').hide();
@@ -478,65 +473,55 @@
 </script>
 
 <style>
-    /* Tetapkan space untuk ikon supaya kolom tidak bergeser */
-    th.sorting {
-        position: relative;
-        cursor: pointer;
-        user-select: none;
-        padding-right: 30px;
-        /* space tetap untuk ikon */
-        width: 150px;
-        /* opsional, bisa disesuaikan lebar kolom */
-    }
+/* Tetapkan space untuk ikon supaya kolom tidak bergeser */
+th.sorting {
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+    padding-right: 30px; /* space tetap untuk ikon */
+    width: 150px; /* opsional, bisa disesuaikan lebar kolom */
+}
 
-    /* container ikon */
-    th.sorting .sort-icons {
-        position: absolute;
-        right: 8px;
-        top: 50%;
-        transform: translateY(-50%);
-        display: flex;
-        flex-direction: column;
-        font-size: 1em;
-        line-height: 0.7em;
-        width: 16px;
-        /* fix width ikon supaya tidak memengaruhi layout */
-        height: 16px;
-        /* fix height juga */
-    }
+/* container ikon */
+th.sorting .sort-icons {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    font-size: 1em;
+    line-height: 0.7em;
+    width: 16px;   /* fix width ikon supaya tidak memengaruhi layout */
+    height: 16px;  /* fix height juga */
+}
 
-    /* default abu-abu */
-    th.sorting .sort-icons::before,
-    th.sorting .sort-icons::after {
-        color: #ccc;
-    }
+/* default abu-abu */
+th.sorting .sort-icons::before,
+th.sorting .sort-icons::after {
+    color: #ccc;
+}
 
-    /* ascending active */
-    th.sorting.sorting_asc .sort-icons::before {
-        color: #000;
-    }
+/* ascending active */
+th.sorting.sorting_asc .sort-icons::before {
+    color: #000;
+}
+th.sorting.sorting_asc .sort-icons::after {
+    color: #ccc;
+}
 
-    th.sorting.sorting_asc .sort-icons::after {
-        color: #ccc;
-    }
+/* descending active */
+th.sorting.sorting_desc .sort-icons::before {
+    color: #ccc;
+}
+th.sorting.sorting_desc .sort-icons::after {
+    color: #000;
+}
 
-    /* descending active */
-    th.sorting.sorting_desc .sort-icons::before {
-        color: #ccc;
-    }
-
-    th.sorting.sorting_desc .sort-icons::after {
-        color: #000;
-    }
-
-    /* isi segitiga */
-    th.sorting .sort-icons::before {
-        content: "▲";
-    }
-
-    th.sorting .sort-icons::after {
-        content: "▼";
-    }
+/* isi segitiga */
+th.sorting .sort-icons::before { content: "▲"; }
+th.sorting .sort-icons::after { content: "▼"; }
+    
 </style>
 
 @endsection
