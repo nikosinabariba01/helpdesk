@@ -316,7 +316,7 @@
                                 filteredData); // Menampilkan kembali data yang sudah difilter
                             sortTableByDate(
                                 currentSort
-                                ); // Urutkan data sesuai urutan yang diinginkan (misalnya berdasarkan tanggal)
+                            ); // Urutkan data sesuai urutan yang diinginkan (misalnya berdasarkan tanggal)
                             updatePagination(); // Update pagination sesuai data yang ditampilkan
                         } else {
                             // Jika tidak ada data yang sudah difilter, tampilkan seluruh data asli
@@ -467,7 +467,7 @@
                     } else {
                         sortTableByDate(
                             currentSort
-                            ); // Pengurutan berdasarkan tanggal (jika tidak ada pengurutan kustom)
+                        ); // Pengurutan berdasarkan tanggal (jika tidak ada pengurutan kustom)
                     }
                     updatePagination();
                 }
@@ -485,7 +485,7 @@
                     } else {
                         sortTableByDate(
                             currentSort
-                            ); // Pengurutan berdasarkan tanggal (jika tidak ada pengurutan kustom)
+                        ); // Pengurutan berdasarkan tanggal (jika tidak ada pengurutan kustom)
                     }
                     updatePagination();
                 }
@@ -544,5 +544,66 @@
         });
     </script>
 
+    <style>
+        /* Tetapkan space untuk ikon supaya kolom tidak bergeser */
+        th.sorting {
+            position: relative;
+            cursor: pointer;
+            user-select: none;
+            padding-right: 30px;
+            /* space tetap untuk ikon */
+            width: 150px;
+            /* opsional, bisa disesuaikan lebar kolom */
+        }
+
+        /* container ikon */
+        th.sorting .sort-icons {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            font-size: 1em;
+            line-height: 0.7em;
+            width: 16px;
+            /* fix width ikon supaya tidak memengaruhi layout */
+            height: 16px;
+            /* fix height juga */
+        }
+
+        /* default abu-abu */
+        th.sorting .sort-icons::before,
+        th.sorting .sort-icons::after {
+            color: #ccc;
+        }
+
+        /* ascending active */
+        th.sorting.sorting_asc .sort-icons::before {
+            color: #000;
+        }
+
+        th.sorting.sorting_asc .sort-icons::after {
+            color: #ccc;
+        }
+
+        /* descending active */
+        th.sorting.sorting_desc .sort-icons::before {
+            color: #ccc;
+        }
+
+        th.sorting.sorting_desc .sort-icons::after {
+            color: #000;
+        }
+
+        /* isi segitiga */
+        th.sorting .sort-icons::before {
+            content: "▲";
+        }
+
+        th.sorting .sort-icons::after {
+            content: "▼";
+        }
+    </style>
 
 @endsection
