@@ -124,7 +124,7 @@
                     @else
                         <div class="table-responsive margin-right: 15px;"
                             style="height: 400px; max-height: 400px; overflow-y: auto;">
-                            <table class="table align-items-center mb-0 " id="TicketTable">
+                            <table class="table align-items-center mb-0" id="TicketTable">
                                 <thead>
                                     <tr>
                                         <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
@@ -505,7 +505,7 @@
             let currentSearch = '';
 
             // Ambil semua row ke array
-            $('#TicketTable').each(function() {
+            $('#TicketTable tbody tr').each(function() {
                 const $tr = $(this);
                 ticketsData.push({
                     trElement: $tr,
