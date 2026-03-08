@@ -383,20 +383,28 @@
         }
 
         function renderTable() {
-            // 1. Filter
+            // Filter & search
             let filteredData = applyFilters(ticketsData);
-            // 2. Search
             filteredData = applySearch(filteredData);
-            // 3. Sort seluruh dataset relevan
             filteredData = applySort(filteredData);
 
-            // Pagination
             totalPages = Math.ceil(filteredData.length / rowsPerPage);
             if (currentPage > totalPages) currentPage = totalPages || 1;
 
-            const startIndex = (currentPage - 1) * rowsPerPage;
-            const endIndex = startIndex + rowsPerPage;
-            const pageData = filteredData.slice(startIndex, endIndex);
+            let startIndex, endIndex, pageData;
+
+            if (currentSort.order === 'asc') {
+                // Untuk terlama, ambil slice dari belakang dataset
+                startIndex = filteredData.length - currentPage * rowsPerPage;
+                startIndex = Math.max(0, startIndex);
+                endIndex = startIndex + rowsPerPage;
+                pageData = filteredData.slice(startIndex, endIndex);
+            } else {
+                // Untuk terbaru (desc), ambil slice normal
+                startIndex = (currentPage - 1) * rowsPerPage;
+                endIndex = startIndex + rowsPerPage;
+                pageData = filteredData.slice(startIndex, endIndex);
+            }
 
             // Hide all rows, show only pageData
             $('#TicketTable tbody tr').hide();
@@ -407,10 +415,11 @@
             const endDisplay = Math.min(endIndex, filteredData.length);
             $('#paginationDisplay').text(`${startDisplay}-${endDisplay} dari ${filteredData.length}`);
 
+            // Enable/disable Prev/Next
             $('#prevPage').prop('disabled', currentPage <= 1);
             $('#nextPage').prop('disabled', currentPage >= totalPages);
 
-            // Sorting icons (DataTables pseudo-element)
+            // Sorting icons
             $('#TicketTable thead th.sorting').removeClass('sorting_asc sorting_desc');
             let th;
             if (currentSort.column === 'subject') th = $('#TicketTable thead th').filter((i, el) => $(el).text().trim().toLowerCase() === 'subject');
