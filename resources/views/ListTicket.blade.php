@@ -413,9 +413,21 @@
 
             // Ambil subset data untuk halaman ini
             const pageData = filteredData.slice(startIndex, endIndex);
+            const $tbody = $('#TicketTable tbody');
+            const rowsToShow = pageData.map(item => item.trElement.detach()); // lepaskan row dari DOM
+            $tbody.append(rowsToShow); // append kembali
+            rowsToShow.forEach(r => r.show()); // tampilkan
+            // ===== DEBUG: urutan data per page =====
+            console.log('--- Page', currentPage, 'data per page ---');
+            console.table(pageData.map(item => ({
+                createdAt: item.createdAt,
+                subject: item.subject,
+                user: item.user
+            })));
+
 
             // Tampilkan row
-            pageData.forEach(item => item.trElement.append(row));
+            pageData.forEach(item => item.trElement.show());
 
             // ========================
             // Update pagination display (asc/desc)
