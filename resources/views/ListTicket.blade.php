@@ -400,11 +400,6 @@
             filteredData = applySearch(filteredData);
             filteredData = applySort(filteredData);
 
-            // Debug: lihat urutan seluruh data setelah reverse
-            console.log('=== filteredData after reverse ===');
-            filteredData.forEach((item, index) => {
-                console.log(index + 1, item.createdAt, item.subject, item.user);
-            });
 
             totalPages = Math.ceil(filteredData.length / rowsPerPage);
             if (currentPage > totalPages) currentPage = totalPages || 1;
@@ -418,6 +413,13 @@
 
             // Ambil subset data untuk halaman ini
             const pageData = filteredData.slice(startIndex, endIndex);
+            // ===== DEBUG: urutan data per page =====
+            console.log('--- Page', currentPage, 'data per page ---');
+            console.table(pageData.map(item => ({
+                createdAt: item.createdAt,
+                subject: item.subject,
+                user: item.user
+            })));
 
             // Tampilkan row
             pageData.forEach(item => item.trElement.show());
