@@ -415,8 +415,7 @@
             const pageData = filteredData.slice(startIndex, endIndex);
 
             // Tampilkan row
-            const $tbody = $('#TicketTable tbody');
-            pageData.forEach(item => $tbody.append(item.trElement));
+            pageData.forEach(item => item.trElement.append());
 
             // ========================
             // Update pagination display (asc/desc)
