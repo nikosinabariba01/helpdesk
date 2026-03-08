@@ -380,7 +380,8 @@
                     valB = valB.toLowerCase();
                     if (valA < valB) return order === 'asc' ? -1 : 1;
                     if (valA > valB) return order === 'asc' ? 1 : -1;
-                    return 0;
+                    // tie-break dengan createdAt
+                    return order === 'asc' ? a.createdAt - b.createdAt : b.createdAt - a.createdAt;
                 }
 
                 // Number (createdAt)
@@ -402,22 +403,47 @@
             totalPages = Math.ceil(filteredData.length / rowsPerPage);
             if (currentPage > totalPages) currentPage = totalPages || 1;
 
+            // Hide all rows first
+            $('#TicketTable tbody tr').hide();
+
+            // Hitung start & end index
             const startIndex = (currentPage - 1) * rowsPerPage;
             const endIndex = startIndex + rowsPerPage;
+
+            // Ambil subset data untuk halaman ini
             const pageData = filteredData.slice(startIndex, endIndex);
 
-            // Hide all rows, show only pageData
-            $('#TicketTable tbody tr').hide();
+            // Tampilkan row
             pageData.forEach(item => item.trElement.show());
 
-            // Update pagination display
-            const startDisplay = filteredData.length === 0 ? 0 : startIndex + 1;
-            const endDisplay = Math.min(endIndex, filteredData.length);
-            $('#paginationDisplay').text(`${startDisplay}-${endDisplay} dari ${filteredData.length}`);
+            // ========================
+            // Update pagination display (asc/desc)
+            // ========================
+            const totalRows = filteredData.length;
+
+            if (totalRows === 0) {
+                $('#paginationDisplay').text('0-0 dari 0');
+            } else {
+                const displayStart = startIndex + 1;
+                const displayEnd = Math.min(endIndex, totalRows);
+
+                if (currentSort.column === 'createdAt' && currentSort.order === 'desc') {
+                    // Descending → terbaru di atas
+                    $('#paginationDisplay').text(`${displayStart}-${displayEnd} dari ${totalRows}`);
+                } else if (currentSort.column === 'createdAt' && currentSort.order === 'asc') {
+                    // Ascending → terlama di atas → nomor tampilan dibalik
+                    const reversedStart = totalRows - startIndex;
+                    const reversedEnd = Math.max(reversedStart - (rowsPerPage - 1), 1);
+                    $('#paginationDisplay').text(`${reversedStart}-${reversedEnd} dari ${totalRows}`);
+                } else {
+                    // Kolom selain createdAt → numbering normal
+                    $('#paginationDisplay').text(`${displayStart}-${displayEnd} dari ${totalRows}`);
+                }
+            }
 
             // Enable/disable Prev/Next
-            $('#prevPage').prop('disabled', currentPage <= 1);
-            $('#nextPage').prop('disabled', currentPage >= totalPages);
+            $('#prevPage').prop('disabled', currentPage <= 1).css('opacity', currentPage <= 1 ? 0.5 : 1).css('cursor', currentPage <= 1 ? 'not-allowed' : 'pointer');
+            $('#nextPage').prop('disabled', currentPage >= totalPages).css('opacity', currentPage >= totalPages ? 0.5 : 1).css('cursor', currentPage >= totalPages ? 'not-allowed' : 'pointer');
 
             // Update sort icons
             $('#TicketTable thead th.sorting').find('.sort-icon').remove();
@@ -431,7 +457,6 @@
                 th.append(` <i class="${iconClass}"></i>`);
             }
         }
-
         // ========================
         // 5. Event Handlers
         // ========================
