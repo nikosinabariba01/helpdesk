@@ -207,7 +207,7 @@
     <div class="card no-break" style="text-align:center;">
         {{-- Header Paling Atas --}}
         <div class="h0"
-            style="font-size:36px; font-weight:900; color:#1f2937; margin-bottom:10px; letter-spacing:2px; text-align:center;">
+            style="font-size:30px; font-weight:900; color:#1f2937; margin-bottom:10px; letter-spacing:2px; text-align:center;">
             KOST 74 SEMARANG
         </div>
 
