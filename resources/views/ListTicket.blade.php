@@ -336,7 +336,9 @@
             });
         });
 
-        // Filter seluruh dataset
+        // ========================
+        // Filter
+        // ========================
         function applyFilters(data) {
             return data.filter(item => {
                 const matchStatus = currentFilters.status ? item.status === currentFilters.status : true;
@@ -345,7 +347,9 @@
             });
         }
 
-        // Search seluruh dataset
+        // ========================
+        // Search
+        // ========================
         function applySearch(data) {
             if (!currentSearch) return data;
             const keyword = currentSearch.toLowerCase();
@@ -354,14 +358,15 @@
             );
         }
 
-        // Sorting seluruh dataset yang relevan
+        // ========================
+        // Sort
+        // ========================
         function applySort(data) {
             const sorted = [...data];
             const {
                 column,
                 order
             } = currentSort;
-
             sorted.sort((a, b) => {
                 let valA = a[column];
                 let valB = b[column];
@@ -378,19 +383,17 @@
                 if (valA > valB) return order === 'asc' ? 1 : -1;
                 return 0;
             });
-
             return sorted;
         }
 
+        // ========================
+        // Render Table & Pagination
+        // ========================
         function renderTable() {
-            // 1. Filter
             let filteredData = applyFilters(ticketsData);
-            // 2. Search
             filteredData = applySearch(filteredData);
-            // 3. Sort seluruh dataset relevan
             filteredData = applySort(filteredData);
 
-            // Pagination
             totalPages = Math.ceil(filteredData.length / rowsPerPage);
             if (currentPage > totalPages) currentPage = totalPages || 1;
 
@@ -398,11 +401,9 @@
             const endIndex = startIndex + rowsPerPage;
             const pageData = filteredData.slice(startIndex, endIndex);
 
-            // Hide all rows, show only pageData
             $('#TicketTable tbody tr').hide();
             pageData.forEach(item => item.trElement.show());
 
-            // Update pagination display
             const startDisplay = filteredData.length === 0 ? 0 : startIndex + 1;
             const endDisplay = Math.min(endIndex, filteredData.length);
             $('#paginationDisplay').text(`${startDisplay}-${endDisplay} dari ${filteredData.length}`);
@@ -410,12 +411,15 @@
             $('#prevPage').prop('disabled', currentPage <= 1);
             $('#nextPage').prop('disabled', currentPage >= totalPages);
 
-            // Sorting icons (DataTables pseudo-element)
+            // Hapus class sorting_asc/sorting_desc lama
             $('#TicketTable thead th.sorting').removeClass('sorting_asc sorting_desc');
+
+            // Tambahkan class sesuai sort sekarang agar DataTables menampilkan ikon segitiga
             let th;
             if (currentSort.column === 'subject') th = $('#TicketTable thead th').filter((i, el) => $(el).text().trim().toLowerCase() === 'subject');
             if (currentSort.column === 'user') th = $('#TicketTable thead th').filter((i, el) => $(el).text().trim().toLowerCase() === 'user');
             if (currentSort.column === 'status') th = $('#TicketTable thead th').filter((i, el) => $(el).text().trim().toLowerCase() === 'status');
+
             if (th) {
                 th.addClass(currentSort.order === 'asc' ? 'sorting_asc' : 'sorting_desc');
             }
