@@ -455,17 +455,20 @@
             $('#prevPage').prop('disabled', currentPage <= 1).css('opacity', currentPage <= 1 ? 0.5 : 1).css('cursor', currentPage <= 1 ? 'not-allowed' : 'pointer');
             $('#nextPage').prop('disabled', currentPage >= totalPages).css('opacity', currentPage >= totalPages ? 0.5 : 1).css('cursor', currentPage >= totalPages ? 'not-allowed' : 'pointer');
 
-            // Update sort icons
-            $('#TicketTable thead th.sorting').find('.sort-icon').remove();
-            let th;
-            if (currentSort.column === 'subject') th = $('#TicketTable thead th').filter((i, el) => $(el).text().trim().toLowerCase() === 'subject');
-            if (currentSort.column === 'user') th = $('#TicketTable thead th').filter((i, el) => $(el).text().trim().toLowerCase() === 'user');
-            if (currentSort.column === 'status') th = $('#TicketTable thead th').filter((i, el) => $(el).text().trim().toLowerCase() === 'status');
+            // Hapus ikon lama
+            $('#TicketTable thead th.sorting').removeClass('sorting_asc sorting_desc');
+            $('#TicketTable thead th.sorting .sort-icons').remove();
 
-            if (th) {
-                const iconClass = currentSort.order === 'asc' ? 'fa fa-arrow-up sort-icon' : 'fa fa-arrow-down sort-icon';
-                th.append(` <i class="${iconClass}"></i>`);
-            }
+            // Tambahkan ikon segitiga untuk kolom sortable (subject, user, status)
+            $('#TicketTable thead th.sorting').each(function() {
+                const colText = $(this).text().trim().toLowerCase();
+                if (currentSort.column === colText) {
+                    $(this).addClass(currentSort.order === 'asc' ? 'sorting_asc' : 'sorting_desc');
+                }
+                if (!$(this).find('.sort-icons').length) {
+                    $(this).append('<span class="sort-icons"></span>');
+                }
+            });
         }
         // ========================
         // 5. Event Handlers
