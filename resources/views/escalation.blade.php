@@ -194,29 +194,6 @@
                                             data-filter-value="permintaan">Permintaan</a></li>
                                 </ul>
                             </div>
-
-                            <!-- Filter Status -->
-                            <div class="dropdown" style="position: relative; display: inline-block;">
-                                <button class="btn btn-sm btn-outline-secondary"
-                                    style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
-                                    type="button" id="filterStatusBtn" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <span id="filterStatusDisplay">Status</span>
-                                    <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="filterStatusBtn"
-                                    style="font-size: 13px; min-width: 150px;">
-                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
-                                            data-filter-value="">Semua</a></li>
-                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
-                                            data-filter-value="open">Open</a></li>
-                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
-                                            data-filter-value="on process">On Process</a></li>
-                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
-                                            data-filter-value="escalated">Escalated</a></li>
-                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
-                                            data-filter-value="close">Close</a></li>
-                                </ul>
-                            </div>
                         </div>
 
                         <!-- Right side: Pagination -->
