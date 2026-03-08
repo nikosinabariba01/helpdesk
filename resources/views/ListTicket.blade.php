@@ -323,19 +323,6 @@
         };
         let currentSearch = '';
 
-        // Ambil semua row ke array JS
-        $('#TicketTable tbody tr').each(function() {
-            const $tr = $(this);
-            ticketsData.push({
-                trElement: $tr,
-                subject: $tr.data('subject').toString().toLowerCase(),
-                user: $tr.data('user').toString().toLowerCase(),
-                status: $tr.data('status').toString().toLowerCase(),
-                jenis_pengaduan: $tr.data('jenis-pengaduan').toString().toLowerCase(),
-                createdAt: parseInt($tr.data('created-at'))
-            });
-        });
-
         // Inisialisasi default: urut terbaru
         ticketsData.sort((a, b) => b.createdAt - a.createdAt);
 
