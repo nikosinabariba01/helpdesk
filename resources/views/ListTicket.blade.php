@@ -336,9 +336,6 @@
             });
         });
 
-        // ========================
-        // Filter
-        // ========================
         function applyFilters(data) {
             return data.filter(item => {
                 const matchStatus = currentFilters.status ? item.status === currentFilters.status : true;
@@ -347,9 +344,6 @@
             });
         }
 
-        // ========================
-        // Search
-        // ========================
         function applySearch(data) {
             if (!currentSearch) return data;
             const keyword = currentSearch.toLowerCase();
@@ -358,16 +352,12 @@
             );
         }
 
-        // ========================
-        // Sort seluruh dataset relevan
-        // ========================
         function applySort(data) {
             const sorted = [...data];
             const {
                 column,
                 order
             } = currentSort;
-
             sorted.sort((a, b) => {
                 let valA = a[column];
                 let valB = b[column];
@@ -375,19 +365,14 @@
                 if (typeof valA === 'string') {
                     valA = valA.toLowerCase();
                     valB = valB.toLowerCase();
-                    return order === 'asc' ? (valA < valB ? -1 : valA > valB ? 1 : 0) :
-                        (valA < valB ? 1 : valA > valB ? -1 : 0);
+                    return order === 'asc' ? (valA < valB ? -1 : valA > valB ? 1 : 0) : (valA < valB ? 1 : valA > valB ? -1 : 0);
                 }
 
                 return order === 'asc' ? valA - valB : valB - valA;
             });
-
             return sorted;
         }
 
-        // ========================
-        // Render table & pagination
-        // ========================
         function renderTable() {
             let filteredData = applyFilters(ticketsData);
             filteredData = applySearch(filteredData);
@@ -403,11 +388,13 @@
             $('#TicketTable tbody tr').hide();
             pageData.forEach(item => item.trElement.show());
 
-            $('#paginationDisplay').text(`${startIndex + 1}-${Math.min(endIndex, filteredData.length)} dari ${filteredData.length}`);
+            const startDisplay = filteredData.length === 0 ? 0 : startIndex + 1;
+            const endDisplay = Math.min(endIndex, filteredData.length);
+            $('#paginationDisplay').text(`${startDisplay}-${endDisplay} dari ${filteredData.length}`);
+
             $('#prevPage').prop('disabled', currentPage <= 1);
             $('#nextPage').prop('disabled', currentPage >= totalPages);
 
-            // Update sort icons (DataTables pseudo-element)
             $('#TicketTable thead th.sorting').removeClass('sorting_asc sorting_desc');
             let th;
             if (currentSort.column === 'subject') th = $('#TicketTable thead th').filter((i, el) => $(el).text().trim().toLowerCase() === 'subject');
@@ -416,15 +403,12 @@
             if (th) th.addClass(currentSort.order === 'asc' ? 'sorting_asc' : 'sorting_desc');
         }
 
-        // ========================
         // Event Handlers
-        // ========================
         $('#search').on('input', function() {
             currentSearch = $(this).val().toLowerCase();
             currentPage = 1;
             renderTable();
         });
-
         $('.filter-option').click(function(e) {
             e.preventDefault();
             const filterType = $(this).data('filter-type');
@@ -433,7 +417,6 @@
             renderTable();
         });
 
-        // Dropdown Terbaru/Terlama
         $('.page-sort-option').click(function(e) {
             e.preventDefault();
             const sortOrder = $(this).data('sort');
@@ -442,19 +425,16 @@
             currentPage = 1;
             renderTable();
 
-            // Highlight dropdown aktif
             $('.page-sort-option').removeClass('active');
             $(this).addClass('active');
         });
 
-        // Klik th untuk sort kolom lain
         $('#TicketTable thead th.sorting').click(function() {
             const colText = $(this).text().trim().toLowerCase();
             if (colText === 'subject') currentSort.column = 'subject';
             else if (colText === 'user') currentSort.column = 'user';
             else if (colText === 'status') currentSort.column = 'status';
             else return;
-
             currentSort.order = currentSort.order === 'asc' ? 'desc' : 'asc';
             currentPage = 1;
             renderTable();
