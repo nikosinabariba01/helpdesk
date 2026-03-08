@@ -63,14 +63,20 @@
                     <div class="table-responsive margin-right: 15px; table-responsive-custom" style="overflow-y: auto;">
                         <table class="table align-items-center mb-0" id="TicketTable">
                             <thead>
-                        <tr>
-                            <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">subject</th>
-                            <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">User</th>
-                            <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Status</th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Deskripsi</th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Aksi Status</th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">aksi</th>
-                        </tr>
+                                <tr>
+                                    <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
+                                        style="padding: 10px;">subject</th>
+                                    <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
+                                        style="padding: 10px;">User</th>
+                                    <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
+                                        style="padding: 10px;">Status</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
+                                        style="padding: 10px;">Deskripsi</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
+                                        style="padding: 10px;">Aksi Status</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
+                                        style="padding: 10px;">aksi</th>
+                                </tr>
                             </thead>
                             <tbody>
                                 @foreach ($teknisi_data_ticket as $teknisidataticket)
@@ -166,9 +172,12 @@
 
                         </table>
                     </div>
-                    <div
-                        style="padding: 15px 16px; border-top: 1px solid #e4e4e4; display: flex; justify-content: space-between; align-items: center; background-color: #ffffff;">
-                        <div style="display: flex; gap: 12px; align-items: center;">
+                    <div style="padding: 15px 16px; border-top: 1px solid #e4e4e4; background-color: #ffffff;"
+                        class="d-flex flex-column flex-md-row justify-content-between align-items-center flex-wrap">
+
+                        <!-- Left side: Filters / Dropdowns -->
+                        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                            <!-- Sort Dropdown -->
                             <div class="dropdown" style="position: relative;">
                                 <button class="btn btn-sm btn-outline-secondary"
                                     style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
@@ -177,15 +186,14 @@
                                     <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
                                 </button>
                                 <ul class="dropdown-menu" style="font-size: 13px; min-width: 150px;">
-                                    <li><a class="dropdown-item page-sort-option" href="#" data-sort="desc"
-                                            style="padding: 8px 16px;"><i class="fa fa-arrow-down me-2"
-                                                style="color: #6c757d;"></i>Terbaru</a></li>
-                                    <li><a class="dropdown-item page-sort-option" href="#" data-sort="asc"
-                                            style="padding: 8px 16px;"><i class="fa fa-arrow-up me-2"
-                                                style="color: #6c757d;"></i>Terlama</a></li>
+                                    <li><a class="dropdown-item page-sort-option" href="#" data-sort="desc"><i
+                                                class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru</a></li>
+                                    <li><a class="dropdown-item page-sort-option" href="#" data-sort="asc"><i
+                                                class="fa fa-arrow-up me-2" style="color: #6c757d;"></i>Terlama</a></li>
                                 </ul>
                             </div>
-                            <!-- Filter Jenis Pengaduan Dropdown -->
+
+                            <!-- Filter Jenis Pengaduan -->
                             <div class="dropdown" style="position: relative; display: inline-block;">
                                 <button class="btn btn-sm btn-outline-secondary"
                                     style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
@@ -197,28 +205,52 @@
                                 <ul class="dropdown-menu" aria-labelledby="filterJenisPengaduanBtn"
                                     style="font-size: 13px; min-width: 150px;">
                                     <li><a class="dropdown-item filter-option" href="#"
-                                            data-filter-type="jenis_pengaduan" data-filter-value=""
-                                            style="padding: 8px 16px;">Semua</a></li>
+                                            data-filter-type="jenis_pengaduan" data-filter-value="">Semua</a></li>
                                     <li><a class="dropdown-item filter-option" href="#"
-                                            data-filter-type="jenis_pengaduan" data-filter-value="perbaikan"
-                                            style="padding: 8px 16px;">Perbaikan</a></li>
+                                            data-filter-type="jenis_pengaduan" data-filter-value="perbaikan">Perbaikan</a>
+                                    </li>
                                     <li><a class="dropdown-item filter-option" href="#"
-                                            data-filter-type="jenis_pengaduan" data-filter-value="permintaan"
-                                            style="padding: 8px 16px;">Permintaan</a></li>
+                                            data-filter-type="jenis_pengaduan"
+                                            data-filter-value="permintaan">Permintaan</a></li>
+                                </ul>
+                            </div>
+
+                            <!-- Filter Status -->
+                            <div class="dropdown" style="position: relative; display: inline-block;">
+                                <button class="btn btn-sm btn-outline-secondary"
+                                    style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
+                                    type="button" id="filterStatusBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span id="filterStatusDisplay">Status</span>
+                                    <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="filterStatusBtn"
+                                    style="font-size: 13px; min-width: 150px;">
+                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
+                                            data-filter-value="">Semua</a></li>
+                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
+                                            data-filter-value="open">Open</a></li>
+                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
+                                            data-filter-value="on process">On Process</a></li>
+                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
+                                            data-filter-value="escalated">Escalated</a></li>
+                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
+                                            data-filter-value="close">Close</a></li>
                                 </ul>
                             </div>
                         </div>
-                        <div style="display: flex; gap: 12px; align-items: center;">
-                            <div style="display: flex; gap: 6px;">
-                                <button id="prevPage" class="btn btn-sm btn-outline-secondary"
-                                    style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;"
-                                    title="Halaman Sebelumnya"><i class="fa fa-chevron-left"
-                                        style="font-size: 11px;"></i></button>
-                                <button id="nextPage" class="btn btn-sm btn-outline-secondary"
-                                    style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;"
-                                    title="Halaman Berikutnya"><i class="fa fa-chevron-right"
-                                        style="font-size: 11px;"></i></button>
-                            </div>
+
+                        <!-- Right side: Pagination -->
+                        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                            <button id="prevPage" class="btn btn-sm btn-outline-secondary"
+                                style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;"
+                                title="Halaman Sebelumnya">
+                                <i class="fa fa-chevron-left" style="font-size: 11px;"></i>
+                            </button>
+                            <button id="nextPage" class="btn btn-sm btn-outline-secondary"
+                                style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;"
+                                title="Halaman Berikutnya">
+                                <i class="fa fa-chevron-right" style="font-size: 11px;"></i>
+                            </button>
                         </div>
                     </div>
                 @endif
@@ -228,310 +260,289 @@
 
     <script>
         $(document).ready(function() {
-            let currentSort = 'desc'; // Set default sorting to 'desc'
+            // ========================
+            // 0. Inisialisasi Variabel
+            // ========================
+            const rowsPerPage = 10;
+            let ticketsData = [];
             let currentPage = 1;
-            const itemsPerPage = 10;
-            let filteredData = []; // To store filtered data
-            let originalData = []; // To store original data (before filtering or searching)
-            let hasActiveFilter = false; // FIX: Flag baru untuk track jika filter spesifik applied (bukan Semua)
-            let isSortedByCustom = false; // Flag untuk track apakah pengurutan sudah disesuaikan
-            let lastSortedColumn = 0;
+            let totalPages = 1;
+            let currentSort = {
+                column: 'createdAt',
+                order: 'desc'
+            };
+            let currentFilters = {
+                status: '',
+                jenis_pengaduan: ''
+            };
+            let currentSearch = '';
 
-            var table = $('#TicketTable').DataTable({
-                searching: true,
-                ordering: false,
-                paging: false, // We will handle pagination manually
-                lengthChange: false,
-                info: false
-            });
-
-            $('#TicketTable_filter').hide();
-
-            // Store original data (before filter or search)
+            // Ambil semua row ke array
             $('#TicketTable tbody tr').each(function() {
-                originalData.push(this); // Store all rows as original data
-            });
-
-            // Handle column header sorting
-            $('#TicketTable thead th').slice(0, 3).on('click', function() {
-                var columnIndex = $(this).index();
-                var isAsc = $(this).hasClass('sorting_asc');
-
-                // Set last sorted column
-                lastSortedColumn = columnIndex;
-                // Remove all sorting classes
-                $('#TicketTable thead th') . removeClass('sorting_asc sorting_desc');
-
-                // Add sorting class to current column
-                if (isAsc) {
-                    $(this).removeClass('sorting').addClass('sorting_desc');
-                } else {
-                    $(this).removeClass('sorting').addClass('sorting_asc');
-                }
-                isSortedByCustom = true; // Mark that sorting is custom
-                sortAllDataByColumn(columnIndex, !isAsc);
-                updatePagination();
-            });
-
-            function sortAllDataByColumn(columnIndex, isAsc) {
-                var rows = $('#TicketTable tbody tr').get();
-                rows.sort(function(a, b) {
-                    var aVal, bVal;
-                    if (columnIndex === 0) {
-                        aVal = $(a).data('subject') || '';
-                        bVal = $(b).data('subject') || '';
-                    } else if (columnIndex === 1) {
-                        aVal = $(a).data('user') || '';
-                        bVal = $(b).data('user') || '';
-                    } else if (columnIndex === 2) {
-                        aVal = $(a).data('status') || '';
-                        bVal = $(b).data('status') || '';
-                    }
-                    // Case-insensitive string comparison
-                    aVal = String(aVal).toLowerCase();
-                    bVal = String(bVal).toLowerCase();
-                    if (isAsc) {
-                        return aVal.localeCompare(bVal);
-                    } else {
-                        return bVal.localeCompare(aVal);
-                    }
+                const $tr = $(this);
+                ticketsData.push({
+                    trElement: $tr,
+                    subject: $tr.data('subject').toString().toLowerCase(),
+                    user: $tr.data('user').toString().toLowerCase(),
+                    status: $tr.data('status').toString().toLowerCase(),
+                    jenis_pengaduan: $tr.data('jenis-pengaduan').toString().toLowerCase(),
+                    createdAt: parseInt($tr.data('created-at'))
                 });
-                $.each(rows, function(index, row) {
-                    $('#TicketTable tbody').append(row);
+            });
+
+            // ========================
+            // 1. Filter
+            // ========================
+            function applyFilters(data) {
+                return data.filter(item => {
+                    const matchStatus = currentFilters.status ? item.status === currentFilters.status :
+                    true;
+                    const matchJenis = currentFilters.jenis_pengaduan ? item.jenis_pengaduan ===
+                        currentFilters.jenis_pengaduan : true;
+                    return matchStatus && matchJenis;
                 });
             }
 
-
-            // Search filter (TIDAK DISENTUH, tetap seperti asli)
-            $('#search').on('keyup', function() {
-                var searchTerm = this.value.toLowerCase();
-                $('#search').on('keyup', function() {
-                    var searchTerm = this.value.toLowerCase();
-
-                    // Jika search term kosong dan tidak ada filter yang aktif
-                    if (searchTerm === '' && !hasActiveFilter) {
-                        // Tampilkan data asli (originalData) ketika search dikosongkan dan tidak ada filter aktif
-                        $('#TicketTable tbody').empty().append(originalData); // Menampilkan data asli
-                        sortTableByDate(currentSort); // Urutkan data sesuai urutan yang diinginkan
-                        updatePagination(); // Update pagination sesuai data yang ditampilkan
-                        return;
-                    }
-
-                    // Jika search term kosong tapi ada filter yang aktif
-                    if (searchTerm === '') {
-                        // Tampilkan data yang sudah difilter sebelumnya
-                        if (filteredData.length > 0) {
-                            // Tampilkan data yang sudah difilter (filteredData) dan pastikan urutannya benar
-                            $('#TicketTable tbody').empty().append(filteredData); // Menampilkan kembali data yang sudah difilter
-                            sortTableByDate(currentSort); // Urutkan data sesuai urutan yang diinginkan (misalnya berdasarkan tanggal)
-                            updatePagination(); // Update pagination sesuai data yang ditampilkan
-                        } else {
-                            // Jika tidak ada data yang sudah difilter, tampilkan seluruh data asli
-                            $('#TicketTable tbody').empty().append(originalData); // Menampilkan data asli
-                            sortTableByDate(currentSort); // Urutkan data sesuai urutan yang diinginkan
-                            updatePagination(); // Update pagination sesuai data yang ditampilkan
-                        }
-                        return;
-                    }
-
-                    // Jika search term tidak kosong, lakukan pencarian dan filter ulang
-                    $.fn.dataTable.ext.search = [];
-                    $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
-                        return data[0].toLowerCase().includes(searchTerm) || data[1].toLowerCase().includes(searchTerm);
-                    });
-                    table.draw();
-                    currentPage = 1;
-                    sortTableByDate(currentSort); // Urutkan berdasarkan tanggal (terbaru ke terlama)
-                    updatePagination(); // Update pagination sesuai data yang ditampilkan
-                });
-                $.fn.dataTable.ext.search = [];
-                $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
-                    return data[0].toLowerCase().includes(searchTerm) || data[1].toLowerCase().includes(searchTerm);
-                });
-                table.draw();
-                currentPage = 1;
-                sortTableByDate(currentSort); // Ensure latest items are first
-                updatePagination();
-                // After searching, re-sort the table by date
-            });
-
-            // Menangani pemilihan filter dropdown "Semua"
-            $('.filter-option[data-filter-value=""]').on('click', function() {
-                // Reset filter untuk status dan jenis pengaduan
-                hasActiveFilter = false; // Reset status filter
-                filteredData = []; // Hapus data yang sudah difilter
-
-                // Tampilkan semua data dan reset tampilan
-                $('#TicketTable tbody').empty().append(originalData); // Tampilkan seluruh data asli
-                sortTableByDate(currentSort); // Urutkan data sesuai urutan yang diinginkan
-                updatePagination(); // Update pagination sesuai data yang ditampilkan
-            });
-
-            // Sorting by date (newest to oldest)
-            $(document).on('click', '.page-sort-option', function(e) {
-                e.preventDefault();
-                currentSort = $(this).data('sort');
-                // Jika pengurutan kustom diaktifkan, lanjutkan pengurutan yang sudah dilakukan sebelumnya
-                if (isSortedByCustom) {
-                    sortAllDataByColumn(lastSortedColumn, currentSort === 'asc'); // Menjaga pengurutan tetap aktif
-                } else {
-                    sortTableByDate(currentSort); // Pengurutan berdasarkan tanggal (jika tidak ada pengurutan kustom)
-                }
-                currentPage = 1;
-                updatePagination();
-            });
-
-            function sortTableByDate(direction) {
-                var rows = $('#TicketTable tbody tr').get();
-                rows.sort(function(a, b) {
-                    var aTimestamp = parseInt($(a).data('created-at')) || 0;
-                    var bTimestamp = parseInt($(b).data('created-at')) || 0;
-                    return direction === 'desc' ? bTimestamp - aTimestamp : aTimestamp - bTimestamp;
-                });
-                $.each(rows, function(index, row) {
-                    $('#TicketTable tbody').append(row);
-                });
+            // ========================
+            // 2. Search
+            // ========================
+            function applySearch(data) {
+                if (!currentSearch) return data;
+                const keyword = currentSearch.toLowerCase();
+                return data.filter(item =>
+                    item.subject.includes(keyword) || item.user.includes(keyword)
+                );
             }
 
-            // Update Pagination (dengan fix untuk no match)
-            function updatePagination() {
-                let totalRows;
-                let rowsToDisplay;
+            // ========================
+            // 3. Sort
+            // ========================
+            function applySort(data) {
+                const sorted = [...data];
+                const {
+                    column,
+                    order
+                } = currentSort;
+                sorted.sort((a, b) => {
+                    let valA = a[column];
+                    let valB = b[column];
 
-                if (filteredData.length > 0) {
-                    totalRows = filteredData.length;
-                    rowsToDisplay = filteredData;
-                } else {
-                    // Jika filteredData kosong → check jika filter active
-                    totalRows = $('#TicketTable tbody tr').length;
-                    rowsToDisplay = $('#TicketTable tbody tr').get();
-                }
+                    // String (subject, user, status) -> alfabetis
+                    if (typeof valA === 'string') {
+                        valA = valA.toLowerCase();
+                        valB = valB.toLowerCase();
+                        if (valA < valB) return order === 'asc' ? -1 : 1;
+                        if (valA > valB) return order === 'asc' ? 1 : -1;
+                        // tie-break dengan createdAt
+                        return order === 'asc' ? a.createdAt - b.createdAt : b.createdAt - a.createdAt;
+                    }
 
-                const totalPages = Math.ceil(totalRows / itemsPerPage);
-                if (currentPage > totalPages) {
-                    currentPage = totalPages || 1;
-                }
+                    // Number (createdAt)
+                    if (valA < valB) return order === 'asc' ? -1 : 1;
+                    if (valA > valB) return order === 'asc' ? 1 : -1;
+                    return 0;
+                });
+                return sorted;
+            }
 
-                $('#TicketTable tbody tr').hide(); // Hide all rows first
+            // ========================
+            // 4. Render Table & Pagination
+            // ========================
+            function renderTable() {
+                let filteredData = applyFilters(ticketsData);
+                filteredData = applySearch(filteredData);
+                filteredData = applySort(filteredData);
 
-                // FIX: Jika hasActiveFilter true dan filteredData.length === 0, treat sebagai no match
-                if (hasActiveFilter && filteredData.length === 0) {
-                    totalRows = 0;
-                }
+
+                totalPages = Math.ceil(filteredData.length / rowsPerPage);
+                if (currentPage > totalPages) currentPage = totalPages || 1;
+
+                // Hide all rows first
+                $('#TicketTable tbody tr').hide();
+
+                // Hitung start & end index
+                const startIndex = (currentPage - 1) * rowsPerPage;
+                const endIndex = startIndex + rowsPerPage;
+
+                // Ambil subset data untuk halaman ini
+                const pageData = filteredData.slice(startIndex, endIndex);
+                const $tbody = $('#TicketTable tbody');
+                const rowsToShow = pageData.map(item => item.trElement.detach()); // lepaskan row dari DOM
+                $tbody.append(rowsToShow); // append kembali
+                rowsToShow.forEach(r => r.show()); // tampilkan
+                // ===== DEBUG: urutan data per page =====
+                console.log('--- Page', currentPage, 'data per page ---');
+                console.table(pageData.map(item => ({
+                    createdAt: item.createdAt,
+                    subject: item.subject,
+                    user: item.user
+                })));
+
+
+                // ========================
+                // Update pagination display (asc/desc)
+                // ========================
+                const totalRows = filteredData.length;
 
                 if (totalRows === 0) {
-                    // Tampilkan pesan jika nol
-                    // Hapus pesan lama jika ada
-                    $('.no-data-row').remove();
-                    $('#TicketTable tbody').append(
-                        '<tr class="no-data-row"><td colspan="6" class="text-center text-secondary py-4">Tidak ada data ditemukan</td></tr>'
-                    );
                     $('#paginationDisplay').text('0-0 dari 0');
                 } else {
-                    // Hapus pesan no-data jika ada
-                    $('.no-data-row').remove();
+                    const displayStart = startIndex + 1;
+                    const displayEnd = Math.min(endIndex, totalRows);
 
-                    var startIndex = (currentPage - 1) * itemsPerPage;
-                    var endIndex = startIndex + itemsPerPage;
-
-                    for (let i = startIndex; i < endIndex && i < totalRows; i++) {
-                        $(rowsToDisplay[i]).show();
-                    }
-
-                    var displayStart = startIndex + 1;
-                    var displayEnd = Math.min(endIndex, totalRows);
-
-                    if (currentSort === 'desc') {
-                        $('#paginationDisplay').text(displayStart + '-' + displayEnd + ' dari ' + totalRows);
-                    } else {
+                    if (currentSort.column === 'createdAt' && currentSort.order === 'desc') {
+                        // Descending → terbaru di atas
+                        $('#paginationDisplay').text(`${displayStart}-${displayEnd} dari ${totalRows}`);
+                    } else if (currentSort.column === 'createdAt' && currentSort.order === 'asc') {
+                        // Ascending → terlama di atas → nomor tampilan dibalik
                         const reversedStart = totalRows - startIndex;
-                        const reversedEnd = Math.max(reversedStart - (itemsPerPage - 1), 1);
-                        $('#paginationDisplay').text(reversedStart + '-' + reversedEnd + ' dari ' + totalRows);
-                    }
-                }
-
-                $('#prevPage').prop('disabled', currentPage === 1).css('opacity', currentPage === 1 ? '0.5' : '1').css('cursor', currentPage === 1 ? 'not-allowed' : 'pointer');
-                $('#nextPage').prop('disabled', currentPage === totalPages || totalRows === 0).css('opacity', currentPage === totalPages || totalRows === 0 ? '0.5' : '1').css('cursor', currentPage === totalPages || totalRows === 0 ? 'not-allowed' : 'pointer');
-            }
-
-            $('#prevPage').on('click', function() {
-                if (currentPage > 1) {
-                    currentPage--;
-                    // Jika pengurutan kustom diaktifkan, lanjutkan pengurutan yang sudah dilakukan sebelumnya
-                    if (isSortedByCustom) {
-                        sortAllDataByColumn(lastSortedColumn, currentSort === 'asc'); // Menjaga pengurutan tetap aktif
+                        const reversedEnd = Math.max(reversedStart - (rowsPerPage - 1), 1);
+                        $('#paginationDisplay').text(`${reversedStart}-${reversedEnd} dari ${totalRows}`);
                     } else {
-                        sortTableByDate(currentSort); // Pengurutan berdasarkan tanggal (jika tidak ada pengurutan kustom)
+                        // Kolom selain createdAt → numbering normal
+                        $('#paginationDisplay').text(`${displayStart}-${displayEnd} dari ${totalRows}`);
                     }
-                    updatePagination();
                 }
-            });
 
-            $('#nextPage').on('click', function() {
-                const totalRows = filteredData.length || $('#TicketTable tbody tr').length;
-                const totalPages = Math.ceil(totalRows / itemsPerPage);
-                if (currentPage < totalPages) {
-                    currentPage++;
-                    // Jika pengurutan kustom diaktifkan, lanjutkan pengurutan yang sudah dilakukan sebelumnya
-                    if (isSortedByCustom) {
-                        sortAllDataByColumn(lastSortedColumn, currentSort === 'asc'); // Menjaga pengurutan tetap aktif
-                    } else {
-                        sortTableByDate(currentSort); // Pengurutan berdasarkan tanggal (jika tidak ada pengurutan kustom)
+                // Enable/disable Prev/Next
+                $('#prevPage').prop('disabled', currentPage <= 1).css('opacity', currentPage <= 1 ? 0.5 : 1).css(
+                    'cursor', currentPage <= 1 ? 'not-allowed' : 'pointer');
+                $('#nextPage').prop('disabled', currentPage >= totalPages).css('opacity', currentPage >=
+                    totalPages ? 0.5 : 1).css('cursor', currentPage >= totalPages ? 'not-allowed' : 'pointer');
+
+                // Hapus ikon lama
+                $('#TicketTable thead th.sorting').removeClass('sorting_asc sorting_desc');
+                $('#TicketTable thead th.sorting .sort-icons').remove();
+
+                // Tambahkan ikon segitiga untuk kolom sortable (subject, user, status)
+                $('#TicketTable thead th.sorting').each(function() {
+                    const colText = $(this).text().trim().toLowerCase();
+                    if (currentSort.column === colText) {
+                        $(this).addClass(currentSort.order === 'asc' ? 'sorting_asc' : 'sorting_desc');
                     }
-                    updatePagination();
-                }
-            });
-
-            // Filter Dropdown: Jenis Pengaduan
-            $(document).on('click', '.filter-option[data-filter-type="jenis_pengaduan"]', function(e) {
-                e.preventDefault();
-                var filterValue = $(this).data('filter-value');
-                $('#filterJenisPengaduanDisplay').text($(this).text()); // Update button text
-                filterTable();
-            });
-
-            // Filter Dropdown: Status
-            $(document).on('click', '.filter-option[data-filter-type="status"]', function(e) {
-                e.preventDefault();
-                var filterValue = $(this).data('filter-value');
-                $('#filterStatusDisplay').text($(this).text()); // Update button text
-                filterTable();
-            });
-
-            function filterTable() {
-                const selectedJenis = $('#filterJenisPengaduanDisplay').text().trim();
-                const selectedStatus = $('#filterStatusDisplay').text().trim();
-
-                const isAllJenis = selectedJenis === 'Jenis Pengaduan' || selectedJenis === 'Semua';
-                const isAllStatus = selectedStatus === 'Status' || selectedStatus === 'Semua';
-
-                hasActiveFilter = !(isAllJenis && isAllStatus); // FIX: Set flag true jika ada filter spesifik
-
-                filteredData = [];
-                originalData.forEach(function(row) {
-                    var $row = $(row);
-                    var jenis = $row.data('jenis-pengaduan') || '';
-                    var status = $row.data('status') || '';
-
-                    var matchJ = isAllJenis || jenis.toLowerCase().includes(selectedJenis.toLowerCase());
-                    var matchS = isAllStatus || status.toLowerCase().includes(selectedStatus.toLowerCase());
-
-                    if (matchJ && matchS) {
-                        filteredData.push(row);
+                    if (!$(this).find('.sort-icons').length) {
+                        $(this).append('<span class="sort-icons"></span>');
                     }
                 });
-
-                currentPage = 1;
-                updatePagination();
-
-                // FIX: Jika reset ke Semua, pastikan fallback ke semua data dan show
-                if (!hasActiveFilter) {
-                    $('#TicketTable tbody tr').show();
-                    updatePagination();
-                }
             }
-            updatePagination(); // Update pagination after sorting
-            sortTableByDate('desc');
+            // ========================
+            // 5. Event Handlers
+            // ========================
+
+            // Search
+            $('#search').on('input', function() {
+                currentSearch = $(this).val().toLowerCase();
+                currentPage = 1;
+                renderTable();
+            });
+
+            // Filter
+            $('.filter-option').click(function(e) {
+                e.preventDefault();
+                const filterType = $(this).data('filter-type');
+                const filterValue = $(this).data('filter-value')?.toLowerCase() || '';
+                currentFilters[filterType] = filterValue;
+                currentPage = 1;
+                renderTable();
+            });
+
+            // Dropdown sort terbaru/terlama
+            $('.page-sort-option').click(function(e) {
+                e.preventDefault();
+                const sortOrder = $(this).data('sort');
+                currentSort.column = 'createdAt';
+                currentSort.order = sortOrder;
+                currentPage = 1;
+                renderTable();
+            });
+
+            // Sorting klik th
+            $('#TicketTable thead th.sorting').click(function() {
+                const colText = $(this).text().trim().toLowerCase();
+                if (colText === 'subject') currentSort.column = 'subject';
+                else if (colText === 'user') currentSort.column = 'user';
+                else if (colText === 'status') currentSort.column = 'status';
+                else return;
+
+                currentSort.order = (currentSort.order === 'asc') ? 'desc' : 'asc';
+                currentPage = 1;
+                renderTable();
+            });
+
+            // Pagination Prev/Next
+            $('#prevPage').click(function() {
+                if (currentPage > 1) currentPage--;
+                renderTable();
+            });
+            $('#nextPage').click(function() {
+                if (currentPage < totalPages) currentPage++;
+                renderTable();
+            });
+
+            // Initial render
+            renderTable();
         });
     </script>
+
+    <style>
+        /* Tetapkan space untuk ikon supaya kolom tidak bergeser */
+        th.sorting {
+            position: relative;
+            cursor: pointer;
+            user-select: none;
+            padding-right: 30px;
+            /* space tetap untuk ikon */
+            width: 150px;
+            /* opsional, bisa disesuaikan lebar kolom */
+        }
+
+        /* container ikon */
+        th.sorting .sort-icons {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            font-size: 1em;
+            line-height: 0.7em;
+            width: 16px;
+            /* fix width ikon supaya tidak memengaruhi layout */
+            height: 16px;
+            /* fix height juga */
+        }
+
+        /* default abu-abu */
+        th.sorting .sort-icons::before,
+        th.sorting .sort-icons::after {
+            color: #ccc;
+        }
+
+        /* ascending active */
+        th.sorting.sorting_asc .sort-icons::before {
+            color: #000;
+        }
+
+        th.sorting.sorting_asc .sort-icons::after {
+            color: #ccc;
+        }
+
+        /* descending active */
+        th.sorting.sorting_desc .sort-icons::before {
+            color: #ccc;
+        }
+
+        th.sorting.sorting_desc .sort-icons::after {
+            color: #000;
+        }
+
+        /* isi segitiga */
+        th.sorting .sort-icons::before {
+            content: "▲";
+        }
+
+        th.sorting .sort-icons::after {
+            content: "▼";
+        }
+    </style>
 @endsection
