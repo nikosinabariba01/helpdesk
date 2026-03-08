@@ -316,14 +316,14 @@
         let currentSort = {
             column: 'createdAt',
             order: 'desc'
-        };
+        }; // default Terbaru
         let currentFilters = {
             status: '',
             jenis_pengaduan: ''
         };
         let currentSearch = '';
 
-        // Ambil semua row ke array JS
+        // Ambil semua row dari DOM ke array JS
         $('#TicketTable tbody tr').each(function() {
             const $tr = $(this);
             ticketsData.push({
@@ -336,7 +336,9 @@
             });
         });
 
-        // Filter dataset
+        // =====================
+        // Filter
+        // =====================
         function applyFilters(data) {
             return data.filter(item => {
                 const matchStatus = currentFilters.status ? item.status === currentFilters.status : true;
@@ -345,7 +347,9 @@
             });
         }
 
-        // Search dataset
+        // =====================
+        // Search
+        // =====================
         function applySearch(data) {
             if (!currentSearch) return data;
             const keyword = currentSearch.toLowerCase();
@@ -354,13 +358,16 @@
             );
         }
 
-        // Sort dataset
+        // =====================
+        // Sort (termasuk createdAt untuk Terbaru/Terlama)
+        // =====================
         function applySort(data) {
             const sorted = [...data];
             const {
                 column,
                 order
             } = currentSort;
+
             sorted.sort((a, b) => {
                 let valA = a[column];
                 let valB = b[column];
@@ -373,12 +380,16 @@
                         (valA < valB ? 1 : valA > valB ? -1 : 0);
                 }
 
+                // sorting numeric (createdAt)
                 return order === 'asc' ? valA - valB : valB - valA;
             });
+
             return sorted;
         }
 
-        // Render table + pagination + sort icons
+        // =====================
+        // Render Table + Pagination + Sort Icons
+        // =====================
         function renderTable() {
             let filteredData = applyFilters(ticketsData);
             filteredData = applySearch(filteredData);
@@ -391,7 +402,6 @@
             const endIndex = startIndex + rowsPerPage;
             const pageData = filteredData.slice(startIndex, endIndex);
 
-            // Tampilkan page
             $('#TicketTable tbody tr').hide();
             pageData.forEach(item => item.trElement.show());
 
@@ -399,11 +409,12 @@
             $('#prevPage').prop('disabled', currentPage <= 1);
             $('#nextPage').prop('disabled', currentPage >= totalPages);
 
-            // Hapus ikon lama
+            // =====================
+            // Sort Icons
+            // =====================
             $('#TicketTable thead th.sorting').removeClass('sorting_asc sorting_desc');
             $('#TicketTable thead th.sorting .sort-icons').remove();
 
-            // Tambahkan ikon segitiga untuk kolom sortable (subject, user, status)
             $('#TicketTable thead th.sorting').each(function() {
                 const colText = $(this).text().trim().toLowerCase();
                 if (currentSort.column === colText) {
@@ -415,14 +426,15 @@
             });
         }
 
-        // Search input
+        // =====================
+        // Event Handlers
+        // =====================
         $('#search').on('input', function() {
             currentSearch = $(this).val().toLowerCase();
             currentPage = 1;
             renderTable();
         });
 
-        // Filter dropdown
         $('.filter-option').click(function(e) {
             e.preventDefault();
             const filterType = $(this).data('filter-type');
@@ -431,7 +443,6 @@
             renderTable();
         });
 
-        // Dropdown Terbaru/Terlama (tanggal)
         $('.page-sort-option').click(function(e) {
             e.preventDefault();
             const sortOrder = $(this).data('sort');
@@ -444,7 +455,6 @@
             $(this).addClass('active');
         });
 
-        // Klik kolom sortable (subject/user/status)
         $('#TicketTable thead th.sorting').click(function() {
             const colText = $(this).text().trim().toLowerCase();
             if (colText === 'subject') currentSort.column = 'subject';
@@ -457,7 +467,6 @@
             renderTable();
         });
 
-        // Prev/Next pagination
         $('#prevPage').click(function() {
             if (currentPage > 1) currentPage--;
             renderTable();
@@ -467,61 +476,70 @@
             renderTable();
         });
 
-        // Initial render
         renderTable();
     });
 </script>
 
 <style>
-/* Tetapkan space untuk ikon supaya kolom tidak bergeser */
-th.sorting {
-    position: relative;
-    cursor: pointer;
-    user-select: none;
-    padding-right: 30px; /* space tetap untuk ikon */
-    width: 150px; /* opsional, bisa disesuaikan lebar kolom */
-}
+    /* Tetapkan space untuk ikon supaya kolom tidak bergeser */
+    th.sorting {
+        position: relative;
+        cursor: pointer;
+        user-select: none;
+        padding-right: 30px;
+        /* space tetap untuk ikon */
+        width: 150px;
+        /* opsional, bisa disesuaikan lebar kolom */
+    }
 
-/* container ikon */
-th.sorting .sort-icons {
-    position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    display: flex;
-    flex-direction: column;
-    font-size: 1em;
-    line-height: 0.7em;
-    width: 16px;   /* fix width ikon supaya tidak memengaruhi layout */
-    height: 16px;  /* fix height juga */
-}
+    /* container ikon */
+    th.sorting .sort-icons {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        font-size: 1em;
+        line-height: 0.7em;
+        width: 16px;
+        /* fix width ikon supaya tidak memengaruhi layout */
+        height: 16px;
+        /* fix height juga */
+    }
 
-/* default abu-abu */
-th.sorting .sort-icons::before,
-th.sorting .sort-icons::after {
-    color: #ccc;
-}
+    /* default abu-abu */
+    th.sorting .sort-icons::before,
+    th.sorting .sort-icons::after {
+        color: #ccc;
+    }
 
-/* ascending active */
-th.sorting.sorting_asc .sort-icons::before {
-    color: #000;
-}
-th.sorting.sorting_asc .sort-icons::after {
-    color: #ccc;
-}
+    /* ascending active */
+    th.sorting.sorting_asc .sort-icons::before {
+        color: #000;
+    }
 
-/* descending active */
-th.sorting.sorting_desc .sort-icons::before {
-    color: #ccc;
-}
-th.sorting.sorting_desc .sort-icons::after {
-    color: #000;
-}
+    th.sorting.sorting_asc .sort-icons::after {
+        color: #ccc;
+    }
 
-/* isi segitiga */
-th.sorting .sort-icons::before { content: "▲"; }
-th.sorting .sort-icons::after { content: "▼"; }
-    
+    /* descending active */
+    th.sorting.sorting_desc .sort-icons::before {
+        color: #ccc;
+    }
+
+    th.sorting.sorting_desc .sort-icons::after {
+        color: #000;
+    }
+
+    /* isi segitiga */
+    th.sorting .sort-icons::before {
+        content: "▲";
+    }
+
+    th.sorting .sort-icons::after {
+        content: "▼";
+    }
 </style>
 
 @endsection
