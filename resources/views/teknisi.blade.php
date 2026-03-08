@@ -294,41 +294,72 @@
                 </div>
 
                 {{-- ROW 2 --}}
-                <div class="row g-3 align-items-end mt-1">
-                    <div class="col-12 col-md-4">
-                        <label class="form-label mb-1">Status (opsional)</label>
-                        @php $status = request('status','all'); @endphp
-                        <select name="status" class="form-select form-select-sm">
-                            <option value="all" {{ $status === 'all' ? 'selected' : '' }}>Semua Status</option>
-                            <option value="open" {{ $status === 'open' ? 'selected' : '' }}>Open</option>
-                            <option value="on process" {{ $status === 'on process' ? 'selected' : '' }}>On Process
-                            </option>
-                            <option value="close" {{ $status === 'close' ? 'selected' : '' }}>Close</option>
-                            <option value="escalated" {{ $status === 'escalated' ? 'selected' : '' }}>Escalated</option>
-                        </select>
+            <div style="padding: 15px 16px; border-top: 1px solid #e4e4e4; background-color: #ffffff;"
+                class="d-flex flex-column flex-md-row justify-content-between align-items-center flex-wrap">
+
+                <!-- Left side: Filters / Dropdowns -->
+                <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                    <!-- Sort Dropdown -->
+                    <div class="dropdown" style="position: relative;">
+                        <button class="btn btn-sm btn-outline-secondary"
+                            style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <span id="paginationDisplay">1-10 dari {{ $teknisi_data_ticket->count() }}</span>
+                            <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
+                        </button>
+                        <ul class="dropdown-menu" style="font-size: 13px; min-width: 150px;">
+                            <li><a class="dropdown-item page-sort-option" href="#" data-sort="desc"><i class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru</a></li>
+                            <li><a class="dropdown-item page-sort-option" href="#" data-sort="asc"><i class="fa fa-arrow-up me-2" style="color: #6c757d;"></i>Terlama</a></li>
+                        </ul>
                     </div>
 
-                    <div class="col-12 col-md-4">
-                        <label class="form-label mb-1">Jenis (opsional)</label>
-                        @php $jenis = request('jenis','all'); @endphp
-                        <select name="jenis" class="form-select form-select-sm">
-                            <option value="all" {{ $jenis === 'all' ? 'selected' : '' }}>Semua Jenis</option>
-                            <option value="perbaikan" {{ $jenis === 'perbaikan' ? 'selected' : '' }}>Perbaikan</option>
-                            <option value="permintaan" {{ $jenis === 'permintaan' ? 'selected' : '' }}>Permintaan</option>
-                        </select>
+                    <!-- Filter Jenis Pengaduan -->
+                    <div class="dropdown" style="position: relative; display: inline-block;">
+                        <button class="btn btn-sm btn-outline-secondary"
+                            style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
+                            type="button" id="filterJenisPengaduanBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span id="filterJenisPengaduanDisplay">Jenis Pengaduan</span>
+                            <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="filterJenisPengaduanBtn" style="font-size: 13px; min-width: 150px;">
+                            <li><a class="dropdown-item filter-option" href="#" data-filter-type="jenis_pengaduan" data-filter-value="">Semua</a></li>
+                            <li><a class="dropdown-item filter-option" href="#" data-filter-type="jenis_pengaduan" data-filter-value="perbaikan">Perbaikan</a></li>
+                            <li><a class="dropdown-item filter-option" href="#" data-filter-type="jenis_pengaduan" data-filter-value="permintaan">Permintaan</a></li>
+                        </ul>
                     </div>
 
-                    <div class="col-12 col-md-5">
-                        <div class="d-flex gap-2 justify-content-md-start flex-column flex-md-row">
-                            <a href="{{ url()->current() }}" class="btn btn-soft btn-sm">
-                                <i class="fa fa-rotate-left me-1"></i> Reset
-                            </a>
-                            <button type="submit" class="btn btn-primary btn-sm">
-                                <i class="fa fa-download me-1"></i> Download PDF
-                            </button>
-                        </div>
+                    <!-- Filter Status -->
+                    <div class="dropdown" style="position: relative; display: inline-block;">
+                        <button class="btn btn-sm btn-outline-secondary"
+                            style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
+                            type="button" id="filterStatusBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span id="filterStatusDisplay">Status</span>
+                            <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="filterStatusBtn" style="font-size: 13px; min-width: 150px;">
+                            <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="">Semua</a></li>
+                            <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="open">Open</a></li>
+                            <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="on process">On Process</a></li>
+                            <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="escalated">Escalated</a></li>
+                            <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="close">Close</a></li>
+                        </ul>
                     </div>
                 </div>
+
+                <!-- Right side: Pagination -->
+                <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                    <button id="prevPage" class="btn btn-sm btn-outline-secondary"
+                        style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;"
+                        title="Halaman Sebelumnya">
+                        <i class="fa fa-chevron-left" style="font-size: 11px;"></i>
+                    </button>
+                    <button id="nextPage" class="btn btn-sm btn-outline-secondary"
+                        style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;"
+                        title="Halaman Berikutnya">
+                        <i class="fa fa-chevron-right" style="font-size: 11px;"></i>
+                    </button>
+                </div>
+            </div>
 
                 <input type="hidden" name="download" value="1">
             </form>

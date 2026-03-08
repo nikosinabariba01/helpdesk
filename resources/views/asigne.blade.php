@@ -63,14 +63,20 @@
                     <div class="table-responsive margin-right: 15px; table-responsive-custom" style="overflow-y: auto;">
                         <table class="table align-items-center mb-0" id="TicketTable">
                             <thead>
-                        <tr>
-                            <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">subject</th>
-                            <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">User</th>
-                            <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Status</th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Deskripsi</th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Aksi Status</th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">aksi</th>
-                        </tr>
+                                <tr>
+                                    <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
+                                        style="padding: 10px;">subject</th>
+                                    <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
+                                        style="padding: 10px;">User</th>
+                                    <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
+                                        style="padding: 10px;">Status</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
+                                        style="padding: 10px;">Deskripsi</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
+                                        style="padding: 10px;">Aksi Status</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
+                                        style="padding: 10px;">aksi</th>
+                                </tr>
                             </thead>
                             <tbody>
                                 @foreach ($teknisi_data_ticket as $teknisidataticket)
@@ -235,10 +241,12 @@
 
                         </table>
                     </div>
-                    <div
-                        style="padding: 15px 16px; border-top: 1px solid #e4e4e4; display: flex; justify-content: space-between; align-items: center; background-color: #ffffff;">
-                        <div style="display: flex; gap: 12px; align-items: center;">
-                            <!-- Pagination Info as Dropdown -->
+                    <div style="padding: 15px 16px; border-top: 1px solid #e4e4e4; background-color: #ffffff;"
+                        class="d-flex flex-column flex-md-row justify-content-between align-items-center flex-wrap">
+
+                        <!-- Left side: Filters / Dropdowns -->
+                        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                            <!-- Sort Dropdown -->
                             <div class="dropdown" style="position: relative;">
                                 <button class="btn btn-sm btn-outline-secondary"
                                     style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
@@ -247,17 +255,14 @@
                                     <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
                                 </button>
                                 <ul class="dropdown-menu" style="font-size: 13px; min-width: 150px;">
-                                    <li><a class="dropdown-item page-sort-option" href="#" data-sort="desc"
-                                            style="padding: 8px 16px;">
-                                            <i class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru
-                                        </a></li>
-                                    <li><a class="dropdown-item page-sort-option" href="#" data-sort="asc"
-                                            style="padding: 8px 16px;">
-                                            <i class="fa fa-arrow-up me-2" style="color: #6c757d;"></i>Terlama
-                                        </a></li>
+                                    <li><a class="dropdown-item page-sort-option" href="#" data-sort="desc"><i
+                                                class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru</a></li>
+                                    <li><a class="dropdown-item page-sort-option" href="#" data-sort="asc"><i
+                                                class="fa fa-arrow-up me-2" style="color: #6c757d;"></i>Terlama</a></li>
                                 </ul>
                             </div>
-                            <!-- Filter Jenis Pengaduan Dropdown -->
+
+                            <!-- Filter Jenis Pengaduan -->
                             <div class="dropdown" style="position: relative; display: inline-block;">
                                 <button class="btn btn-sm btn-outline-secondary"
                                     style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
@@ -269,18 +274,17 @@
                                 <ul class="dropdown-menu" aria-labelledby="filterJenisPengaduanBtn"
                                     style="font-size: 13px; min-width: 150px;">
                                     <li><a class="dropdown-item filter-option" href="#"
-                                            data-filter-type="jenis_pengaduan" data-filter-value=""
-                                            style="padding: 8px 16px;">Semua</a></li>
+                                            data-filter-type="jenis_pengaduan" data-filter-value="">Semua</a></li>
                                     <li><a class="dropdown-item filter-option" href="#"
-                                            data-filter-type="jenis_pengaduan" data-filter-value="perbaikan"
-                                            style="padding: 8px 16px;">Perbaikan</a></li>
+                                            data-filter-type="jenis_pengaduan" data-filter-value="perbaikan">Perbaikan</a>
+                                    </li>
                                     <li><a class="dropdown-item filter-option" href="#"
-                                            data-filter-type="jenis_pengaduan" data-filter-value="permintaan"
-                                            style="padding: 8px 16px;">Permintaan</a></li>
+                                            data-filter-type="jenis_pengaduan"
+                                            data-filter-value="permintaan">Permintaan</a></li>
                                 </ul>
                             </div>
 
-                            <!-- Filter Status Dropdown -->
+                            <!-- Filter Status -->
                             <div class="dropdown" style="position: relative; display: inline-block;">
                                 <button class="btn btn-sm btn-outline-secondary"
                                     style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
@@ -291,29 +295,27 @@
                                 <ul class="dropdown-menu" aria-labelledby="filterStatusBtn"
                                     style="font-size: 13px; min-width: 150px;">
                                     <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
-                                            data-filter-value="" style="padding: 8px 16px;">Semua</a></li>
+                                            data-filter-value="">Semua</a></li>
                                     <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
-                                            data-filter-value="on process" style="padding: 8px 16px;">On Process</a></li>
+                                            data-filter-value="on process">On Process</a></li>
                                     <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
-                                            data-filter-value="escalated" style="padding: 8px 16px;">Escalated</a></li>
+                                            data-filter-value="escalated">Escalated</a></li>
                                 </ul>
                             </div>
                         </div>
 
-                        <div style="display: flex; gap: 12px; align-items: center;">
-                            <!-- Pagination Navigation -->
-                            <div style="display: flex; gap: 6px;">
-                                <button id="prevPage" class="btn btn-sm btn-outline-secondary"
-                                    style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;"
-                                    title="Halaman Sebelumnya">
-                                    <i class="fa fa-chevron-left" style="font-size: 11px;"></i>
-                                </button>
-                                <button id="nextPage" class="btn btn-sm btn-outline-secondary"
-                                    style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;"
-                                    title="Halaman Berikutnya">
-                                    <i class="fa fa-chevron-right" style="font-size: 11px;"></i>
-                                </button>
-                            </div>
+                        <!-- Right side: Pagination -->
+                        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                            <button id="prevPage" class="btn btn-sm btn-outline-secondary"
+                                style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;"
+                                title="Halaman Sebelumnya">
+                                <i class="fa fa-chevron-left" style="font-size: 11px;"></i>
+                            </button>
+                            <button id="nextPage" class="btn btn-sm btn-outline-secondary"
+                                style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;"
+                                title="Halaman Berikutnya">
+                                <i class="fa fa-chevron-right" style="font-size: 11px;"></i>
+                            </button>
                         </div>
                     </div>
                 @endif
@@ -396,7 +398,7 @@
                 // Set last sorted column
                 lastSortedColumn = columnIndex;
                 // Remove all sorting classes
-                $('#TicketTable thead th') . removeClass('sorting_asc sorting_desc');
+                $('#TicketTable thead th').removeClass('sorting_asc sorting_desc');
 
                 // Add sorting class to current column
                 if (isAsc) {
@@ -447,7 +449,8 @@
                     // Jika search term kosong dan tidak ada filter yang aktif
                     if (searchTerm === '' && !hasActiveFilter) {
                         // Tampilkan data asli (originalData) ketika search dikosongkan dan tidak ada filter aktif
-                        $('#TicketTable tbody').empty().append(originalData); // Menampilkan data asli
+                        $('#TicketTable tbody').empty().append(
+                        originalData); // Menampilkan data asli
                         sortTableByDate(currentSort); // Urutkan data sesuai urutan yang diinginkan
                         updatePagination(); // Update pagination sesuai data yang ditampilkan
                         return;
@@ -458,13 +461,17 @@
                         // Tampilkan data yang sudah difilter sebelumnya
                         if (filteredData.length > 0) {
                             // Tampilkan data yang sudah difilter (filteredData) dan pastikan urutannya benar
-                            $('#TicketTable tbody').empty().append(filteredData); // Menampilkan kembali data yang sudah difilter
-                            sortTableByDate(currentSort); // Urutkan data sesuai urutan yang diinginkan (misalnya berdasarkan tanggal)
+                            $('#TicketTable tbody').empty().append(
+                            filteredData); // Menampilkan kembali data yang sudah difilter
+                            sortTableByDate(
+                            currentSort); // Urutkan data sesuai urutan yang diinginkan (misalnya berdasarkan tanggal)
                             updatePagination(); // Update pagination sesuai data yang ditampilkan
                         } else {
                             // Jika tidak ada data yang sudah difilter, tampilkan seluruh data asli
-                            $('#TicketTable tbody').empty().append(originalData); // Menampilkan data asli
-                            sortTableByDate(currentSort); // Urutkan data sesuai urutan yang diinginkan
+                            $('#TicketTable tbody').empty().append(
+                            originalData); // Menampilkan data asli
+                            sortTableByDate(
+                            currentSort); // Urutkan data sesuai urutan yang diinginkan
                             updatePagination(); // Update pagination sesuai data yang ditampilkan
                         }
                         return;
@@ -473,16 +480,19 @@
                     // Jika search term tidak kosong, lakukan pencarian dan filter ulang
                     $.fn.dataTable.ext.search = [];
                     $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
-                        return data[0].toLowerCase().includes(searchTerm) || data[1].toLowerCase().includes(searchTerm);
+                        return data[0].toLowerCase().includes(searchTerm) || data[1]
+                            .toLowerCase().includes(searchTerm);
                     });
                     table.draw();
                     currentPage = 1;
-                    sortTableByDate(currentSort); // Urutkan berdasarkan tanggal (terbaru ke terlama)
+                    sortTableByDate(
+                    currentSort); // Urutkan berdasarkan tanggal (terbaru ke terlama)
                     updatePagination(); // Update pagination sesuai data yang ditampilkan
                 });
                 $.fn.dataTable.ext.search = [];
                 $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
-                    return data[0].toLowerCase().includes(searchTerm) || data[1].toLowerCase().includes(searchTerm);
+                    return data[0].toLowerCase().includes(searchTerm) || data[1].toLowerCase()
+                        .includes(searchTerm);
                 });
                 table.draw();
                 currentPage = 1;
@@ -509,9 +519,11 @@
                 currentSort = $(this).data('sort');
                 // Jika pengurutan kustom diaktifkan, lanjutkan pengurutan yang sudah dilakukan sebelumnya
                 if (isSortedByCustom) {
-                    sortAllDataByColumn(lastSortedColumn, currentSort === 'asc'); // Menjaga pengurutan tetap aktif
+                    sortAllDataByColumn(lastSortedColumn, currentSort ===
+                    'asc'); // Menjaga pengurutan tetap aktif
                 } else {
-                    sortTableByDate(currentSort); // Pengurutan berdasarkan tanggal (jika tidak ada pengurutan kustom)
+                    sortTableByDate(
+                    currentSort); // Pengurutan berdasarkan tanggal (jika tidak ada pengurutan kustom)
                 }
                 currentPage = 1;
                 updatePagination();
@@ -586,8 +598,11 @@
                     }
                 }
 
-                $('#prevPage').prop('disabled', currentPage === 1).css('opacity', currentPage === 1 ? '0.5' : '1').css('cursor', currentPage === 1 ? 'not-allowed' : 'pointer');
-                $('#nextPage').prop('disabled', currentPage === totalPages || totalRows === 0).css('opacity', currentPage === totalPages || totalRows === 0 ? '0.5' : '1').css('cursor', currentPage === totalPages || totalRows === 0 ? 'not-allowed' : 'pointer');
+                $('#prevPage').prop('disabled', currentPage === 1).css('opacity', currentPage === 1 ? '0.5' : '1')
+                    .css('cursor', currentPage === 1 ? 'not-allowed' : 'pointer');
+                $('#nextPage').prop('disabled', currentPage === totalPages || totalRows === 0).css('opacity',
+                    currentPage === totalPages || totalRows === 0 ? '0.5' : '1').css('cursor', currentPage ===
+                    totalPages || totalRows === 0 ? 'not-allowed' : 'pointer');
             }
 
             $('#prevPage').on('click', function() {
@@ -595,9 +610,11 @@
                     currentPage--;
                     // Jika pengurutan kustom diaktifkan, lanjutkan pengurutan yang sudah dilakukan sebelumnya
                     if (isSortedByCustom) {
-                        sortAllDataByColumn(lastSortedColumn, currentSort === 'asc'); // Menjaga pengurutan tetap aktif
+                        sortAllDataByColumn(lastSortedColumn, currentSort ===
+                        'asc'); // Menjaga pengurutan tetap aktif
                     } else {
-                        sortTableByDate(currentSort); // Pengurutan berdasarkan tanggal (jika tidak ada pengurutan kustom)
+                        sortTableByDate(
+                        currentSort); // Pengurutan berdasarkan tanggal (jika tidak ada pengurutan kustom)
                     }
                     updatePagination();
                 }
@@ -610,9 +627,11 @@
                     currentPage++;
                     // Jika pengurutan kustom diaktifkan, lanjutkan pengurutan yang sudah dilakukan sebelumnya
                     if (isSortedByCustom) {
-                        sortAllDataByColumn(lastSortedColumn, currentSort === 'asc'); // Menjaga pengurutan tetap aktif
+                        sortAllDataByColumn(lastSortedColumn, currentSort ===
+                        'asc'); // Menjaga pengurutan tetap aktif
                     } else {
-                        sortTableByDate(currentSort); // Pengurutan berdasarkan tanggal (jika tidak ada pengurutan kustom)
+                        sortTableByDate(
+                        currentSort); // Pengurutan berdasarkan tanggal (jika tidak ada pengurutan kustom)
                     }
                     updatePagination();
                 }
