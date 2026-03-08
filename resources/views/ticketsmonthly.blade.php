@@ -87,9 +87,17 @@
 </script>
 
 {{-- COVER INFO --}}
-<div class="card no-break">
-    <div class="h1">Laporan Keluhan</div>
-    <div class="muted" style="margin-top:4px;">Sistem Manajemen Keluhan & Monitoring Kos</div>
+<div class="card no-break" style="text-align:center;">
+    {{-- Header Paling Atas --}}
+    <div class="h0" style="font-size:22px; font-weight:900; color:#1f2937; margin-bottom:6px;">
+        KOST 74 SEMARANG
+    </div>
+
+    {{-- Judul Laporan --}}
+    <div class="h1" style="margin-top:4px;">Laporan Keluhan dan KPI</div>
+    <div class="muted" style="margin-top:2px;">Sistem Manajemen Keluhan & Monitoring Kos</div>
+
+    {{-- Info Periode, Role, Filter --}}
     <div class="small muted" style="margin-top:4px;">
         Periode: <b>{{ $meta['periode_label'] ?? '-' }}</b>
         • Role: <b>{{ strtoupper($meta['role'] ?? '-') }}</b>
