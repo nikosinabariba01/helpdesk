@@ -139,11 +139,7 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($data_ticket as $dataticket)
-                                        <tr class="align-middle text-sm border border-light"
-                                            data-created-at="{{ $dataticket->created_at->timestamp }}"
-                                            data-jenis-pengaduan="{{ $dataticket->Jenis_Pengaduan }}"
-                                            data-status="{{ $dataticket->status }}"
-                                            data-subject="{{ $dataticket->subject }}">
+<tr class="align-middle text-sm border border-light" data-created-at="{{ $teknisidataticket->created_at->timestamp }}" data-jenis-pengaduan="{{ $teknisidataticket->Jenis_Pengaduan }}" data-status="{{ $teknisidataticket->status }}" data-subject="{{ $teknisidataticket->subject }}" data-user="{{ $teknisidataticket->user->name }}">
                                             <td class="align-middle text-sm border border-light">
                                                 <div class="d-flex px-2 py-1">
                                                     <div class="d-flex flex-column justify-content-center">
@@ -504,12 +500,11 @@
         let currentSearch = '';
 
         // Ambil semua row ke array
-        $('#TicketTable tbody tr').each(function() {
+        $('#TicketTable').each(function() {
             const $tr = $(this);
             ticketsData.push({
                 trElement: $tr,
                 subject: $tr.data('subject').toString().toLowerCase(),
-                user: $tr.data('user').toString().toLowerCase(),
                 status: $tr.data('status').toString().toLowerCase(),
                 jenis_pengaduan: $tr.data('jenis-pengaduan').toString().toLowerCase(),
                 createdAt: parseInt($tr.data('created-at'))
@@ -720,67 +715,6 @@
     });
 </script>
 
-<style>
-    /* Tetapkan space untuk ikon supaya kolom tidak bergeser */
-    th.sorting {
-        position: relative;
-        cursor: pointer;
-        user-select: none;
-        padding-right: 30px;
-        /* space tetap untuk ikon */
-        width: 150px;
-        /* opsional, bisa disesuaikan lebar kolom */
-    }
-
-    /* container ikon */
-    th.sorting .sort-icons {
-        position: absolute;
-        right: 8px;
-        top: 50%;
-        transform: translateY(-50%);
-        display: flex;
-        flex-direction: column;
-        font-size: 1em;
-        line-height: 0.7em;
-        width: 16px;
-        /* fix width ikon supaya tidak memengaruhi layout */
-        height: 16px;
-        /* fix height juga */
-    }
-
-    /* default abu-abu */
-    th.sorting .sort-icons::before,
-    th.sorting .sort-icons::after {
-        color: #ccc;
-    }
-
-    /* ascending active */
-    th.sorting.sorting_asc .sort-icons::before {
-        color: #000;
-    }
-
-    th.sorting.sorting_asc .sort-icons::after {
-        color: #ccc;
-    }
-
-    /* descending active */
-    th.sorting.sorting_desc .sort-icons::before {
-        color: #ccc;
-    }
-
-    th.sorting.sorting_desc .sort-icons::after {
-        color: #000;
-    }
-
-    /* isi segitiga */
-    th.sorting .sort-icons::before {
-        content: "▲";
-    }
-
-    th.sorting .sort-icons::after {
-        content: "▼";
-    }
-</style>
 @endsection
 
 <!-- Modal -->
