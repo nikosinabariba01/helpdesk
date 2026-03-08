@@ -323,25 +323,6 @@
         };
         let currentSearch = '';
 
-        // ========================
-        // 0.5 Inisialisasi DataTables untuk pseudo-element sort icon
-        // ========================
-        $('#TicketTable').DataTable({
-            paging: false, // kita pakai pagination custom
-            searching: false, // kita pakai search custom
-            info: false, // disable info
-            ordering: true, // aktifkan pseudo-element sort
-            columnDefs: [{
-                    orderable: true,
-                    targets: [0, 1, 2]
-                },
-                {
-                    orderable: false,
-                    targets: [3, 4, 5]
-                }
-            ]
-        });
-
         // Ambil semua row
         $('#TicketTable tbody tr').each(function() {
             const $tr = $(this);
