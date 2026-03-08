@@ -309,9 +309,6 @@
 
 <script>
     $(document).ready(function() {
-        // ========================
-        // 0. Inisialisasi Variabel
-        // ========================
         const rowsPerPage = 10;
         let ticketsData = [];
         let currentPage = 1;
@@ -345,7 +342,7 @@
             ]
         });
 
-        // Ambil semua row ke array
+        // Ambil semua row
         $('#TicketTable tbody tr').each(function() {
             const $tr = $(this);
             ticketsData.push({
@@ -358,9 +355,6 @@
             });
         });
 
-        // ========================
-        // 1. Filter
-        // ========================
         function applyFilters(data) {
             return data.filter(item => {
                 const matchStatus = currentFilters.status ? item.status === currentFilters.status : true;
@@ -369,9 +363,6 @@
             });
         }
 
-        // ========================
-        // 2. Search
-        // ========================
         function applySearch(data) {
             if (!currentSearch) return data;
             const keyword = currentSearch.toLowerCase();
@@ -380,9 +371,6 @@
             );
         }
 
-        // ========================
-        // 3. Sort
-        // ========================
         function applySort(data) {
             const sorted = [...data];
             const {
@@ -396,21 +384,14 @@
                 if (typeof valA === 'string') {
                     valA = valA.toLowerCase();
                     valB = valB.toLowerCase();
-                    if (valA < valB) return order === 'asc' ? -1 : 1;
-                    if (valA > valB) return order === 'asc' ? 1 : -1;
-                    return 0;
+                    return order === 'asc' ? (valA < valB ? -1 : valA > valB ? 1 : 0) : (valA < valB ? 1 : valA > valB ? -1 : 0);
                 }
 
-                if (valA < valB) return order === 'asc' ? -1 : 1;
-                if (valA > valB) return order === 'asc' ? 1 : -1;
-                return 0;
+                return order === 'asc' ? valA - valB : valB - valA;
             });
             return sorted;
         }
 
-        // ========================
-        // 4. Render Table & Pagination
-        // ========================
         function renderTable() {
             let filteredData = applyFilters(ticketsData);
             filteredData = applySearch(filteredData);
@@ -433,32 +414,24 @@
             $('#prevPage').prop('disabled', currentPage <= 1);
             $('#nextPage').prop('disabled', currentPage >= totalPages);
 
-            // Tambahkan class sorting_asc / sorting_desc untuk pseudo-element DataTables
             $('#TicketTable thead th.sorting').removeClass('sorting_asc sorting_desc');
             let th;
             if (currentSort.column === 'subject') th = $('#TicketTable thead th').filter((i, el) => $(el).text().trim().toLowerCase() === 'subject');
             if (currentSort.column === 'user') th = $('#TicketTable thead th').filter((i, el) => $(el).text().trim().toLowerCase() === 'user');
             if (currentSort.column === 'status') th = $('#TicketTable thead th').filter((i, el) => $(el).text().trim().toLowerCase() === 'status');
-
-            if (th) {
-                th.addClass(currentSort.order === 'asc' ? 'sorting_asc' : 'sorting_desc');
-            }
+            if (th) th.addClass(currentSort.order === 'asc' ? 'sorting_asc' : 'sorting_desc');
         }
 
-        // ========================
-        // 5. Event Handlers
-        // ========================
+        // Event Handlers
         $('#search').on('input', function() {
             currentSearch = $(this).val().toLowerCase();
             currentPage = 1;
             renderTable();
         });
-
         $('.filter-option').click(function(e) {
             e.preventDefault();
             const filterType = $(this).data('filter-type');
-            const filterValue = $(this).data('filter-value')?.toLowerCase() || '';
-            currentFilters[filterType] = filterValue;
+            currentFilters[filterType] = $(this).data('filter-value')?.toLowerCase() || '';
             currentPage = 1;
             renderTable();
         });
@@ -467,9 +440,12 @@
             e.preventDefault();
             const sortOrder = $(this).data('sort');
             currentSort.column = 'createdAt';
-            currentSort.order = sortOrder;
+            currentSort.order = sortOrder === 'asc' ? 'asc' : 'desc';
             currentPage = 1;
             renderTable();
+
+            $('.page-sort-option').removeClass('active');
+            $(this).addClass('active');
         });
 
         $('#TicketTable thead th.sorting').click(function() {
@@ -478,7 +454,6 @@
             else if (colText === 'user') currentSort.column = 'user';
             else if (colText === 'status') currentSort.column = 'status';
             else return;
-
             currentSort.order = currentSort.order === 'asc' ? 'desc' : 'asc';
             currentPage = 1;
             renderTable();
@@ -493,7 +468,6 @@
             renderTable();
         });
 
-        // Initial render
         renderTable();
     });
 </script>
