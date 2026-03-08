@@ -746,7 +746,7 @@ class TeknisiController extends Controller
 
         // Mengambil tiket beserta relasinya (user dan asignees)
         $teknisi_data_ticket = Ticket::with('user', 'asignees')
-            ->orderBy('created_at', 'desc')
+            ->orderBy('created_at', 'asc')
             ->get();
 
         $teknisi_data_ticket->each(function ($ticket) use ($userId) {
