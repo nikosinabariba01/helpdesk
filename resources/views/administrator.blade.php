@@ -112,8 +112,8 @@
                                 <td class="align-middle text-center text-sm">
                                     <x-status-badge :status="$teknisidataticket->status" />
                                 </td>
-                                <td class="align-middle text-center text-limit-30">
-                                    <span class="text-secondary text-xs font-weight-bold ">{{ $teknisidataticket->Detail }}</span>
+                                <td class="align-middle text-center ">
+                                    <span class="text-secondary text-xs font-weight-bold ">{{ Str::limit($teknisidataticket->Detail, 40, '...') }}</span>
                                 </td>
                                 <!-- "Edit" button within a dropdown -->
                                 <td class="align-middle text-center">
