@@ -745,9 +745,21 @@ class TeknisiController extends Controller
         $userId = Auth::id();
 
         // Mengambil tiket beserta relasinya (user dan asignees)
-        $teknisi_data_ticket = Ticket::with('user', 'asignees')
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $teknisi_data_ticket = Ticket::select(
+            'id',
+            'subject',
+            'status',
+            'Jenis_Pengaduan',
+            'user_id',
+            'Detail', // Ambil Detail di sini
+            'created_at'
+        )
+            ->with([
+                'user:id,name',
+                'asignees:id,name'
+            ])
+            ->latest() // Menggunakan Indeks idx_created_at_only (B-Tree)
+            ->paginate(10);
 
         $teknisi_data_ticket->each(function ($ticket) use ($userId) {
             // User saat ini belum assign
