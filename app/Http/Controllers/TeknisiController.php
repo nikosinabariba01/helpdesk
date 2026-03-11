@@ -759,7 +759,7 @@ class TeknisiController extends Controller
                 'asignees:id,name'
             ])
             ->latest() // Menggunakan Indeks idx_created_at_only (B-Tree)
-            ->paginate(10);
+            ->get();
 
         $teknisi_data_ticket->each(function ($ticket) use ($userId) {
             // User saat ini belum assign
