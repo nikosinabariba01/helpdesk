@@ -95,8 +95,8 @@
                             <td class="align-middle text-center text-sm border border-light">
                                 <x-status-badge :status="$teknisidataticket->status" />
                             </td>
-                            <td class="align-middle text-center text-limit-30 border border-light">
-                                <span class="text-secondary text-xs font-weight-bold ">{{ $teknisidataticket->Detail }}</span>
+                            <td class="align-middle text-center border border-light">
+                                <span class="text-secondary text-xs font-weight-bold ">{{ Str::limit($teknisidataticket->Detail, 30, '...') }}</span>
                             </td>
                             <td class="align-middle text-center text-sm border border-light">
 
