@@ -436,13 +436,6 @@
             const rowsToShow = pageData.map(item => item.trElement.detach()); // lepaskan row dari DOM
             $tbody.append(rowsToShow); // append kembali
             rowsToShow.forEach(r => r.show()); // tampilkan
-            // ===== DEBUG: urutan data per page =====
-            console.log('--- Page', currentPage, 'data per page ---');
-            console.table(pageData.map(item => ({
-                createdAt: item.createdAt,
-                subject: item.subject,
-                user: item.user
-            })));
 
 
             // ========================
