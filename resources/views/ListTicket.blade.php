@@ -349,6 +349,8 @@
                     }
 
                     .ticket-footer-dropdown {
+                        position: relative;
+                        display: inline-block;
                         width: 100%;
                     }
 
@@ -449,7 +451,7 @@
                                 </ul>
                             </div>
 
-                            <div class="ticket-footer-dropdown dropdown" style="position: relative; display: inline-block;">
+                            <div class="ticket-footer-dropdown dropdown">
                                 <button class="btn btn-sm btn-outline-secondary"
                                     type="button"
                                     id="sortCreatedAtBtn"
@@ -687,10 +689,10 @@
 
     function renderAksi(row) {
         return `
-            <a class="dropdown-item" href="${row.view_url}">
-                <i class="fa fa-eye pe-2 text-dark"></i>
-            </a>
-        `;
+        <a href="${row.view_url}" class="d-inline-flex align-items-center justify-content-center text-dark" style="width: 32px; height: 32px; border-radius: 6px;">
+            <i class="fa fa-eye"></i>
+        </a>
+    `;
     }
 
     function moveDataTableControls() {
