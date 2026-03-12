@@ -79,7 +79,7 @@
                 }
 
                 #TicketTable thead th span.dt-column-order::before{
-                    opacity: 1 !important;
+                    opacity: 0.5 !important;
                     font-size: 12px !important;
                     font-weight: 700 !important;
                 }
