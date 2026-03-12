@@ -153,16 +153,12 @@
                     display: none !important;
                 }
 
-                .card-body {
-                    overflow: visible !important;
-                }
-
                 .ticket-table-shell {
                     display: flex;
                     flex-direction: column;
                     min-height: 620px;
                     width: 100%;
-                    overflow: visible;
+                    overflow: hidden;
                 }
 
                 .ticket-table-scroller {
@@ -189,10 +185,7 @@
                     background: #fff;
                     padding: 14px 16px;
                     width: 100%;
-                    overflow-x: hidden !important;
-                    overflow-y: visible !important;
-                    position: relative;
-                    z-index: 5;
+                    overflow: hidden !important;
                 }
 
                 .ticket-table-footer-top,
@@ -204,7 +197,7 @@
                     flex-wrap: wrap;
                     width: 100%;
                     min-width: 0;
-                    overflow: visible !important;
+                    overflow: hidden;
                 }
 
                 .ticket-table-footer-top {
@@ -218,7 +211,6 @@
                     flex-wrap: wrap;
                     min-width: 0;
                     max-width: 100%;
-                    overflow: visible !important;
                 }
 
                 .ticket-footer-title {
@@ -234,7 +226,6 @@
                     position: relative;
                     display: inline-block;
                     max-width: 100%;
-                    z-index: 20;
                 }
 
                 .ticket-footer-dropdown .btn {
@@ -279,7 +270,6 @@
                     border: 1px solid #ececec;
                     padding: 6px 0;
                     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-                    z-index: 1055 !important;
                 }
 
                 .ticket-footer-dropdown .dropdown-item {
@@ -405,7 +395,6 @@
                     .ticket-table-footer {
                         padding: 12px;
                         overflow-x: hidden !important;
-                        overflow-y: visible !important;
                     }
 
                     .ticket-table-footer-top,
