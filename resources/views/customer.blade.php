@@ -175,7 +175,7 @@
                                             </td>
                                             <td class="align-middle text-center text-limit-30 border border-light">
                                                 <span
-                                                    class="text-secondary text-xs font-weight-bold ">{{ $dataticket->Detail }}</span>
+                                                    class="text-secondary text-xs font-weight-bold ">{{ Str::limit($dataticket->Detail, 40, '...') }}</span>
                                             </td>
                                             <!-- "Edit" button within a dropdown -->
                                             <td class="align-middle text-center border border-light">
