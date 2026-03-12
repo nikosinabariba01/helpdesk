@@ -318,11 +318,10 @@
                     border: 1px solid #ffffff !important;
                     border-radius: 8px;
                     padding: 6px 12px;
-                    min-width: 170px;
                     font-size: 13px;
                     background-color: #fff;
                     color: #344767;
-                    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+                    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.10) !important;
                 }
 
                 .ticket-table-footer .form-select:focus,
@@ -364,7 +363,7 @@
                     height: 34px;
                     margin: 0 2px;
                     border: 1px solid #d2d6da !important;
-                    background: #fff !important;
+                    background: #ffffff !important;
                     color: #344767 !important;
                 }
 
@@ -831,8 +830,8 @@
                 zeroRecords: 'Data tidak ditemukan',
                 emptyTable: 'Belum ada data tiket',
                 paginate: {
-                    first: 'Awal',
-                    last: 'Akhir',
+                    first: '‹‹',
+                    last: '››',
                     next: '›',
                     previous: '‹'
                 }
