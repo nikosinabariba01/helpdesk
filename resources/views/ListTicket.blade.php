@@ -16,503 +16,278 @@
 @endsection
 
 @section('container')
-<link rel="stylesheet" href="//cdn.datatables.net/2.3.7/css/dataTables.dataTables.min.css">
-
-<div class="col-lg-12 mb-lg-0 mb-4">
+<div class="col-lg-12 mb-lg-0 mb-4 ">
     <div class="card z-index-2 h-100 d-flex flex-column shadow-lg" style="border: 1px solid #e4e4e4;">
-        <div class="card-header pb-0 d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div class="card-header pb-0 d-flex align-items-center justify-content-between">
             <h6 class="mb-0">All Ticket List</h6>
-
-            <div class="d-flex" style="min-width: 280px;">
+            <div class="d-flex">
+                <!-- Kolom Pencarian dengan input-group -->
                 <div class="input-group input-group-sm">
-                    <span class="input-group-text text-body">
-                        <i class="fas fa-search" aria-hidden="true"></i>
-                    </span>
-                    <input
-                        type="text"
-                        id="customSearch"
-                        class="form-control"
-                        placeholder="Search subject atau user"
-                        onfocus="focused(this)"
-                        onfocusout="defocused(this)">
+                    <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
+                    <input type="text" id="search" class="form-control" placeholder="Search" onfocus="focused(this)" onfocusout="defocused(this)">
                 </div>
             </div>
         </div>
-
-        <div class="card-body px-0 pt-0 pb-0">
+        <div class="card-body px-0 pt-0 pb-2 h-500">
             <style>
-                #TicketTable {
-                    border-collapse: collapse !important;
-                    width: 100% !important;
-                }
-
-                #TicketTable thead th,
-                #TicketTable tbody td {
-                    text-align: center !important;
-                    vertical-align: middle !important;
-                }
-
-                #TicketTable thead th {
-                    border-top: 1px solid #e9ecef !important;
-                    border-bottom: none !important;
-                    border-left: none !important;
-                    border-right: none !important;
-                    background: #fff !important;
-                    white-space: nowrap;
-                    position: sticky;
-                    top: 0;
-                    z-index: 2;
-                    padding: 12px 10px !important;
-                    text-align: center !important;
-                }
-
-                #TicketTable tbody td {
-                    border-bottom: 1px solid #e9ecef !important;
-                    border-right: 1px solid #e9ecef !important;
-                    padding: 12px 10px !important;
-                    background: #fff;
-                }
-
-                #TicketTable thead th span.dt-column-order {
-                    transform: scale(1.50) !important;
-                    font-weight: 700;
-                    color: #5e72e4 !important;
-                    opacity: 1 ! important;
-                }
-
-
-                #TicketTable tbody td:first-child {
-                    border-left: 1px solid #e9ecef !important;
-                    text-align: left !important;
-                }
-
-                #TicketTable tbody td:first-child>div {
-                    justify-content: flex-start !important;
-                    text-align: left !important;
-                }
-
-                #TicketTable tbody tr:hover td {
-                    background: #fafafa !important;
-                }
-
-                #TicketTable tbody td>div {
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    min-height: 44px;
-                    text-align: center;
-                }
-
-                .ticket-subject-wrap {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: flex-start !important;
-                    justify-content: center;
-                    gap: 4px;
-                    text-align: left !important;
-                    width: 100%;
-                }
-
-                .ticket-subject-wrap a {
-                    text-align: left !important;
-                    display: inline-block;
-                    width: 100%;
-                }
-
-                .ticket-subject-wrap .ticket-meta {
-                    display: flex;
-                    flex-wrap: wrap;
-                    justify-content: flex-start !important;
-                    gap: 6px 12px;
-                    list-style: none;
-                    margin: 0;
-                    padding: 0;
-                }
-
-                .ticket-subject-wrap .ticket-meta li {
-                    margin: 0;
-                    padding: 0;
-                }
-
-                .ticket-action-wrap {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: center;
-                    gap: 8px;
-                }
-
-                .ticket-action-wrap form {
-                    margin: 0 !important;
-                }
-
-                .ticket-table-shell {
-                    display: flex;
-                    flex-direction: column;
-                    min-height: 620px;
-                }
-
-                .ticket-table-scroller {
-                    flex: 1 1 auto;
-                    overflow-y: auto;
-                    overflow-x: auto;
-                    margin-right: 15px;
-                }
-
                 @media (max-width: 768px) {
-                    .ticket-table-scroller {
-                        min-height: 400px;
-                        max-height: 400px;
+                    .table-responsive-custom {
+                        height: 400px !important;
+                        max-height: 400px !important;
                     }
                 }
 
                 @media (min-width: 769px) and (max-width: 1024px) {
-                    .ticket-table-scroller {
-                        min-height: 600px;
-                        max-height: 600px;
+                    .table-responsive-custom {
+                        height: 600px !important;
+                        max-height: 600px !important;
                     }
                 }
 
                 @media (min-width: 1025px) {
-                    .ticket-table-scroller {
-                        min-height: 550px;
-                        max-height: 550px;
-                    }
-                }
-
-                #TicketTable thead th.sorting,
-                #TicketTable thead th.sorting_asc,
-                #TicketTable thead th.sorting_desc {
-                    position: relative;
-                    cursor: pointer;
-                    user-select: none;
-                    white-space: nowrap;
-                    color: #6c757d;
-                }
-
-                #TicketTable thead th.sorting .sort-icons,
-                #TicketTable thead th.sorting_asc .sort-icons,
-                #TicketTable thead th.sorting_desc .sort-icons {
-                    display: inline-block;
-                    position: relative;
-                    width: 15px;
-                    height: 18px;
-                    margin-left: 7px;
-                    vertical-align: middle;
-                    top: -1px;
-                }
-
-                #TicketTable thead th.sorting .sort-icons::before,
-                #TicketTable thead th.sorting .sort-icons::after,
-                #TicketTable thead th.sorting_asc .sort-icons::before,
-                #TicketTable thead th.sorting_asc .sort-icons::after,
-                #TicketTable thead th.sorting_desc .sort-icons::before,
-                #TicketTable thead th.sorting_desc .sort-icons::after {
-                    content: '';
-                    position: absolute;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    border-left: 4px solid transparent;
-                    border-right: 4px solid transparent;
-                    transition: opacity 0.2s ease;
-                }
-
-                /* panah atas */
-                #TicketTable thead th.sorting .sort-icons::before,
-                #TicketTable thead th.sorting_asc .sort-icons::before,
-                #TicketTable thead th.sorting_desc .sort-icons::before {
-                    top: 1px;
-                    border-bottom: 6px solid #6c757d;
-                }
-
-                /* panah bawah */
-                #TicketTable thead th.sorting .sort-icons::after,
-                #TicketTable thead th.sorting_asc .sort-icons::after,
-                #TicketTable thead th.sorting_desc .sort-icons::after {
-                    bottom: 1px;
-                    border-top: 6px solid #6c757d;
-                }
-
-                /* default */
-                #TicketTable thead th.sorting .sort-icons::before,
-                #TicketTable thead th.sorting .sort-icons::after {
-                    opacity: 0.65;
-                }
-
-                /* hover */
-                #TicketTable thead th.sorting:hover .sort-icons::before,
-                #TicketTable thead th.sorting:hover .sort-icons::after {
-                    opacity: 0.9;
-                }
-
-                /* ascending aktif */
-                #TicketTable thead th.sorting_asc {
-                    color: #495057;
-                }
-
-                #TicketTable thead th.sorting_asc .sort-icons::before {
-                    opacity: 1;
-                }
-
-                #TicketTable thead th.sorting_asc .sort-icons::after {
-                    opacity: 0.22;
-                }
-
-                /* descending aktif */
-                #TicketTable thead th.sorting_desc {
-                    color: #495057;
-                }
-
-                #TicketTable thead th.sorting_desc .sort-icons::before {
-                    opacity: 0.22;
-                }
-
-                #TicketTable thead th.sorting_desc .sort-icons::after {
-                    opacity: 1;
-                }
-
-                /* hilangkan icon bawaan plugin jika ada */
-                #TicketTable thead th.sorting::before,
-                #TicketTable thead th.sorting::after,
-                #TicketTable thead th.sorting_asc::before,
-                #TicketTable thead th.sorting_asc::after,
-                #TicketTable thead th.sorting_desc::before,
-                #TicketTable thead th.sorting_desc::after {
-                    display: none !important;
-                    content: none !important;
-                }
-
-                .ticket-table-footer {
-                    flex: 0 0 auto;
-                    border-top: 1px solid #ececec;
-                    background: #fff;
-                    padding: 14px 16px;
-                }
-
-                .ticket-table-footer-top,
-                .ticket-table-footer-bottom {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    gap: 12px;
-                    flex-wrap: wrap;
-                }
-
-                .ticket-table-footer-top {
-                    margin-bottom: 12px;
-                }
-
-                .ticket-table-footer-group {
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                    flex-wrap: wrap;
-                }
-
-                .ticket-table-footer label {
-                    margin-bottom: 0;
-                    font-size: 12px;
-                    color: #67748e;
-                    font-weight: 600;
-                }
-
-                .ticket-table-footer .form-select,
-                .ticket-table-footer .dt-length select {
-                    border: 1px solid #ffffff !important;
-                    border-radius: 8px;
-                    padding: 6px 12px;
-                    font-size: 13px;
-                    background-color: #fff;
-                    color: #344767;
-                    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-                }
-
-                .ticket-table-footer .form-select:focus,
-                .ticket-table-footer .dt-length select:focus {
-                    border-color: #ffffff !important;
-                    box-shadow: 0 0 0 0.1rem rgba(94, 114, 228, 0.08) !important;
-                }
-
-                .ticket-table-footer .dt-length {
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                    margin: 0;
-                }
-
-                .ticket-table-footer .dt-length label {
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                    margin: 0;
-                    font-size: 12px;
-                    color: #67748e;
-                    font-weight: 600;
-                }
-
-                .ticket-table-footer .dt-info {
-                    margin: 0;
-                    font-size: 13px;
-                    color: #67748e;
-                }
-
-                .ticket-table-footer .dt-paging {
-                    margin: 0;
-                }
-
-                .ticket-table-footer .dt-paging .dt-paging-button {
-                    border-radius: 8px !important;
-                    min-width: 34px;
-                    height: 34px;
-                    margin: 0 2px;
-                    border: 1px solid #d2d6da !important;
-                    background: #ffffff !important;
-                    color: #344767 !important;
-                }
-
-                .ticket-table-footer .dt-paging .dt-paging-button.current {
-                    background: #5e72e4 !important;
-                    border-color: #5e72e4 !important;
-                    color: #fff !important;
-                    box-shadow: none !important;
-                }
-
-                .ticket-table-footer .dt-paging .dt-paging-button:hover {
-                    background: #f8f9fa !important;
-                    color: #344767 !important;
-                    border-color: #cfd4da !important;
-                }
-
-                .ticket-table-footer .dt-paging .dt-paging-button.current:hover {
-                    background: #5e72e4 !important;
-                    color: #fff !important;
-                    border-color: #5e72e4 !important;
-                }
-
-                .ticket-table-footer .dt-paging .disabled {
-                    opacity: 0.5 !important;
-                    cursor: not-allowed !important;
-                }
-
-                .ticket-table-footer-divider {
-                    width: 1px;
-                    align-self: stretch;
-                    background: #ececec;
-                }
-
-                @media (max-width: 768px) {
-                    .ticket-table-footer {
-                        padding: 12px;
-                    }
-
-                    .ticket-table-footer-top,
-                    .ticket-table-footer-bottom {
-                        flex-direction: column;
-                        align-items: stretch;
-                    }
-
-                    .ticket-table-footer-group {
-                        width: 100%;
-                    }
-
-                    .ticket-table-footer .form-select,
-                    .ticket-table-footer .dt-length select {
-                        width: 100%;
-                        min-width: 100%;
-                    }
-
-                    .ticket-table-footer-divider {
-                        display: none;
-                    }
-
-                    .ticket-table-footer .dt-paging {
-                        overflow-x: auto;
-                        width: 100%;
+                    .table-responsive-custom {
+                        height: 550px !important;
+                        max-height: 550px !important;
                     }
                 }
             </style>
+            @if($teknisi_data_ticket->isEmpty())
+            <div class="table-responsive margin-right: 15px; position: relative; table-responsive-custom" style="overflow-y: auto;">
+                <!-- Add your button here -->
+                <a href="{{ route('customer.tickets') }}" class="btn btn-primary position-absolute top-50 start-50 translate-middle">Buat Tiket</a>
+            </div>
+            @else
+            <div class="table-responsive margin-right: 15px; table-responsive-custom" style="overflow-y: auto;">
+                <table class="table align-items-center mb-0" id="TicketTable">
+                    <thead>
+                        <tr>
+                            <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">subject</th>
+                            <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">User</th>
+                            <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Status</th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Deskripsi</th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Aksi Status</th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($teknisi_data_ticket as $teknisidataticket)
+                        <tr class="align-middle text-sm border border-light" data-created-at="{{ $teknisidataticket->created_at->timestamp }}" data-jenis-pengaduan="{{ $teknisidataticket->Jenis_Pengaduan }}" data-status="{{ $teknisidataticket->status }}" data-subject="{{ $teknisidataticket->subject }}" data-user="{{ $teknisidataticket->user->name }}">
+                            <td class="align-middle text-sm border border-light">
+                                <div class="d-flex px-2 py-1">
+                                    <div class="d-flex flex-column justify-content-center">
+                                        <h6 class="mb-0 text-s text-limit-35" title="Subject">
+                                            <a href="{{ route('viewticketteknisi.index', ['id' => $teknisidataticket->id]) }}">
+                                                {{ $teknisidataticket->subject }}
+                                            </a>
+                                        </h6>
 
-            <div class="ticket-table-shell">
-                <div class="table-responsive ticket-table-scroller">
-                    <table class="table align-items-center mb-0" id="TicketTable" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">
-                                    subject
-                                </th>
-                                <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">
-                                    User
-                                </th>
-                                <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">
-                                    Status
-                                </th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">
-                                    Deskripsi
-                                </th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">
-                                    Aksi Status
-                                </th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">
-                                    aksi
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
+                                        <div class="d-flex list-inline">
+                                            <li class="text-xs list-inline-item text-secondary"><i class="fa fa-circle fa-xs text-danger"></i>{{'sp-' . substr(preg_replace('/[^0-9]/', '', $teknisidataticket->id), -3) . \Carbon\Carbon::parse($teknisidataticket->created_at)->format('dmy') . ($teknisidataticket->Jenis_Pengaduan == 0 ? '0' : '1');}}</li>
+                                            <li class="text-xs list-inline-item text-secondary" title="type"><i class="fa fa-circle fa-xs text-primary"></i>{{ $teknisidataticket->Jenis_Pengaduan }}</li>
+                                            <li class="text-xs list-inline-item text-secondary" title="Created Date"><i class="fa fa-circle fa-xs text-secondary"></i></i> {{ $teknisidataticket->formattedTanggalPengaduan }}</li>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="align-middle text-center text-sm text-limit-20 border border-light">
+                                {{ $teknisidataticket->user->name }}
+                            </td>
+                            <td class="align-middle text-center text-sm border border-light">
+                                <x-status-badge :status="$teknisidataticket->status" />
+                            </td>
+                            <td class="align-middle text-center border border-light">
+                                <span class="text-secondary text-xs font-weight-bold ">{{ Str::limit($teknisidataticket->Detail, 40, '...') }}</span>
+                            </td>
+                            <td class="align-middle text-center text-sm border border-light">
+
+                                @if($teknisidataticket->status == 'on process')
+                                @if($teknisidataticket->isNotAssigned)
+                                <!-- Tombol Contribute untuk user yang belum assign -->
+                                <form action="{{ route('tickets.contribute', $teknisidataticket->id) }}" method="POST">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary btn-transparent text-secondary">
+                                        Contribute
+                                    </button>
+                                </form>
+                                @else
+                                @if(Auth::user()->role == 'admin' || Auth::user()->role == 'pengurus')
+                                <!-- Admin/Pengurus: Cancel Process, Escalate, Close -->
+                                <form action="{{ route('tickets.cancel_assign', $teknisidataticket->id) }}" method="POST" class="mb-2">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="submit" class="btn btn-sm btn-outline-warning btn-transparent text-warning">
+                                        Cancel Process
+                                    </button>
+                                </form>
+                                <!-- Tombol Escalate hanya muncul jika belum ada assignee pemilik -->
+                                @if(!$teknisidataticket->hasOwnerAssignee)
+                                <form method="POST" action="{{ route('ticketsteknisi.requestFollowup', $teknisidataticket->id) }}" class="mb-2">
+                                    @csrf
+                                    <button type="submit" class="btn btn-sm btn-outline-info btn-transparent text-info">
+                                        Escalate
+                                    </button>
+                                </form>
+                                @endif
+                                <form method="POST" action="{{ route('ticketsteknisi.close', $teknisidataticket->id) }}" id="closeTicketForm-{{ $teknisidataticket->id }}" class="mb-2">
+                                    @method('PUT')
+                                    @csrf
+                                    <button type="button" class="btn btn-sm btn-outline-danger btn-transparent text-danger"
+                                        data-bs-toggle="modal" data-bs-target="#modal-confirmation"
+                                        data-form-id="closeTicketForm-{{ $teknisidataticket->id }}">
+                                        Close
+                                    </button>
+                                </form>
+                                @elseif(Auth::user()->role == 'pemilik')
+                                <!-- Pemilik: Cancel Process dan Close -->
+                                <form action="{{ route('tickets.cancel_assign', $teknisidataticket->id) }}" method="POST" class="mb-2">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="submit" class="btn btn-sm btn-outline-warning btn-transparent text-warning">
+                                        Cancel Process
+                                    </button>
+                                </form>
+                                <form method="POST" action="{{ route('ticketsteknisi.close', $teknisidataticket->id) }}" id="closeTicketForm-{{ $teknisidataticket->id }}" class="mb-2">
+                                    @method('PUT')
+                                    @csrf
+                                    <button type="button" class="btn btn-sm btn-outline-danger btn-transparent text-danger"
+                                        data-bs-toggle="modal" data-bs-target="#modal-confirmation"
+                                        data-form-id="closeTicketForm-{{ $teknisidataticket->id }}">
+                                        Close
+                                    </button>
+                                </form>
+                                @endif
+                                @endif
+
+                                @elseif($teknisidataticket->status == 'escalated')
+                                @if(Auth::user()->role == 'admin' || Auth::user()->role == 'pengurus')
+                                <!-- Escalated: Cancel Escalation -->
+                                <form method="POST" action="{{ route('ticketsteknisi.cancelRequestFollowUp', $teknisidataticket->id) }}">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="submit" class="btn btn-sm btn-outline-primary btn-transparent text-primary">
+                                        Cancel Escalation
+                                    </button>
+                                </form>
+                                @elseif(Auth::user()->role == 'pemilik')
+                                <!-- Pemilik: Accept Escalation -->
+                                <form action="{{ route('tickets.accept_escalation', $teknisidataticket->id) }}" method="POST" class="mb-2">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="submit" class="btn btn-sm btn-outline-success btn-transparent text-success">
+                                        <i class="fa fa-check pe-2 text-success"></i> Accept Escalation
+                                    </button>
+                                </form>
+                                @endif
+
+                                @elseif($teknisidataticket->status == 'close')
+                                <!-- Status: Close - tampilkan Reprocess -->
+                                <form action="{{ route('tickets.assign', $teknisidataticket->id) }}" method="POST">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="submit" class="btn btn-sm btn-outline-warning btn-transparent text-secondary">
+                                        Reprocess
+                                    </button>
+                                </form>
+
+                                @elseif($teknisidataticket->status == 'open')
+                                <!-- Status: Open - tampilkan Proceed -->
+                                <form action="{{ route('tickets.assign', $teknisidataticket->id) }}" method="POST">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="submit" class="btn btn-sm btn-outline-primary btn-transparent text-primary">
+                                        Proceed
+                                    </button>
+                                </form>
+                                @endif
+
+                            </td>
+                            <!-- "Edit" button within a dropdown -->
+                            <td class="align-middle text-center border border-light">
+                                <a class="dropdown-item"
+                                    href="{{ route('viewticketteknisi.index', ['id' => $teknisidataticket->id]) }}">
+                                    <i class="fa fa-eye pe-2 text-dark"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            <div style="padding: 15px 16px; border-top: 1px solid #e4e4e4; background-color: #ffffff;"
+                class="d-flex flex-column flex-md-row justify-content-between align-items-center flex-wrap">
+
+                <!-- Left side: Filters / Dropdowns -->
+                <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                    <!-- Sort Dropdown -->
+                    <div class="dropdown" style="position: relative;">
+                        <button class="btn btn-sm btn-outline-secondary"
+                            style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <span id="paginationDisplay">1-10 dari {{ $teknisi_data_ticket->count() }}</span>
+                            <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
+                        </button>
+                        <ul class="dropdown-menu" style="font-size: 13px; min-width: 150px;">
+                            <li><a class="dropdown-item page-sort-option" href="#" data-sort="desc"><i class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru</a></li>
+                            <li><a class="dropdown-item page-sort-option" href="#" data-sort="asc"><i class="fa fa-arrow-up me-2" style="color: #6c757d;"></i>Terlama</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Filter Jenis Pengaduan -->
+                    <div class="dropdown" style="position: relative; display: inline-block;">
+                        <button class="btn btn-sm btn-outline-secondary"
+                            style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
+                            type="button" id="filterJenisPengaduanBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span id="filterJenisPengaduanDisplay">Jenis Pengaduan</span>
+                            <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="filterJenisPengaduanBtn" style="font-size: 13px; min-width: 150px;">
+                            <li><a class="dropdown-item filter-option" href="#" data-filter-type="jenis_pengaduan" data-filter-value="">Semua</a></li>
+                            <li><a class="dropdown-item filter-option" href="#" data-filter-type="jenis_pengaduan" data-filter-value="perbaikan">Perbaikan</a></li>
+                            <li><a class="dropdown-item filter-option" href="#" data-filter-type="jenis_pengaduan" data-filter-value="permintaan">Permintaan</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Filter Status -->
+                    <div class="dropdown" style="position: relative; display: inline-block;">
+                        <button class="btn btn-sm btn-outline-secondary"
+                            style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
+                            type="button" id="filterStatusBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span id="filterStatusDisplay">Status</span>
+                            <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="filterStatusBtn" style="font-size: 13px; min-width: 150px;">
+                            <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="">Semua</a></li>
+                            <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="open">Open</a></li>
+                            <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="on process">On Process</a></li>
+                            <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="escalated">Escalated</a></li>
+                            <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="close">Close</a></li>
+                        </ul>
+                    </div>
                 </div>
 
-                <div class="ticket-table-footer">
-                    <div class="ticket-table-footer-top">
-                        <div class="ticket-table-footer-group">
-                            <div>
-                                <div id="ticket-length-slot"></div>
-                            </div>
-                        </div>
-
-                        <div class="ticket-table-footer-group">
-                            <div>
-                                <select id="filterJenisPengaduan" class="form-select form-select-sm">
-                                    <option value="">Jenis Pengaduan</option>
-                                    <option value="perbaikan">Jenis Pengaduan: Perbaikan</option>
-                                    <option value="permintaan">Jenis Pengaduan: Permintaan</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <select id="filterStatus" class="form-select form-select-sm">
-                                    <option value="">Status</option>
-                                    <option value="open">Status: Open</option>
-                                    <option value="on process">Status: On Process</option>
-                                    <option value="escalated">Status: Escalated</option>
-                                    <option value="close">Status: Close</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <select id="sortCreatedAt" class="form-select form-select-sm" style="min-width: 150px;">
-                                    <option value="desc">Tanggal: Terbaru</option>
-                                    <option value="asc">Tanggal: Terlama</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="ticket-table-footer-bottom">
-                        <div class="ticket-table-footer-group">
-                            <div id="ticket-info-slot"></div>
-                        </div>
-
-                        <div class="ticket-table-footer-group">
-                            <div id="ticket-paging-slot"></div>
-                        </div>
-                    </div>
+                <!-- Right side: Pagination -->
+                <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                    <button id="prevPage" class="btn btn-sm btn-outline-secondary"
+                        style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;"
+                        title="Halaman Sebelumnya">
+                        <i class="fa fa-chevron-left" style="font-size: 11px;"></i>
+                    </button>
+                    <button id="nextPage" class="btn btn-sm btn-outline-secondary"
+                        style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;"
+                        title="Halaman Berikutnya">
+                        <i class="fa fa-chevron-right" style="font-size: 11px;"></i>
+                    </button>
                 </div>
             </div>
+            @endif
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="modal-confirmation" tabindex="-1" role="dialog" aria-labelledby="modal-confirmation" aria-hidden="true">
+<!-- Modal Confirmation -->
+<div class="modal fade" id="modal-confirmation" tabindex="-1" role="dialog" aria-labelledby="modal-confirmation"
+    aria-hidden="true">
     <div class="modal-dialog modal-danger modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -536,349 +311,310 @@
     </div>
 </div>
 
-<script src="//cdn.datatables.net/2.3.7/js/dataTables.min.js"></script>
-
 <script>
-    function escapeHtml(text) {
-        if (text === null || text === undefined) return '';
-        return String(text)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-    }
-
-    function debounce(fn, delay) {
-        let timeout;
-        return function(...args) {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => fn.apply(this, args), delay);
-        };
-    }
-
-    function renderStatusBadge(status) {
-        if (status === 'open') {
-            return `<span class="badge badge-sm bg-gradient-success">${escapeHtml(status)}</span>`;
-        } else if (status === 'on process') {
-            return `<span class="badge badge-sm bg-gradient-warning">${escapeHtml(status)}</span>`;
-        } else if (status === 'close') {
-            return `<span class="badge badge-sm bg-gradient-danger">${escapeHtml(status)}</span>`;
-        } else if (status === 'escalated') {
-            return `<span class="badge badge-sm bg-gradient-info">${escapeHtml(status)}</span>`;
-        } else {
-            return `<span class="badge badge-sm bg-gradient-secondary">Unknown Status</span>`;
-        }
-    }
-
-    function renderSubjectColumn(row) {
-        return `
-        <div class="ticket-subject-wrap">
-            <h6 class="mb-0 text-s text-limit-35" title="Subject">
-                <a href="${row.view_url}">
-                    ${escapeHtml(row.subject)}
-                </a>
-            </h6>
-
-            <ul class="ticket-meta">
-                <li class="text-xs text-secondary">
-                    <i class="fa fa-circle fa-xs text-danger"></i>${escapeHtml(row.ticket_code)}
-                </li>
-                <li class="text-xs text-secondary" title="type">
-                    <i class="fa fa-circle fa-xs text-primary"></i>${escapeHtml(row.Jenis_Pengaduan)}
-                </li>
-                <li class="text-xs text-secondary" title="Created Date">
-                    <i class="fa fa-circle fa-xs text-secondary"></i> ${escapeHtml(row.created_at_formatted)}
-                </li>
-            </ul>
-        </div>
-    `;
-    }
-
-    function renderActionStatus(row) {
-        let html = '';
-
-        if (row.status === 'on process') {
-            if (row.is_not_assigned) {
-                html += `
-                    <form action="${row.routes.contribute}" method="POST">
-                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                        <input type="hidden" name="_method" value="PUT">
-                        <button type="submit" class="btn btn-sm btn-outline-secondary btn-transparent text-secondary">
-                            Contribute
-                        </button>
-                    </form>
-                `;
-            } else if (row.role_is_admin_or_pengurus) {
-                html += `
-                    <form action="${row.routes.cancel_assign}" method="POST" class="mb-2">
-                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                        <input type="hidden" name="_method" value="PUT">
-                        <button type="submit" class="btn btn-sm btn-outline-warning btn-transparent text-warning">
-                            Cancel Process
-                        </button>
-                    </form>
-                `;
-
-                if (!row.has_owner_assignee && row.routes.request_followup) {
-                    html += `
-                        <form action="${row.routes.request_followup}" method="POST" class="mb-2">
-                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                            <button type="submit" class="btn btn-sm btn-outline-info btn-transparent text-info">
-                                Escalate
-                            </button>
-                        </form>
-                    `;
-                }
-
-                html += `
-                    <form action="${row.routes.close}" method="POST" id="closeTicketForm-${row.id}" class="mb-2">
-                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                        <input type="hidden" name="_method" value="PUT">
-                        <button type="button"
-                            class="btn btn-sm btn-outline-danger btn-transparent text-danger"
-                            data-bs-toggle="modal"
-                            data-bs-target="#modal-confirmation"
-                            data-form-id="closeTicketForm-${row.id}">
-                            Close
-                        </button>
-                    </form>
-                `;
-            } else if (row.role_is_pemilik) {
-                html += `
-                    <form action="${row.routes.cancel_assign}" method="POST" class="mb-2">
-                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                        <input type="hidden" name="_method" value="PUT">
-                        <button type="submit" class="btn btn-sm btn-outline-warning btn-transparent text-warning">
-                            Cancel Process
-                        </button>
-                    </form>
-                `;
-
-                html += `
-                    <form action="${row.routes.close}" method="POST" id="closeTicketForm-${row.id}" class="mb-2">
-                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                        <input type="hidden" name="_method" value="PUT">
-                        <button type="button"
-                            class="btn btn-sm btn-outline-danger btn-transparent text-danger"
-                            data-bs-toggle="modal"
-                            data-bs-target="#modal-confirmation"
-                            data-form-id="closeTicketForm-${row.id}">
-                            Close
-                        </button>
-                    </form>
-                `;
-            }
-        } else if (row.status === 'escalated') {
-            if (row.role_is_admin_or_pengurus) {
-                html += `
-                    <form action="${row.routes.cancel_escalation}" method="POST">
-                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                        <input type="hidden" name="_method" value="PUT">
-                        <button type="submit" class="btn btn-sm btn-outline-primary btn-transparent text-primary">
-                            Cancel Escalation
-                        </button>
-                    </form>
-                `;
-            } else if (row.role_is_pemilik) {
-                html += `
-                    <form action="${row.routes.accept_escalation}" method="POST" class="mb-2">
-                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                        <input type="hidden" name="_method" value="PUT">
-                        <button type="submit" class="btn btn-sm btn-outline-success btn-transparent text-success">
-                            <i class="fa fa-check pe-2 text-success"></i> Accept Escalation
-                        </button>
-                    </form>
-                `;
-            }
-        } else if (row.status === 'close') {
-            html += `
-                <form action="${row.routes.assign}" method="POST">
-                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                    <input type="hidden" name="_method" value="PUT">
-                    <button type="submit" class="btn btn-sm btn-outline-warning btn-transparent text-secondary">
-                        Reprocess
-                    </button>
-                </form>
-            `;
-        } else if (row.status === 'open') {
-            html += `
-                <form action="${row.routes.assign}" method="POST">
-                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                    <input type="hidden" name="_method" value="PUT">
-                    <button type="submit" class="btn btn-sm btn-outline-primary btn-transparent text-primary">
-                        Proceed
-                    </button>
-                </form>
-            `;
-        }
-
-        return html;
-    }
-
-    function renderAksi(row) {
-        return `
-            <a class="dropdown-item" href="${row.view_url}">
-                <i class="fa fa-eye pe-2 text-dark"></i>
-            </a>
-        `;
-    }
-
-    function moveDataTableControls() {
-        const wrapper = document.getElementById('TicketTable_wrapper');
-        if (!wrapper) return;
-
-        const length = wrapper.querySelector('.dt-length');
-        const info = wrapper.querySelector('.dt-info');
-        const paging = wrapper.querySelector('.dt-paging');
-
-        const lengthSlot = document.getElementById('ticket-length-slot');
-        const infoSlot = document.getElementById('ticket-info-slot');
-        const pagingSlot = document.getElementById('ticket-paging-slot');
-
-        if (length && lengthSlot && !lengthSlot.contains(length)) {
-            lengthSlot.innerHTML = '';
-            lengthSlot.appendChild(length);
-        }
-
-        if (info && infoSlot && !infoSlot.contains(info)) {
-            infoSlot.innerHTML = '';
-            infoSlot.appendChild(info);
-        }
-
-        if (paging && pagingSlot && !pagingSlot.contains(paging)) {
-            pagingSlot.innerHTML = '';
-            pagingSlot.appendChild(paging);
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const table = new DataTable('#TicketTable', {
-            processing: true,
-            serverSide: true,
-            pageLength: 10,
-            lengthMenu: [10, 25, 50, 100],
-            searchDelay: 350,
-            layout: {
-                topStart: 'pageLength',
-                topEnd: null,
-                bottomStart: 'info',
-                bottomEnd: 'paging'
-            },
-            ajax: {
-                url: "{{ route('tickets.datatable', ['mode' => 'all']) }}",
-                type: "GET",
-                data: function(d) {
-                    d.filter_status = document.getElementById('filterStatus').value;
-                    d.filter_jenis_pengaduan = document.getElementById('filterJenisPengaduan').value;
-                    d.sort_created_at = document.getElementById('sortCreatedAt').value;
-                }
-            },
-            columns: [{
-                    data: null,
-                    orderable: true,
-                    searchable: true,
-                    render: function(data, type, row) {
-                        return renderSubjectColumn(row);
-                    }
-                },
-                {
-                    data: 'user_name',
-                    orderable: true,
-                    searchable: true,
-                    render: function(data) {
-                        return `<div><span class="text-secondary text-xs font-weight-bold">${escapeHtml(data ?? '-')}</span></div>`;
-                    }
-                },
-                {
-                    data: 'status',
-                    orderable: true,
-                    searchable: false,
-                    render: function(data) {
-                        return `<div>${renderStatusBadge(data)}</div>`;
-                    }
-                },
-                {
-                    data: 'detail_short',
-                    orderable: false,
-                    searchable: false,
-                    render: function(data) {
-                        return `<div><span class="text-secondary text-xs font-weight-bold">${escapeHtml(data ?? '')}</span></div>`;
-                    }
-                },
-                {
-                    data: null,
-                    orderable: false,
-                    searchable: false,
-                    render: function(data, type, row) {
-                        return `<div class="ticket-action-wrap">${renderActionStatus(row)}</div>`;
-                    }
-                },
-                {
-                    data: null,
-                    orderable: false,
-                    searchable: false,
-                    render: function(data, type, row) {
-                        return `<div>${renderAksi(row)}</div>`;
-                    }
-                }
-            ],
-            order: [],
-            language: {
-                processing: 'Memuat data...',
-                search: 'Cari Subject / User:',
-                lengthMenu: 'Tampilkan _MENU_ baris',
-                info: 'Menampilkan _START_ - _END_ dari _TOTAL_ data',
-                infoEmpty: 'Tidak ada data',
-                zeroRecords: 'Data tidak ditemukan',
-                emptyTable: 'Belum ada data tiket',
-                paginate: {
-                    first: '‹‹',
-                    last: '››',
-                    next: '›',
-                    previous: '‹'
-                }
-            },
-            initComplete: function() {
-                moveDataTableControls();
-            },
-            drawCallback: function() {
-                moveDataTableControls();
-            }
-        });
-
-        const debouncedSearch = debounce(function(value) {
-            table.search(value).draw();
-        }, 350);
-
-        document.getElementById('customSearch').addEventListener('input', function() {
-            debouncedSearch(this.value);
-        });
-
-        document.getElementById('filterStatus').addEventListener('change', function() {
-            table.ajax.reload();
-        });
-
-        document.getElementById('filterJenisPengaduan').addEventListener('change', function() {
-            table.ajax.reload();
-        });
-
-        document.getElementById('sortCreatedAt').addEventListener('change', function() {
-            table.ajax.reload();
-        });
-    });
-</script>
-
-<script>
+    // Menangani klik tombol konfirmasi untuk mengirimkan form
     $('#modal-submit-btn').on('click', function() {
-        var formId = $('#modal-confirmation').data('form-id');
-        $('#' + formId).submit();
+        var formId = $('#modal-confirmation').data('form-id'); // Ambil form id dari modal
+        $('#' + formId).submit(); // Kirim form yang terkait dengan tombol
     });
 
+    // Ketika modal ditampilkan, simpan form id yang terkait
     $('#modal-confirmation').on('show.bs.modal', function(e) {
-        var button = $(e.relatedTarget);
-        var formId = button.data('form-id');
-        $(this).data('form-id', formId);
+        var button = $(e.relatedTarget); // Tombol yang memicu modal
+        var formId = button.data('form-id'); // Ambil form id dari data atribut tombol
+        $(this).data('form-id', formId); // Simpan formId dalam modal untuk digunakan nanti
     });
 </script>
+
+<script>
+    $(document).ready(function() {
+        // ========================
+        // 0. Inisialisasi Variabel
+        // ========================
+        const rowsPerPage = 10;
+        let ticketsData = [];
+        let currentPage = 1;
+        let totalPages = 1;
+        let currentSort = {
+            column: 'createdAt',
+            order: 'desc'
+        };
+        let currentFilters = {
+            status: '',
+            jenis_pengaduan: ''
+        };
+        let currentSearch = '';
+
+        // Ambil semua row ke array
+        $('#TicketTable tbody tr').each(function() {
+            const $tr = $(this);
+            ticketsData.push({
+                trElement: $tr,
+                subject: $tr.data('subject').toString().toLowerCase(),
+                user: $tr.data('user').toString().toLowerCase(),
+                status: $tr.data('status').toString().toLowerCase(),
+                jenis_pengaduan: $tr.data('jenis-pengaduan').toString().toLowerCase(),
+                createdAt: parseInt($tr.data('created-at'))
+            });
+        });
+
+        // ========================
+        // 1. Filter
+        // ========================
+        function applyFilters(data) {
+            return data.filter(item => {
+                const matchStatus = currentFilters.status ? item.status === currentFilters.status : true;
+                const matchJenis = currentFilters.jenis_pengaduan ? item.jenis_pengaduan === currentFilters.jenis_pengaduan : true;
+                return matchStatus && matchJenis;
+            });
+        }
+
+        // ========================
+        // 2. Search
+        // ========================
+        function applySearch(data) {
+            if (!currentSearch) return data;
+            const keyword = currentSearch.toLowerCase();
+            return data.filter(item =>
+                item.subject.includes(keyword) || item.user.includes(keyword)
+            );
+        }
+
+        // ========================
+        // 3. Sort
+        // ========================
+        function applySort(data) {
+            const sorted = [...data];
+            const {
+                column,
+                order
+            } = currentSort;
+            sorted.sort((a, b) => {
+                let valA = a[column];
+                let valB = b[column];
+
+                // String (subject, user, status) -> alfabetis
+                if (typeof valA === 'string') {
+                    valA = valA.toLowerCase();
+                    valB = valB.toLowerCase();
+                    if (valA < valB) return order === 'asc' ? -1 : 1;
+                    if (valA > valB) return order === 'asc' ? 1 : -1;
+                    // tie-break dengan createdAt
+                    return order === 'asc' ? a.createdAt - b.createdAt : b.createdAt - a.createdAt;
+                }
+
+                // Number (createdAt)
+                if (valA < valB) return order === 'asc' ? -1 : 1;
+                if (valA > valB) return order === 'asc' ? 1 : -1;
+                return 0;
+            });
+            return sorted;
+        }
+
+        // ========================
+        // 4. Render Table & Pagination
+        // ========================
+        function renderTable() {
+            let filteredData = applyFilters(ticketsData);
+            filteredData = applySearch(filteredData);
+            filteredData = applySort(filteredData);
+
+
+            totalPages = Math.ceil(filteredData.length / rowsPerPage);
+            if (currentPage > totalPages) currentPage = totalPages || 1;
+
+            // Hide all rows first
+            $('#TicketTable tbody tr').hide();
+
+            // Hitung start & end index
+            const startIndex = (currentPage - 1) * rowsPerPage;
+            const endIndex = startIndex + rowsPerPage;
+
+            // Ambil subset data untuk halaman ini
+            const pageData = filteredData.slice(startIndex, endIndex);
+            const $tbody = $('#TicketTable tbody');
+            const rowsToShow = pageData.map(item => item.trElement.detach()); // lepaskan row dari DOM
+            $tbody.append(rowsToShow); // append kembali
+            rowsToShow.forEach(r => r.show()); // tampilkan
+
+
+            // ========================
+            // Update pagination display (asc/desc)
+            // ========================
+            const totalRows = filteredData.length;
+
+            if (totalRows === 0) {
+                $('#paginationDisplay').text('0-0 dari 0');
+            } else {
+                const displayStart = startIndex + 1;
+                const displayEnd = Math.min(endIndex, totalRows);
+
+                if (currentSort.column === 'createdAt' && currentSort.order === 'desc') {
+                    // Descending → terbaru di atas
+                    $('#paginationDisplay').text(`${displayStart}-${displayEnd} dari ${totalRows}`);
+                } else if (currentSort.column === 'createdAt' && currentSort.order === 'asc') {
+                    // Ascending → terlama di atas → nomor tampilan dibalik
+                    const reversedStart = totalRows - startIndex;
+                    const reversedEnd = Math.max(reversedStart - (rowsPerPage - 1), 1);
+                    $('#paginationDisplay').text(`${reversedStart}-${reversedEnd} dari ${totalRows}`);
+                } else {
+                    // Kolom selain createdAt → numbering normal
+                    $('#paginationDisplay').text(`${displayStart}-${displayEnd} dari ${totalRows}`);
+                }
+            }
+
+            // Enable/disable Prev/Next
+            $('#prevPage').prop('disabled', currentPage <= 1).css('opacity', currentPage <= 1 ? 0.5 : 1).css('cursor', currentPage <= 1 ? 'not-allowed' : 'pointer');
+            $('#nextPage').prop('disabled', currentPage >= totalPages).css('opacity', currentPage >= totalPages ? 0.5 : 1).css('cursor', currentPage >= totalPages ? 'not-allowed' : 'pointer');
+
+            // Hapus ikon lama
+            $('#TicketTable thead th.sorting').removeClass('sorting_asc sorting_desc');
+            $('#TicketTable thead th.sorting .sort-icons').remove();
+
+            // Tambahkan ikon segitiga untuk kolom sortable (subject, user, status)
+            $('#TicketTable thead th.sorting').each(function() {
+                const colText = $(this).text().trim().toLowerCase();
+                if (currentSort.column === colText) {
+                    $(this).addClass(currentSort.order === 'asc' ? 'sorting_asc' : 'sorting_desc');
+                }
+                if (!$(this).find('.sort-icons').length) {
+                    $(this).append('<span class="sort-icons"></span>');
+                }
+            });
+        }
+        // ========================
+        // 5. Event Handlers
+        // ========================
+
+        // Search
+        $('#search').on('input', function() {
+            currentSearch = $(this).val().toLowerCase();
+            currentPage = 1;
+            renderTable();
+        });
+
+        // Filter dropdown
+        $('.filter-option').click(function(e) {
+            e.preventDefault();
+
+            const filterType = $(this).data('filter-type'); // "status" atau "jenis_pengaduan"
+            const filterValue = $(this).data('filter-value') || '';
+
+            // Simpan filter
+            currentFilters[filterType] = filterValue.toLowerCase();
+
+            // Update teks dropdown
+            if (filterType === 'status') {
+                const displayText = filterValue ? `Status: ${$(this).text()}` : 'Status';
+                $('#filterStatusDisplay').text(displayText);
+            } else if (filterType === 'jenis_pengaduan') {
+                const displayText = filterValue ? `Jenis Pengaduan: ${$(this).text()}` : 'Jenis Pengaduan';
+                $('#filterJenisPengaduanDisplay').text(displayText);
+            }
+
+            // Reset page ke 1
+            currentPage = 1;
+            renderTable();
+        });
+
+        // Dropdown sort terbaru/terlama
+        $('.page-sort-option').click(function(e) {
+            e.preventDefault();
+            const sortOrder = $(this).data('sort');
+            currentSort.column = 'createdAt';
+            currentSort.order = sortOrder;
+            currentPage = 1;
+            renderTable();
+        });
+
+        // Sorting klik th
+        $('#TicketTable thead th.sorting').click(function() {
+            const colText = $(this).text().trim().toLowerCase();
+            if (colText === 'subject') currentSort.column = 'subject';
+            else if (colText === 'user') currentSort.column = 'user';
+            else if (colText === 'status') currentSort.column = 'status';
+            else return;
+
+            currentSort.order = (currentSort.order === 'asc') ? 'desc' : 'asc';
+            currentPage = 1;
+            renderTable();
+        });
+
+        // Pagination Prev/Next
+        $('#prevPage').click(function() {
+            if (currentPage > 1) currentPage--;
+            renderTable();
+        });
+        $('#nextPage').click(function() {
+            if (currentPage < totalPages) currentPage++;
+            renderTable();
+        });
+
+        // Initial render
+        renderTable();
+    });
+</script>
+
+<style>
+    /* Tetapkan space untuk ikon supaya kolom tidak bergeser */
+    th.sorting {
+        position: relative;
+        cursor: pointer;
+        user-select: none;
+        padding-right: 30px;
+        /* space tetap untuk ikon */
+        width: 150px;
+        /* opsional, bisa disesuaikan lebar kolom */
+    }
+
+    /* container ikon */
+    th.sorting .sort-icons {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        font-size: 1em;
+        line-height: 0.7em;
+        width: 16px;
+        /* fix width ikon supaya tidak memengaruhi layout */
+        height: 16px;
+        /* fix height juga */
+    }
+
+    /* default abu-abu */
+    th.sorting .sort-icons::before,
+    th.sorting .sort-icons::after {
+        color: #ccc;
+    }
+
+    /* ascending active */
+    th.sorting.sorting_asc .sort-icons::before {
+        color: #000;
+    }
+
+    th.sorting.sorting_asc .sort-icons::after {
+        color: #ccc;
+    }
+
+    /* descending active */
+    th.sorting.sorting_desc .sort-icons::before {
+        color: #ccc;
+    }
+
+    th.sorting.sorting_desc .sort-icons::after {
+        color: #000;
+    }
+
+    /* isi segitiga */
+    th.sorting .sort-icons::before {
+        content: "▲";
+    }
+
+    th.sorting .sort-icons::after {
+        content: "▼";
+    }
+</style>
+
 @endsection

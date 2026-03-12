@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\PengumumanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\TeknisiController;
@@ -10,9 +11,7 @@ use App\Http\Controllers\TelegramAuthController;
 use App\Http\Controllers\TelegramWebhookController;
 use App\Http\Controllers\TicketCommentController;
 use App\Http\Controllers\TicketController;
-use App\Http\Controllers\UserController;
 use App\Http\Controllers\ViewTicketController;
-use App\Http\Controllers\PengumumanController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,18 +24,17 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
 Route::match(['GET', 'POST'], '/telegram/webhook', [TelegramWebhookController::class, 'handle']);
 Route::get('/', [LoginController::class, 'index'])->name('login');
 Route::post('/', [LoginController::class, 'Login']);
 Route::get('/photo/{filename}', [ProfileController::class, 'servePhoto'])->name('profile.photo');
-
 
 route::middleware(['guest'])->group(function () {
 
     Route::get('/register', [RegisterController::class, 'register']);
     Route::post('/register', [RegisterController::class, 'createAccount']);
 });
-
 
 route::get('/home', function () {
     return redirect('/');
@@ -80,8 +78,6 @@ Route::middleware(['auth'])->group(function () {
     // Route untuk laporan
     Route::get('/teknisi/report/monthly', [TeknisiController::class, 'downloadMonthlyReport'])->name('teknisi.report.monthly')->middleware('userAkses:pengurus,pemilik,admin');
 
-
-
     Route::get('/customer', [CustomerController::class, 'index'])->name('customer.index')->middleware('userAkses:penyewa,admin');
     Route::get('/Active', [CustomerController::class, 'viewprocess'])->name('customer.viewprocess')->middleware('userAkses:penyewa,admin');
     Route::get('/Profile/edit', [ProfileController::class, 'index'])->name('customer.profile')->middleware('userAkses:penyewa,admin');
@@ -89,17 +85,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('customer/viewticket/{id}', [ViewTicketController::class, 'index'])->name('viewtickets.index')->middleware('userAkses:penyewa,admin');
     Route::post('/Profile/update', [ProfileController::class, 'updatecustomer'])->name('customer.profileupdate')->middleware('userAkses:pengurus,pemilik,admin,penyewa');
 
-
-
     Route::get('/customer/ticket', [TicketController::class, 'index'])->name('customer.tickets')->middleware('userAkses:penyewa,admin');
     Route::post('/customer/ticket', [TicketController::class, 'store'])->name('tickets.store')->middleware('userAkses:penyewa,admin');
     Route::put('/customer/ticket/{id}', [TicketController::class, 'update'])->name('tickets.update')->middleware('userAkses:penyewa,admin');
     Route::put('/tickets/{id}', [TicketController::class, 'update'])->name('tickets.update')->middleware('userAkses:penyewa,admin');
 
-
     Route::delete('/customer/ticket/{id}', [TicketController::class, 'destroy'])->name('tickets.destroy')->middleware('userAkses:penyewa,admin');
     Route::get('/logout', [LoginController::class, 'Logout'])->name('logout');
-
 
     Route::post('/tickets/{ticket}/comments', [TicketCommentController::class, 'store'])->name('comments.store')->middleware('userAkses:penyewa,admin');;
     Route::post('/tickets/{ticket}/teknisicomments', [TicketCommentController::class, 'teknisiComment'])->name('comments.teknisiComment')->middleware('userAkses:pengurus,pemilik,admin');
@@ -107,14 +99,8 @@ Route::middleware(['auth'])->group(function () {
     Route::match(['GET', 'POST'], '/profile/telegram/auth', [TelegramAuthController::class, 'telegramAuthorizeFromProfile'])->name('telegram.from.profile');
     Route::post('/telegram/logout', [TelegramAuthController::class, 'telegramLogout'])->name('telegram.logout');
 
-
-
     Route::get('/tickets/{ticket}/download-image', [TicketController::class, 'downloadImage'])->name('tickets.downloadImage');
     Route::get('/tickets/{ticket}/download-image/teknisi', [ViewTicketController::class, 'downloadImage'])->name('ticketsteknisi.downloadImage');
-
-
-    Route::get('/tickets/datatables/{mode}', [TeknisiController::class, 'ticketDatatableJson'])
-    ->name('tickets.datatable');
 
     Route::view('/test-telegram', 'test-telegram');
     // routes/web.php
