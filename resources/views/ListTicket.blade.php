@@ -406,14 +406,12 @@
                     <div class="ticket-table-footer-top">
                         <div class="ticket-table-footer-group">
                             <div>
-                                <div class="ticket-footer-title">Tampilan</div>
                                 <div id="ticket-length-slot"></div>
                             </div>
                         </div>
 
                         <div class="ticket-table-footer-group">
                             <div class="ticket-footer-dropdown dropdown" style="position: relative; display: inline-block;">
-                                <div class="ticket-footer-title">Jenis Pengaduan</div>
                                 <button class="btn btn-sm btn-outline-secondary"
                                     type="button"
                                     id="filterJenisPengaduanBtn"
@@ -430,7 +428,6 @@
                             </div>
 
                             <div class="ticket-footer-dropdown dropdown" style="position: relative; display: inline-block;">
-                                <div class="ticket-footer-title">Status</div>
                                 <button class="btn btn-sm btn-outline-secondary"
                                     type="button"
                                     id="filterStatusBtn"
@@ -449,7 +446,6 @@
                             </div>
 
                             <div class="ticket-footer-dropdown dropdown" style="position: relative; display: inline-block;">
-                                <div class="ticket-footer-title">Urutkan Tanggal</div>
                                 <button class="btn btn-sm btn-outline-secondary"
                                     type="button"
                                     id="sortCreatedAtBtn"
