@@ -74,7 +74,7 @@
                 }
 
                 #TicketTable thead th span.dt-column-order {
-                    transform: scale(1.25);
+                    transform: scale(1.50) !important;
                     font-weight: 700;
                     color: #5e72e4 !important;
                     opacity: 1! important;
