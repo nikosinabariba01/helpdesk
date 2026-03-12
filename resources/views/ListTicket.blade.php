@@ -162,7 +162,7 @@
                     flex-direction: column;
                     min-height: 620px;
                     width: 100%;
-                    overflow: visible;
+                    overflow: visible !important;
                 }
 
                 .ticket-table-scroller {
@@ -171,6 +171,8 @@
                     overflow-x: auto;
                     margin-right: 15px;
                     width: 100%;
+                    position: relative;
+                    z-index: 1;
                 }
 
                 #TicketTable_wrapper {
@@ -192,7 +194,7 @@
                     overflow-x: hidden !important;
                     overflow-y: visible !important;
                     position: relative;
-                    z-index: 5;
+                    z-index: 10;
                 }
 
                 .ticket-table-footer-top,
@@ -234,7 +236,7 @@
                     position: relative;
                     display: inline-block;
                     max-width: 100%;
-                    z-index: 30;
+                    z-index: 50;
                 }
 
                 .ticket-footer-dropdown .btn {
@@ -279,8 +281,25 @@
                     border: 1px solid #ececec;
                     padding: 6px 0;
                     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-                    z-index: 1060 !important;
-                    margin-bottom: 6px !important;
+                    z-index: 2000 !important;
+                    margin: 0 !important;
+                }
+
+                .ticket-footer-dropdown.dropup .dropdown-menu.show {
+                    position: absolute !important;
+                    inset: auto auto 100% 0 !important;
+                    transform: translateY(-6px) !important;
+                    display: block !important;
+                    z-index: 2000 !important;
+                }
+
+                .ticket-footer-dropdown.dropdown .dropdown-menu.show {
+                    position: absolute !important;
+                    top: 100% !important;
+                    left: 0 !important;
+                    transform: translateY(6px) !important;
+                    display: block !important;
+                    z-index: 2000 !important;
                 }
 
                 .ticket-footer-dropdown .dropdown-item {
@@ -493,7 +512,8 @@
                         </div>
 
                         <div class="ticket-table-footer-group">
-                            <div class="ticket-footer-dropdown dropup">
+                            <div class="ticket-footer-dropdown dropdown">
+                                <div class="ticket-footer-title">Filter</div>
                                 <button class="btn btn-sm btn-outline-secondary"
                                     type="button"
                                     id="filterJenisPengaduanBtn"
@@ -530,7 +550,8 @@
                                 </ul>
                             </div>
 
-                            <div class="ticket-footer-dropdown dropup">
+                            <div class="ticket-footer-dropdown dropdown">
+                                <div class="ticket-footer-title">Filter</div>
                                 <button class="btn btn-sm btn-outline-secondary"
                                     type="button"
                                     id="filterStatusBtn"
@@ -583,7 +604,8 @@
                                 </ul>
                             </div>
 
-                            <div class="ticket-footer-dropdown dropup">
+                            <div class="ticket-footer-dropdown dropdown">
+                                <div class="ticket-footer-title">Urutkan</div>
                                 <button class="btn btn-sm btn-outline-secondary"
                                     type="button"
                                     id="sortCreatedAtBtn"
