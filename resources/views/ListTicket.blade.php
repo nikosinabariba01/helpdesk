@@ -487,8 +487,8 @@
 
                             <div>
                                 <select id="sortCreatedAt" class="form-select form-select-sm">
-                                    <option value="desc">Tanggal: Terbaru</option>
-                                    <option value="asc">Tanggal: Terlama</option>
+                                    <option value="desc">Terbaru</option>
+                                    <option value="asc">Terlama</option>
                                 </select>
                             </div>
                         </div>
