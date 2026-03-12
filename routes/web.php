@@ -113,6 +113,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/tickets/{ticket}/download-image/teknisi', [ViewTicketController::class, 'downloadImage'])->name('ticketsteknisi.downloadImage');
 
 
+    Route::get('/tickets/datatables/{mode}', [TeknisiController::class, 'ticketDatatableJson'])
+    ->name('tickets.datatable');
 
     Route::view('/test-telegram', 'test-telegram');
     // routes/web.php

@@ -10,6 +10,8 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon; // dompdf
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
 
 class TeknisiController extends Controller
 {
@@ -741,40 +743,192 @@ class TeknisiController extends Controller
     // Fungsi untuk menampilkan semua tiket
     public function ListTicket()
     {
-        // Dapatkan ID pengguna yang sedang login
-        $userId = Auth::id();
-
-        // Mengambil tiket beserta relasinya (user dan asignees)
-        $teknisi_data_ticket = Ticket::select(
-            'id',
-            'subject',
-            'status',
-            'Jenis_Pengaduan',
-            'user_id',
-            'Detail', // Ambil Detail di sini
-            'created_at'
-        )
-            ->with([
-                'user:id,name',
-                'asignees:id,name'
-            ])
-            ->latest() // Menggunakan Indeks idx_created_at_only (B-Tree)
-            ->get();
-
-        $teknisi_data_ticket->each(function ($ticket) use ($userId) {
-            // User saat ini belum assign
-            $ticket->isNotAssigned = ! $ticket->asignees->contains($userId);
-
-            // Cek apakah sudah ada assignee yang role-nya pemilik
-            $ticket->hasOwnerAssignee = $ticket->asignees->contains(function ($assignee) {
-                return $assignee->role === 'pemilik';
-            });
-        });
-
-        // Mengambil komentar terbaru
         $latestComments = $this->getLatestComments();
 
-        // Kirim data ke view
-        return view('ListTicket', compact('teknisi_data_ticket', 'latestComments'));
+        return view('ListTicket', compact('latestComments'));
+    }
+
+
+    // Fungsi untuk mengembalikan data tiket dalam format JSON untuk DataTables
+    public function ticketDatatableJson(Request $request, string $mode)
+    {
+        $allowedModes = [
+            'open_unassigned',
+            'assigned_active',
+            'escalated_all',
+            'closed_assigned',
+            'all',
+        ];
+
+        abort_unless(in_array($mode, $allowedModes, true), 404);
+
+        $user = Auth::user();
+        $userId = $user->id;
+        $role = $user->role ?? null;
+
+        $draw   = (int) $request->input('draw', 0);
+        $start  = max((int) $request->input('start', 0), 0);
+        $length = (int) $request->input('length', 10);
+        $length = $length > 0 ? min($length, 100) : 10;
+
+        $baseQuery = $this->baseTicketDatatableQuery($mode, $userId, $role);
+        $recordsTotal = (clone $baseQuery)->count('tickets.id');
+
+        $query = $this->applyTicketDatatableFilters(clone $baseQuery, $request, $mode);
+        $recordsFiltered = (clone $query)->count('tickets.id');
+
+        $this->applyTicketDatatableOrder($query, $request);
+
+        $tickets = $query
+            ->skip($start)
+            ->take($length)
+            ->get();
+
+        $data = $tickets->map(function ($ticket) use ($role) {
+            $isNotAssigned = ((int) ($ticket->assigned_to_me_count ?? 0)) === 0;
+            $hasOwnerAssignee = ((int) ($ticket->owner_assignee_count ?? 0)) > 0;
+
+            return [
+                'id' => $ticket->id,
+                'subject' => $ticket->subject,
+                'user_name' => $ticket->user_name ?? '-',
+                'status' => $ticket->status,
+                'Jenis_Pengaduan' => $ticket->Jenis_Pengaduan,
+                'detail_short' => Str::limit((string) $ticket->Detail, 40, '...'),
+                'created_at_formatted' => optional($ticket->created_at)->format('d/m/Y H:i'),
+                'ticket_code' => 'sp-' .
+                    substr(preg_replace('/[^0-9]/', '', $ticket->id), -3) .
+                    optional($ticket->created_at)->format('dmy') .
+                    (strtolower($ticket->Jenis_Pengaduan) === 'perbaikan' ? '0' : '1'),
+
+                'is_not_assigned' => $isNotAssigned,
+                'has_owner_assignee' => $hasOwnerAssignee,
+
+                'role_is_admin_or_pengurus' => in_array($role, ['admin', 'pengurus'], true),
+                'role_is_pemilik' => $role === 'pemilik',
+                'role_can_manage_process' => in_array($role, ['admin', 'pengurus', 'pemilik'], true),
+
+                'view_url' => route('viewticketteknisi.index', ['id' => $ticket->id]),
+
+                'routes' => [
+                    'assign' => route('tickets.assign', $ticket->id),
+                    'contribute' => route('tickets.contribute', $ticket->id),
+                    'cancel_assign' => route('tickets.cancel_assign', $ticket->id),
+                    'request_followup' => route('ticketsteknisi.requestFollowup', $ticket->id),
+                    'close' => route('ticketsteknisi.close', $ticket->id),
+                    'cancel_escalation' => route('ticketsteknisi.cancelRequestFollowUp', $ticket->id),
+                    'accept_escalation' => route('tickets.accept_escalation', $ticket->id),
+                ],
+            ];
+        });
+
+        return response()->json([
+            'draw' => $draw,
+            'recordsTotal' => $recordsTotal,
+            'recordsFiltered' => $recordsFiltered,
+            'data' => $data,
+        ]);
+    }
+
+    private function baseTicketDatatableQuery(string $mode, int $userId, ?string $role): Builder
+    {
+        $query = Ticket::query()
+            ->select([
+                'tickets.id',
+                'tickets.subject',
+                'tickets.status',
+                'tickets.Jenis_Pengaduan',
+                'tickets.Detail',
+                'tickets.created_at',
+                'tickets.user_id',
+                'users.name as user_name',
+            ])
+            ->leftJoin('users', 'users.id', '=', 'tickets.user_id')
+            ->withCount([
+                'asignees as assigned_to_me_count' => function ($q) use ($userId) {
+                    $q->where('user_id', $userId);
+                },
+                'asignees as owner_assignee_count' => function ($q) {
+                    $q->where('role', 'pemilik');
+                },
+            ]);
+
+        switch ($mode) {
+            case 'open_unassigned':
+                $query->whereDoesntHave('asignees')
+                    ->where('tickets.status', 'open');
+                break;
+
+            case 'assigned_active':
+                $query->whereHas('asignees', function ($q) use ($userId) {
+                    $q->where('user_id', $userId);
+                })
+                    ->whereIn('tickets.status', ['on process', 'escalated']);
+                break;
+
+            case 'escalated_all':
+                $query->where('tickets.status', 'escalated');
+                break;
+
+            case 'closed_assigned':
+                $query->whereHas('asignees', function ($q) use ($userId) {
+                    $q->where('user_id', $userId);
+                })
+                    ->where('tickets.status', 'close');
+                break;
+
+            case 'all':
+            default:
+                break;
+        }
+
+        return $query;
+    }
+
+    private function applyTicketDatatableFilters(Builder $query, Request $request, string $mode): Builder
+    {
+        $search = trim((string) $request->input('search.value', ''));
+        $jenis  = trim((string) $request->input('filter_jenis_pengaduan', ''));
+        $status = trim((string) $request->input('filter_status', ''));
+
+        if ($search !== '') {
+            $escaped = addcslashes($search, '\\%_');
+            $like = "%{$escaped}%";
+
+            $query->where(function ($q) use ($like) {
+                $q->where('tickets.subject', 'like', $like)
+                    ->orWhere('users.name', 'like', $like);
+            });
+        }
+
+        if (in_array($jenis, ['perbaikan', 'permintaan'], true)) {
+            $query->where('tickets.Jenis_Pengaduan', $jenis);
+        }
+
+        if ($mode === 'all' && in_array($status, ['open', 'on process', 'escalated', 'close'], true)) {
+            $query->where('tickets.status', $status);
+        }
+
+        return $query;
+    }
+
+    private function applyTicketDatatableOrder(Builder $query, Request $request): void
+    {
+        $orderColumn = (int) $request->input('order.0.column', -1);
+        $orderDir = strtolower((string) $request->input('order.0.dir', 'desc'));
+        $orderDir = $orderDir === 'asc' ? 'asc' : 'desc';
+
+        $allowedOrder = [
+            0 => 'tickets.subject',
+            1 => 'users.name',
+            2 => 'tickets.status',
+        ];
+
+        if (isset($allowedOrder[$orderColumn])) {
+            $query->orderBy($allowedOrder[$orderColumn], $orderDir)
+                ->orderBy('tickets.created_at', 'desc');
+        } else {
+            $query->orderBy('tickets.created_at', 'desc');
+        }
     }
 }
