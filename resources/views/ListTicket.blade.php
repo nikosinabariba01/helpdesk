@@ -52,26 +52,15 @@
                     vertical-align: middle !important;
                 }
 
-                #TicketTable thead th span.dt-column-title,
-                #TicketTable thead th span.dt-column-order {
-                    display: inline-flex;
-                    align-items: center;
-                    justify-content: center;
-                    vertical-align: middle;
+                #TicketTable thead th {
+                    border-top: 1px solid #e9ecef !important;
+                    border-bottom: 1px solid #e9ecef !important;
+                    border-right: 1px solid #e9ecef !important;
+                    background: #fff !important;
                 }
 
-                #TicketTable thead th {
-                    border-top: none !important;
-                    border-left: none !important;
-                    border-right: none !important;
-                    border-bottom: 1px solid #e9ecef !important;
-                    background: #fff !important;
-                    white-space: nowrap;
-                    position: sticky;
-                    top: 0;
-                    z-index: 2;
-                    padding: 12px 10px !important;
-                    text-align: center !important;
+                #TicketTable thead th:first-child {
+                    border-left: 1px solid #e9ecef !important;
                 }
 
                 #TicketTable tbody td {
@@ -89,6 +78,7 @@
                     background: #fafafa !important;
                 }
 
+                /* supaya isi kolom yang berupa div ikut center */
                 #TicketTable tbody td>div {
                     display: flex;
                     align-items: center;
@@ -97,6 +87,12 @@
                     text-align: center;
                 }
 
+                .ticket-subject-wrap a {
+                    text-align: center;
+                    display: inline-block;
+                }
+
+                /* subject tetap rapi walau center */
                 .ticket-subject-wrap {
                     display: flex;
                     flex-direction: column;
@@ -105,11 +101,6 @@
                     gap: 4px;
                     text-align: center;
                     width: 100%;
-                }
-
-                .ticket-subject-wrap a {
-                    text-align: center;
-                    display: inline-block;
                 }
 
                 .ticket-subject-wrap .ticket-meta {
@@ -139,30 +130,10 @@
                     margin: 0 !important;
                 }
 
-                #TicketTable thead th.sorting::before,
-                #TicketTable thead th.sorting::after,
-                #TicketTable thead th.sorting_asc::before,
-                #TicketTable thead th.sorting_asc::after,
-                #TicketTable thead th.sorting_desc::before,
-                #TicketTable thead th.sorting_desc::after {
-                    display: none !important;
-                    content: none !important;
-                }
-
-                #TicketTable thead th .sort-icons {
-                    display: none !important;
-                }
-
-                .card-body {
-                    overflow: visible !important;
-                }
-
                 .ticket-table-shell {
                     display: flex;
                     flex-direction: column;
                     min-height: 620px;
-                    width: 100%;
-                    overflow: visible !important;
                 }
 
                 .ticket-table-scroller {
@@ -170,291 +141,12 @@
                     overflow-y: auto;
                     overflow-x: auto;
                     margin-right: 15px;
-                    width: 100%;
-                    position: relative;
-                    z-index: 1;
-                }
-
-                #TicketTable_wrapper {
-                    padding: 0;
-                    width: 100%;
-                }
-
-                #TicketTable_wrapper .dt-layout-row:first-child,
-                #TicketTable_wrapper .dt-layout-row:last-child {
-                    display: none !important;
-                }
-
-                .ticket-table-footer {
-                    flex: 0 0 auto;
-                    border-top: 1px solid #ececec;
-                    background: #fff;
-                    padding: 14px 16px;
-                    width: 100%;
-                    overflow-x: hidden !important;
-                    overflow-y: visible !important;
-                    position: relative;
-                    z-index: 10;
-                }
-
-                .ticket-table-footer-top,
-                .ticket-table-footer-bottom {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    gap: 12px;
-                    flex-wrap: wrap;
-                    width: 100%;
-                    min-width: 0;
-                    overflow: visible !important;
-                }
-
-                .ticket-table-footer-top {
-                    margin-bottom: 12px;
-                }
-
-                .ticket-table-footer-group {
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                    flex-wrap: wrap;
-                    min-width: 0;
-                    max-width: 100%;
-                    overflow: visible !important;
-                }
-
-                .ticket-footer-title {
-                    font-size: 11px;
-                    text-transform: uppercase;
-                    letter-spacing: 0.4px;
-                    color: #8392ab;
-                    font-weight: 700;
-                    margin-bottom: 4px;
-                }
-
-                .ticket-footer-dropdown {
-                    position: relative;
-                    display: inline-block;
-                    max-width: 100%;
-                    z-index: 50;
-                }
-
-                .ticket-footer-dropdown .btn {
-                    border: 1px solid #ffffff !important;
-                    color: #495057 !important;
-                    background-color: #ffffff !important;
-                    padding: 6px 12px !important;
-                    font-size: 12px !important;
-                    border-radius: 8px !important;
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 8px;
-                    cursor: pointer;
-                    min-width: 0;
-                    max-width: 220px;
-                    width: auto;
-                    justify-content: space-between;
-                    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-                    overflow: hidden;
-                }
-
-                .ticket-footer-dropdown .btn span {
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    white-space: nowrap;
-                }
-
-                .ticket-footer-dropdown .btn:hover,
-                .ticket-footer-dropdown .btn:focus,
-                .ticket-footer-dropdown .btn.show {
-                    background-color: #fff !important;
-                    color: #344767 !important;
-                    border-color: #ffffff !important;
-                    box-shadow: 0 0 0 0.1rem rgba(94, 114, 228, 0.08) !important;
-                }
-
-                .ticket-footer-dropdown .dropdown-menu {
-                    font-size: 13px;
-                    min-width: 100%;
-                    max-width: 220px;
-                    border-radius: 10px;
-                    border: 1px solid #ececec;
-                    padding: 6px 0;
-                    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-                    z-index: 2000 !important;
-                    margin: 0 !important;
-                }
-
-                .ticket-footer-dropdown.dropup .dropdown-menu.show {
-                    position: absolute !important;
-                    inset: auto auto 100% 0 !important;
-                    transform: translateY(-6px) !important;
-                    display: block !important;
-                    z-index: 2000 !important;
-                }
-
-                .ticket-footer-dropdown.dropdown .dropdown-menu.show {
-                    position: absolute !important;
-                    top: 100% !important;
-                    left: 0 !important;
-                    transform: translateY(6px) !important;
-                    display: block !important;
-                    z-index: 2000 !important;
-                }
-
-                .ticket-footer-dropdown .dropdown-item {
-                    padding: 8px 12px;
-                }
-
-                .ticket-footer-dropdown .dropdown-item:hover {
-                    background: #f8f9fa;
-                    color: #344767;
-                }
-
-                .ticket-table-footer .dt-length {
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                    margin: 0;
-                    max-width: 100%;
-                }
-
-                .ticket-table-footer .dt-length label {
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                    margin: 0;
-                    font-size: 12px;
-                    color: #67748e;
-                    font-weight: 600;
-                    flex-wrap: wrap;
-                }
-
-                .ticket-table-footer .dt-length select {
-                    border: 1px solid #d2d6da;
-                    border-radius: 8px;
-                    padding: 6px 12px;
-                    min-width: 90px;
-                    font-size: 13px;
-                    background-color: #fff;
-                    color: #344767;
-                }
-
-                .ticket-table-footer .dt-info {
-                    margin: 0;
-                    font-size: 13px;
-                    color: #67748e;
-                    max-width: 100%;
-                }
-
-                .ticket-table-footer .dt-paging {
-                    margin: 0;
-                    width: auto !important;
-                    max-width: 100%;
-                    overflow: hidden !important;
-                }
-
-                .ticket-table-footer .dt-paging nav {
-                    display: flex;
-                    flex-wrap: wrap;
-                    justify-content: flex-end;
-                    gap: 4px;
-                    max-width: 100%;
-                }
-
-                .ticket-table-footer .dt-paging .dt-paging-button {
-                    border-radius: 8px !important;
-                    min-width: 34px;
-                    height: 34px;
-                    margin: 0 2px;
-                    border: 1px solid #ffffff !important;
-                    background: #fff !important;
-                    color: #344767 !important;
-                    overflow: hidden;
-                }
-
-                .ticket-table-footer .dt-paging .dt-paging-button.current {
-                    background: #5e72e4 !important;
-                    border-color: #5e72e4 !important;
-                    color: #fff !important;
-                    box-shadow: none !important;
-                }
-
-                .ticket-table-footer .dt-paging .dt-paging-button:hover {
-                    background: #f8f9fa !important;
-                    color: #344767 !important;
-                    border-color: #ffffff !important;
-                }
-
-                .ticket-table-footer .dt-paging .dt-paging-button.current:hover {
-                    background: #5e72e4 !important;
-                    color: #fff !important;
-                    border-color: #5e72e4 !important;
-                }
-
-                .ticket-table-footer .dt-paging .disabled {
-                    opacity: 0.5 !important;
-                    cursor: not-allowed !important;
-                }
-
-                @media (min-width: 769px) {
-
-                    .ticket-table-footer-top,
-                    .ticket-table-footer-bottom,
-                    .ticket-table-footer-group {
-                        flex-wrap: nowrap;
-                    }
-
-                    .ticket-table-footer .dt-paging {
-                        overflow: hidden !important;
-                        width: auto !important;
-                    }
-
-                    .ticket-table-footer .dt-paging nav {
-                        flex-wrap: nowrap;
-                        justify-content: flex-end;
-                    }
                 }
 
                 @media (max-width: 768px) {
                     .ticket-table-scroller {
                         min-height: 400px;
                         max-height: 400px;
-                    }
-
-                    .ticket-table-footer {
-                        padding: 12px;
-                        overflow-x: hidden !important;
-                        overflow-y: visible !important;
-                    }
-
-                    .ticket-table-footer-top,
-                    .ticket-table-footer-bottom {
-                        flex-direction: column;
-                        align-items: stretch;
-                    }
-
-                    .ticket-table-footer-group {
-                        width: 100%;
-                    }
-
-                    .ticket-footer-dropdown {
-                        width: 100%;
-                    }
-
-                    .ticket-footer-dropdown .btn {
-                        width: 100%;
-                        max-width: 100%;
-                    }
-
-                    .ticket-table-footer .dt-paging {
-                        width: 100% !important;
-                        overflow: hidden !important;
-                    }
-
-                    .ticket-table-footer .dt-paging nav {
-                        justify-content: flex-start;
-                        flex-wrap: wrap;
                     }
                 }
 
@@ -469,6 +161,193 @@
                     .ticket-table-scroller {
                         min-height: 550px;
                         max-height: 550px;
+                    }
+                }
+
+                #TicketTable_wrapper {
+                    padding: 0;
+                }
+
+                #TicketTable_wrapper .dt-layout-row:first-child,
+                #TicketTable_wrapper .dt-layout-row:last-child {
+                    display: none !important;
+                }
+
+                #TicketTable thead th {
+                    white-space: nowrap;
+                    position: sticky;
+                    top: 0;
+                    z-index: 2;
+                    background: #fff;
+                }
+
+                #TicketTable thead th.sorting::before,
+                #TicketTable thead th.sorting::after,
+                #TicketTable thead th.sorting_asc::before,
+                #TicketTable thead th.sorting_asc::after,
+                #TicketTable thead th.sorting_desc::before,
+                #TicketTable thead th.sorting_desc::after {
+                    display: none !important;
+                    content: none !important;
+                }
+
+                #TicketTable thead th .sort-icons {
+                    display: none !important;
+                }
+
+                #TicketTable thead th span.dt-column-order {
+                    margin-left: 6px;
+                }
+
+                .ticket-table-footer {
+                    flex: 0 0 auto;
+                    border-top: 1px solid #ececec;
+                    background: #fff;
+                    padding: 14px 16px;
+                }
+
+                .ticket-table-footer-top,
+                .ticket-table-footer-bottom {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 12px;
+                    flex-wrap: wrap;
+                }
+
+                .ticket-table-footer-top {
+                    margin-bottom: 12px;
+                }
+
+                .ticket-table-footer-group {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    flex-wrap: wrap;
+                }
+
+                .ticket-table-footer label {
+                    margin-bottom: 0;
+                    font-size: 12px;
+                    color: #67748e;
+                    font-weight: 600;
+                }
+
+                .ticket-table-footer .form-select,
+                .ticket-table-footer .dt-length select {
+                    border: 1px solid #d2d6da;
+                    border-radius: 8px;
+                    padding: 6px 12px;
+                    min-width: 150px;
+                    font-size: 13px;
+                    background-color: #fff;
+                    color: #344767;
+                }
+
+                .ticket-table-footer .dt-length {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    margin: 0;
+                }
+
+                .ticket-table-footer .dt-length label {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    margin: 0;
+                    font-size: 12px;
+                    color: #67748e;
+                    font-weight: 600;
+                }
+
+                .ticket-table-footer .dt-info {
+                    margin: 0;
+                    font-size: 13px;
+                    color: #67748e;
+                }
+
+                .ticket-table-footer .dt-paging {
+                    margin: 0;
+                }
+
+                .ticket-table-footer .dt-paging .dt-paging-button {
+                    border-radius: 8px !important;
+                    min-width: 34px;
+                    height: 34px;
+                    margin: 0 2px;
+                    border: 1px solid #d2d6da !important;
+                    background: #fff !important;
+                    color: #344767 !important;
+                }
+
+                .ticket-table-footer .dt-paging .dt-paging-button.current {
+                    background: #5e72e4 !important;
+                    border-color: #5e72e4 !important;
+                    color: #fff !important;
+                    box-shadow: none !important;
+                }
+
+                .ticket-table-footer .dt-paging .dt-paging-button:hover {
+                    background: #f8f9fa !important;
+                    color: #344767 !important;
+                    border-color: #cfd4da !important;
+                }
+
+                .ticket-table-footer .dt-paging .dt-paging-button.current:hover {
+                    background: #5e72e4 !important;
+                    color: #fff !important;
+                    border-color: #5e72e4 !important;
+                }
+
+                .ticket-table-footer .dt-paging .disabled {
+                    opacity: 0.5 !important;
+                    cursor: not-allowed !important;
+                }
+
+                .ticket-table-footer-divider {
+                    width: 1px;
+                    align-self: stretch;
+                    background: #ececec;
+                }
+
+                .ticket-footer-title {
+                    font-size: 11px;
+                    text-transform: uppercase;
+                    letter-spacing: 0.4px;
+                    color: #8392ab;
+                    font-weight: 700;
+                    margin-bottom: 4px;
+                }
+
+                @media (max-width: 768px) {
+                    .ticket-table-footer {
+                        padding: 12px;
+                    }
+
+                    .ticket-table-footer-top,
+                    .ticket-table-footer-bottom {
+                        flex-direction: column;
+                        align-items: stretch;
+                    }
+
+                    .ticket-table-footer-group {
+                        width: 100%;
+                    }
+
+                    .ticket-table-footer .form-select,
+                    .ticket-table-footer .dt-length select {
+                        width: 100%;
+                        min-width: 100%;
+                    }
+
+                    .ticket-table-footer-divider {
+                        display: none;
+                    }
+
+                    .ticket-table-footer .dt-paging {
+                        overflow-x: auto;
+                        width: 100%;
                     }
                 }
             </style>
@@ -512,124 +391,32 @@
                         </div>
 
                         <div class="ticket-table-footer-group">
-                            <div class="ticket-footer-dropdown dropdown">
-                                <div class="ticket-footer-title">Filter</div>
-                                <button class="btn btn-sm btn-outline-secondary"
-                                    type="button"
-                                    id="filterJenisPengaduanBtn"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false">
-                                    <span id="filterJenisPengaduanDisplay">Jenis Pengaduan</span>
-                                    <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="filterJenisPengaduanBtn">
-                                    <li>
-                                        <a class="dropdown-item filter-option" href="#"
-                                            data-filter-type="jenis_pengaduan"
-                                            data-filter-value=""
-                                            data-filter-label="Jenis Pengaduan">
-                                            Semua
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item filter-option" href="#"
-                                            data-filter-type="jenis_pengaduan"
-                                            data-filter-value="perbaikan"
-                                            data-filter-label="Jenis Pengaduan: Perbaikan">
-                                            Perbaikan
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item filter-option" href="#"
-                                            data-filter-type="jenis_pengaduan"
-                                            data-filter-value="permintaan"
-                                            data-filter-label="Jenis Pengaduan: Permintaan">
-                                            Permintaan
-                                        </a>
-                                    </li>
-                                </ul>
+                            <div>
+                                <div class="ticket-footer-title">Jenis Pengaduan</div>
+                                <select id="filterJenisPengaduan" class="form-select form-select-sm">
+                                    <option value="">Semua Jenis</option>
+                                    <option value="perbaikan">Perbaikan</option>
+                                    <option value="permintaan">Permintaan</option>
+                                </select>
                             </div>
 
-                            <div class="ticket-footer-dropdown dropdown">
-                                <div class="ticket-footer-title">Filter</div>
-                                <button class="btn btn-sm btn-outline-secondary"
-                                    type="button"
-                                    id="filterStatusBtn"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false">
-                                    <span id="filterStatusDisplay">Status</span>
-                                    <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="filterStatusBtn">
-                                    <li>
-                                        <a class="dropdown-item filter-option" href="#"
-                                            data-filter-type="status"
-                                            data-filter-value=""
-                                            data-filter-label="Status">
-                                            Semua
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item filter-option" href="#"
-                                            data-filter-type="status"
-                                            data-filter-value="open"
-                                            data-filter-label="Status: Open">
-                                            Open
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item filter-option" href="#"
-                                            data-filter-type="status"
-                                            data-filter-value="on process"
-                                            data-filter-label="Status: On Process">
-                                            On Process
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item filter-option" href="#"
-                                            data-filter-type="status"
-                                            data-filter-value="escalated"
-                                            data-filter-label="Status: Escalated">
-                                            Escalated
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item filter-option" href="#"
-                                            data-filter-type="status"
-                                            data-filter-value="close"
-                                            data-filter-label="Status: Close">
-                                            Close
-                                        </a>
-                                    </li>
-                                </ul>
+                            <div>
+                                <div class="ticket-footer-title">Status</div>
+                                <select id="filterStatus" class="form-select form-select-sm">
+                                    <option value="">Semua Status</option>
+                                    <option value="open">Open</option>
+                                    <option value="on process">On Process</option>
+                                    <option value="escalated">Escalated</option>
+                                    <option value="close">Close</option>
+                                </select>
                             </div>
 
-                            <div class="ticket-footer-dropdown dropdown">
-                                <div class="ticket-footer-title">Urutkan</div>
-                                <button class="btn btn-sm btn-outline-secondary"
-                                    type="button"
-                                    id="sortCreatedAtBtn"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false">
-                                    <span id="sortCreatedAtDisplay">Tanggal: Terbaru</span>
-                                    <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="sortCreatedAtBtn">
-                                    <li>
-                                        <a class="dropdown-item sort-option" href="#"
-                                            data-sort-value="desc"
-                                            data-sort-label="Tanggal: Terbaru">
-                                            Terbaru
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item sort-option" href="#"
-                                            data-sort-value="asc"
-                                            data-sort-label="Tanggal: Terlama">
-                                            Terlama
-                                        </a>
-                                    </li>
-                                </ul>
+                            <div>
+                                <div class="ticket-footer-title">Urutkan Tanggal</div>
+                                <select id="sortCreatedAt" class="form-select form-select-sm">
+                                    <option value="desc">Terbaru</option>
+                                    <option value="asc">Terlama</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -888,9 +675,7 @@
             pagingSlot.appendChild(paging);
         }
     }
-    let currentFilterStatus = '';
-    let currentFilterJenisPengaduan = '';
-    let currentSortCreatedAt = 'desc';
+
     document.addEventListener('DOMContentLoaded', function() {
         const table = new DataTable('#TicketTable', {
             processing: true,
@@ -908,9 +693,9 @@
                 url: "{{ route('tickets.datatable', ['mode' => 'all']) }}",
                 type: "GET",
                 data: function(d) {
-                    d.filter_status = currentFilterStatus;
-                    d.filter_jenis_pengaduan = currentFilterJenisPengaduan;
-                    d.sort_created_at = currentSortCreatedAt;
+                    d.filter_status = document.getElementById('filterStatus').value;
+                    d.filter_jenis_pengaduan = document.getElementById('filterJenisPengaduan').value;
+                    d.sort_created_at = document.getElementById('sortCreatedAt').value;
                 }
             },
             columns: [{
@@ -994,37 +779,16 @@
             debouncedSearch(this.value);
         });
 
-        document.querySelectorAll('.filter-option').forEach(function(item) {
-            item.addEventListener('click', function(e) {
-                e.preventDefault();
-
-                const filterType = this.dataset.filterType;
-                const filterValue = this.dataset.filterValue;
-                const filterLabel = this.dataset.filterLabel;
-
-                if (filterType === 'jenis_pengaduan') {
-                    currentFilterJenisPengaduan = filterValue;
-                    document.getElementById('filterJenisPengaduanDisplay').textContent = filterLabel;
-                }
-
-                if (filterType === 'status') {
-                    currentFilterStatus = filterValue;
-                    document.getElementById('filterStatusDisplay').textContent = filterLabel;
-                }
-
-                table.ajax.reload();
-            });
+        document.getElementById('filterStatus').addEventListener('change', function() {
+            table.ajax.reload();
         });
 
-        document.querySelectorAll('.sort-option').forEach(function(item) {
-            item.addEventListener('click', function(e) {
-                e.preventDefault();
+        document.getElementById('filterJenisPengaduan').addEventListener('change', function() {
+            table.ajax.reload();
+        });
 
-                currentSortCreatedAt = this.dataset.sortValue;
-                document.getElementById('sortCreatedAtDisplay').textContent = this.dataset.sortLabel;
-
-                table.ajax.reload();
-            });
+        document.getElementById('sortCreatedAt').addEventListener('change', function() {
+            table.ajax.reload();
         });
     });
 </script>
