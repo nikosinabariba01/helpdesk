@@ -165,15 +165,102 @@
                     }
                 }
 
-                #TicketTable_wrapper {
-                    padding: 0;
+                /* =========================
+       CUSTOM SORT ICON
+       ========================= */
+
+                #TicketTable thead th.sorting,
+                #TicketTable thead th.sorting_asc,
+                #TicketTable thead th.sorting_desc {
+                    position: relative;
+                    cursor: pointer;
+                    user-select: none;
+                    white-space: nowrap;
+                    color: #6c757d;
                 }
 
-                #TicketTable_wrapper .dt-layout-row:first-child,
-                #TicketTable_wrapper .dt-layout-row:last-child {
-                    display: none !important;
+                #TicketTable thead th.sorting .sort-icons,
+                #TicketTable thead th.sorting_asc .sort-icons,
+                #TicketTable thead th.sorting_desc .sort-icons {
+                    display: inline-block;
+                    position: relative;
+                    width: 15px;
+                    height: 18px;
+                    margin-left: 7px;
+                    vertical-align: middle;
+                    top: -1px;
                 }
 
+                #TicketTable thead th.sorting .sort-icons::before,
+                #TicketTable thead th.sorting .sort-icons::after,
+                #TicketTable thead th.sorting_asc .sort-icons::before,
+                #TicketTable thead th.sorting_asc .sort-icons::after,
+                #TicketTable thead th.sorting_desc .sort-icons::before,
+                #TicketTable thead th.sorting_desc .sort-icons::after {
+                    content: '';
+                    position: absolute;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    border-left: 4px solid transparent;
+                    border-right: 4px solid transparent;
+                    transition: opacity 0.2s ease;
+                }
+
+                /* panah atas */
+                #TicketTable thead th.sorting .sort-icons::before,
+                #TicketTable thead th.sorting_asc .sort-icons::before,
+                #TicketTable thead th.sorting_desc .sort-icons::before {
+                    top: 1px;
+                    border-bottom: 6px solid #6c757d;
+                }
+
+                /* panah bawah */
+                #TicketTable thead th.sorting .sort-icons::after,
+                #TicketTable thead th.sorting_asc .sort-icons::after,
+                #TicketTable thead th.sorting_desc .sort-icons::after {
+                    bottom: 1px;
+                    border-top: 6px solid #6c757d;
+                }
+
+                /* default */
+                #TicketTable thead th.sorting .sort-icons::before,
+                #TicketTable thead th.sorting .sort-icons::after {
+                    opacity: 0.65;
+                }
+
+                /* hover */
+                #TicketTable thead th.sorting:hover .sort-icons::before,
+                #TicketTable thead th.sorting:hover .sort-icons::after {
+                    opacity: 0.9;
+                }
+
+                /* ascending aktif */
+                #TicketTable thead th.sorting_asc {
+                    color: #495057;
+                }
+
+                #TicketTable thead th.sorting_asc .sort-icons::before {
+                    opacity: 1;
+                }
+
+                #TicketTable thead th.sorting_asc .sort-icons::after {
+                    opacity: 0.22;
+                }
+
+                /* descending aktif */
+                #TicketTable thead th.sorting_desc {
+                    color: #495057;
+                }
+
+                #TicketTable thead th.sorting_desc .sort-icons::before {
+                    opacity: 0.22;
+                }
+
+                #TicketTable thead th.sorting_desc .sort-icons::after {
+                    opacity: 1;
+                }
+
+                /* hilangkan icon bawaan plugin jika ada */
                 #TicketTable thead th.sorting::before,
                 #TicketTable thead th.sorting::after,
                 #TicketTable thead th.sorting_asc::before,
@@ -182,36 +269,6 @@
                 #TicketTable thead th.sorting_desc::after {
                     display: none !important;
                     content: none !important;
-                }
-
-                #TicketTable thead th .sort-icons {
-                    display: none !important;
-                }
-
-                #TicketTable thead th span.dt-column-title,
-                #TicketTable thead th span.dt-column-order {
-                    display: inline-flex;
-                    align-items: center;
-                    justify-content: center;
-                    vertical-align: middle;
-                }
-
-                #TicketTable thead th span.dt-column-order {
-                    width: 18px;
-                    min-width: 18px;
-                    height: 18px;
-                    margin-left: 8px;
-                    opacity: 1 !important;
-                    color: #5e72e4 !important;
-                    transform: scale(1.25);
-                    font-weight: 700;
-                }
-
-                #TicketTable thead th span.dt-column-order::before,
-                #TicketTable thead th span.dt-column-order::after {
-                    opacity: 1 !important;
-                    font-size: 12px !important;
-                    font-weight: 700 !important;
                 }
 
                 .ticket-table-footer {
