@@ -77,12 +77,18 @@
                     transform: scale(1.50) !important;
                     font-weight: 700;
                     color: #5e72e4 !important;
-                    opacity: 1! important;
+                    opacity: 1 ! important;
                 }
 
 
                 #TicketTable tbody td:first-child {
                     border-left: 1px solid #e9ecef !important;
+                    text-align: left !important;
+                }
+
+                #TicketTable tbody td:first-child>div {
+                    justify-content: flex-start !important;
+                    text-align: left !important;
                 }
 
                 #TicketTable tbody tr:hover td {
@@ -100,22 +106,23 @@
                 .ticket-subject-wrap {
                     display: flex;
                     flex-direction: column;
-                    align-items: center;
+                    align-items: flex-start !important;
                     justify-content: center;
                     gap: 4px;
-                    text-align: center;
+                    text-align: left !important;
                     width: 100%;
                 }
 
                 .ticket-subject-wrap a {
-                    text-align: center;
+                    text-align: left !important;
                     display: inline-block;
+                    width: 100%;
                 }
 
                 .ticket-subject-wrap .ticket-meta {
                     display: flex;
                     flex-wrap: wrap;
-                    justify-content: center;
+                    justify-content: flex-start !important;
                     gap: 6px 12px;
                     list-style: none;
                     margin: 0;
@@ -172,10 +179,6 @@
                         max-height: 550px;
                     }
                 }
-
-                /* =========================
-       CUSTOM SORT ICON
-       ========================= */
 
                 #TicketTable thead th.sorting,
                 #TicketTable thead th.sorting_asc,
