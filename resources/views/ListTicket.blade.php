@@ -74,21 +74,7 @@
                 }
 
                 #TicketTable thead th span.dt-column-order {
-                    width: 18px;
-                    min-width: 18px;
-                    height: 18px;
-                    margin-left: 8px;
-                    opacity: 1 !important;
-                    color: #5e72e4 !important;
-                    transform: scale(1.25);
-                    font-weight: 700;
-                }
-
-                #TicketTable thead th span.dt-column-order::before,
-                #TicketTable thead th span.dt-column-order::after {
-                    opacity: 1 !important;
-                    font-size: 12px !important;
-                    font-weight: 700 !important;
+                    transform: scale(0.75);
                 }
 
                 #TicketTable tbody td:first-child {
