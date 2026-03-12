@@ -915,8 +915,11 @@ class TeknisiController extends Controller
     private function applyTicketDatatableOrder(Builder $query, Request $request): void
     {
         $orderColumn = (int) $request->input('order.0.column', -1);
-        $orderDir = strtolower((string) $request->input('order.0.dir', 'desc'));
-        $orderDir = $orderDir === 'asc' ? 'asc' : 'desc';
+        $orderDir    = strtolower((string) $request->input('order.0.dir', 'desc'));
+        $orderDir    = $orderDir === 'asc' ? 'asc' : 'desc';
+
+        $sortCreatedAt = strtolower((string) $request->input('sort_created_at', 'desc'));
+        $sortCreatedAt = $sortCreatedAt === 'asc' ? 'asc' : 'desc';
 
         $allowedOrder = [
             0 => 'tickets.subject',
@@ -926,9 +929,9 @@ class TeknisiController extends Controller
 
         if (isset($allowedOrder[$orderColumn])) {
             $query->orderBy($allowedOrder[$orderColumn], $orderDir)
-                ->orderBy('tickets.created_at', 'desc');
+                ->orderBy('tickets.created_at', $sortCreatedAt);
         } else {
-            $query->orderBy('tickets.created_at', 'desc');
+            $query->orderBy('tickets.created_at', $sortCreatedAt);
         }
     }
 }
