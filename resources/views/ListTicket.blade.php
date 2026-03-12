@@ -139,7 +139,6 @@
                     margin: 0 !important;
                 }
 
-                /* hilangkan icon sorting ganda */
                 #TicketTable thead th.sorting::before,
                 #TicketTable thead th.sorting::after,
                 #TicketTable thead th.sorting_asc::before,
@@ -154,7 +153,74 @@
                     display: none !important;
                 }
 
-                /* dropdown footer */
+                .ticket-table-shell {
+                    display: flex;
+                    flex-direction: column;
+                    min-height: 620px;
+                }
+
+                .ticket-table-scroller {
+                    flex: 1 1 auto;
+                    overflow-y: auto;
+                    overflow-x: auto;
+                    margin-right: 15px;
+                }
+
+                #TicketTable_wrapper {
+                    padding: 0;
+                }
+
+                #TicketTable_wrapper .dt-layout-row:first-child,
+                #TicketTable_wrapper .dt-layout-row:last-child {
+                    display: none !important;
+                }
+
+                .ticket-table-footer {
+                    flex: 0 0 auto;
+                    border-top: 1px solid #ececec;
+                    background: #fff;
+                    padding: 14px 16px;
+                    overflow-x: hidden !important;
+                    overflow-y: visible !important;
+                }
+
+                .ticket-table-footer-top,
+                .ticket-table-footer-bottom {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 12px;
+                    flex-wrap: wrap;
+                    min-width: 0;
+                }
+
+                .ticket-table-footer-top {
+                    margin-bottom: 12px;
+                }
+
+                .ticket-table-footer-group {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    flex-wrap: wrap;
+                    min-width: 0;
+                }
+
+                .ticket-footer-title {
+                    font-size: 11px;
+                    text-transform: uppercase;
+                    letter-spacing: 0.4px;
+                    color: #8392ab;
+                    font-weight: 700;
+                    margin-bottom: 4px;
+                }
+
+                .ticket-footer-dropdown {
+                    position: relative;
+                    display: inline-block;
+                    max-width: 100%;
+                }
+
                 .ticket-footer-dropdown .btn {
                     border: 1px solid #ffffff !important;
                     color: #495057 !important;
@@ -171,6 +237,7 @@
                     width: auto;
                     justify-content: space-between;
                     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+                    overflow: hidden;
                 }
 
                 .ticket-footer-dropdown .btn span {
@@ -205,89 +272,6 @@
                 .ticket-footer-dropdown .dropdown-item:hover {
                     background: #f8f9fa;
                     color: #344767;
-                }
-
-                /* paging border putih */
-                .ticket-table-footer .dt-paging .dt-paging-button {
-                    border-radius: 8px !important;
-                    min-width: 34px;
-                    height: 34px;
-                    margin: 0 2px;
-                    border: 1px solid #ffffff !important;
-                    background: #fff !important;
-                    color: #344767 !important;
-                }
-
-                .ticket-table-footer .dt-paging .dt-paging-button.current {
-                    background: #5e72e4 !important;
-                    border-color: #5e72e4 !important;
-                    color: #fff !important;
-                    box-shadow: none !important;
-                }
-
-                .ticket-table-shell {
-                    display: flex;
-                    flex-direction: column;
-                    min-height: 620px;
-                }
-
-                .ticket-table-scroller {
-                    flex: 1 1 auto;
-                    overflow-y: auto;
-                    overflow-x: auto;
-                    margin-right: 15px;
-                }
-
-                #TicketTable_wrapper {
-                    padding: 0;
-                }
-
-                #TicketTable_wrapper .dt-layout-row:first-child,
-                #TicketTable_wrapper .dt-layout-row:last-child {
-                    display: none !important;
-                }
-
-                .ticket-table-footer {
-                    flex: 0 0 auto;
-                    border-top: 1px solid #ececec;
-                    background: #fff;
-                    padding: 14px 16px;
-                    overflow-x: hidden;
-                }
-
-                .ticket-table-footer-top,
-                .ticket-table-footer-bottom {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    gap: 12px;
-                    flex-wrap: wrap;
-                }
-
-                .ticket-table-footer-top {
-                    margin-bottom: 12px;
-                }
-
-                .ticket-table-footer-top,
-                .ticket-table-footer-bottom,
-                .ticket-table-footer-group {
-                    min-width: 0;
-                }
-
-                .ticket-table-footer-group {
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                    flex-wrap: wrap;
-                }
-
-                .ticket-footer-title {
-                    font-size: 11px;
-                    text-transform: uppercase;
-                    letter-spacing: 0.4px;
-                    color: #8392ab;
-                    font-weight: 700;
-                    margin-bottom: 4px;
                 }
 
                 .ticket-table-footer .dt-length {
@@ -325,6 +309,34 @@
 
                 .ticket-table-footer .dt-paging {
                     margin: 0;
+                    width: auto !important;
+                    overflow: hidden !important;
+                }
+
+                .ticket-table-footer .dt-paging nav {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: flex-end;
+                    gap: 4px;
+                    max-width: 100%;
+                }
+
+                .ticket-table-footer .dt-paging .dt-paging-button {
+                    border-radius: 8px !important;
+                    min-width: 34px;
+                    height: 34px;
+                    margin: 0 2px;
+                    border: 1px solid #ffffff !important;
+                    background: #fff !important;
+                    color: #344767 !important;
+                    overflow: hidden;
+                }
+
+                .ticket-table-footer .dt-paging .dt-paging-button.current {
+                    background: #5e72e4 !important;
+                    border-color: #5e72e4 !important;
+                    color: #fff !important;
+                    box-shadow: none !important;
                 }
 
                 .ticket-table-footer .dt-paging .dt-paging-button:hover {
@@ -352,7 +364,7 @@
 
                     .ticket-table-footer {
                         padding: 12px;
-                        overflow-x: hidden;
+                        overflow-x: hidden !important;
                     }
 
                     .ticket-table-footer-top,
@@ -366,18 +378,21 @@
                     }
 
                     .ticket-footer-dropdown {
-                        position: relative;
-                        display: inline-block;
                         width: 100%;
                     }
 
                     .ticket-footer-dropdown .btn {
                         width: 100%;
+                        max-width: 100%;
                     }
 
                     .ticket-table-footer .dt-paging {
-                        overflow-x: auto;
-                        width: 100%;
+                        width: 100% !important;
+                        overflow: hidden !important;
+                    }
+
+                    .ticket-table-footer .dt-paging nav {
+                        justify-content: flex-start;
                     }
                 }
 
