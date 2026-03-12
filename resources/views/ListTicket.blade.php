@@ -41,6 +41,95 @@
 
         <div class="card-body px-0 pt-0 pb-0">
             <style>
+                #TicketTable {
+                    border-collapse: collapse !important;
+                    width: 100% !important;
+                }
+
+                #TicketTable thead th,
+                #TicketTable tbody td {
+                    text-align: center !important;
+                    vertical-align: middle !important;
+                }
+
+                #TicketTable thead th {
+                    border-top: 1px solid #e9ecef !important;
+                    border-bottom: 1px solid #e9ecef !important;
+                    border-right: 1px solid #e9ecef !important;
+                    background: #fff !important;
+                }
+
+                #TicketTable thead th:first-child {
+                    border-left: 1px solid #e9ecef !important;
+                }
+
+                #TicketTable tbody td {
+                    border-bottom: 1px solid #e9ecef !important;
+                    border-right: 1px solid #e9ecef !important;
+                    padding: 12px 10px !important;
+                    background: #fff;
+                }
+
+                #TicketTable tbody td:first-child {
+                    border-left: 1px solid #e9ecef !important;
+                }
+
+                #TicketTable tbody tr:hover td {
+                    background: #fafafa !important;
+                }
+
+                /* supaya isi kolom yang berupa div ikut center */
+                #TicketTable tbody td>div {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    min-height: 44px;
+                    text-align: center;
+                }
+
+                .ticket-subject-wrap a {
+                    text-align: center;
+                    display: inline-block;
+                }
+
+                /* subject tetap rapi walau center */
+                .ticket-subject-wrap {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 4px;
+                    text-align: center;
+                    width: 100%;
+                }
+
+                .ticket-subject-wrap .ticket-meta {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: center;
+                    gap: 6px 12px;
+                    list-style: none;
+                    margin: 0;
+                    padding: 0;
+                }
+
+                .ticket-subject-wrap .ticket-meta li {
+                    margin: 0;
+                    padding: 0;
+                }
+
+                .ticket-action-wrap {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 8px;
+                }
+
+                .ticket-action-wrap form {
+                    margin: 0 !important;
+                }
+
                 .ticket-table-shell {
                     display: flex;
                     flex-direction: column;
@@ -82,10 +171,6 @@
                 #TicketTable_wrapper .dt-layout-row:first-child,
                 #TicketTable_wrapper .dt-layout-row:last-child {
                     display: none !important;
-                }
-
-                #TicketTable tbody td {
-                    vertical-align: middle;
                 }
 
                 #TicketTable thead th {
@@ -397,41 +482,41 @@
     }
 
     function renderStatusBadge(status) {
-        const map = {
-            'open': 'bg-gradient-primary',
-            'on process': 'bg-gradient-warning',
-            'escalated': 'bg-gradient-info',
-            'close': 'bg-gradient-success'
-        };
-
-        const badgeClass = map[status] || 'bg-gradient-secondary';
-        return `<span class="badge badge-sm ${badgeClass}">${escapeHtml(status)}</span>`;
+        if (status === 'open') {
+            return `<span class="badge badge-sm bg-gradient-success">${escapeHtml(status)}</span>`;
+        } else if (status === 'on process') {
+            return `<span class="badge badge-sm bg-gradient-warning">${escapeHtml(status)}</span>`;
+        } else if (status === 'close') {
+            return `<span class="badge badge-sm bg-gradient-danger">${escapeHtml(status)}</span>`;
+        } else if (status === 'escalated') {
+            return `<span class="badge badge-sm bg-gradient-info">${escapeHtml(status)}</span>`;
+        } else {
+            return `<span class="badge badge-sm bg-gradient-secondary">Unknown Status</span>`;
+        }
     }
 
     function renderSubjectColumn(row) {
         return `
-            <div class="d-flex px-2 py-1">
-                <div class="d-flex flex-column justify-content-center">
-                    <h6 class="mb-0 text-s text-limit-35" title="Subject">
-                        <a href="${row.view_url}">
-                            ${escapeHtml(row.subject)}
-                        </a>
-                    </h6>
+        <div class="ticket-subject-wrap">
+            <h6 class="mb-0 text-s text-limit-35" title="Subject">
+                <a href="${row.view_url}">
+                    ${escapeHtml(row.subject)}
+                </a>
+            </h6>
 
-                    <div class="d-flex list-inline">
-                        <li class="text-xs list-inline-item text-secondary">
-                            <i class="fa fa-circle fa-xs text-danger"></i>${escapeHtml(row.ticket_code)}
-                        </li>
-                        <li class="text-xs list-inline-item text-secondary" title="type">
-                            <i class="fa fa-circle fa-xs text-primary"></i>${escapeHtml(row.Jenis_Pengaduan)}
-                        </li>
-                        <li class="text-xs list-inline-item text-secondary" title="Created Date">
-                            <i class="fa fa-circle fa-xs text-secondary"></i> ${escapeHtml(row.created_at_formatted)}
-                        </li>
-                    </div>
-                </div>
-            </div>
-        `;
+            <ul class="ticket-meta">
+                <li class="text-xs text-secondary">
+                    <i class="fa fa-circle fa-xs text-danger"></i>${escapeHtml(row.ticket_code)}
+                </li>
+                <li class="text-xs text-secondary" title="type">
+                    <i class="fa fa-circle fa-xs text-primary"></i>${escapeHtml(row.Jenis_Pengaduan)}
+                </li>
+                <li class="text-xs text-secondary" title="Created Date">
+                    <i class="fa fa-circle fa-xs text-secondary"></i> ${escapeHtml(row.created_at_formatted)}
+                </li>
+            </ul>
+        </div>
+    `;
     }
 
     function renderActionStatus(row) {
@@ -626,7 +711,7 @@
                     orderable: true,
                     searchable: true,
                     render: function(data) {
-                        return `<span class="text-secondary text-xs font-weight-bold">${escapeHtml(data ?? '-')}</span>`;
+                        return `<div><span class="text-secondary text-xs font-weight-bold">${escapeHtml(data ?? '-')}</span></div>`;
                     }
                 },
                 {
@@ -634,7 +719,7 @@
                     orderable: true,
                     searchable: false,
                     render: function(data) {
-                        return renderStatusBadge(data);
+                        return `<div>${renderStatusBadge(data)}</div>`;
                     }
                 },
                 {
@@ -642,7 +727,7 @@
                     orderable: false,
                     searchable: false,
                     render: function(data) {
-                        return `<span class="text-secondary text-xs font-weight-bold">${escapeHtml(data ?? '')}</span>`;
+                        return `<div><span class="text-secondary text-xs font-weight-bold">${escapeHtml(data ?? '')}</span></div>`;
                     }
                 },
                 {
@@ -650,7 +735,7 @@
                     orderable: false,
                     searchable: false,
                     render: function(data, type, row) {
-                        return renderActionStatus(row);
+                        return `<div class="ticket-action-wrap">${renderActionStatus(row)}</div>`;
                     }
                 },
                 {
@@ -658,7 +743,7 @@
                     orderable: false,
                     searchable: false,
                     render: function(data, type, row) {
-                        return renderAksi(row);
+                        return `<div>${renderAksi(row)}</div>`;
                     }
                 }
             ],
