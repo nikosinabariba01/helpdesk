@@ -1,21 +1,16 @@
 @extends('mainlayout.layout')
-
 @section('navbar')
 @include('mainlayout.navbar.nav')
 @endsection
-
 @section('pages')
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-        <li class="breadcrumb-item text-sm">
-            <a class="opacity-5 text-white" href="javascript:;">Pages</a>
-        </li>
+        <li class="breadcrumb-item text-sm"><a class="opacity-5 text-white" href="javascript:;">Pages</a></li>
         <li class="breadcrumb-item text-sm text-white active" aria-current="page">Ticket List</li>
     </ol>
     <h6 class="font-weight-bolder text-white mb-0">Ticket List</h6>
 </nav>
 @endsection
-
 @section('upnav')
 @include('mainlayout.navbar.upnavtek')
 @endsection
@@ -25,120 +20,337 @@
 
 <div class="col-lg-12 mb-lg-0 mb-4">
     <div class="card z-index-2 h-100 d-flex flex-column shadow-lg" style="border: 1px solid #e4e4e4;">
-        <div class="card-header pb-0 d-flex align-items-center justify-content-between">
+        <div class="card-header pb-0 d-flex align-items-center justify-content-between flex-wrap gap-2">
             <h6 class="mb-0">All Ticket List</h6>
 
-            <div class="d-flex">
+            <div class="d-flex" style="min-width: 280px;">
                 <div class="input-group input-group-sm">
                     <span class="input-group-text text-body">
                         <i class="fas fa-search" aria-hidden="true"></i>
                     </span>
-                    <input type="text" id="customSearch" class="form-control" placeholder="Search Subject / User"
-                        onfocus="focused(this)" onfocusout="defocused(this)">
+                    <input
+                        type="text"
+                        id="customSearch"
+                        class="form-control"
+                        placeholder="Search subject atau user"
+                        onfocus="focused(this)"
+                        onfocusout="defocused(this)">
                 </div>
             </div>
         </div>
 
-        <div class="card-body px-0 pt-0 pb-2 h-500">
+        <div class="card-body px-0 pt-0 pb-0">
             <style>
+                .ticket-table-shell {
+                    display: flex;
+                    flex-direction: column;
+                    min-height: 620px;
+                }
+
+                .ticket-table-scroller {
+                    flex: 1 1 auto;
+                    overflow-y: auto;
+                    overflow-x: auto;
+                    margin-right: 15px;
+                }
+
                 @media (max-width: 768px) {
-                    .table-responsive-custom {
-                        height: 400px !important;
-                        max-height: 400px !important;
+                    .ticket-table-scroller {
+                        min-height: 400px;
+                        max-height: 400px;
                     }
                 }
 
                 @media (min-width: 769px) and (max-width: 1024px) {
-                    .table-responsive-custom {
-                        height: 600px !important;
-                        max-height: 600px !important;
+                    .ticket-table-scroller {
+                        min-height: 600px;
+                        max-height: 600px;
                     }
                 }
 
                 @media (min-width: 1025px) {
-                    .table-responsive-custom {
-                        height: 550px !important;
-                        max-height: 550px !important;
+                    .ticket-table-scroller {
+                        min-height: 550px;
+                        max-height: 550px;
                     }
                 }
 
-                .table-responsive-custom {
-                    overflow-y: auto;
-                    margin-right: 15px;
+                #TicketTable_wrapper {
+                    padding: 0;
                 }
 
-                #TicketTable_wrapper .dt-search {
-                    display: none;
-                }
-
-                #TicketTable_wrapper .dt-search input,
-                #TicketTable_wrapper .dt-length select {
-                    border: 1px solid #d2d6da;
-                    border-radius: 8px;
-                    padding: 6px 10px;
-                }
-
-                #TicketTable_wrapper .dt-paging .dt-paging-button {
-                    border-radius: 8px !important;
+                #TicketTable_wrapper .dt-layout-row:first-child,
+                #TicketTable_wrapper .dt-layout-row:last-child {
+                    display: none !important;
                 }
 
                 #TicketTable tbody td {
                     vertical-align: middle;
                 }
+
+                #TicketTable thead th {
+                    white-space: nowrap;
+                    position: sticky;
+                    top: 0;
+                    z-index: 2;
+                    background: #fff;
+                }
+
+                #TicketTable thead th.sorting::before,
+                #TicketTable thead th.sorting::after,
+                #TicketTable thead th.sorting_asc::before,
+                #TicketTable thead th.sorting_asc::after,
+                #TicketTable thead th.sorting_desc::before,
+                #TicketTable thead th.sorting_desc::after {
+                    display: none !important;
+                    content: none !important;
+                }
+
+                #TicketTable thead th .sort-icons {
+                    display: none !important;
+                }
+
+                #TicketTable thead th span.dt-column-order {
+                    margin-left: 6px;
+                }
+
+                .ticket-table-footer {
+                    flex: 0 0 auto;
+                    border-top: 1px solid #ececec;
+                    background: #fff;
+                    padding: 14px 16px;
+                }
+
+                .ticket-table-footer-top,
+                .ticket-table-footer-bottom {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 12px;
+                    flex-wrap: wrap;
+                }
+
+                .ticket-table-footer-top {
+                    margin-bottom: 12px;
+                }
+
+                .ticket-table-footer-group {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    flex-wrap: wrap;
+                }
+
+                .ticket-table-footer label {
+                    margin-bottom: 0;
+                    font-size: 12px;
+                    color: #67748e;
+                    font-weight: 600;
+                }
+
+                .ticket-table-footer .form-select,
+                .ticket-table-footer .dt-length select {
+                    border: 1px solid #d2d6da;
+                    border-radius: 8px;
+                    padding: 6px 12px;
+                    min-width: 150px;
+                    font-size: 13px;
+                    background-color: #fff;
+                    color: #344767;
+                }
+
+                .ticket-table-footer .dt-length {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    margin: 0;
+                }
+
+                .ticket-table-footer .dt-length label {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    margin: 0;
+                    font-size: 12px;
+                    color: #67748e;
+                    font-weight: 600;
+                }
+
+                .ticket-table-footer .dt-info {
+                    margin: 0;
+                    font-size: 13px;
+                    color: #67748e;
+                }
+
+                .ticket-table-footer .dt-paging {
+                    margin: 0;
+                }
+
+                .ticket-table-footer .dt-paging .dt-paging-button {
+                    border-radius: 8px !important;
+                    min-width: 34px;
+                    height: 34px;
+                    margin: 0 2px;
+                    border: 1px solid #d2d6da !important;
+                    background: #fff !important;
+                    color: #344767 !important;
+                }
+
+                .ticket-table-footer .dt-paging .dt-paging-button.current {
+                    background: #5e72e4 !important;
+                    border-color: #5e72e4 !important;
+                    color: #fff !important;
+                    box-shadow: none !important;
+                }
+
+                .ticket-table-footer .dt-paging .dt-paging-button:hover {
+                    background: #f8f9fa !important;
+                    color: #344767 !important;
+                    border-color: #cfd4da !important;
+                }
+
+                .ticket-table-footer .dt-paging .dt-paging-button.current:hover {
+                    background: #5e72e4 !important;
+                    color: #fff !important;
+                    border-color: #5e72e4 !important;
+                }
+
+                .ticket-table-footer .dt-paging .disabled {
+                    opacity: 0.5 !important;
+                    cursor: not-allowed !important;
+                }
+
+                .ticket-table-footer-divider {
+                    width: 1px;
+                    align-self: stretch;
+                    background: #ececec;
+                }
+
+                .ticket-footer-title {
+                    font-size: 11px;
+                    text-transform: uppercase;
+                    letter-spacing: 0.4px;
+                    color: #8392ab;
+                    font-weight: 700;
+                    margin-bottom: 4px;
+                }
+
+                @media (max-width: 768px) {
+                    .ticket-table-footer {
+                        padding: 12px;
+                    }
+
+                    .ticket-table-footer-top,
+                    .ticket-table-footer-bottom {
+                        flex-direction: column;
+                        align-items: stretch;
+                    }
+
+                    .ticket-table-footer-group {
+                        width: 100%;
+                    }
+
+                    .ticket-table-footer .form-select,
+                    .ticket-table-footer .dt-length select {
+                        width: 100%;
+                        min-width: 100%;
+                    }
+
+                    .ticket-table-footer-divider {
+                        display: none;
+                    }
+
+                    .ticket-table-footer .dt-paging {
+                        overflow-x: auto;
+                        width: 100%;
+                    }
+                }
             </style>
 
-            <div class="row mb-3 px-3 pt-3">
-                <div class="col-md-3 mb-2">
-                    <select id="filterJenisPengaduan" class="form-select">
-                        <option value="">Semua Jenis</option>
-                        <option value="perbaikan">Perbaikan</option>
-                        <option value="permintaan">Permintaan</option>
-                    </select>
+            <div class="ticket-table-shell">
+                <div class="table-responsive ticket-table-scroller">
+                    <table class="table align-items-center mb-0" id="TicketTable" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">
+                                    subject
+                                </th>
+                                <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">
+                                    User
+                                </th>
+                                <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">
+                                    Status
+                                </th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">
+                                    Deskripsi
+                                </th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">
+                                    Aksi Status
+                                </th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">
+                                    aksi
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
                 </div>
 
-                <div class="col-md-3 mb-2">
-                    <select id="filterStatus" class="form-select">
-                        <option value="">Semua Status</option>
-                        <option value="open">Open</option>
-                        <option value="on process">On Process</option>
-                        <option value="escalated">Escalated</option>
-                        <option value="close">Close</option>
-                    </select>
-                </div>
-            </div>
+                <div class="ticket-table-footer">
+                    <div class="ticket-table-footer-top">
+                        <div class="ticket-table-footer-group">
+                            <div>
+                                <div class="ticket-footer-title">Tampilan</div>
+                                <div id="ticket-length-slot"></div>
+                            </div>
+                        </div>
 
-            <div class="table-responsive table-responsive-custom">
-                <table class="table align-items-center mb-0" id="TicketTable" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">
-                                subject
-                            </th>
-                            <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">
-                                User
-                            </th>
-                            <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">
-                                Status
-                            </th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">
-                                Deskripsi
-                            </th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">
-                                Aksi Status
-                            </th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">
-                                aksi
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+                        <div class="ticket-table-footer-group">
+                            <div>
+                                <div class="ticket-footer-title">Jenis Pengaduan</div>
+                                <select id="filterJenisPengaduan" class="form-select form-select-sm">
+                                    <option value="">Semua Jenis</option>
+                                    <option value="perbaikan">Perbaikan</option>
+                                    <option value="permintaan">Permintaan</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <div class="ticket-footer-title">Status</div>
+                                <select id="filterStatus" class="form-select form-select-sm">
+                                    <option value="">Semua Status</option>
+                                    <option value="open">Open</option>
+                                    <option value="on process">On Process</option>
+                                    <option value="escalated">Escalated</option>
+                                    <option value="close">Close</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <div class="ticket-footer-title">Urutkan Tanggal</div>
+                                <select id="sortCreatedAt" class="form-select form-select-sm">
+                                    <option value="desc">Terbaru</option>
+                                    <option value="asc">Terlama</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ticket-table-footer-bottom">
+                        <div class="ticket-table-footer-group">
+                            <div id="ticket-info-slot"></div>
+                        </div>
+
+                        <div class="ticket-table-footer-group">
+                            <div id="ticket-paging-slot"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal Confirmation -->
 <div class="modal fade" id="modal-confirmation" tabindex="-1" role="dialog" aria-labelledby="modal-confirmation" aria-hidden="true">
     <div class="modal-dialog modal-danger modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -351,6 +563,34 @@
         `;
     }
 
+    function moveDataTableControls() {
+        const wrapper = document.getElementById('TicketTable_wrapper');
+        if (!wrapper) return;
+
+        const length = wrapper.querySelector('.dt-length');
+        const info = wrapper.querySelector('.dt-info');
+        const paging = wrapper.querySelector('.dt-paging');
+
+        const lengthSlot = document.getElementById('ticket-length-slot');
+        const infoSlot = document.getElementById('ticket-info-slot');
+        const pagingSlot = document.getElementById('ticket-paging-slot');
+
+        if (length && lengthSlot && !lengthSlot.contains(length)) {
+            lengthSlot.innerHTML = '';
+            lengthSlot.appendChild(length);
+        }
+
+        if (info && infoSlot && !infoSlot.contains(info)) {
+            infoSlot.innerHTML = '';
+            infoSlot.appendChild(info);
+        }
+
+        if (paging && pagingSlot && !pagingSlot.contains(paging)) {
+            pagingSlot.innerHTML = '';
+            pagingSlot.appendChild(paging);
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         const table = new DataTable('#TicketTable', {
             processing: true,
@@ -370,6 +610,7 @@
                 data: function(d) {
                     d.filter_status = document.getElementById('filterStatus').value;
                     d.filter_jenis_pengaduan = document.getElementById('filterJenisPengaduan').value;
+                    d.sort_created_at = document.getElementById('sortCreatedAt').value;
                 }
             },
             columns: [{
@@ -436,6 +677,12 @@
                     next: '›',
                     previous: '‹'
                 }
+            },
+            initComplete: function() {
+                moveDataTableControls();
+            },
+            drawCallback: function() {
+                moveDataTableControls();
             }
         });
 
@@ -452,6 +699,10 @@
         });
 
         document.getElementById('filterJenisPengaduan').addEventListener('change', function() {
+            table.ajax.reload();
+        });
+
+        document.getElementById('sortCreatedAt').addEventListener('change', function() {
             table.ajax.reload();
         });
     });
