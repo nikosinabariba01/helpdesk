@@ -166,9 +166,10 @@
                     align-items: center;
                     gap: 8px;
                     cursor: pointer;
-                    min-width: 170px;
+                    min-width: 190px;
                     justify-content: space-between;
                     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+                    white-space: nowrap;
                 }
 
                 .ticket-footer-dropdown .btn:hover,
@@ -182,7 +183,7 @@
 
                 .ticket-footer-dropdown .dropdown-menu {
                     font-size: 13px;
-                    min-width: 170px;
+                    min-width: 190px;
                     border-radius: 10px;
                     border: 1px solid #ececec;
                     padding: 6px 0;
@@ -418,32 +419,124 @@
                         </div>
 
                         <div class="ticket-table-footer-group">
-                            <div>
-                                <div class="ticket-footer-title">Jenis Pengaduan</div>
-                                <select id="filterJenisPengaduan" class="form-select form-select-sm">
-                                    <option value="">Semua Jenis</option>
-                                    <option value="perbaikan">Perbaikan</option>
-                                    <option value="permintaan">Permintaan</option>
-                                </select>
+                            <div class="ticket-footer-dropdown dropdown">
+                                <div class="ticket-footer-title">Filter</div>
+                                <button class="btn btn-sm btn-outline-secondary"
+                                    type="button"
+                                    id="filterJenisPengaduanBtn"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    <span id="filterJenisPengaduanDisplay">Jenis Pengaduan</span>
+                                    <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="filterJenisPengaduanBtn">
+                                    <li>
+                                        <a class="dropdown-item filter-option" href="#"
+                                            data-filter-type="jenis_pengaduan"
+                                            data-filter-value=""
+                                            data-filter-label="Jenis Pengaduan">
+                                            Semua
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item filter-option" href="#"
+                                            data-filter-type="jenis_pengaduan"
+                                            data-filter-value="perbaikan"
+                                            data-filter-label="Jenis Pengaduan: Perbaikan">
+                                            Perbaikan
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item filter-option" href="#"
+                                            data-filter-type="jenis_pengaduan"
+                                            data-filter-value="permintaan"
+                                            data-filter-label="Jenis Pengaduan: Permintaan">
+                                            Permintaan
+                                        </a>
+                                    </li>
+                                </ul>
                             </div>
 
-                            <div>
-                                <div class="ticket-footer-title">Status</div>
-                                <select id="filterStatus" class="form-select form-select-sm">
-                                    <option value="">Semua Status</option>
-                                    <option value="open">Open</option>
-                                    <option value="on process">On Process</option>
-                                    <option value="escalated">Escalated</option>
-                                    <option value="close">Close</option>
-                                </select>
+                            <div class="ticket-footer-dropdown dropdown">
+                                <div class="ticket-footer-title">Filter</div>
+                                <button class="btn btn-sm btn-outline-secondary"
+                                    type="button"
+                                    id="filterStatusBtn"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    <span id="filterStatusDisplay">Status</span>
+                                    <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="filterStatusBtn">
+                                    <li>
+                                        <a class="dropdown-item filter-option" href="#"
+                                            data-filter-type="status"
+                                            data-filter-value=""
+                                            data-filter-label="Status">
+                                            Semua
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item filter-option" href="#"
+                                            data-filter-type="status"
+                                            data-filter-value="open"
+                                            data-filter-label="Status: Open">
+                                            Open
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item filter-option" href="#"
+                                            data-filter-type="status"
+                                            data-filter-value="on process"
+                                            data-filter-label="Status: On Process">
+                                            On Process
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item filter-option" href="#"
+                                            data-filter-type="status"
+                                            data-filter-value="escalated"
+                                            data-filter-label="Status: Escalated">
+                                            Escalated
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item filter-option" href="#"
+                                            data-filter-type="status"
+                                            data-filter-value="close"
+                                            data-filter-label="Status: Close">
+                                            Close
+                                        </a>
+                                    </li>
+                                </ul>
                             </div>
 
-                            <div>
-                                <div class="ticket-footer-title">Urutkan Tanggal</div>
-                                <select id="sortCreatedAt" class="form-select form-select-sm">
-                                    <option value="desc">Terbaru</option>
-                                    <option value="asc">Terlama</option>
-                                </select>
+                            <div class="ticket-footer-dropdown dropdown">
+                                <div class="ticket-footer-title">Urutkan</div>
+                                <button class="btn btn-sm btn-outline-secondary"
+                                    type="button"
+                                    id="sortCreatedAtBtn"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    <span id="sortCreatedAtDisplay">Tanggal: Terbaru</span>
+                                    <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="sortCreatedAtBtn">
+                                    <li>
+                                        <a class="dropdown-item sort-option" href="#"
+                                            data-sort-value="desc"
+                                            data-sort-label="Tanggal: Terbaru">
+                                            Terbaru
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item sort-option" href="#"
+                                            data-sort-value="asc"
+                                            data-sort-label="Tanggal: Terlama">
+                                            Terlama
+                                        </a>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -702,7 +795,9 @@
             pagingSlot.appendChild(paging);
         }
     }
-
+    let currentFilterStatus = '';
+    let currentFilterJenisPengaduan = '';
+    let currentSortCreatedAt = 'desc';
     document.addEventListener('DOMContentLoaded', function() {
         const table = new DataTable('#TicketTable', {
             processing: true,
@@ -720,9 +815,9 @@
                 url: "{{ route('tickets.datatable', ['mode' => 'all']) }}",
                 type: "GET",
                 data: function(d) {
-                    d.filter_status = document.getElementById('filterStatus').value;
-                    d.filter_jenis_pengaduan = document.getElementById('filterJenisPengaduan').value;
-                    d.sort_created_at = document.getElementById('sortCreatedAt').value;
+                    d.filter_status = currentFilterStatus;
+                    d.filter_jenis_pengaduan = currentFilterJenisPengaduan;
+                    d.sort_created_at = currentSortCreatedAt;
                 }
             },
             columns: [{
@@ -806,16 +901,37 @@
             debouncedSearch(this.value);
         });
 
-        document.getElementById('filterStatus').addEventListener('change', function() {
-            table.ajax.reload();
+        document.querySelectorAll('.filter-option').forEach(function(item) {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                const filterType = this.dataset.filterType;
+                const filterValue = this.dataset.filterValue;
+                const filterLabel = this.dataset.filterLabel;
+
+                if (filterType === 'jenis_pengaduan') {
+                    currentFilterJenisPengaduan = filterValue;
+                    document.getElementById('filterJenisPengaduanDisplay').textContent = filterLabel;
+                }
+
+                if (filterType === 'status') {
+                    currentFilterStatus = filterValue;
+                    document.getElementById('filterStatusDisplay').textContent = filterLabel;
+                }
+
+                table.ajax.reload();
+            });
         });
 
-        document.getElementById('filterJenisPengaduan').addEventListener('change', function() {
-            table.ajax.reload();
-        });
+        document.querySelectorAll('.sort-option').forEach(function(item) {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
 
-        document.getElementById('sortCreatedAt').addEventListener('change', function() {
-            table.ajax.reload();
+                currentSortCreatedAt = this.dataset.sortValue;
+                document.getElementById('sortCreatedAtDisplay').textContent = this.dataset.sortLabel;
+
+                table.ajax.reload();
+            });
         });
     });
 </script>
