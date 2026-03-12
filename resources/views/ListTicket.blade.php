@@ -79,6 +79,17 @@
                     font-weight: 700;
                 }
 
+                #TicketTable thead th span.dt-column-order::before{
+                    opacity: 0.5 !important;
+                    font-size: 12px !important;
+                    font-weight: 700 !important;
+                }
+                #TicketTable thead th span.dt-column-order::after {
+                    opacity: 1 !important;
+                    font-size: 12px !important;
+                    font-weight: 700 !important;
+                }
+
                 #TicketTable tbody td:first-child {
                     border-left: 1px solid #e9ecef !important;
                 }
