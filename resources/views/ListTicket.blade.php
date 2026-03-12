@@ -321,7 +321,7 @@
                     font-size: 13px;
                     background-color: #fff;
                     color: #344767;
-                    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.10) !important;
+                    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
                 }
 
                 .ticket-table-footer .form-select:focus,
@@ -486,9 +486,9 @@
                             </div>
 
                             <div>
-                                <select id="sortCreatedAt" class="form-select form-select-sm">
-                                    <option value="desc">Terbaru</option>
-                                    <option value="asc">Terlama</option>
+                                <select id="sortCreatedAt" class="form-select form-select-sm" style="min-width: 100px;">
+                                    <option value="desc">Tanggal: Terbaru</option>
+                                    <option value="asc">Tanggal: Terlama</option>
                                 </select>
                             </div>
                         </div>
