@@ -102,9 +102,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/tickets/{ticket}/download-image', [TicketController::class, 'downloadImage'])->name('tickets.downloadImage');
     Route::get('/tickets/{ticket}/download-image/teknisi', [ViewTicketController::class, 'downloadImage'])->name('ticketsteknisi.downloadImage');
 
-    Route::get('/customer/tickets/datatable/{mode}', [CustomerController::class, 'ticketDatatableJson'])
-    ->name('customer.tickets.datatable');
-
     Route::view('/test-telegram', 'test-telegram');
     // routes/web.php
     Route::get('/telegram/callback', function (\Illuminate\Http\Request $request) {
