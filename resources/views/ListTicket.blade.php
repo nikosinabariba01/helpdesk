@@ -74,7 +74,7 @@
                 }
 
                 #TicketTable thead th span.dt-column-order {
-                    transform: scale(0.75);
+                    transform: scale(1.25);
                 }
 
                 #TicketTable tbody td:first-child {
