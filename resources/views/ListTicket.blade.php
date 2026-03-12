@@ -41,12 +41,12 @@
 
         <div class="card-body px-0 pt-0 pb-0">
             <style>
+                #TicketTable thead th,
                 #TicketTable {
                     border-collapse: collapse !important;
                     width: 100% !important;
                 }
 
-                #TicketTable thead th,
                 #TicketTable tbody td {
                     text-align: center !important;
                     vertical-align: middle !important;
