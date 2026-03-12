@@ -74,7 +74,9 @@
                 }
 
                 #TicketTable thead th span.dt-column-order {
+                    opacity: 1 !important;
                     transform: scale(1.25);
+                    font-weight: 700;
                 }
 
                 #TicketTable tbody td:first-child {
