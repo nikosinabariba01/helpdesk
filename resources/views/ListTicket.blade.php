@@ -76,13 +76,10 @@
                 #TicketTable thead th span.dt-column-order {
                     transform: scale(1.25);
                     font-weight: 700;
+                    opacity: 0.5! important;
                 }
 
-                #TicketTable thead th span.dt-column-order::before{
-                    opacity: 0.5 !important;
-                    font-size: 12px !important;
-                    font-weight: 700 !important;
-                }
+                #TicketTable thead th span.dt-column-order::before,
                 #TicketTable thead th span.dt-column-order::after {
                     opacity: 1 !important;
                     font-size: 12px !important;
