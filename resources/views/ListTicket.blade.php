@@ -766,7 +766,7 @@
                 bottomEnd: 'paging'
             },
             ajax: {
-                url: "{{ route('tickets.datatable', ['mode' => 'assigned_active']) }}",
+                url: "{{ route('tickets.datatable', ['mode' => 'all']) }}",
                 type: "GET",
                 data: function(d) {
                     d.filter_status = document.getElementById('filterStatus').value;
