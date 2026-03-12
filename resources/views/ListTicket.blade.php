@@ -52,6 +52,14 @@
                     vertical-align: middle !important;
                 }
 
+                #TicketTable thead th span.dt-column-title,
+                #TicketTable thead th span.dt-column-order {
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    vertical-align: middle;
+                }
+
                 #TicketTable thead th {
                     border: none !important;
                     background: #fff !important;
@@ -60,13 +68,6 @@
                     top: 0;
                     z-index: 2;
                     padding: 12px 10px !important;
-                }
-
-                #TicketTable thead th .dt-column-title {
-                    display: inline-flex;
-                    align-items: center;
-                    justify-content: center;
-                    text-align: center;
                 }
 
                 #TicketTable tbody td {
@@ -209,6 +210,166 @@
                     border-color: #5e72e4 !important;
                     color: #fff !important;
                     box-shadow: none !important;
+                }
+
+                .ticket-table-shell {
+                    display: flex;
+                    flex-direction: column;
+                    min-height: 620px;
+                }
+
+                .ticket-table-scroller {
+                    flex: 1 1 auto;
+                    overflow-y: auto;
+                    overflow-x: auto;
+                    margin-right: 15px;
+                }
+
+                #TicketTable_wrapper {
+                    padding: 0;
+                }
+
+                #TicketTable_wrapper .dt-layout-row:first-child,
+                #TicketTable_wrapper .dt-layout-row:last-child {
+                    display: none !important;
+                }
+
+                .ticket-table-footer {
+                    flex: 0 0 auto;
+                    border-top: 1px solid #ececec;
+                    background: #fff;
+                    padding: 14px 16px;
+                }
+
+                .ticket-table-footer-top,
+                .ticket-table-footer-bottom {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 12px;
+                    flex-wrap: wrap;
+                }
+
+                .ticket-table-footer-top {
+                    margin-bottom: 12px;
+                }
+
+                .ticket-table-footer-group {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    flex-wrap: wrap;
+                }
+
+                .ticket-footer-title {
+                    font-size: 11px;
+                    text-transform: uppercase;
+                    letter-spacing: 0.4px;
+                    color: #8392ab;
+                    font-weight: 700;
+                    margin-bottom: 4px;
+                }
+
+                .ticket-table-footer .dt-length {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    margin: 0;
+                }
+
+                .ticket-table-footer .dt-length label {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    margin: 0;
+                    font-size: 12px;
+                    color: #67748e;
+                    font-weight: 600;
+                }
+
+                .ticket-table-footer .dt-length select {
+                    border: 1px solid #d2d6da;
+                    border-radius: 8px;
+                    padding: 6px 12px;
+                    min-width: 90px;
+                    font-size: 13px;
+                    background-color: #fff;
+                    color: #344767;
+                }
+
+                .ticket-table-footer .dt-info {
+                    margin: 0;
+                    font-size: 13px;
+                    color: #67748e;
+                }
+
+                .ticket-table-footer .dt-paging {
+                    margin: 0;
+                }
+
+                .ticket-table-footer .dt-paging .dt-paging-button:hover {
+                    background: #f8f9fa !important;
+                    color: #344767 !important;
+                    border-color: #ffffff !important;
+                }
+
+                .ticket-table-footer .dt-paging .dt-paging-button.current:hover {
+                    background: #5e72e4 !important;
+                    color: #fff !important;
+                    border-color: #5e72e4 !important;
+                }
+
+                .ticket-table-footer .dt-paging .disabled {
+                    opacity: 0.5 !important;
+                    cursor: not-allowed !important;
+                }
+
+                @media (max-width: 768px) {
+                    .ticket-table-scroller {
+                        min-height: 400px;
+                        max-height: 400px;
+                    }
+
+                    .ticket-table-footer {
+                        padding: 12px;
+                    }
+
+                    .ticket-table-footer-top,
+                    .ticket-table-footer-bottom {
+                        flex-direction: column;
+                        align-items: stretch;
+                    }
+
+                    .ticket-table-footer-group {
+                        width: 100%;
+                    }
+
+                    .ticket-footer-dropdown {
+                        width: 100%;
+                    }
+
+                    .ticket-footer-dropdown .btn {
+                        width: 100%;
+                    }
+
+                    .ticket-table-footer .dt-paging {
+                        overflow-x: auto;
+                        width: 100%;
+                    }
+                }
+
+                @media (min-width: 769px) and (max-width: 1024px) {
+                    .ticket-table-scroller {
+                        min-height: 600px;
+                        max-height: 600px;
+                    }
+                }
+
+                @media (min-width: 1025px) {
+                    .ticket-table-scroller {
+                        min-height: 550px;
+                        max-height: 550px;
+                    }
                 }
             </style>
 
