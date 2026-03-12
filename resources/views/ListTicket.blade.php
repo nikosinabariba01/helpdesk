@@ -61,13 +61,17 @@
                 }
 
                 #TicketTable thead th {
-                    border: none !important;
+                    border-top: none !important;
+                    border-left: none !important;
+                    border-right: none !important;
+                    border-bottom: 1px solid #e9ecef !important;
                     background: #fff !important;
                     white-space: nowrap;
                     position: sticky;
                     top: 0;
                     z-index: 2;
                     padding: 12px 10px !important;
+                    text-align: center !important;
                 }
 
                 #TicketTable tbody td {
