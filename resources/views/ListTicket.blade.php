@@ -415,7 +415,7 @@
                         </div>
 
                         <div class="ticket-table-footer-group">
-                            <div class="ticket-footer-dropdown dropdown" style="position: relative; display: inline-block;">
+                            <div class="ticket-footer-dropdown dropdown">
                                 <button class="btn btn-sm btn-outline-secondary"
                                     type="button"
                                     id="filterJenisPengaduanBtn"
@@ -431,7 +431,7 @@
                                 </ul>
                             </div>
 
-                            <div class="ticket-footer-dropdown dropdown" style="position: relative; display: inline-block;">
+                            <div class="ticket-footer-dropdown dropdown">
                                 <button class="btn btn-sm btn-outline-secondary"
                                     type="button"
                                     id="filterStatusBtn"
