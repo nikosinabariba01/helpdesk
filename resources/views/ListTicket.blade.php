@@ -77,7 +77,7 @@
                                     <div class="d-flex flex-column justify-content-center">
                                         <h6 class="mb-0 text-s" title="Subject">
                                             <a href="{{ route('viewticketteknisi.index', ['id' => $teknisidataticket->id]) }}">
-                                                {{Str::limit($teknisidataticket->subject, 40, '...');}}
+                                                {{Str::limit($teknisidataticket->subject, 30, '...');}}
                                             </a>
                                         </h6>
 
