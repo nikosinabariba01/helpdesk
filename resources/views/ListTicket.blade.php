@@ -162,13 +162,20 @@
                     padding: 6px 12px !important;
                     font-size: 12px !important;
                     border-radius: 8px !important;
-                    display: flex;
+                    display: inline-flex;
                     align-items: center;
                     gap: 8px;
                     cursor: pointer;
-                    min-width: 190px;
+                    min-width: 0;
+                    max-width: 220px;
+                    width: auto;
                     justify-content: space-between;
                     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+                }
+
+                .ticket-footer-dropdown .btn span {
+                    overflow: hidden;
+                    text-overflow: ellipsis;
                     white-space: nowrap;
                 }
 
@@ -183,7 +190,8 @@
 
                 .ticket-footer-dropdown .dropdown-menu {
                     font-size: 13px;
-                    min-width: 190px;
+                    min-width: 100%;
+                    max-width: 220px;
                     border-radius: 10px;
                     border: 1px solid #ececec;
                     padding: 6px 0;
@@ -244,6 +252,7 @@
                     border-top: 1px solid #ececec;
                     background: #fff;
                     padding: 14px 16px;
+                    overflow-x: hidden;
                 }
 
                 .ticket-table-footer-top,
@@ -257,6 +266,12 @@
 
                 .ticket-table-footer-top {
                     margin-bottom: 12px;
+                }
+
+                .ticket-table-footer-top,
+                .ticket-table-footer-bottom,
+                .ticket-table-footer-group {
+                    min-width: 0;
                 }
 
                 .ticket-table-footer-group {
@@ -337,6 +352,7 @@
 
                     .ticket-table-footer {
                         padding: 12px;
+                        overflow-x: hidden;
                     }
 
                     .ticket-table-footer-top,
