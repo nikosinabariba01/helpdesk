@@ -412,58 +412,38 @@
                     <div class="ticket-table-footer-top">
                         <div class="ticket-table-footer-group">
                             <div>
+                                <div class="ticket-footer-title">Tampilan</div>
                                 <div id="ticket-length-slot"></div>
                             </div>
                         </div>
 
                         <div class="ticket-table-footer-group">
-                            <div class="ticket-footer-dropdown dropdown">
-                                <button class="btn btn-sm btn-outline-secondary"
-                                    type="button"
-                                    id="filterJenisPengaduanBtn"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false">
-                                    <span id="filterJenisPengaduanDisplay">Jenis Pengaduan</span>
-                                    <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="filterJenisPengaduanBtn">
-                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="jenis_pengaduan" data-filter-value="">Semua</a></li>
-                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="jenis_pengaduan" data-filter-value="perbaikan">Perbaikan</a></li>
-                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="jenis_pengaduan" data-filter-value="permintaan">Permintaan</a></li>
-                                </ul>
+                            <div>
+                                <div class="ticket-footer-title">Jenis Pengaduan</div>
+                                <select id="filterJenisPengaduan" class="form-select form-select-sm">
+                                    <option value="">Semua Jenis</option>
+                                    <option value="perbaikan">Perbaikan</option>
+                                    <option value="permintaan">Permintaan</option>
+                                </select>
                             </div>
 
-                            <div class="ticket-footer-dropdown dropdown">
-                                <button class="btn btn-sm btn-outline-secondary"
-                                    type="button"
-                                    id="filterStatusBtn"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false">
-                                    <span id="filterStatusDisplay">Status</span>
-                                    <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="filterStatusBtn">
-                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="">Semua</a></li>
-                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="open">Open</a></li>
-                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="on process">On Process</a></li>
-                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="escalated">Escalated</a></li>
-                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="close">Close</a></li>
-                                </ul>
+                            <div>
+                                <div class="ticket-footer-title">Status</div>
+                                <select id="filterStatus" class="form-select form-select-sm">
+                                    <option value="">Semua Status</option>
+                                    <option value="open">Open</option>
+                                    <option value="on process">On Process</option>
+                                    <option value="escalated">Escalated</option>
+                                    <option value="close">Close</option>
+                                </select>
                             </div>
 
-                            <div class="ticket-footer-dropdown dropdown">
-                                <button class="btn btn-sm btn-outline-secondary"
-                                    type="button"
-                                    id="sortCreatedAtBtn"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false">
-                                    <span id="sortCreatedAtDisplay">Terbaru</span>
-                                    <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="sortCreatedAtBtn">
-                                    <li><a class="dropdown-item sort-option" href="#" data-sort-value="desc">Terbaru</a></li>
-                                    <li><a class="dropdown-item sort-option" href="#" data-sort-value="asc">Terlama</a></li>
-                                </ul>
+                            <div>
+                                <div class="ticket-footer-title">Urutkan Tanggal</div>
+                                <select id="sortCreatedAt" class="form-select form-select-sm">
+                                    <option value="desc">Terbaru</option>
+                                    <option value="asc">Terlama</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -689,10 +669,10 @@
 
     function renderAksi(row) {
         return `
-        <a href="${row.view_url}" class="d-inline-flex align-items-center justify-content-center text-dark" style="width: 32px; height: 32px; border-radius: 6px;">
-            <i class="fa fa-eye"></i>
-        </a>
-    `;
+            <a class="dropdown-item" href="${row.view_url}">
+                <i class="fa fa-eye pe-2 text-dark"></i>
+            </a>
+        `;
     }
 
     function moveDataTableControls() {
@@ -723,10 +703,6 @@
         }
     }
 
-    let currentFilterStatus = '';
-    let currentFilterJenisPengaduan = '';
-    let currentSortCreatedAt = 'desc';
-
     document.addEventListener('DOMContentLoaded', function() {
         const table = new DataTable('#TicketTable', {
             processing: true,
@@ -744,9 +720,9 @@
                 url: "{{ route('tickets.datatable', ['mode' => 'all']) }}",
                 type: "GET",
                 data: function(d) {
-                    d.filter_status = currentFilterStatus;
-                    d.filter_jenis_pengaduan = currentFilterJenisPengaduan;
-                    d.sort_created_at = currentSortCreatedAt;
+                    d.filter_status = document.getElementById('filterStatus').value;
+                    d.filter_jenis_pengaduan = document.getElementById('filterJenisPengaduan').value;
+                    d.sort_created_at = document.getElementById('sortCreatedAt').value;
                 }
             },
             columns: [{
@@ -830,37 +806,16 @@
             debouncedSearch(this.value);
         });
 
-        document.querySelectorAll('.filter-option').forEach(function(item) {
-            item.addEventListener('click', function(e) {
-                e.preventDefault();
-
-                const filterType = this.dataset.filterType;
-                const filterValue = this.dataset.filterValue;
-                const displayText = this.textContent.trim();
-
-                if (filterType === 'jenis_pengaduan') {
-                    currentFilterJenisPengaduan = filterValue;
-                    document.getElementById('filterJenisPengaduanDisplay').textContent = filterValue ? displayText : 'Jenis Pengaduan';
-                }
-
-                if (filterType === 'status') {
-                    currentFilterStatus = filterValue;
-                    document.getElementById('filterStatusDisplay').textContent = filterValue ? displayText : 'Status';
-                }
-
-                table.ajax.reload();
-            });
+        document.getElementById('filterStatus').addEventListener('change', function() {
+            table.ajax.reload();
         });
 
-        document.querySelectorAll('.sort-option').forEach(function(item) {
-            item.addEventListener('click', function(e) {
-                e.preventDefault();
+        document.getElementById('filterJenisPengaduan').addEventListener('change', function() {
+            table.ajax.reload();
+        });
 
-                currentSortCreatedAt = this.dataset.sortValue;
-                document.getElementById('sortCreatedAtDisplay').textContent = this.textContent.trim();
-
-                table.ajax.reload();
-            });
+        document.getElementById('sortCreatedAt').addEventListener('change', function() {
+            table.ajax.reload();
         });
     });
 </script>
