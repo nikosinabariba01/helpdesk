@@ -61,10 +61,10 @@
                 }
 
                 #TicketTable thead th {
-                    border-top: none !important;
+                    border-bottom: none !important;
                     border-left: none !important;
                     border-right: none !important;
-                    border-bottom: 1px solid #e9ecef !important;
+                    border-top: 1px solid #e9ecef !important;
                     background: #fff !important;
                     white-space: nowrap;
                     position: sticky;
