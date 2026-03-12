@@ -52,19 +52,11 @@
                     vertical-align: middle !important;
                 }
 
-                #TicketTable thead th span.dt-column-title,
-                #TicketTable thead th span.dt-column-order {
-                    display: inline-flex;
-                    align-items: center;
-                    justify-content: center;
-                    vertical-align: middle;
-                }
-
                 #TicketTable thead th {
+                    border-top: 1px solid #e9ecef !important;
                     border-bottom: none !important;
                     border-left: none !important;
                     border-right: none !important;
-                    border-top: 1px solid #e9ecef !important;
                     background: #fff !important;
                     white-space: nowrap;
                     position: sticky;
@@ -139,7 +131,49 @@
                     margin: 0 !important;
                 }
 
-                /* hilangkan icon sorting ganda */
+                .ticket-table-shell {
+                    display: flex;
+                    flex-direction: column;
+                    min-height: 620px;
+                }
+
+                .ticket-table-scroller {
+                    flex: 1 1 auto;
+                    overflow-y: auto;
+                    overflow-x: auto;
+                    margin-right: 15px;
+                }
+
+                @media (max-width: 768px) {
+                    .ticket-table-scroller {
+                        min-height: 400px;
+                        max-height: 400px;
+                    }
+                }
+
+                @media (min-width: 769px) and (max-width: 1024px) {
+                    .ticket-table-scroller {
+                        min-height: 600px;
+                        max-height: 600px;
+                    }
+                }
+
+                @media (min-width: 1025px) {
+                    .ticket-table-scroller {
+                        min-height: 550px;
+                        max-height: 550px;
+                    }
+                }
+
+                #TicketTable_wrapper {
+                    padding: 0;
+                }
+
+                #TicketTable_wrapper .dt-layout-row:first-child,
+                #TicketTable_wrapper .dt-layout-row:last-child {
+                    display: none !important;
+                }
+
                 #TicketTable thead th.sorting::before,
                 #TicketTable thead th.sorting::after,
                 #TicketTable thead th.sorting_asc::before,
@@ -154,88 +188,30 @@
                     display: none !important;
                 }
 
-                /* dropdown footer */
-                .ticket-footer-dropdown .btn {
-                    border: 1px solid #ffffff !important;
-                    color: #495057 !important;
-                    background-color: #ffffff !important;
-                    padding: 6px 12px !important;
-                    font-size: 12px !important;
-                    border-radius: 8px !important;
-                    display: flex;
+                #TicketTable thead th span.dt-column-title,
+                #TicketTable thead th span.dt-column-order {
+                    display: inline-flex;
                     align-items: center;
-                    gap: 8px;
-                    cursor: pointer;
-                    min-width: 170px;
-                    justify-content: space-between;
-                    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+                    justify-content: center;
+                    vertical-align: middle;
                 }
 
-                .ticket-footer-dropdown .btn:hover,
-                .ticket-footer-dropdown .btn:focus,
-                .ticket-footer-dropdown .btn.show {
-                    background-color: #fff !important;
-                    color: #344767 !important;
-                    border-color: #ffffff !important;
-                    box-shadow: 0 0 0 0.1rem rgba(94, 114, 228, 0.08) !important;
+                #TicketTable thead th span.dt-column-order {
+                    width: 18px;
+                    min-width: 18px;
+                    height: 18px;
+                    margin-left: 8px;
+                    opacity: 1 !important;
+                    color: #5e72e4 !important;
+                    transform: scale(1.25);
+                    font-weight: 700;
                 }
 
-                .ticket-footer-dropdown .dropdown-menu {
-                    font-size: 13px;
-                    min-width: 170px;
-                    border-radius: 10px;
-                    border: 1px solid #ececec;
-                    padding: 6px 0;
-                    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-                }
-
-                .ticket-footer-dropdown .dropdown-item {
-                    padding: 8px 12px;
-                }
-
-                .ticket-footer-dropdown .dropdown-item:hover {
-                    background: #f8f9fa;
-                    color: #344767;
-                }
-
-                /* paging border putih */
-                .ticket-table-footer .dt-paging .dt-paging-button {
-                    border-radius: 8px !important;
-                    min-width: 34px;
-                    height: 34px;
-                    margin: 0 2px;
-                    border: 1px solid #ffffff !important;
-                    background: #fff !important;
-                    color: #344767 !important;
-                }
-
-                .ticket-table-footer .dt-paging .dt-paging-button.current {
-                    background: #5e72e4 !important;
-                    border-color: #5e72e4 !important;
-                    color: #fff !important;
-                    box-shadow: none !important;
-                }
-
-                .ticket-table-shell {
-                    display: flex;
-                    flex-direction: column;
-                    min-height: 620px;
-                }
-
-                .ticket-table-scroller {
-                    flex: 1 1 auto;
-                    overflow-y: auto;
-                    overflow-x: auto;
-                    margin-right: 15px;
-                }
-
-                #TicketTable_wrapper {
-                    padding: 0;
-                }
-
-                #TicketTable_wrapper .dt-layout-row:first-child,
-                #TicketTable_wrapper .dt-layout-row:last-child {
-                    display: none !important;
+                #TicketTable thead th span.dt-column-order::before,
+                #TicketTable thead th span.dt-column-order::after {
+                    opacity: 1 !important;
+                    font-size: 12px !important;
+                    font-weight: 700 !important;
                 }
 
                 .ticket-table-footer {
@@ -265,13 +241,29 @@
                     flex-wrap: wrap;
                 }
 
-                .ticket-footer-title {
-                    font-size: 11px;
-                    text-transform: uppercase;
-                    letter-spacing: 0.4px;
-                    color: #8392ab;
-                    font-weight: 700;
-                    margin-bottom: 4px;
+                .ticket-table-footer label {
+                    margin-bottom: 0;
+                    font-size: 12px;
+                    color: #67748e;
+                    font-weight: 600;
+                }
+
+                .ticket-table-footer .form-select,
+                .ticket-table-footer .dt-length select {
+                    border: 1px solid #ffffff !important;
+                    border-radius: 8px;
+                    padding: 6px 12px;
+                    min-width: 170px;
+                    font-size: 13px;
+                    background-color: #fff;
+                    color: #344767;
+                    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+                }
+
+                .ticket-table-footer .form-select:focus,
+                .ticket-table-footer .dt-length select:focus {
+                    border-color: #ffffff !important;
+                    box-shadow: 0 0 0 0.1rem rgba(94, 114, 228, 0.08) !important;
                 }
 
                 .ticket-table-footer .dt-length {
@@ -291,16 +283,6 @@
                     font-weight: 600;
                 }
 
-                .ticket-table-footer .dt-length select {
-                    border: 1px solid #d2d6da;
-                    border-radius: 8px;
-                    padding: 6px 12px;
-                    min-width: 90px;
-                    font-size: 13px;
-                    background-color: #fff;
-                    color: #344767;
-                }
-
                 .ticket-table-footer .dt-info {
                     margin: 0;
                     font-size: 13px;
@@ -311,10 +293,27 @@
                     margin: 0;
                 }
 
+                .ticket-table-footer .dt-paging .dt-paging-button {
+                    border-radius: 8px !important;
+                    min-width: 34px;
+                    height: 34px;
+                    margin: 0 2px;
+                    border: 1px solid #d2d6da !important;
+                    background: #fff !important;
+                    color: #344767 !important;
+                }
+
+                .ticket-table-footer .dt-paging .dt-paging-button.current {
+                    background: #5e72e4 !important;
+                    border-color: #5e72e4 !important;
+                    color: #fff !important;
+                    box-shadow: none !important;
+                }
+
                 .ticket-table-footer .dt-paging .dt-paging-button:hover {
                     background: #f8f9fa !important;
                     color: #344767 !important;
-                    border-color: #ffffff !important;
+                    border-color: #cfd4da !important;
                 }
 
                 .ticket-table-footer .dt-paging .dt-paging-button.current:hover {
@@ -328,12 +327,13 @@
                     cursor: not-allowed !important;
                 }
 
-                @media (max-width: 768px) {
-                    .ticket-table-scroller {
-                        min-height: 400px;
-                        max-height: 400px;
-                    }
+                .ticket-table-footer-divider {
+                    width: 1px;
+                    align-self: stretch;
+                    background: #ececec;
+                }
 
+                @media (max-width: 768px) {
                     .ticket-table-footer {
                         padding: 12px;
                     }
@@ -348,33 +348,19 @@
                         width: 100%;
                     }
 
-                    .ticket-footer-dropdown {
-                        position: relative;
-                        display: inline-block;
+                    .ticket-table-footer .form-select,
+                    .ticket-table-footer .dt-length select {
                         width: 100%;
+                        min-width: 100%;
                     }
 
-                    .ticket-footer-dropdown .btn {
-                        width: 100%;
+                    .ticket-table-footer-divider {
+                        display: none;
                     }
 
                     .ticket-table-footer .dt-paging {
                         overflow-x: auto;
                         width: 100%;
-                    }
-                }
-
-                @media (min-width: 769px) and (max-width: 1024px) {
-                    .ticket-table-scroller {
-                        min-height: 600px;
-                        max-height: 600px;
-                    }
-                }
-
-                @media (min-width: 1025px) {
-                    .ticket-table-scroller {
-                        min-height: 550px;
-                        max-height: 550px;
                     }
                 }
             </style>
@@ -412,37 +398,33 @@
                     <div class="ticket-table-footer-top">
                         <div class="ticket-table-footer-group">
                             <div>
-                                <div class="ticket-footer-title">Tampilan</div>
                                 <div id="ticket-length-slot"></div>
                             </div>
                         </div>
 
                         <div class="ticket-table-footer-group">
                             <div>
-                                <div class="ticket-footer-title">Jenis Pengaduan</div>
                                 <select id="filterJenisPengaduan" class="form-select form-select-sm">
-                                    <option value="">Semua Jenis</option>
-                                    <option value="perbaikan">Perbaikan</option>
-                                    <option value="permintaan">Permintaan</option>
+                                    <option value="">Jenis Pengaduan</option>
+                                    <option value="perbaikan">Jenis Pengaduan: Perbaikan</option>
+                                    <option value="permintaan">Jenis Pengaduan: Permintaan</option>
                                 </select>
                             </div>
 
                             <div>
-                                <div class="ticket-footer-title">Status</div>
                                 <select id="filterStatus" class="form-select form-select-sm">
-                                    <option value="">Semua Status</option>
-                                    <option value="open">Open</option>
-                                    <option value="on process">On Process</option>
-                                    <option value="escalated">Escalated</option>
-                                    <option value="close">Close</option>
+                                    <option value="">Status</option>
+                                    <option value="open">Status: Open</option>
+                                    <option value="on process">Status: On Process</option>
+                                    <option value="escalated">Status: Escalated</option>
+                                    <option value="close">Status: Close</option>
                                 </select>
                             </div>
 
                             <div>
-                                <div class="ticket-footer-title">Urutkan Tanggal</div>
                                 <select id="sortCreatedAt" class="form-select form-select-sm">
-                                    <option value="desc">Terbaru</option>
-                                    <option value="asc">Terlama</option>
+                                    <option value="desc">Tanggal: Terbaru</option>
+                                    <option value="asc">Tanggal: Terlama</option>
                                 </select>
                             </div>
                         </div>
