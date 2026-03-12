@@ -108,7 +108,6 @@
                     <h6 class="mb-0">Ticket list</h6>
 
                     <div class="d-flex align-items-center gap-2" style="min-width: 280px;">
-                        <a href="{{ route('customer.tickets') }}" class="btn btn-primary btn-sm mb-0">Buat Tiket</a>
                         <div class="input-group input-group-sm">
                             <span class="input-group-text text-body">
                                 <i class="fas fa-search" aria-hidden="true"></i>
@@ -231,6 +230,17 @@
                             margin-right: 15px;
                             height: 400px;
                             max-height: 400px;
+                            position: relative;
+                        }
+
+                        .empty-create-ticket-state {
+                            position: absolute;
+                            inset: 0;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            z-index: 3;
+                            background: rgba(255, 255, 255, 0.88);
                         }
 
                         #TicketTable thead th.sorting,
@@ -472,6 +482,12 @@
 
                     <div class="ticket-table-shell">
                         <div class="table-responsive ticket-table-scroller">
+                            <div id="emptyCreateTicketState" class="empty-create-ticket-state d-none">
+                                <a href="{{ route('customer.tickets') }}" class="btn btn-primary">
+                                    Buat Tiket
+                                </a>
+                            </div>
+
                             <table class="table align-items-center mb-0" id="TicketTable" style="width:100%">
                                 <thead>
                                     <tr>
@@ -538,7 +554,6 @@
             </div>
         </div>
 
-        <!-- Announcement -->
         <div class="col-lg-4 ms-auto">
             <div class="card shadow-lg overflow-hidden h-100 p-0">
                 <div class="card-header bg-gradient-success border-0 p-3">
@@ -589,7 +604,6 @@
             </div>
         </div>
 
-        <!-- Announcement Modal -->
         <div class="modal fade" id="announcementModal" tabindex="-1" role="dialog"
             aria-labelledby="announcementModalTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -621,7 +635,6 @@
             </div>
         </div>
 
-        <!-- Modal Edit Ticket -->
         <div class="modal fade" id="exampleModalMessage" tabindex="-1" role="dialog"
             aria-labelledby="exampleModalMessageTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -840,8 +853,33 @@
         }
     }
 
+    function toggleEmptyCreateTicketState(table) {
+        const emptyState = document.getElementById('emptyCreateTicketState');
+        const tableElement = document.getElementById('TicketTable');
+        const footer = document.querySelector('.ticket-table-footer');
+
+        if (!emptyState || !tableElement) return;
+
+        const json = table.ajax.json();
+        const totalRecords = json && typeof json.recordsTotal !== 'undefined'
+            ? parseInt(json.recordsTotal, 10)
+            : 0;
+
+        if (totalRecords === 0) {
+            emptyState.classList.remove('d-none');
+            tableElement.style.visibility = 'hidden';
+            if (footer) footer.style.display = 'none';
+        } else {
+            emptyState.classList.add('d-none');
+            tableElement.style.visibility = 'visible';
+            if (footer) footer.style.display = '';
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
-        const table = new DataTable('#TicketTable', {
+        let table;
+
+        table = new DataTable('#TicketTable', {
             processing: true,
             serverSide: true,
             pageLength: 10,
@@ -914,9 +952,13 @@
             },
             initComplete: function() {
                 moveDataTableControls();
+                setTimeout(function() {
+                    toggleEmptyCreateTicketState(table);
+                }, 0);
             },
             drawCallback: function() {
                 moveDataTableControls();
+                toggleEmptyCreateTicketState(table);
             }
         });
 
