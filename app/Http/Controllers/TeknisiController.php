@@ -705,8 +705,8 @@ class TeknisiController extends Controller
         $userRole = Auth::user()->role;
 
         // Mengambil tiket dengan status 'escalated'
-        if ($userRole == 'admin') {
-            // Admin: tampilkan semua tiket escalated
+        if ($userRole == 'pemilik') {
+            // Pemilik: tampilkan semua tiket escalated
             $teknisi_data_ticket = Ticket::with('user')
                 ->where('status', 'escalated')
                 ->orderBy('created_at', 'desc')
