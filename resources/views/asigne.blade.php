@@ -108,7 +108,7 @@
                                                         <li class="text-xs list-inline-item text-secondary"
                                                             title="Created Date">
                                                             <i class="fa fa-circle fa-xs text-secondary"></i>
-                                                            {{ \Carbon\Carbon::parse($teknisidataticket->created_at)->format('d-m-Y H:i') }}
+                                                            {{ \Carbon\Carbon::parse($teknisidataticket->created_at)->diffForHumans() }}
                                                         </li>
 
                                                         @if ($teknisidataticket->status === 'close' && $teknisidataticket->Tanggal_Selesai)
