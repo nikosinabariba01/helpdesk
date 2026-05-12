@@ -40,6 +40,9 @@ class TicketController extends Controller
         // Ubah status menjadi 'on process'
         $ticket->status = 'on process';
 
+        // Set Tanggal_Proses ke waktu saat ini menggunakan Carbon
+        $ticket->Tanggal_Proses = \Carbon\Carbon::now();
+
         // Kosongkan Tanggal_Selesai saat status tiket menjadi 'on process'
         if ($ticket->status === 'on process') {
             $ticket->Tanggal_Selesai = null;
@@ -69,6 +72,10 @@ class TicketController extends Controller
             // Jika masih ada asignee lain, status tetap 'on process'
             $ticket->status = 'on process';
         }
+
+        // Null-kan Tanggal_Proses dan Tanggal_Selesai
+        $ticket->Tanggal_Proses = null;
+        $ticket->Tanggal_Selesai = null;
 
         // Simpan perubahan ke database
         $ticket->save();
