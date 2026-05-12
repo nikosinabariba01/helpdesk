@@ -702,25 +702,12 @@ class TeknisiController extends Controller
     {
         // Dapatkan ID pengguna yang sedang login
         $userId = Auth::id();
-        $userRole = Auth::user()->role;
 
-        // Mengambil tiket dengan status 'escalated'
-        if ($userRole == 'admin') {
-            // Admin: tampilkan semua tiket escalated
-            $teknisi_data_ticket = Ticket::with('user')
-                ->where('status', 'escalated')
-                ->orderBy('created_at', 'desc')
-                ->get();
-        } else {
-            // Pengurus: tampilkan hanya tiket escalated yang dimiliki user yang login
-            $teknisi_data_ticket = Ticket::with('user')
-                ->whereHas('asignees', function ($query) use ($userId) {
-                    $query->where('user_id', $userId);
-                })
-                ->where('status', 'escalated')
-                ->orderBy('created_at', 'desc')
-                ->get();
-        }
+        // Mengambil tiket yang sudah memiliki assignees yang sesuai dengan user_id yang sedang login dan status 'escalated'
+        $teknisi_data_ticket = Ticket::with('user')
+            ->where('status', 'escalated') // Hanya menampilkan tiket dengan status escalated
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         // Mengambil komentar terbaru
         $latestComments = $this->getLatestComments();
