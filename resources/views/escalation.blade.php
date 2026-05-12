@@ -86,6 +86,39 @@
                                                             title="Created Date"><i
                                                                 class="fa fa-circle fa-xs text-secondary"></i></i>
                                                             {{ $teknisidataticket->formattedTanggalPengaduan }}</li>
+
+                                                        @if ($teknisidataticket->status === 'close' && $teknisidataticket->Tanggal_Selesai)
+                                                            <li class="text-xs list-inline-item text-secondary"
+                                                                title="Closed Date">
+                                                                <i class="fa fa-circle fa-xs text-success"></i>
+                                                                {{ \Carbon\Carbon::parse($teknisidataticket->Tanggal_Selesai)->format('d-m-Y H:i') }}
+                                                            </li>
+                                                            <li class="text-xs list-inline-item text-secondary"
+                                                                title="Time Taken to Close">
+                                                                <i class="fa fa-circle fa-xs text-info"></i>
+                                                                {{ \Carbon\Carbon::parse($teknisidataticket->created_at)->diffForHumans(\Carbon\Carbon::parse($teknisidataticket->Tanggal_Selesai)) }}
+                                                            </li>
+                                                        @elseif ($teknisidataticket->status === 'on process' || $teknisidataticket->status === 'escalated')
+                                                            @if ($teknisidataticket->Tanggal_Proses)
+                                                                <li class="text-xs list-inline-item text-secondary"
+                                                                    title="Processing Time">
+                                                                    <i class="fa fa-circle fa-xs text-warning"></i>
+                                                                    {{ \Carbon\Carbon::parse($teknisidataticket->Tanggal_Proses)->diffForHumans() }}
+                                                                </li>
+                                                            @else
+                                                                <li class="text-xs list-inline-item text-secondary"
+                                                                    title="Processing Time">
+                                                                    <i class="fa fa-circle fa-xs text-warning"></i>
+                                                                    Pending...
+                                                                </li>
+                                                            @endif
+                                                        @else
+                                                            <li class="text-xs list-inline-item text-secondary"
+                                                                title="Processing Time">
+                                                                <i class="fa fa-circle fa-xs text-warning"></i>
+                                                                Pending...
+                                                            </li>
+                                                        @endif
                                                     </div>
                                                 </div>
                                             </div>
