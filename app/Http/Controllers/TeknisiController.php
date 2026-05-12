@@ -700,19 +700,36 @@ class TeknisiController extends Controller
     // Fungsi untuk menampilkan tiket dengan status escalated
     public function viewEscalation()
     {
-        // Dapatkan ID pengguna yang sedang login
         $userId = Auth::id();
+        $user = Auth::user();
 
-        // Mengambil tiket yang sudah memiliki assignees yang sesuai dengan user_id yang sedang login dan status 'escalated'
-        $teknisi_data_ticket = Ticket::with('user')
-            ->where('status', 'escalated') // Hanya menampilkan tiket dengan status escalated
-            ->orderBy('created_at', 'desc')
-            ->get();
+        // Mengecek role user
+        if ($user->role === 'admin') {
+            // Query untuk admin: semua tiket dengan status escalated
+            $tickets = Ticket::with('user')
+                ->where('status', 'escalated')
+                ->orderBy('created_at', 'desc')
+                ->get();
+        } elseif ($user->role === 'pengurus') {
+            // Query untuk pengurus: tiket yang diassign ke user tersebut dan status escalated
+            $tickets = Ticket::with('user')
+                ->whereHas('assignees', function ($query) use ($userId) {
+                    $query->where('user_id', $userId);
+                })
+                ->where('status', 'escalated')
+                ->orderBy('created_at', 'desc')
+                ->get();
+        } else {
+            // Jika role lain atau tidak ada, bisa dikembalikan kosong atau error
+            $tickets = collect();
+        }
 
-        // Mengambil komentar terbaru
         $latestComments = $this->getLatestComments();
 
-        return view('escalation', compact('teknisi_data_ticket', 'latestComments'));
+        return view('escalation', [
+            'teknisi_data_ticket' => $tickets,
+            'latestComments' => $latestComments
+        ]);
     }
 
     // Fungsi untuk menampilkan tiket yang telah ditutup
