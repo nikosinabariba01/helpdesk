@@ -667,15 +667,12 @@ class TeknisiController extends Controller
         // Dapatkan ID pengguna yang sedang login
         $userId = Auth::id();
 
-        // Mengambil tiket yang sudah memiliki asignees yang sesuai dengan user_id yang sedang login dan status 'open' atau 'on process'
+        // Mengambil tiket yang sudah memiliki asignees yang sesuai dengan user_id yang sedang login dan status 'on process'
         $teknisi_data_ticket = Ticket::with('user')
             ->whereHas('asignees', function ($query) use ($userId) {
                 $query->where('user_id', $userId);
             })
-            ->where(function ($query) {
-                $query->where('status', 'on process')
-                    ->orWhere('status', 'escalated');
-            })
+            ->where('status', 'on process')
             ->orderBy('created_at', 'desc')
             ->get();
 
