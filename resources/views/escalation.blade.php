@@ -101,19 +101,26 @@
                                                 class="text-secondary text-xs font-weight-bold ">{{ Str::limit($teknisidataticket->Detail, 40, '...') }}</span>
                                         </td>
                                         <td class="align-middle text-center text-sm border border-light">
-                                            <!-- Tombol untuk Pemilik, hanya akan muncul "Accept Escalation" jika status tiket adalah "escalated" -->
                                             @if ($teknisidataticket->status == 'escalated')
-                                                <form
-                                                    action="{{ route('tickets.accept_escalation', $teknisidataticket->id) }}"
-                                                    method="POST" class="mb-2">
-                                                    @csrf
-                                                    @method('PUT')
-                                                    <!-- Menggunakan PUT karena kita akan memperbarui status tiket -->
-                                                    <button type="submit"
-                                                        class="btn btn-sm btn-outline-success btn-transparent text-success">
-                                                        <i class="fa fa-check pe-2 text-success"></i> Accept Escalation
-                                                    </button>
-                                                </form>
+                                                @if(Auth::user()->role == 'admin' || Auth::user()->role == 'pengurus')
+                                                    <!-- Admin/Pengurus: Cancel Escalation -->
+                                                    <form method="POST" action="{{ route('ticketsteknisi.cancelRequestFollowUp', $teknisidataticket->id) }}">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <button type="submit" class="btn btn-sm btn-outline-primary btn-transparent text-primary">
+                                                            Cancel Escalation
+                                                        </button>
+                                                    </form>
+                                                @elseif(Auth::user()->role == 'pemilik')
+                                                    <!-- Pemilik: Accept Escalation -->
+                                                    <form action="{{ route('tickets.accept_escalation', $teknisidataticket->id) }}" method="POST" class="mb-2">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <button type="submit" class="btn btn-sm btn-outline-success btn-transparent text-success">
+                                                            <i class="fa fa-check pe-2 text-success"></i> Accept Escalation
+                                                        </button>
+                                                    </form>
+                                                @endif
                                             @else
                                                 <!-- Jika status bukan escalated, tidak ada tombol untuk pemilik -->
                                                 <span class="text-muted">No escalation required</span>
