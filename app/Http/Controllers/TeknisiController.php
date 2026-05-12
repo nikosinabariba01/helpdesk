@@ -674,7 +674,7 @@ class TeknisiController extends Controller
             })
             ->where('status', 'on process')
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->get();.
 
         $teknisi_data_ticket->each(function ($ticket) use ($userId) {
             // User saat ini belum assign
