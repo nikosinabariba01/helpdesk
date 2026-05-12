@@ -700,36 +700,32 @@ class TeknisiController extends Controller
     // Fungsi untuk menampilkan tiket dengan status escalated
     public function viewEscalation()
     {
+        // Dapatkan ID pengguna yang sedang login
         $userId = Auth::id();
-        $user = Auth::user();
+        $userRole = Auth::user()->role;
 
-        // Mengecek role user
-        if ($user->role === 'admin') {
-            // Query untuk admin: semua tiket dengan status escalated
-            $tickets = Ticket::with('user')
+        // Mengambil tiket dengan status 'escalated'
+        if ($userRole == 'admin') {
+            // Admin: tampilkan semua tiket escalated
+            $teknisi_data_ticket = Ticket::with('user')
                 ->where('status', 'escalated')
                 ->orderBy('created_at', 'desc')
                 ->get();
-        } elseif ($user->role === 'pengurus') {
-            // Query untuk pengurus: tiket yang diassign ke user tersebut dan status escalated
-            $tickets = Ticket::with('user')
-                ->whereHas('assignees', function ($query) use ($userId) {
+        } else {
+            // Pengurus: tampilkan hanya tiket escalated yang dimiliki user yang login
+            $teknisi_data_ticket = Ticket::with('user')
+                ->whereHas('asignees', function ($query) use ($userId) {
                     $query->where('user_id', $userId);
                 })
                 ->where('status', 'escalated')
                 ->orderBy('created_at', 'desc')
                 ->get();
-        } else {
-            // Jika role lain atau tidak ada, bisa dikembalikan kosong atau error
-            $tickets = collect();
         }
 
+        // Mengambil komentar terbaru
         $latestComments = $this->getLatestComments();
 
-        return view('escalation', [
-            'teknisi_data_ticket' => $tickets,
-            'latestComments' => $latestComments
-        ]);
+        return view('escalation', compact('teknisi_data_ticket', 'latestComments'));
     }
 
     // Fungsi untuk menampilkan tiket yang telah ditutup
