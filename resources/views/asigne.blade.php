@@ -255,9 +255,9 @@
                                     <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
                                 </button>
                                 <ul class="dropdown-menu" style="font-size: 13px; min-width: 150px;">
-                                    <li><a class="dropdown-item page-sort-option" href="#" data-sort="asc"><i
-                                                class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru</a></li>
                                     <li><a class="dropdown-item page-sort-option" href="#" data-sort="desc"><i
+                                                class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru</a></li>
+                                    <li><a class="dropdown-item page-sort-option" href="#" data-sort="asc"><i
                                                 class="fa fa-arrow-up me-2" style="color: #6c757d;"></i>Terlama</a></li>
                                 </ul>
                             </div>
@@ -402,7 +402,7 @@
             function applyFilters(data) {
                 return data.filter(item => {
                     const matchStatus = currentFilters.status ? item.status === currentFilters.status :
-                    true;
+                        true;
                     const matchJenis = currentFilters.jenis_pengaduan ? item.jenis_pengaduan ===
                         currentFilters.jenis_pengaduan : true;
                     return matchStatus && matchJenis;
@@ -429,26 +429,25 @@
                     column,
                     order
                 } = currentSort;
-
                 sorted.sort((a, b) => {
                     let valA = a[column];
                     let valB = b[column];
 
-                    // String sorting
+                    // String (subject, user, status) -> alfabetis
                     if (typeof valA === 'string') {
                         valA = valA.toLowerCase();
                         valB = valB.toLowerCase();
                         if (valA < valB) return order === 'asc' ? -1 : 1;
                         if (valA > valB) return order === 'asc' ? 1 : -1;
-                        return a.createdAt - b.createdAt; // tie-break
+                        // tie-break dengan createdAt
+                        return order === 'asc' ? a.createdAt - b.createdAt : b.createdAt - a.createdAt;
                     }
 
-                    // Number sorting (createdAt)
+                    // Number (createdAt)
                     if (valA < valB) return order === 'asc' ? -1 : 1;
                     if (valA > valB) return order === 'asc' ? 1 : -1;
                     return 0;
                 });
-
                 return sorted;
             }
 
@@ -460,39 +459,51 @@
                 filteredData = applySearch(filteredData);
                 filteredData = applySort(filteredData);
 
+
                 totalPages = Math.ceil(filteredData.length / rowsPerPage);
                 if (currentPage > totalPages) currentPage = totalPages || 1;
 
+                // Hide all rows first
                 $('#TicketTable tbody tr').hide();
 
+                // Hitung start & end index
                 const startIndex = (currentPage - 1) * rowsPerPage;
                 const endIndex = startIndex + rowsPerPage;
 
+                // Ambil subset data untuk halaman ini
                 const pageData = filteredData.slice(startIndex, endIndex);
                 const $tbody = $('#TicketTable tbody');
-                const rowsToShow = pageData.map(item => item.trElement.detach());
-                $tbody.append(rowsToShow);
-                rowsToShow.forEach(r => r.show());
+                const rowsToShow = pageData.map(item => item.trElement.detach()); // lepaskan row dari DOM
+                $tbody.append(rowsToShow); // append kembali
+                rowsToShow.forEach(r => r.show()); // tampilkan
+
 
                 // ========================
-                // Update pagination display
+                // Update pagination display (asc/desc)
                 // ========================
                 const totalRows = filteredData.length;
-                const displayStart = startIndex + 1;
-                const displayEnd = Math.min(endIndex, totalRows);
-                $('#paginationDisplay').text(`${displayStart}-${displayEnd} dari ${totalRows}`);
+
+                if (totalRows === 0) {
+                    $('#paginationDisplay').text('0-0 dari 0');
+                } else {
+                    const displayStart = startIndex + 1;
+                    const displayEnd = Math.min(endIndex, totalRows);
+
+                    // Gunakan satu format untuk semua (asc/desc)
+                    $('#paginationDisplay').text(`${displayStart}-${displayEnd} dari ${totalRows}`);
+                }
 
                 // Enable/disable Prev/Next
-                $('#prevPage').prop('disabled', currentPage <= 1)
-                    .css('opacity', currentPage <= 1 ? 0.5 : 1)
-                    .css('cursor', currentPage <= 1 ? 'not-allowed' : 'pointer');
-                $('#nextPage').prop('disabled', currentPage >= totalPages)
-                    .css('opacity', currentPage >= totalPages ? 0.5 : 1)
-                    .css('cursor', currentPage >= totalPages ? 'not-allowed' : 'pointer');
+                $('#prevPage').prop('disabled', currentPage <= 1).css('opacity', currentPage <= 1 ? 0.5 : 1).css(
+                    'cursor', currentPage <= 1 ? 'not-allowed' : 'pointer');
+                $('#nextPage').prop('disabled', currentPage >= totalPages).css('opacity', currentPage >=
+                    totalPages ? 0.5 : 1).css('cursor', currentPage >= totalPages ? 'not-allowed' : 'pointer');
 
-                // Update sort icons
+                // Hapus ikon lama
                 $('#TicketTable thead th.sorting').removeClass('sorting_asc sorting_desc');
                 $('#TicketTable thead th.sorting .sort-icons').remove();
+
+                // Tambahkan ikon segitiga untuk kolom sortable (subject, user, status)
                 $('#TicketTable thead th.sorting').each(function() {
                     const colText = $(this).text().trim().toLowerCase();
                     if (currentSort.column === colText) {
@@ -503,7 +514,6 @@
                     }
                 });
             }
-
             // ========================
             // 5. Event Handlers
             // ========================
@@ -518,18 +528,24 @@
             // Filter dropdown
             $('.filter-option').click(function(e) {
                 e.preventDefault();
+
                 const filterType = $(this).data('filter-type'); // "status" atau "jenis_pengaduan"
                 const filterValue = $(this).data('filter-value') || '';
+
+                // Simpan filter
                 currentFilters[filterType] = filterValue.toLowerCase();
 
                 // Update teks dropdown
                 if (filterType === 'status') {
-                    $('#filterStatusDisplay').text(filterValue ? `Status: ${$(this).text()}` : 'Status');
+                    const displayText = filterValue ? `Status: ${$(this).text()}` : 'Status';
+                    $('#filterStatusDisplay').text(displayText);
                 } else if (filterType === 'jenis_pengaduan') {
-                    $('#filterJenisPengaduanDisplay').text(filterValue ?
-                        `Jenis Pengaduan: ${$(this).text()}` : 'Jenis Pengaduan');
+                    const displayText = filterValue ? `Jenis Pengaduan: ${$(this).text()}` :
+                        'Jenis Pengaduan';
+                    $('#filterJenisPengaduanDisplay').text(displayText);
                 }
 
+                // Reset page ke 1
                 currentPage = 1;
                 renderTable();
             });
@@ -537,8 +553,9 @@
             // Dropdown sort terbaru/terlama
             $('.page-sort-option').click(function(e) {
                 e.preventDefault();
+                const sortOrder = $(this).data('sort');
                 currentSort.column = 'createdAt';
-                currentSort.order = $(this).data('sort');
+                currentSort.order = sortOrder;
                 currentPage = 1;
                 renderTable();
             });
@@ -546,7 +563,11 @@
             // Sorting klik th
             $('#TicketTable thead th.sorting').click(function() {
                 const colText = $(this).text().trim().toLowerCase();
-                if (['subject', 'user', 'status'].includes(colText)) currentSort.column = colText;
+                if (colText === 'subject') currentSort.column = 'subject';
+                else if (colText === 'user') currentSort.column = 'user';
+                else if (colText === 'status') currentSort.column = 'status';
+                else return;
+
                 currentSort.order = (currentSort.order === 'asc') ? 'desc' : 'asc';
                 currentPage = 1;
                 renderTable();
