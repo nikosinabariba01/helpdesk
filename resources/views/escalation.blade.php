@@ -206,9 +206,9 @@
                     <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
                 </button>
                 <ul class="dropdown-menu" style="font-size: 13px; min-width: 150px;">
-                    <li><a class="dropdown-item page-sort-option" href="#" data-sort="desc"><i
-                                class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru</a></li>
                     <li><a class="dropdown-item page-sort-option" href="#" data-sort="asc"><i
+                                class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru</a></li>
+                    <li><a class="dropdown-item page-sort-option" href="#" data-sort="desc"><i
                                 class="fa fa-arrow-up me-2" style="color: #6c757d;"></i>Terlama</a></li>
                 </ul>
             </div>
@@ -264,7 +264,7 @@
             let totalPages = 1;
             let currentSort = {
                 column: 'createdAt',
-                order: 'desc'
+                order: 'asc'
             };
             let currentFilters = {
                 status: '',
@@ -281,7 +281,7 @@
                     user: $tr.data('user').toString().toLowerCase(),
                     status: $tr.data('status').toString().toLowerCase(),
                     jenis_pengaduan: $tr.data('jenis-pengaduan').toString().toLowerCase(),
-                    createdAt: parseInt($tr.data('created-at'))
+                    createdAt: parseInt($tr.data('created-at'), 10)
                 });
             });
 
@@ -291,7 +291,7 @@
             function applyFilters(data) {
                 return data.filter(item => {
                     const matchStatus = currentFilters.status ? item.status === currentFilters.status :
-                    true;
+                        true;
                     const matchJenis = currentFilters.jenis_pengaduan ? item.jenis_pengaduan ===
                         currentFilters.jenis_pengaduan : true;
                     return matchStatus && matchJenis;
@@ -378,18 +378,8 @@
                     const displayStart = startIndex + 1;
                     const displayEnd = Math.min(endIndex, totalRows);
 
-                    if (currentSort.column === 'createdAt' && currentSort.order === 'desc') {
-                        // Descending → terbaru di atas
-                        $('#paginationDisplay').text(`${displayStart}-${displayEnd} dari ${totalRows}`);
-                    } else if (currentSort.column === 'createdAt' && currentSort.order === 'asc') {
-                        // Ascending → terlama di atas → nomor tampilan dibalik
-                        const reversedStart = totalRows - startIndex;
-                        const reversedEnd = Math.max(reversedStart - (rowsPerPage - 1), 1);
-                        $('#paginationDisplay').text(`${reversedStart}-${reversedEnd} dari ${totalRows}`);
-                    } else {
-                        // Kolom selain createdAt → numbering normal
-                        $('#paginationDisplay').text(`${displayStart}-${displayEnd} dari ${totalRows}`);
-                    }
+                    // Gunakan satu format untuk semua (asc/desc)
+                    $('#paginationDisplay').text(`${displayStart}-${displayEnd} dari ${totalRows}`);
                 }
 
                 // Enable/disable Prev/Next
