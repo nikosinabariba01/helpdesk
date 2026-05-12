@@ -126,7 +126,7 @@
                                                             <li class="text-xs list-inline-item text-secondary"
                                                                 title="Processing Time">
                                                                 <i class="fa fa-circle fa-xs text-warning"></i>
-                                                                {{ \Carbon\Carbon::parse($teknisidataticket->updated_at)->diffForHumans() }}
+                                                                {{ \Carbon\Carbon::parse($teknisidataticket->Tanggal_Proses)->diffForHumans() }}
                                                             </li>
                                                         @else
                                                             <li class="text-xs list-inline-item text-secondary"
@@ -194,7 +194,7 @@
                                                             class="btn btn-sm btn-outline-danger btn-transparent text-danger"
                                                             data-bs-toggle="modal" data-bs-target="#modal-confirmation"
                                                             data-form-id="closeTicketForm-{{ $teknisidataticket->id }}">
-                                                            Clos
+                                                            Close
                                                         </button>
                                                     </form>
                                                 @endif
@@ -402,7 +402,7 @@
             function applyFilters(data) {
                 return data.filter(item => {
                     const matchStatus = currentFilters.status ? item.status === currentFilters.status :
-                    true;
+                        true;
                     const matchJenis = currentFilters.jenis_pengaduan ? item.jenis_pengaduan ===
                         currentFilters.jenis_pengaduan : true;
                     return matchStatus && matchJenis;
