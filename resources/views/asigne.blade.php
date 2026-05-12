@@ -255,9 +255,9 @@
                                     <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
                                 </button>
                                 <ul class="dropdown-menu" style="font-size: 13px; min-width: 150px;">
-                                    <li><a class="dropdown-item page-sort-option" href="#" data-sort="desc"><i
-                                                class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru</a></li>
                                     <li><a class="dropdown-item page-sort-option" href="#" data-sort="asc"><i
+                                                class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru</a></li>
+                                    <li><a class="dropdown-item page-sort-option" href="#" data-sort="desc"><i
                                                 class="fa fa-arrow-up me-2" style="color: #6c757d;"></i>Terlama</a></li>
                                 </ul>
                             </div>
