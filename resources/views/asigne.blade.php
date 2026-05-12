@@ -392,7 +392,7 @@
                     user: $tr.data('user').toString().toLowerCase(),
                     status: $tr.data('status').toString().toLowerCase(),
                     jenis_pengaduan: $tr.data('jenis-pengaduan').toString().toLowerCase(),
-                    createdAt: parseInt($tr.data('created-at'))
+                    createdAt: parseInt($tr.data('created-at'), 10)
                 });
             });
 
