@@ -23,7 +23,7 @@
     <div class="card z-index-2 h-100 d-flex flex-column">
         <div class="card-header d-flex justify-content-between align-items-center pb-3">
             <h5 class="mb-2">Announcements List</h5>
-            <a href="{{ route('pengumuman.create') }}" class="btn btn-primary">Buat Pengumuman</a>
+            <a href="{{ route('pengumuman.create') }}" class="btn btn-primary">Create Announcement</a>
         </div>
         <div class="card-body px-0 pt-0 pb-2">
             @if (session('success'))
