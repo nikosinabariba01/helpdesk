@@ -46,7 +46,7 @@
         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
           <i class="ni ni-collection text-secondary text-sm opacity-10"></i>
         </div>
-        <span class="nav-link-text ms-1">Manage Pengumuman</span>
+        <span class="nav-link-text ms-1">Announcement</span>
       </a>
     </li>
   </ul>
@@ -97,7 +97,7 @@
         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
           <i class="ni ni-collection text-secondary text-sm opacity-10"></i>
         </div>
-        <span class="nav-link-text ms-1">Manage Pengumuman</span>
+        <span class="nav-link-text ms-1">Announcement</span>
       </a>
     </li>
   </ul>
