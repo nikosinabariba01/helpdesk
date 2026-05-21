@@ -10,7 +10,7 @@
         <li class="breadcrumb-item text-sm"><a class="opacity-5 text-white" href="javascript:;">Pages</a></li>
         <li class="breadcrumb-item text-sm text-white active" aria-current="page">Manage Pengumuman</li>
     </ol>
-    <h6 class="font-weight-bolder text-white mb-0">Manage Pengumuman</h6>
+    <h6 class="font-weight-bolder text-white mb-0">Announcements</h6>
 </nav>
 @endsection
 
@@ -22,7 +22,7 @@
 <div class="card mb-4">
     <div class="card z-index-2 h-100 d-flex flex-column">
         <div class="card-header d-flex justify-content-between align-items-center pb-3">
-            <h5 class="mb-2">Daftar Pengumuman</h5>
+            <h5 class="mb-2">Announcements List</h5>
             <a href="{{ route('pengumuman.create') }}" class="btn btn-primary">Buat Pengumuman</a>
         </div>
         <div class="card-body px-0 pt-0 pb-2">
@@ -36,11 +36,11 @@
                 <thead>
                     <tr>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">ID</th>
-                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Judul Pengumuman</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Subject</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Deskripsi</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Pembuat</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Penerima</th>
-                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Actions</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
