@@ -43,7 +43,7 @@
             <div class="card">
                 <div class="card-body p-3 card-stat">
                     <div class="numbers">
-                        <p class="text-sm mb-2 text-uppercase font-weight-bold card-stat-title">Processed Ticket</p>
+                        <p class="text-sm mb-2 text-uppercase font-weight-bold card-stat-title">Processing Ticket</p>
                         <h5 class="font-weight-bolder mb-0 card-stat-value">{{ $totalOnProcessTickets }}</h5>
                     </div>
                     <div class="card-stat-icon">
