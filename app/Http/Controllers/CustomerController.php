@@ -51,7 +51,15 @@ class CustomerController extends Controller
     public function index()
     {
         $userId = Auth::id();
-        $data_ticket = Ticket::with('user')->where('user_id', $userId)->orderBy('created_at', 'desc')->get();
+        $data_ticket = Ticket::with('user')
+            ->where('user_id', $userId)
+            ->where(function ($query) {
+                $query->where('status', 'open')
+                    ->orWhere('status', 'on process')
+                    ->orWhere('status', 'escalated');
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
         $totalEscalation = Ticket::where('user_id', $userId)
             ->where('status', 'escalated')
             ->count();
@@ -81,19 +89,14 @@ class CustomerController extends Controller
         return view('customer', compact('data_ticket', 'totalEscalation', 'OnProcessTickets', 'closedtic', 'OpenTic', 'latestComments', 'pengumuman'));
     }
 
-    public function viewprocess()
+    public function viewprocess() 
     {
         // Dapatkan ID pengguna yang sedang login
         $userId = Auth::id();
 
-        // Ambil tiket yang memiliki assignee_id berdasarkan user_id yang sedang login dan status open atau on process
+        // Ambil semua tiket berdasarkan user_id yang sedang login
         $data_ticket = Ticket::with('user')
             ->where('user_id', $userId)
-            ->where(function ($query) {
-                $query->where('status', 'open')
-                    ->orWhere('status', 'on process')
-                    ->orWhere('status', 'escalated');
-            })
             ->orderBy('created_at', 'desc')
             ->get();
 
