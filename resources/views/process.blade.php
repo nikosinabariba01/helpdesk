@@ -29,16 +29,36 @@
                 </div>
             </div>
             <div class="card-body px-0 pt-0 pb-2 h-500">
+                <style>
+                    @media (max-width: 768px) {
+                        .table-responsive-custom {
+                            height: 400px !important;
+                            max-height: 400px !important;
+                        }
+                    }
+
+                    @media (min-width: 769px) and (max-width: 1024px) {
+                        .table-responsive-custom {
+                            height: 600px !important;
+                            max-height: 600px !important;
+                        }
+                    }
+
+                    @media (min-width: 1025px) {
+                        .table-responsive-custom {
+                            height: 550px !important;
+                            max-height: 550px !important;
+                        }
+                    }
+                </style>
                 @if ($data_ticket->isEmpty())
-                    <div class="table-responsive margin-right: 15px; position: relative;"
-                        style="height: 400px; max-height: 400px; overflow-y: auto;">
+                    <div class="table-responsive margin-right: 15px; position: relative; table-responsive-custom" style="overflow-y: auto;">
                         <!-- Add your button here -->
                         <a href="{{ route('customer.tickets') }}"
                             class="btn btn-primary position-absolute top-50 start-50 translate-middle">Buat Tiket</a>
                     </div>
                 @else
-                    <div class="table-responsive margin-right: 15px;"
-                        style="height: 400px; max-height: 400px; overflow-y: auto;">
+                    <div class="table-responsive margin-right: 15px; table-responsive-custom" style="overflow-y: auto;">
                         <table class="table align-items-center mb-0 " id="TicketTable">
                             <thead>
                                 <tr>
@@ -94,45 +114,10 @@
                                         </td>
                                         <!-- "Edit" button within a dropdown -->
                                         <td class="align-middle text-center">
-                                            <div class="dropdown">
-                                                <a class="btn text-primary dropdown-toggle" href="#" role="button"
-                                                    id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <i class=""></i>
-                                                </a>
-                                                <ul class="dropdown-menu dropdown-menu-end"
-                                                    aria-labelledby="dropdownMenuLink">
-                                                    <li>
-                                                    <li>
-                                                        <a class="dropdown-item text-info"
-                                                            href="{{ route('viewtickets.index', ['id' => $dataticket->id]) }}">
-                                                            <i class="fa fa-eye pe-2 text-info"></i>Detail
-                                                        </a>
-                                                    </li>
-                                                    <a id="editButton" class="dropdown-item text-success" href="#"
-                                                        data-bs-toggle="modal" data-bs-target="#exampleModalMessage"
-                                                        data-ticket-id="{{ $dataticket->id }}"
-                                                        data-ticket-subject="{{ $dataticket->subject }}"
-                                                        data-ticket-jenis="{{ $dataticket->Jenis_Pengaduan }}"
-                                                        data-ticket-lokasi="{{ $dataticket->Lokasi }}"
-                                                        data-ticket-detail="{{ $dataticket->Detail }}">
-                                                        <i class="fa fa-pencil pe-2 text-success"></i>edit
-                                                    </a>
-                                                    </li>
-                                                    @if ($dataticket->status === 'open')
-                                                        <li>
-                                                            <form method="POST"
-                                                                action="{{ route('tickets.destroy', $dataticket->id) }}">
-                                                                @method('delete')
-                                                                @csrf
-                                                                <button type="submit" class="dropdown-item text-danger"
-                                                                    href="#"
-                                                                    onclick="return confirm ('are you sure?')"><i
-                                                                        class="fa fa-trash pe-2 text-danger"></i>delete</button>
-                                                            </form>
-                                                        </li>
-                                                    @endif
-                                                </ul>
-                                            </div>
+                                            <a class="dropdown-item"
+                                                href="{{ route('viewtickets.index', ['id' => $dataticket->id]) }}">
+                                                <i class="fa fa-eye pe-2 text-dark"></i>
+                                            </a>
                                         </td>
 
                                     </tr>
