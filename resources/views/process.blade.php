@@ -206,7 +206,7 @@
                                     <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
                                             data-filter-value="escalated" style="padding: 8px 16px;">Escalated</a></li>
                                     <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
-                                        data-filter-value="closed" style="padding: 8px 16px;">Closed</a></li>
+                                        data-filter-value="close" style="padding: 8px 16px;">Closed</a></li>
                                 </ul>
                             </div>
                         </div>
