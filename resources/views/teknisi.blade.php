@@ -215,7 +215,7 @@
         </div>
     </div>
 
-    <div class="card report-card shadow-sm">
+    <div class="card report-card shadow-sm mt-4">
         {{-- HEADER (bersih, tanpa badge & quick actions) --}}
         <div class="card-header px-3 py-3">
             <h6 class="report-title">Download Laporan PDF</h6>
