@@ -295,206 +295,207 @@
                                             data-filter-value="escalated" style="padding: 8px 16px;">Escalated</a></li>
                                 </ul>
                             </div>
-                            <!-- Right side: Pagination -->
-                            <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-                                <button id="prevPage" class="btn btn-sm btn-outline-secondary"
-                                    style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;"
-                                    title="Halaman Sebelumnya">
-                                    <i class="fa fa-chevron-left" style="font-size: 11px;"></i>
-                                </button>
-                                <button id="nextPage" class="btn btn-sm btn-outline-secondary"
-                                    style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;"
-                                    title="Halaman Berikutnya">
-                                    <i class="fa fa-chevron-right" style="font-size: 11px;"></i>
-                                </button>
-                            </div>
                         </div>
+                        <!-- Right side: Pagination -->
+                        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                            <button id="prevPage" class="btn btn-sm btn-outline-secondary"
+                                style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;"
+                                title="Halaman Sebelumnya">
+                                <i class="fa fa-chevron-left" style="font-size: 11px;"></i>
+                            </button>
+                            <button id="nextPage" class="btn btn-sm btn-outline-secondary"
+                                style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;"
+                                title="Halaman Berikutnya">
+                                <i class="fa fa-chevron-right" style="font-size: 11px;"></i>
+                            </button>
+                        </div>
+                </div>
+                @endif
+            </div>
+        </div>
+
+    </div>
+    <!-- Announcement -->
+    <div class="col-lg-4 ms-auto">
+        <div class="card shadow-lg overflow-hidden h-100 p-0">
+            <div class="card-header bg-gradient-success border-0 p-3">
+                <h5 class="mb-0 text-white">Announcement</h5>
+            </div>
+            <div class="card-body p-4" style="height: 500px; overflow-y: auto;">
+                <div class="list-group">
+                    @if ($pengumuman->isEmpty())
+                        <div class="text-center text-muted py-5">
+                            <i class="fa fa-inbox fa-3x mb-3 opacity-5"></i>
+                            <p>Tidak ada pengumuman</p>
+                        </div>
+                    @else
+                        @foreach ($pengumuman as $item)
+                            <div class="list-group-item shadow-sm mb-3"
+                                style="padding: 12px 16px; border: 1px solid #e4e4e4; border-radius: 6px; cursor: pointer; transition: all 0.2s ease;"
+                                data-bs-toggle="modal" data-bs-target="#announcementModal"
+                                data-pengumuman-id="{{ $item->id }}" data-pengumuman-judul="{{ $item->judul }}"
+                                data-pengumuman-deskripsi="{{ $item->deskripsi }}"
+                                data-creator-name="{{ $item->creator->name }}"
+                                data-creator-role="{{ $item->creator->role }}"
+                                data-creator-photo="{{ $item->creator && $item->creator->profile_photo ? route('profile.photo', ['filename' => basename($item->creator->profile_photo)]) : asset('default-profile.png') }}"
+                                data-created-at="{{ $item->created_at }}">
+                                <!-- Pengirim Info -->
+                                <div class="d-flex align-items-center mb-2">
+                                    <img src="{{ $item->creator && $item->creator->profile_photo ? route('profile.photo', ['filename' => basename($item->creator->profile_photo)]) : asset('default-profile.png') }}"
+                                        alt="Profile" class="rounded-circle"
+                                        style="width: 32px; height: 32px; object-fit: cover; margin-right: 10px;">
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-0 text-dark" style="font-size: 14px; font-weight: 600;">
+                                            {{ $item->creator->name }}</h6>
+                                        <small class="text-muted"
+                                            style="font-size: 11px;">{{ $item->creator->role }}</small>
+                                    </div>
+                                    <small class="text-muted"
+                                        style="font-size: 11px;">{{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}</small>
+                                </div>
+
+                                <!-- Judul Pengumuman -->
+                                <h5 class="mb-2 text-dark" style="font-size: 15px; font-weight: 600;">
+                                    {{ $item->judul }}</h5>
+
+                                <!-- Deskripsi Pengumuman -->
+                                <p class="mb-0 text-muted" style="font-size: 13px; line-height: 1.4;">
+                                    {{ Str::limit($item->deskripsi, 100) }}</p>
+                            </div>
+                        @endforeach
                     @endif
                 </div>
             </div>
-
-        </div>
-        <!-- Announcement -->
-        <div class="col-lg-4 ms-auto">
-            <div class="card shadow-lg overflow-hidden h-100 p-0">
-                <div class="card-header bg-gradient-success border-0 p-3">
-                    <h5 class="mb-0 text-white">Announcement</h5>
-                </div>
-                <div class="card-body p-4" style="height: 500px; overflow-y: auto;">
-                    <div class="list-group">
-                        @if ($pengumuman->isEmpty())
-                            <div class="text-center text-muted py-5">
-                                <i class="fa fa-inbox fa-3x mb-3 opacity-5"></i>
-                                <p>Tidak ada pengumuman</p>
-                            </div>
-                        @else
-                            @foreach ($pengumuman as $item)
-                                <div class="list-group-item shadow-sm mb-3"
-                                    style="padding: 12px 16px; border: 1px solid #e4e4e4; border-radius: 6px; cursor: pointer; transition: all 0.2s ease;"
-                                    data-bs-toggle="modal" data-bs-target="#announcementModal"
-                                    data-pengumuman-id="{{ $item->id }}" data-pengumuman-judul="{{ $item->judul }}"
-                                    data-pengumuman-deskripsi="{{ $item->deskripsi }}"
-                                    data-creator-name="{{ $item->creator->name }}"
-                                    data-creator-role="{{ $item->creator->role }}"
-                                    data-creator-photo="{{ $item->creator && $item->creator->profile_photo ? route('profile.photo', ['filename' => basename($item->creator->profile_photo)]) : asset('default-profile.png') }}"
-                                    data-created-at="{{ $item->created_at }}">
-                                    <!-- Pengirim Info -->
-                                    <div class="d-flex align-items-center mb-2">
-                                        <img src="{{ $item->creator && $item->creator->profile_photo ? route('profile.photo', ['filename' => basename($item->creator->profile_photo)]) : asset('default-profile.png') }}"
-                                            alt="Profile" class="rounded-circle"
-                                            style="width: 32px; height: 32px; object-fit: cover; margin-right: 10px;">
-                                        <div class="flex-grow-1">
-                                            <h6 class="mb-0 text-dark" style="font-size: 14px; font-weight: 600;">
-                                                {{ $item->creator->name }}</h6>
-                                            <small class="text-muted"
-                                                style="font-size: 11px;">{{ $item->creator->role }}</small>
-                                        </div>
-                                        <small class="text-muted"
-                                            style="font-size: 11px;">{{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}</small>
-                                    </div>
-
-                                    <!-- Judul Pengumuman -->
-                                    <h5 class="mb-2 text-dark" style="font-size: 15px; font-weight: 600;">
-                                        {{ $item->judul }}</h5>
-
-                                    <!-- Deskripsi Pengumuman -->
-                                    <p class="mb-0 text-muted" style="font-size: 13px; line-height: 1.4;">
-                                        {{ Str::limit($item->deskripsi, 100) }}</p>
-                                </div>
-                            @endforeach
-                        @endif
-                    </div>
-                </div>
-            </div>
-
         </div>
 
-        <!-- Announcement Modal -->
-        <div class="modal fade" id="announcementModal" tabindex="-1" role="dialog"
-            aria-labelledby="announcementModalTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header border-0 pb-0">
-                        <div class="d-flex align-items-center w-100">
-                            <img id="modalCreatorPhoto" src="" alt="Profile" class="rounded-circle"
-                                style="width: 40px; height: 40px; object-fit: cover; margin-right: 12px;">
-                            <div class="flex-grow-1">
-                                <h6 id="modalCreatorName" class="mb-0 text-dark"
-                                    style="font-size: 14px; font-weight: 600;"></h6>
-                                <small id="modalCreatorRole" class="text-muted" style="font-size: 11px;"></small>
-                            </div>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+    </div>
+
+    <!-- Announcement Modal -->
+    <div class="modal fade" id="announcementModal" tabindex="-1" role="dialog"
+        aria-labelledby="announcementModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0">
+                    <div class="d-flex align-items-center w-100">
+                        <img id="modalCreatorPhoto" src="" alt="Profile" class="rounded-circle"
+                            style="width: 40px; height: 40px; object-fit: cover; margin-right: 12px;">
+                        <div class="flex-grow-1">
+                            <h6 id="modalCreatorName" class="mb-0 text-dark" style="font-size: 14px; font-weight: 600;">
+                            </h6>
+                            <small id="modalCreatorRole" class="text-muted" style="font-size: 11px;"></small>
                         </div>
-                    </div>
-                    <div class="modal-body pt-2">
-                        <h5 id="modalJudul" class="text-dark mb-3" style="font-size: 18px; font-weight: 600;"></h5>
-                        <small id="modalCreatedAt" class="text-muted d-block mb-3" style="font-size: 12px;"></small>
-                        <p id="modalDeskripsi" class="text-muted" style="font-size: 14px; line-height: 1.6;"></p>
-                    </div>
-                    <div class="modal-footer border-0 pt-0">
-                        <small id="modalTimeAgo" class="text-muted me-auto" style="font-size: 12px;"></small>
-                        <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Tutup</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal -->
-        <div class="modal fade" id="exampleModalMessage" tabindex="-1" role="dialog"
-            aria-labelledby="exampleModalMessageTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Edit Ticket</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span>
+                            <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body">
-                        <form method="POST" id="editTicketForm" enctype="multipart/form-data">
-                            @csrf
-                            @method('PUT')
-                            <input type="hidden" id="ticketId" name="ticketId" value="">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label for="subject">Subject</label>
-                                        <input type="text" id="subject" name="subject"
-                                            class="form-control border-input" value="">
-                                        @error('subject')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
+                </div>
+                <div class="modal-body pt-2">
+                    <h5 id="modalJudul" class="text-dark mb-3" style="font-size: 18px; font-weight: 600;"></h5>
+                    <small id="modalCreatedAt" class="text-muted d-block mb-3" style="font-size: 12px;"></small>
+                    <p id="modalDeskripsi" class="text-muted" style="font-size: 14px; line-height: 1.6;"></p>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <small id="modalTimeAgo" class="text-muted me-auto" style="font-size: 12px;"></small>
+                    <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label for="Jenis_Pengaduan">Jenis Pengaduan</label>
-                                        <select id="Jenis_Pengaduan" name="Jenis_Pengaduan"
-                                            class="form-control border-input">
-                                            <option value="" selected>--Pilih Jenis Pengaduan--</option>
-                                            <option value="perbaikan">Perbaikan</option>
-                                            <option value="permintaan">Permintaan</option>
-                                        </select>
-                                        @error('Jenis_Pengaduan')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label for="Lokasi">Alamat</label>
-                                        <input type="text" id="Lokasi" name="Lokasi"
-                                            class="form-control border-input">
-                                        @error('Lokasi')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label for="Detail">Deskripsi</label>
-                                        <textarea id="Detail" name="Detail" rows="5" class="form-control border-input"
-                                            placeholder="Here can be your description" value=""></textarea>
-                                        @error('Detail')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label for="gambar">Gambar Pendukung</label>
-                                    <input class="form-control form-control-sm @error('gambar') is-invalid @enderror"
-                                        id="gambar" name="gambar" type="file" accept="image/*">
-                                    @error('gambar')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModalMessage" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalMessageTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Ticket</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" id="editTicketForm" enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" id="ticketId" name="ticketId" value="">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="subject">Subject</label>
+                                    <input type="text" id="subject" name="subject"
+                                        class="form-control border-input" value="">
+                                    @error('subject')
+                                        <p class="text-danger">{{ $message }}</p>
                                     @enderror
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-12 text-left mt-4">
-                                    <button type="submit" class="btn btn-info btn-fill btn-wd">Submit ticket</button>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="Jenis_Pengaduan">Jenis Pengaduan</label>
+                                    <select id="Jenis_Pengaduan" name="Jenis_Pengaduan"
+                                        class="form-control border-input">
+                                        <option value="" selected>--Pilih Jenis Pengaduan--</option>
+                                        <option value="perbaikan">Perbaikan</option>
+                                        <option value="permintaan">Permintaan</option>
+                                    </select>
+                                    @error('Jenis_Pengaduan')
+                                        <p class="text-danger">{{ $message }}</p>
+                                    @enderror
                                 </div>
                             </div>
-                            <div class="clearfix"></div>
-                        </form>
-                    </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="Lokasi">Alamat</label>
+                                    <input type="text" id="Lokasi" name="Lokasi"
+                                        class="form-control border-input">
+                                    @error('Lokasi')
+                                        <p class="text-danger">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="Detail">Deskripsi</label>
+                                    <textarea id="Detail" name="Detail" rows="5" class="form-control border-input"
+                                        placeholder="Here can be your description" value=""></textarea>
+                                    @error('Detail')
+                                        <p class="text-danger">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="gambar">Gambar Pendukung</label>
+                                <input class="form-control form-control-sm @error('gambar') is-invalid @enderror"
+                                    id="gambar" name="gambar" type="file" accept="image/*">
+                                @error('gambar')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 text-left mt-4">
+                                <button type="submit" class="btn btn-info btn-fill btn-wd">Submit ticket</button>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </form>
                 </div>
             </div>
         </div>
+    </div>
 
 
 
