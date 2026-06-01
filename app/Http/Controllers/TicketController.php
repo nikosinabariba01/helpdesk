@@ -55,8 +55,6 @@ class TicketController extends Controller
     }
 
 
-
-
     public function cancelAssign($id)
     {
         $ticket = Ticket::findOrFail($id);

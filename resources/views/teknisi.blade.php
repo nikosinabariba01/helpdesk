@@ -1265,7 +1265,7 @@
                                 footer: (items) => {
                                     const total = items.reduce((sum, it) => sum + (it.parsed.y ||
                                         0), 0);
-                                    return `Total bulan ini: ${fmt(total)}`;
+                                    return `Total Ticket: ${fmt(total)}`;
                                 }
                             }
                         }
