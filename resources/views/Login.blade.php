@@ -49,18 +49,22 @@
                     <div class="row">
                         <div class="col-xl-4 col-lg-5 col-md-7 d-flex flex-column mx-lg-0 mx-auto">
                             <div class="card card-plain">
-                                @if($errors->has('email'))
-                                <div class="alert alert-danger mt-1" role="alert">
-                                    <strong>Warning!</strong> {{ $errors->first('email')
-                          }}
-                                </div>
+                                @if (session('success'))
+                                    <div class="alert alert-success mt-1" role="alert">
+                                        {{ session('success') }}
+                                    </div>
                                 @endif
 
-                                @if($errors->has('password'))
-                                <div class="alert alert-danger mt-1" role="alert">
-                                    <strong>Warning!</strong> {{
-                          $errors->first('password') }}
-                                </div>
+                                @if ($errors->has('email'))
+                                    <div class="alert alert-danger mt-1" role="alert">
+                                        <strong>Warning!</strong> {{ $errors->first('email') }}
+                                    </div>
+                                @endif
+
+                                @if ($errors->has('password'))
+                                    <div class="alert alert-danger mt-1" role="alert">
+                                        <strong>Warning!</strong> {{ $errors->first('password') }}
+                                    </div>
                                 @endif
                                 <div class="card-header pb-0 text-start">
                                     <h4 class="font-weight-bolder">Sign In</h4>
@@ -70,29 +74,41 @@
                                     <form action="" method="POST">
                                         @csrf
                                         <div class="mb-3">
-                                            <input type="email" name="email" class="form-control form-control-lg" placeholder="Email" aria-label="Email" value="{{ old('email') }}" />
+                                            <input type="email" name="email" class="form-control form-control-lg"
+                                                placeholder="Email" aria-label="Email" value="{{ old('email') }}" />
                                         </div>
                                         <div class="mb-3">
-                                            <input type="password" name="password" class="form-control form-control-lg" placeholder="Password" aria-label="Password" />
+                                            <input type="password" name="password" class="form-control form-control-lg"
+                                                placeholder="Password" aria-label="Password" />
 
                                         </div>
                                         <div class="text-center">
-                                            <button type="submit" name="submit" class="btn btn-lg btn-primary btn-lg w-100 mt-2 mb-0">
+                                            <button type="submit" name="submit"
+                                                class="btn btn-lg btn-primary btn-lg w-100 mt-2 mb-0">
                                                 Sign in
                                             </button>
+                                        </div>
+                                        <div class="text-center mt-3">
+                                            <a href="{{ route('telegram.password.request') }}"
+                                                class="text-primary text-gradient font-weight-bold">
+                                                Lupa Password?
+                                            </a>
                                         </div>
                                     </form>
                                 </div>
                                 <div class="card-footer text-center pt-0 px-lg-2 px-1">
                                     <p class="mb-4 text-sm mx-auto">
                                         Don't have an account?
-                                        <a href="register" class="text-primary text-gradient font-weight-bold">Register</a>
+                                        <a href="register"
+                                            class="text-primary text-gradient font-weight-bold">Register</a>
                                     </p>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-6 d-lg-flex d-none h-100 my-auto pe-0 position-absolute top-0 end-0 text-center justify-content-center flex-column">
-                            <div class="position-relative bg-gradient-primary h-100 m-3 px-7 border-radius-lg d-flex flex-column justify-content-center overflow-hidden" style="
+                        <div
+                            class="col-6 d-lg-flex d-none h-100 my-auto pe-0 position-absolute top-0 end-0 text-center justify-content-center flex-column">
+                            <div class="position-relative bg-gradient-primary h-100 m-3 px-7 border-radius-lg d-flex flex-column justify-content-center overflow-hidden"
+                                style="
                     background-image: url('style/assets/img/teraskos.png');
                     background-size: cover;
                   ">

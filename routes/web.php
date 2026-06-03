@@ -13,6 +13,7 @@ use App\Http\Controllers\TicketCommentController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\ViewTicketController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ForgotPasswordTelegramController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,6 +25,24 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+Route::get('/forgot-password-telegram', [ForgotPasswordTelegramController::class, 'showEmailForm'])
+    ->name('telegram.password.request');
+
+Route::post('/forgot-password-telegram/send-otp', [ForgotPasswordTelegramController::class, 'sendOtp'])
+    ->name('telegram.password.sendOtp');
+
+Route::get('/forgot-password-telegram/verify', [ForgotPasswordTelegramController::class, 'showOtpForm'])
+    ->name('telegram.password.verifyForm');
+
+Route::post('/forgot-password-telegram/verify', [ForgotPasswordTelegramController::class, 'verifyOtp'])
+    ->name('telegram.password.verifyOtp');
+
+Route::get('/forgot-password-telegram/reset', [ForgotPasswordTelegramController::class, 'showResetForm'])
+    ->name('telegram.password.resetForm');
+
+Route::post('/forgot-password-telegram/reset', [ForgotPasswordTelegramController::class, 'resetPassword'])
+    ->name('telegram.password.reset');
 
 Route::match(['GET', 'POST'], '/telegram/webhook', [TelegramWebhookController::class, 'handle']);
 Route::get('/', [LoginController::class, 'index'])->name('login');
