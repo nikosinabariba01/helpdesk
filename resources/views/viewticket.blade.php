@@ -57,7 +57,6 @@
             data-size="large"
             data-userpic="false"
             data-request-access="write"
-            data-onauth="handleTelegramAuth(user)"
             data-auth-url="{{ url('telegram/auth/' . $ticket->id) }}">
           </script>
         </div>
@@ -172,44 +171,4 @@
       $("#telegramAuthForm").slideToggle();
     });
   });
-
-  // Handle Telegram Auth Callback for viewticket
-  function handleTelegramAuth(user) {
-    // Kirim data ke server
-    const formData = new FormData();
-    Object.keys(user).forEach(key => {
-        formData.append(key, user[key]);
-    });
-
-    fetch('{{ url("telegram/auth/" . $ticket->id) }}', {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        },
-        body: formData
-    })
-    .then(response => response.json().then(data => ({ status: response.status, body: data })))
-    .then(({ status, body }) => {
-        if (status === 400 || status === 401) {
-            // Validasi gagal - tampilkan pesan error
-            alert('⚠️ ' + body.message);
-            // Reload halaman agar widget bisa dicoba lagi
-            location.reload();
-        } else if (status === 200) {
-            alert('✓ Telegram berhasil terhubung!');
-            location.reload();
-        } else {
-            // Untuk redirect response, arahkan ke halaman baru
-            if (body.url) {
-                window.location.href = body.url;
-            } else {
-                location.reload();
-            }
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Terjadi kesalahan saat menghubungkan Telegram');
-    });
-  }
 </script>

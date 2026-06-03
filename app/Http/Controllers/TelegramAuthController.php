@@ -75,25 +75,25 @@ class TelegramAuthController extends Controller
             $user->save();
 
             // Cek role user dan arahkan ke halaman yang sesuai
-            $redirectUrl = '';
             if (in_array($user->role, ['pengurus', 'pemilik'])) {
                 // Jika pengurus, arahkan ke halaman teknisi
-                $redirectUrl = route('viewticketteknisi.index', ['id' => $ticket_id]);
+                return redirect(route('viewticketteknisi.index', ['id' => $ticket_id]))
+                    ->with('success', 'Akun Telegram berhasil terhubung sebagai pengurus!');
             } elseif ($user->role == 'penyewa') {
                 // Jika penyewa, arahkan ke halaman customer
-                $redirectUrl = route('viewtickets.index', ['id' => $ticket_id]);
+                return redirect(route('viewtickets.index', ['id' => $ticket_id]))
+                    ->with('success', 'Akun Telegram berhasil terhubung sebagai penyewa!');
             } else {
                 // Jika role selain pengurus atau penyewa, beri pesan error atau ke halaman default
-                $redirectUrl = route('home');
+                return redirect()->route('home')->with('error', 'Role tidak dikenali.');
             }
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Akun Telegram berhasil terhubung!',
-                'url' => $redirectUrl
-            ], 200);
         } else {
             return response()->json(['success' => false, 'message' => 'No authenticated user'], 401);
+        }
+
+        // Check if current route is neither 'viewticketteknisi.index' nor 'viewtickets.index'
+        if (! request()->routeIs('viewticketteknisi.index') && ! request()->routeIs('viewtickets.index')) {
+            return redirect()->route('customer.profile');
         }
     }
 
