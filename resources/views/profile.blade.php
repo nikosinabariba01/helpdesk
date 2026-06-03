@@ -336,10 +336,20 @@
                 },
                 body: formData
             })
-            .then(response => {
-                if (response.redirected) {
-                    window.location.href = response.url;
-                } else if (response.ok) {
+            .then(response => response.json().then(data => ({ status: response.status, body: data })))
+            .then(({ status, body }) => {
+                if (status === 400 || status === 401) {
+                    // Validasi gagal - tampilkan pesan error
+                    alert('⚠️ ' + body.message);
+                    // Reload widget telegram untuk bisa coba lagi
+                    location.reload();
+                } else if (status === 200) {
+                    alert('✓ Telegram berhasil terhubung!');
+                    location.reload();
+                } else if (body.url) {
+                    // Redirect response
+                    window.location.href = body.url;
+                } else {
                     location.reload();
                 }
             })
