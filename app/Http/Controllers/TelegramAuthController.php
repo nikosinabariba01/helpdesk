@@ -26,18 +26,6 @@ class TelegramAuthController extends Controller
         /** @var \App\Models\User $user */
         $user = Auth::user();
         if ($user) {
-            // Cek apakah telegram_chat_id sudah digunakan oleh user lain
-            $existingUser = \App\Models\User::where('telegram_chat_id', $data['id'])
-                ->where('id', '!=', $user->id)
-                ->first();
-
-            if ($existingUser) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Nomor Telegram ini sudah terdaftar. Silakan gunakan nomor Telegram yang berbeda.'
-                ], 400);
-            }
-
             // Simpan telegram_chat_id ke user
             $user->telegram_chat_id = $data['id'];
 
@@ -161,18 +149,6 @@ class TelegramAuthController extends Controller
         /** @var \App\Models\User $user */
         $user = Auth::user();
         if ($user) {
-            // Cek apakah telegram_chat_id sudah digunakan oleh user lain
-            $existingUser = \App\Models\User::where('telegram_chat_id', $data['id'])
-                ->where('id', '!=', $user->id)
-                ->first();
-
-            if ($existingUser) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Nomor Telegram ini sudah terdaftar. Silakan gunakan nomor Telegram yang berbeda.'
-                ], 400);
-            }
-
             // Simpan telegram_chat_id ke user
             $user->telegram_chat_id = $data['id'];
 
