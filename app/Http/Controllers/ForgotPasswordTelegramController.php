@@ -19,7 +19,7 @@ class ForgotPasswordTelegramController extends Controller {
     }
 
     public function showEmailForm() {
-        return view('auth.forgot-password-telegram');
+        return view('forgot-password-telegram');
     }
 
     public function sendOtp(Request $request) {
@@ -86,7 +86,7 @@ class ForgotPasswordTelegramController extends Controller {
             return redirect()->route('telegram.password.request');
         }
 
-        return view('auth.verify-telegram-otp');
+        return view('verify-telegram-otp');
     }
 
     public function verifyOtp(Request $request) {
@@ -146,7 +146,7 @@ class ForgotPasswordTelegramController extends Controller {
                 ->withErrors(['email' => 'Sesi reset password telah berakhir. Silakan minta OTP baru.']);
         }
 
-        return view('auth.reset-password-telegram');
+        return view('reset-password-telegram');
     }
 
     public function resetPassword(Request $request) {
