@@ -9,6 +9,27 @@
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
+    <!-- Font Awesome Icons -->
+    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+
+    <script>
+        // Password Visibility Toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleButtons = document.querySelectorAll('.password-toggle-btn');
+            
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const input = this.previousElementSibling;
+                    const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                    input.setAttribute('type', type);
+                    this.querySelector('i').classList.toggle('fa-eye');
+                    this.querySelector('i').classList.toggle('fa-eye-slash');
+                });
+            });
+        });
+    </script>
+
     <!-- Font -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
 
@@ -240,6 +261,36 @@
                 font-size: 1.65rem;
             }
         }
+
+        .password-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .password-toggle-btn {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            color: rgba(52, 71, 103, 0.6);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s ease-in-out;
+        }
+
+        .password-toggle-btn:hover {
+            color: rgba(123, 92, 230, 0.8);
+        }
+
+        .form-control-with-toggle {
+            padding-right: 40px;
+        }
     </style>
 </head>
 
@@ -289,12 +340,18 @@
 
                     <div class="mb-3">
                         <label class="form-label">Password Baru</label>
-                        <input
-                            type="password"
-                            name="password"
-                            class="form-control"
-                            placeholder="Masukkan password baru"
-                            required>
+                        <div class="password-input-wrapper">
+                            <input
+                                type="password"
+                                name="password"
+                                class="form-control form-control-with-toggle"
+                                placeholder="Masukkan password baru"
+                                required
+                                id="passwordInput">
+                            <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
 
                         <div class="password-strength">
                             <span></span>
@@ -306,12 +363,18 @@
 
                     <div class="mb-4">
                         <label class="form-label">Konfirmasi Password Baru</label>
-                        <input
-                            type="password"
-                            name="password_confirmation"
-                            class="form-control"
-                            placeholder="Ulangi password baru"
-                            required>
+                        <div class="password-input-wrapper">
+                            <input
+                                type="password"
+                                name="password_confirmation"
+                                class="form-control form-control-with-toggle"
+                                placeholder="Ulangi password baru"
+                                required
+                                id="confirmPasswordInput">
+                            <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <button type="submit" class="btn btn-save w-100">

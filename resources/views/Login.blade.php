@@ -28,6 +28,24 @@
     <!-- CSS Files -->
     <link id="pagestyle" href="{{ asset('style/assets/css/argon-dashboard.css') }}" rel="stylesheet" />
 
+    <script>
+        // Password Visibility Toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginToggle = document.getElementById('loginToggle');
+            const loginPassword = document.getElementById('loginPassword');
+
+            if (loginToggle && loginPassword) {
+                loginToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const type = loginPassword.getAttribute('type') === 'password' ? 'text' : 'password';
+                    loginPassword.setAttribute('type', type);
+                    loginToggle.querySelector('i').classList.toggle('fa-eye');
+                    loginToggle.querySelector('i').classList.toggle('fa-eye-slash');
+                });
+            }
+        });
+    </script>
+
     <style>
         :root {
             /* ATUR OPACITY BACKGROUND DI SINI */
@@ -259,6 +277,35 @@
             border-radius: 14px;
         }
 
+        .password-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-toggle-btn {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            color: rgba(52, 71, 103, 0.6);
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s ease-in-out;
+        }
+
+        .password-toggle-btn:hover {
+            color: rgba(123, 92, 230, 0.8);
+        }
+
+        .glass-card .form-control-with-toggle {
+            padding-right: 40px;
+        }
+
         @media (max-width: 991.98px) {
             .glass-card {
                 margin-top: 2rem;
@@ -326,12 +373,18 @@
                                         </div>
 
                                         <div class="mb-2">
-                                            <input
-                                                type="password"
-                                                name="password"
-                                                class="form-control form-control-lg"
-                                                placeholder="Password"
-                                                aria-label="Password" />
+                                            <div class="password-input-wrapper">
+                                                <input
+                                                    type="password"
+                                                    name="password"
+                                                    class="form-control form-control-lg form-control-with-toggle"
+                                                    placeholder="Password"
+                                                    aria-label="Password"
+                                                    id="loginPassword" />
+                                                <button type="button" class="password-toggle-btn" id="loginToggle" aria-label="Toggle password visibility">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </div>
                                         </div>
 
                                         <div class="forgot-password-wrapper">
