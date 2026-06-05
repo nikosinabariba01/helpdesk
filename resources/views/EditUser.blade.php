@@ -36,11 +36,6 @@
                     <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email:</label>
                     <input type="email" id="email" name="email" value="{{ old('email', $user->email) }}" class="form-control" required>
                 </div>
-                <div>
-                    <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password:</label>
-                    <input type="password" id="password" name="password" class="form-control">
-                    <small class="text-muted">Leave blank to keep the current password.</small>
-                </div>
                 <div class="mt-2">
                     <label for="role" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Role:</label>
                     <select id="role" name="role" class="form-select" required>
