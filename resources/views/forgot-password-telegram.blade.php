@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Lupa Password via Telegram</title>
+    <title>Verifikasi OTP Telegram</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Bootstrap -->
@@ -14,16 +14,13 @@
 
     <style>
         :root {
-            /* ATUR BACKGROUND DI SINI */
             --pink-opacity: 0.18;
             --pink-opacity-strong: 0.25;
             --purple-bokeh-opacity: 0.14;
 
-            /* ATUR GLASS CARD DI SINI */
             --glass-card-opacity: 0.22;
             --glass-card-border-opacity: 0.55;
             --glass-input-opacity: 0.38;
-            --glass-button-opacity: 0.30;
         }
 
         html,
@@ -38,7 +35,6 @@
             background-color: rgba(252, 244, 248, var(--pink-opacity));
         }
 
-        /* Background soft pink + bokeh/glow ungu */
         body::before {
             content: "";
             position: fixed;
@@ -83,7 +79,7 @@
             filter: blur(4px);
         }
 
-        .forgot-wrapper {
+        .verify-wrapper {
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -91,7 +87,7 @@
             padding: 2rem 1rem;
         }
 
-        .forgot-card {
+        .verify-card {
             position: relative;
             width: 100%;
             max-width: 470px;
@@ -107,7 +103,7 @@
             -webkit-backdrop-filter: blur(24px) saturate(165%);
         }
 
-        .forgot-card::before {
+        .verify-card::before {
             content: "";
             position: absolute;
             inset: 0;
@@ -122,7 +118,7 @@
                 );
         }
 
-        .forgot-card::after {
+        .verify-card::after {
             content: "";
             position: absolute;
             width: 190px;
@@ -134,21 +130,28 @@
             background: radial-gradient(circle, rgba(140, 82, 255, 0.22), transparent 68%);
         }
 
-        .forgot-content {
+        .verify-content {
             position: relative;
             z-index: 2;
         }
 
-        .mail-illustration {
-            width: 120px;
-            height: 95px;
+        .verify-illustration {
+            width: 145px;
+            height: 115px;
             margin: 0 auto 1.3rem;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .forgot-title {
+        .verify-illustration-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .verify-title {
             font-size: 2rem;
             font-weight: 800;
             color: #26334d;
@@ -156,7 +159,7 @@
             margin-bottom: 0.65rem;
         }
 
-        .forgot-subtitle {
+        .verify-subtitle {
             font-size: 0.95rem;
             line-height: 1.6;
             color: rgba(52, 71, 103, 0.72);
@@ -168,35 +171,45 @@
             font-size: 0.88rem;
             font-weight: 700;
             color: rgba(52, 71, 103, 0.92);
-            margin-bottom: 0.55rem;
+            margin-bottom: 0.75rem;
         }
 
-        .form-control {
-            height: 52px;
+        .otp-box-wrapper {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        .otp-box {
+            width: 100%;
+            height: 58px;
             border-radius: 14px;
             border: 1px solid rgba(255, 255, 255, 0.62);
             background: rgba(255, 255, 255, var(--glass-input-opacity));
-            color: #344767;
+            color: #26334d;
+            font-size: 1.35rem;
+            font-weight: 800;
+            text-align: center;
             box-shadow:
                 inset 0 1px 0 rgba(255, 255, 255, 0.56),
                 0 8px 18px rgba(60, 72, 88, 0.06);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
+            outline: none;
+            transition: all 0.2s ease-in-out;
         }
 
-        .form-control::placeholder {
-            color: rgba(52, 71, 103, 0.55);
-        }
-
-        .form-control:focus {
-            border-color: rgba(123, 92, 230, 0.55);
-            background: rgba(255, 255, 255, 0.52);
+        .otp-box:focus {
+            border-color: rgba(123, 92, 230, 0.75);
+            background: rgba(255, 255, 255, 0.55);
             box-shadow:
                 0 0 0 0.15rem rgba(123, 92, 230, 0.13),
                 inset 0 1px 0 rgba(255, 255, 255, 0.62);
+            transform: translateY(-1px);
         }
 
-        .btn-send {
+        .btn-verify {
             height: 52px;
             border-radius: 14px;
             border: none;
@@ -208,13 +221,13 @@
             transition: all 0.2s ease-in-out;
         }
 
-        .btn-send:hover {
+        .btn-verify:hover {
             color: #ffffff;
             transform: translateY(-1px);
             box-shadow: 0 14px 26px rgba(94, 114, 228, 0.32);
         }
 
-        .back-login {
+        .resend-link {
             display: inline-block;
             margin-top: 1.1rem;
             font-size: 0.9rem;
@@ -223,7 +236,7 @@
             text-decoration: none;
         }
 
-        .back-login:hover {
+        .resend-link:hover {
             color: #7b5ce6;
             text-decoration: none;
         }
@@ -234,48 +247,49 @@
         }
 
         @media (max-width: 576px) {
-            .forgot-card {
+            .verify-card {
                 padding: 2rem 1.5rem;
                 border-radius: 24px;
             }
 
-            .forgot-title {
+            .verify-title {
                 font-size: 1.65rem;
+            }
+
+            .verify-illustration {
+                width: 130px;
+                height: 100px;
+            }
+
+            .otp-box-wrapper {
+                gap: 7px;
+            }
+
+            .otp-box {
+                height: 50px;
+                font-size: 1.1rem;
+                border-radius: 12px;
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="forgot-wrapper">
-        <div class="forgot-card">
-            <div class="forgot-content">
+    <div class="verify-wrapper">
+        <div class="verify-card">
+            <div class="verify-content">
 
-                <div class="mail-illustration">
-                    <svg viewBox="0 0 180 140" width="120" height="95" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M57 34C57 23.5066 65.5066 15 76 15H124C134.493 15 143 23.5066 143 34V79H57V34Z"
-                            fill="rgba(255,255,255,0.48)" stroke="#26334D" stroke-width="5" />
-                        <path d="M72 31H128C134.075 31 139 35.9249 139 42V84H61V42C61 35.9249 65.9249 31 72 31Z"
-                            fill="rgba(255,255,255,0.68)" stroke="#26334D" stroke-width="5" />
-                        <path d="M61 43L100 72L139 43" stroke="#26334D" stroke-width="5" stroke-linecap="round"
-                            stroke-linejoin="round" />
-                        <path d="M63 85H141" stroke="#26334D" stroke-width="5" stroke-linecap="round" />
-                        <path d="M42 59H69V93H42C32.6112 93 25 85.3888 25 76C25 66.6112 32.6112 59 42 59Z"
-                            fill="rgba(255,255,255,0.55)" stroke="#26334D" stroke-width="5" />
-                        <path d="M24 76H9" stroke="#26334D" stroke-width="5" stroke-linecap="round" />
-                        <circle cx="43" cy="76" r="8" fill="rgba(123,92,230,0.22)" stroke="#26334D"
-                            stroke-width="5" />
-                        <path d="M61 90C44 91 35 100 35 111" stroke="#26334D" stroke-width="5"
-                            stroke-linecap="round" />
-                        <path d="M143 90C154 94 159 102 159 113" stroke="#26334D" stroke-width="5"
-                            stroke-linecap="round" />
-                    </svg>
+                <div class="verify-illustration">
+                    <img
+                        src="{{ asset('img/mailbox_telegram_aesthetic_vector.svg') }}"
+                        alt="OTP Telegram Illustration"
+                        class="verify-illustration-img">
                 </div>
 
-                <h3 class="forgot-title">Forgot password?</h3>
+                <h3 class="verify-title">Verifikasi OTP</h3>
 
-                <p class="forgot-subtitle">
-                    Enter your email account. OTP code will be sent to your connected Telegram.
+                <p class="verify-subtitle">
+                    Masukkan kode OTP 6 digit yang dikirim ke Telegram Anda.
                 </p>
 
                 @if($errors->any())
@@ -292,32 +306,101 @@
                     </div>
                 @endif
 
-                <form action="{{ route('telegram.password.sendOtp') }}" method="POST">
+                <form action="{{ route('telegram.password.verifyOtp') }}" method="POST" id="otpForm">
                     @csrf
 
-                    <div class="mb-3">
-                        <label class="form-label">Email Account</label>
-                        <input
-                            type="email"
-                            name="email"
-                            class="form-control"
-                            placeholder="Enter your email"
-                            value="{{ old('email') }}"
-                            required>
+                    <div class="mb-4">
+                        <label class="form-label">Kode OTP</label>
+
+                        <input type="hidden" name="otp" id="otpValue">
+
+                        <div class="otp-box-wrapper">
+                            <input type="text" class="otp-box" maxlength="1" inputmode="numeric" autocomplete="one-time-code" required>
+                            <input type="text" class="otp-box" maxlength="1" inputmode="numeric" required>
+                            <input type="text" class="otp-box" maxlength="1" inputmode="numeric" required>
+                            <input type="text" class="otp-box" maxlength="1" inputmode="numeric" required>
+                            <input type="text" class="otp-box" maxlength="1" inputmode="numeric" required>
+                            <input type="text" class="otp-box" maxlength="1" inputmode="numeric" required>
+                        </div>
                     </div>
 
-                    <button type="submit" class="btn btn-send w-100">
-                        Send OTP to Telegram
+                    <button type="submit" class="btn btn-verify w-100">
+                        Verifikasi OTP
                     </button>
                 </form>
 
                 <div class="text-center">
-                    <a href="/" class="back-login">Back to Login</a>
+                    <a href="{{ route('telegram.password.request') }}" class="resend-link">
+                        Kirim OTP ulang
+                    </a>
                 </div>
 
             </div>
         </div>
     </div>
+
+    <script>
+        const otpBoxes = document.querySelectorAll('.otp-box');
+        const otpValue = document.getElementById('otpValue');
+        const otpForm = document.getElementById('otpForm');
+
+        otpBoxes.forEach((box, index) => {
+            box.addEventListener('input', function () {
+                this.value = this.value.replace(/[^0-9]/g, '');
+
+                if (this.value && index < otpBoxes.length - 1) {
+                    otpBoxes[index + 1].focus();
+                }
+
+                updateOtpValue();
+            });
+
+            box.addEventListener('keydown', function (event) {
+                if (event.key === 'Backspace' && !this.value && index > 0) {
+                    otpBoxes[index - 1].focus();
+                }
+            });
+
+            box.addEventListener('paste', function (event) {
+                event.preventDefault();
+
+                const pasteData = (event.clipboardData || window.clipboardData)
+                    .getData('text')
+                    .replace(/[^0-9]/g, '')
+                    .slice(0, 6);
+
+                pasteData.split('').forEach((digit, i) => {
+                    if (otpBoxes[i]) {
+                        otpBoxes[i].value = digit;
+                    }
+                });
+
+                const nextIndex = pasteData.length < 6 ? pasteData.length : 5;
+                otpBoxes[nextIndex].focus();
+
+                updateOtpValue();
+            });
+        });
+
+        function updateOtpValue() {
+            let otp = '';
+
+            otpBoxes.forEach(box => {
+                otp += box.value;
+            });
+
+            otpValue.value = otp;
+        }
+
+        otpForm.addEventListener('submit', function (event) {
+            updateOtpValue();
+
+            if (otpValue.value.length !== 6) {
+                event.preventDefault();
+                otpBoxes[0].focus();
+            }
+        });
+    </script>
 </body>
 
 </html>
