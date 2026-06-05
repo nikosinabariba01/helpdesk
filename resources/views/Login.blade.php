@@ -28,24 +28,6 @@
     <!-- CSS Files -->
     <link id="pagestyle" href="{{ asset('style/assets/css/argon-dashboard.css') }}" rel="stylesheet" />
 
-    <script>
-        // Password Visibility Toggle
-        document.addEventListener('DOMContentLoaded', function() {
-            const loginToggle = document.getElementById('loginToggle');
-            const loginPassword = document.getElementById('loginPassword');
-
-            if (loginToggle && loginPassword) {
-                loginToggle.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const type = loginPassword.getAttribute('type') === 'password' ? 'text' : 'password';
-                    loginPassword.setAttribute('type', type);
-                    loginToggle.querySelector('i').classList.toggle('fa-eye');
-                    loginToggle.querySelector('i').classList.toggle('fa-eye-slash');
-                });
-            }
-        });
-    </script>
-
     <style>
         :root {
             /* ATUR OPACITY BACKGROUND DI SINI */
@@ -289,21 +271,15 @@
             background: none;
             border: none;
             cursor: pointer;
-            padding: 0.5rem;
             color: rgba(52, 71, 103, 0.6);
             font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            padding: 0.5rem;
             transition: color 0.2s ease-in-out;
+            z-index: 10;
         }
 
         .password-toggle-btn:hover {
-            color: rgba(123, 92, 230, 0.8);
-        }
-
-        .glass-card .form-control-with-toggle {
-            padding-right: 40px;
+            color: rgba(52, 71, 103, 0.9);
         }
 
         @media (max-width: 991.98px) {
@@ -376,12 +352,12 @@
                                             <div class="password-input-wrapper">
                                                 <input
                                                     type="password"
+                                                    id="loginPassword"
                                                     name="password"
-                                                    class="form-control form-control-lg form-control-with-toggle"
+                                                    class="form-control form-control-lg"
                                                     placeholder="Password"
-                                                    aria-label="Password"
-                                                    id="loginPassword" />
-                                                <button type="button" class="password-toggle-btn" id="loginToggle" aria-label="Toggle password visibility">
+                                                    aria-label="Password" />
+                                                <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('loginPassword', this)">
                                                     <i class="fas fa-eye"></i>
                                                 </button>
                                             </div>
@@ -468,6 +444,23 @@
 
     <!-- Argon Dashboard JS -->
     <script src="{{ asset('style/assets/js/argon-dashboard.min.js') }}"></script>
+
+    <script>
+        function togglePasswordVisibility(fieldId, button) {
+            const field = document.getElementById(fieldId);
+            const icon = button.querySelector('i');
+
+            if (field.type === 'password') {
+                field.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                field.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+    </script>
 </body>
 
 </html>
