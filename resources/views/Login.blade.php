@@ -30,10 +30,15 @@
 
     <style>
         :root {
-            /* ATUR OPACITY BACKGROUND DI SINI */
+            /* ATUR BACKGROUND DI SINI */
             --pink-opacity: 0.18;
             --pink-opacity-strong: 0.25;
             --purple-bokeh-opacity: 0.14;
+
+            /* ATUR GLASS CARD DI SINI */
+            --glass-card-opacity: 0.16;
+            --glass-card-border-opacity: 0.50;
+            --glass-input-opacity: 0.36;
         }
 
         html,
@@ -44,15 +49,15 @@
         body {
             position: relative;
             overflow-x: hidden;
-            background-color: rgba(252, 244, 248, var(--pink-opacity));
+            background-color: #ffffff;
         }
 
-        /* Background soft pink + bokeh/glow ungu */
         body::before {
             content: "";
             position: fixed;
             inset: 0;
-            z-index: -2;
+            z-index: 0;
+            pointer-events: none;
             background:
                 radial-gradient(circle at 14% 23%, rgba(140, 82, 255, var(--purple-bokeh-opacity)) 0 6px, transparent 14px),
                 radial-gradient(circle at 21% 76%, rgba(140, 82, 255, var(--purple-bokeh-opacity)) 0 7px, transparent 16px),
@@ -79,7 +84,8 @@
             content: "";
             position: fixed;
             inset: 0;
-            z-index: -1;
+            z-index: 0;
+            pointer-events: none;
             background:
                 radial-gradient(circle at 6% 44%, rgba(140, 82, 255, 0.08) 0 4px, transparent 11px),
                 radial-gradient(circle at 24% 17%, rgba(140, 82, 255, 0.09) 0 4px, transparent 11px),
@@ -92,19 +98,57 @@
             filter: blur(4px);
         }
 
+        .container,
+        .main-content {
+            position: relative;
+            z-index: 1;
+        }
+
         .glass-card {
-            background: rgba(255, 255, 255, 0.42);
-            border: 1px solid rgba(255, 255, 255, 0.50);
-            box-shadow: 0 10px 35px rgba(60, 72, 88, 0.13);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-radius: 24px;
+            position: relative;
             overflow: hidden;
+            border-radius: 28px;
+            background: rgba(255, 255, 255, var(--glass-card-opacity));
+            border: 1px solid rgba(255, 255, 255, var(--glass-card-border-opacity));
+            box-shadow:
+                0 25px 45px rgba(60, 72, 88, 0.16),
+                inset 0 1px 0 rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(24px) saturate(160%);
+            -webkit-backdrop-filter: blur(24px) saturate(160%);
+        }
+
+        .glass-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.42) 0%,
+                    rgba(255, 255, 255, 0.12) 38%,
+                    rgba(255, 255, 255, 0.04) 100%
+                );
+            pointer-events: none;
+        }
+
+        .glass-card::after {
+            content: "";
+            position: absolute;
+            width: 220px;
+            height: 220px;
+            right: -90px;
+            top: -90px;
+            z-index: 0;
+            background: radial-gradient(circle, rgba(140, 82, 255, 0.22), transparent 65%);
+            pointer-events: none;
         }
 
         .glass-card .card-header,
         .glass-card .card-body,
         .glass-card .card-footer {
+            position: relative;
+            z-index: 2;
             background: transparent !important;
         }
 
@@ -120,17 +164,37 @@
             padding: 0 2rem 2rem;
         }
 
+        .glass-card h4 {
+            color: #26334d;
+        }
+
+        .glass-card p {
+            color: rgba(52, 71, 103, 0.78);
+        }
+
         .glass-card .form-control {
-            border-radius: 12px;
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            background: rgba(255, 255, 255, 0.82);
-            box-shadow: none;
+            height: 52px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.55);
+            background: rgba(255, 255, 255, var(--glass-input-opacity));
+            color: #344767;
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.45),
+                0 8px 18px rgba(60, 72, 88, 0.06);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .glass-card .form-control::placeholder {
+            color: rgba(52, 71, 103, 0.55);
         }
 
         .glass-card .form-control:focus {
-            border-color: #7b5ce6;
-            box-shadow: 0 0 0 0.15rem rgba(123, 92, 230, 0.14);
-            background: rgba(255, 255, 255, 0.95);
+            border-color: rgba(123, 92, 230, 0.55);
+            background: rgba(255, 255, 255, 0.48);
+            box-shadow:
+                0 0 0 0.15rem rgba(123, 92, 230, 0.13),
+                inset 0 1px 0 rgba(255, 255, 255, 0.55);
         }
 
         .forgot-password-wrapper {
@@ -142,54 +206,62 @@
 
         .forgot-password-wrapper a {
             font-size: 14px;
-            font-weight: 600;
-            color: #344767;
+            font-weight: 700;
+            color: rgba(52, 71, 103, 0.88);
             text-decoration: none;
         }
 
         .forgot-password-wrapper a:hover {
-            color: #111827;
+            color: #7b5ce6;
             text-decoration: none;
         }
 
         .signin-btn {
-            border-radius: 12px;
-            padding: 0.85rem 1rem;
+            border-radius: 14px;
+            padding: 0.9rem 1rem;
             font-size: 1rem;
-            font-weight: 600;
+            font-weight: 700;
+            box-shadow: 0 12px 22px rgba(94, 114, 228, 0.28);
         }
 
         .register-text {
             font-size: 15px;
-            font-weight: 600;
-            color: #344767;
+            font-weight: 700;
+            color: rgba(52, 71, 103, 0.86);
             margin-bottom: 14px;
         }
 
         .register-btn {
             width: 100%;
-            height: 50px;
-            border-radius: 12px;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            background: rgba(255, 255, 255, 0.75);
+            height: 52px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.58);
+            background: rgba(255, 255, 255, 0.28);
             color: #344767;
             font-weight: 700;
             display: flex;
             align-items: center;
             justify-content: center;
             text-decoration: none;
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.45),
+                0 8px 18px rgba(60, 72, 88, 0.07);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             transition: all 0.2s ease-in-out;
         }
 
         .register-btn:hover {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.48);
             color: #111827;
             text-decoration: none;
             transform: translateY(-1px);
         }
 
         .alert {
-            border-radius: 12px;
+            position: relative;
+            z-index: 2;
+            border-radius: 14px;
         }
 
         @media (max-width: 991.98px) {
