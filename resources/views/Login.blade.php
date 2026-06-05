@@ -30,15 +30,16 @@
 
     <style>
         :root {
-            /* ATUR BACKGROUND DI SINI */
+            /* ATUR OPACITY BACKGROUND DI SINI */
             --pink-opacity: 0.18;
             --pink-opacity-strong: 0.25;
             --purple-bokeh-opacity: 0.14;
 
             /* ATUR GLASS CARD DI SINI */
-            --glass-card-opacity: 0.16;
-            --glass-card-border-opacity: 0.50;
-            --glass-input-opacity: 0.36;
+            --glass-card-opacity: 0.22;
+            --glass-card-border-opacity: 0.55;
+            --glass-input-opacity: 0.38;
+            --glass-button-opacity: 0.30;
         }
 
         html,
@@ -49,15 +50,15 @@
         body {
             position: relative;
             overflow-x: hidden;
-            background-color: #ffffff;
+            background-color: rgba(252, 244, 248, var(--pink-opacity));
         }
 
+        /* Background soft pink + bokeh/glow ungu */
         body::before {
             content: "";
             position: fixed;
             inset: 0;
-            z-index: 0;
-            pointer-events: none;
+            z-index: -2;
             background:
                 radial-gradient(circle at 14% 23%, rgba(140, 82, 255, var(--purple-bokeh-opacity)) 0 6px, transparent 14px),
                 radial-gradient(circle at 21% 76%, rgba(140, 82, 255, var(--purple-bokeh-opacity)) 0 7px, transparent 16px),
@@ -84,8 +85,7 @@
             content: "";
             position: fixed;
             inset: 0;
-            z-index: 0;
-            pointer-events: none;
+            z-index: -1;
             background:
                 radial-gradient(circle at 6% 44%, rgba(140, 82, 255, 0.08) 0 4px, transparent 11px),
                 radial-gradient(circle at 24% 17%, rgba(140, 82, 255, 0.09) 0 4px, transparent 11px),
@@ -98,23 +98,18 @@
             filter: blur(4px);
         }
 
-        .container,
-        .main-content {
-            position: relative;
-            z-index: 1;
-        }
-
+        /* FORM CARD GLASS ONLY */
         .glass-card {
             position: relative;
             overflow: hidden;
-            border-radius: 28px;
+            border-radius: 26px;
             background: rgba(255, 255, 255, var(--glass-card-opacity));
             border: 1px solid rgba(255, 255, 255, var(--glass-card-border-opacity));
             box-shadow:
-                0 25px 45px rgba(60, 72, 88, 0.16),
-                inset 0 1px 0 rgba(255, 255, 255, 0.45);
-            backdrop-filter: blur(24px) saturate(160%);
-            -webkit-backdrop-filter: blur(24px) saturate(160%);
+                0 22px 48px rgba(60, 72, 88, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.58);
+            backdrop-filter: blur(24px) saturate(165%);
+            -webkit-backdrop-filter: blur(24px) saturate(165%);
         }
 
         .glass-card::before {
@@ -122,26 +117,26 @@
             position: absolute;
             inset: 0;
             z-index: 0;
+            pointer-events: none;
             background:
                 linear-gradient(
                     135deg,
-                    rgba(255, 255, 255, 0.42) 0%,
-                    rgba(255, 255, 255, 0.12) 38%,
-                    rgba(255, 255, 255, 0.04) 100%
+                    rgba(255, 255, 255, 0.55) 0%,
+                    rgba(255, 255, 255, 0.16) 42%,
+                    rgba(255, 255, 255, 0.05) 100%
                 );
-            pointer-events: none;
         }
 
         .glass-card::after {
             content: "";
             position: absolute;
-            width: 220px;
-            height: 220px;
-            right: -90px;
-            top: -90px;
+            width: 190px;
+            height: 190px;
+            top: -75px;
+            right: -75px;
             z-index: 0;
-            background: radial-gradient(circle, rgba(140, 82, 255, 0.22), transparent 65%);
             pointer-events: none;
+            background: radial-gradient(circle, rgba(140, 82, 255, 0.22), transparent 68%);
         }
 
         .glass-card .card-header,
@@ -175,11 +170,11 @@
         .glass-card .form-control {
             height: 52px;
             border-radius: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.55);
+            border: 1px solid rgba(255, 255, 255, 0.62);
             background: rgba(255, 255, 255, var(--glass-input-opacity));
             color: #344767;
             box-shadow:
-                inset 0 1px 0 rgba(255, 255, 255, 0.45),
+                inset 0 1px 0 rgba(255, 255, 255, 0.56),
                 0 8px 18px rgba(60, 72, 88, 0.06);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
@@ -191,10 +186,10 @@
 
         .glass-card .form-control:focus {
             border-color: rgba(123, 92, 230, 0.55);
-            background: rgba(255, 255, 255, 0.48);
+            background: rgba(255, 255, 255, 0.52);
             box-shadow:
                 0 0 0 0.15rem rgba(123, 92, 230, 0.13),
-                inset 0 1px 0 rgba(255, 255, 255, 0.55);
+                inset 0 1px 0 rgba(255, 255, 255, 0.62);
         }
 
         .forgot-password-wrapper {
@@ -221,7 +216,7 @@
             padding: 0.9rem 1rem;
             font-size: 1rem;
             font-weight: 700;
-            box-shadow: 0 12px 22px rgba(94, 114, 228, 0.28);
+            box-shadow: 0 12px 22px rgba(94, 114, 228, 0.26);
         }
 
         .register-text {
@@ -235,8 +230,8 @@
             width: 100%;
             height: 52px;
             border-radius: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.58);
-            background: rgba(255, 255, 255, 0.28);
+            border: 1px solid rgba(255, 255, 255, 0.62);
+            background: rgba(255, 255, 255, var(--glass-button-opacity));
             color: #344767;
             font-weight: 700;
             display: flex;
@@ -244,7 +239,7 @@
             justify-content: center;
             text-decoration: none;
             box-shadow:
-                inset 0 1px 0 rgba(255, 255, 255, 0.45),
+                inset 0 1px 0 rgba(255, 255, 255, 0.50),
                 0 8px 18px rgba(60, 72, 88, 0.07);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
