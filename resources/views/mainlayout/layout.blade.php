@@ -24,9 +24,12 @@
   <aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-radius-xl my-3 fixed-start ms-4 shadow-lg" id="sidenav-main" style="border: 2px solid #e4e4e4;">
     <div class="sidenav-header">
       <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
-      <a class="navbar-brand m-0" href="@if(Auth::user()->role == 'admin'){{ route('admin.index') }}@elseif(Auth::user()->role == 'pengurus' || Auth::user()->role == 'pemilik'){{ route('teknisi.index') }}@else{{ route('customer.index') }}@endif">
-        <img src="/style/assets/img/koslogo.png" class="navbar-brand-img h-100" alt="main_logo">
-        <span class="ms-1 font-weight-bold">Kost Tengger 74 Service</span>
+      <a class="navbar-brand m-0 d-flex flex-column align-items-center justify-content-center" href="@if(Auth::user()->role == 'admin'){{ route('admin.index') }}@elseif(Auth::user()->role == 'pengurus' || Auth::user()->role == 'pemilik'){{ route('teknisi.index') }}@else{{ route('customer.index') }}@endif">
+        <img src="/style/assets/img/koslogo.png" class="navbar-brand-img h-100" alt="main_logo" style="width: 50px; height: auto; margin-bottom: 0.5rem;">
+        <div class="text-center">
+          <div class="font-weight-bold" style="font-size: 0.9rem; line-height: 1.2;">Kost Tengger 74</div>
+          <div class="font-weight-bold" style="font-size: 0.85rem; line-height: 1.2;">Service</div>
+        </div>
       </a>
     </div>
     <hr class="horizontal dark mt-0">
