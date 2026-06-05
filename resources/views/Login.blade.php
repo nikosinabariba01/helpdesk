@@ -29,16 +29,62 @@
     <link id="pagestyle" href="{{ asset('style/assets/css/argon-dashboard.css') }}" rel="stylesheet" />
 
     <style>
+        html,
         body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+            min-height: 100%;
+        }
+
+        body {
+            position: relative;
+            overflow-x: hidden;
+            background-color: #f5f5f7;
+        }
+
+        /* BACKGROUND mengikuti referensi: soft grey + glow ungu */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background:
+                radial-gradient(circle at 14% 23%, rgba(140, 82, 255, 0.28) 0 6px, transparent 14px),
+                radial-gradient(circle at 21% 76%, rgba(140, 82, 255, 0.22) 0 7px, transparent 16px),
+                radial-gradient(circle at 29% 12%, rgba(140, 82, 255, 0.25) 0 6px, transparent 14px),
+                radial-gradient(circle at 33% 41%, rgba(140, 82, 255, 0.20) 0 7px, transparent 15px),
+                radial-gradient(circle at 41% 18%, rgba(140, 82, 255, 0.14) 0 5px, transparent 13px),
+                radial-gradient(circle at 47% 80%, rgba(140, 82, 255, 0.20) 0 7px, transparent 15px),
+                radial-gradient(circle at 58% 31%, rgba(140, 82, 255, 0.18) 0 6px, transparent 14px),
+                radial-gradient(circle at 66% 73%, rgba(140, 82, 255, 0.25) 0 7px, transparent 16px),
+                radial-gradient(circle at 74% 12%, rgba(140, 82, 255, 0.24) 0 6px, transparent 14px),
+                radial-gradient(circle at 83% 61%, rgba(140, 82, 255, 0.18) 0 7px, transparent 15px),
+                radial-gradient(circle at 91% 22%, rgba(140, 82, 255, 0.22) 0 7px, transparent 16px),
+                radial-gradient(circle at 88% 80%, rgba(140, 82, 255, 0.20) 0 6px, transparent 14px),
+                linear-gradient(180deg, #f7f7f9 0%, #f3f3f6 100%);
+            filter: blur(2px);
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background:
+                radial-gradient(circle at 6% 44%, rgba(140, 82, 255, 0.10) 0 4px, transparent 11px),
+                radial-gradient(circle at 24% 17%, rgba(140, 82, 255, 0.12) 0 4px, transparent 11px),
+                radial-gradient(circle at 36% 89%, rgba(140, 82, 255, 0.11) 0 5px, transparent 12px),
+                radial-gradient(circle at 52% 86%, rgba(140, 82, 255, 0.13) 0 4px, transparent 12px),
+                radial-gradient(circle at 68% 18%, rgba(140, 82, 255, 0.10) 0 4px, transparent 10px),
+                radial-gradient(circle at 79% 38%, rgba(140, 82, 255, 0.11) 0 5px, transparent 11px),
+                radial-gradient(circle at 94% 71%, rgba(140, 82, 255, 0.12) 0 4px, transparent 11px);
+            filter: blur(4px);
         }
 
         .glass-card {
-            background: rgba(255, 255, 255, 0.35);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
+            background: rgba(255, 255, 255, 0.40);
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            box-shadow: 0 10px 35px rgba(60, 72, 88, 0.12);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border-radius: 24px;
             overflow: hidden;
         }
@@ -64,14 +110,14 @@
         .glass-card .form-control {
             border-radius: 12px;
             border: 1px solid rgba(0, 0, 0, 0.08);
-            background: rgba(255, 255, 255, 0.75);
+            background: rgba(255, 255, 255, 0.82);
             box-shadow: none;
         }
 
         .glass-card .form-control:focus {
-            border-color: #5e72e4;
-            box-shadow: 0 0 0 0.15rem rgba(94, 114, 228, 0.15);
-            background: rgba(255, 255, 255, 0.9);
+            border-color: #7b5ce6;
+            box-shadow: 0 0 0 0.15rem rgba(123, 92, 230, 0.14);
+            background: rgba(255, 255, 255, 0.95);
         }
 
         .forgot-password-wrapper {
@@ -112,7 +158,7 @@
             height: 50px;
             border-radius: 12px;
             border: 1px solid rgba(0, 0, 0, 0.1);
-            background: rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.75);
             color: #344767;
             font-weight: 700;
             display: flex;
