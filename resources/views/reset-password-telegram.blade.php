@@ -230,33 +230,6 @@
             font-size: 0.9rem;
         }
 
-        .password-input-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        .password-input-wrapper .form-control {
-            padding-right: 45px;
-        }
-
-        .password-toggle-btn {
-            position: absolute;
-            right: 12px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: rgba(52, 71, 103, 0.6);
-            font-size: 1rem;
-            padding: 0.5rem;
-            transition: color 0.2s ease-in-out;
-            z-index: 10;
-        }
-
-        .password-toggle-btn:hover {
-            color: rgba(52, 71, 103, 0.9);
-        }
-
         @media (max-width: 576px) {
             .reset-card {
                 padding: 2rem 1.5rem;
@@ -316,18 +289,12 @@
 
                     <div class="mb-3">
                         <label class="form-label">Password Baru</label>
-                        <div class="password-input-wrapper">
-                            <input
-                                type="password"
-                                id="newPassword"
-                                name="password"
-                                class="form-control"
-                                placeholder="Masukkan password baru"
-                                required>
-                            <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('newPassword', this)">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
+                        <input
+                            type="password"
+                            name="password"
+                            class="form-control"
+                            placeholder="Masukkan password baru"
+                            required>
 
                         <div class="password-strength">
                             <span></span>
@@ -339,18 +306,12 @@
 
                     <div class="mb-4">
                         <label class="form-label">Konfirmasi Password Baru</label>
-                        <div class="password-input-wrapper">
-                            <input
-                                type="password"
-                                id="confirmPassword"
-                                name="password_confirmation"
-                                class="form-control"
-                                placeholder="Ulangi password baru"
-                                required>
-                            <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('confirmPassword', this)">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
+                        <input
+                            type="password"
+                            name="password_confirmation"
+                            class="form-control"
+                            placeholder="Ulangi password baru"
+                            required>
                     </div>
 
                     <button type="submit" class="btn btn-save w-100">
@@ -361,24 +322,6 @@
             </div>
         </div>
     </div>
-
-    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
-    <script>
-        function togglePasswordVisibility(fieldId, button) {
-            const field = document.getElementById(fieldId);
-            const icon = button.querySelector('i');
-
-            if (field.type === 'password') {
-                field.type = 'text';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            } else {
-                field.type = 'password';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            }
-        }
-    </script>
 </body>
 
 </html>
