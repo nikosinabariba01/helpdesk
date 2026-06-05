@@ -252,67 +252,7 @@
             <div class="forgot-content">
 
                 <div class="mail-illustration">
-                    <svg viewBox="0 0 512 512" width="120" height="120" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
-                        <title id="title">Mailbox Telegram Vector Logo</title>
-                        <desc id="desc">Minimal aesthetic vector logo combining an open mailbox, envelope, and Telegram paper plane symbol.</desc>
-
-                        <style>
-                            .line {
-                                stroke: currentColor;
-                                stroke-width: 14;
-                                stroke-linecap: round;
-                                stroke-linejoin: round;
-                                vector-effect: non-scaling-stroke;
-                            }
-                            .thin {
-                                stroke: currentColor;
-                                stroke-width: 9;
-                                stroke-linecap: round;
-                                stroke-linejoin: round;
-                                vector-effect: non-scaling-stroke;
-                            }
-                            .fill {
-                                fill: currentColor;
-                            }
-                        </style>
-
-                        <!-- Mailbox body -->
-                        <path class="line" d="M190 338V197c0-68 48-113 111-113h2c71 0 124 54 124 124v130H190Z"/>
-
-                        <!-- Front arch / opening -->
-                        <path class="line" d="M190 338V203c0-67 45-113 106-113"/>
-                        <path class="fill" opacity="0.96" d="M214 329V205c0-47 32-86 80-86h2c45 0 80 36 80 82v128H214Z"/>
-
-                        <!-- Inner highlight stripe -->
-                        <path class="thin" d="M219 201c0-48 32-87 79-87"/>
-
-                        <!-- Open mailbox door -->
-                        <path class="line" d="M111 349c50 18 143 18 200-11"/>
-                        <path class="line" d="M111 349c1 23 6 36 27 42 54 16 151 5 200-32"/>
-                        <path class="thin" d="M130 377c51 13 132 6 191-26"/>
-
-                        <!-- Envelope coming out -->
-                        <path class="line" d="M129 228L331 211c13-1 23 8 24 21l12 118c1 13-8 23-21 24l-202 17c-13 1-23-8-24-21L108 252c-1-13 8-23 21-24Z"/>
-                        <path class="thin" d="M118 244l122 73 113-92"/>
-                        <path class="thin" d="M139 377l84-76"/>
-                        <path class="thin" d="M354 359l-98-62"/>
-
-                        <!-- Telegram paper-plane mark -->
-                        <path class="fill" d="M163 289c-6-3-5-11 2-13l125-47c8-3 15 5 11 13l-53 119c-3 7-12 7-16 1l-27-43-42-30Z"/>
-                        <path fill="white" d="M205 319l75-62-52 76-8 30-15-44Z"/>
-
-                        <!-- Side flag -->
-                        <path class="line" d="M362 122v210"/>
-                        <circle class="line" cx="362" cy="332" r="23"/>
-                        <path class="line" d="M362 122h78l-25 42 25 42h-78"/>
-
-                        <!-- Mailbox post -->
-                        <path class="line" d="M285 338v82"/>
-                        <path class="line" d="M324 338v82"/>
-                        <path class="thin" d="M258 420h93"/>
-
-                        <!-- Small balance line -->
-                        <path class="thin" d="M425 338h-69"/>
+                    <svg viewBox="0 0 180 140" width="120" height="95" fill="none" xmlns="http://www.w3.org/2000/svg">
                     </svg>
                 </div>
 
