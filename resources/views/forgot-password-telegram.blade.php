@@ -1,51 +1,323 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Lupa Password via Telegram</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+
+    <style>
+        :root {
+            /* ATUR BACKGROUND DI SINI */
+            --pink-opacity: 0.18;
+            --pink-opacity-strong: 0.25;
+            --purple-bokeh-opacity: 0.14;
+
+            /* ATUR GLASS CARD DI SINI */
+            --glass-card-opacity: 0.22;
+            --glass-card-border-opacity: 0.55;
+            --glass-input-opacity: 0.38;
+            --glass-button-opacity: 0.30;
+        }
+
+        html,
+        body {
+            min-height: 100%;
+        }
+
+        body {
+            position: relative;
+            overflow-x: hidden;
+            font-family: "Open Sans", sans-serif;
+            background-color: rgba(252, 244, 248, var(--pink-opacity));
+        }
+
+        /* Background soft pink + bokeh/glow ungu */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background:
+                radial-gradient(circle at 14% 23%, rgba(140, 82, 255, var(--purple-bokeh-opacity)) 0 6px, transparent 14px),
+                radial-gradient(circle at 21% 76%, rgba(140, 82, 255, var(--purple-bokeh-opacity)) 0 7px, transparent 16px),
+                radial-gradient(circle at 29% 12%, rgba(140, 82, 255, var(--purple-bokeh-opacity)) 0 6px, transparent 14px),
+                radial-gradient(circle at 33% 41%, rgba(140, 82, 255, var(--purple-bokeh-opacity)) 0 7px, transparent 15px),
+                radial-gradient(circle at 41% 18%, rgba(140, 82, 255, 0.10) 0 5px, transparent 13px),
+                radial-gradient(circle at 47% 80%, rgba(140, 82, 255, var(--purple-bokeh-opacity)) 0 7px, transparent 15px),
+                radial-gradient(circle at 58% 31%, rgba(140, 82, 255, 0.12) 0 6px, transparent 14px),
+                radial-gradient(circle at 66% 73%, rgba(140, 82, 255, var(--purple-bokeh-opacity)) 0 7px, transparent 16px),
+                radial-gradient(circle at 74% 12%, rgba(140, 82, 255, var(--purple-bokeh-opacity)) 0 6px, transparent 14px),
+                radial-gradient(circle at 83% 61%, rgba(140, 82, 255, 0.12) 0 7px, transparent 15px),
+                radial-gradient(circle at 91% 22%, rgba(140, 82, 255, var(--purple-bokeh-opacity)) 0 7px, transparent 16px),
+                radial-gradient(circle at 88% 80%, rgba(140, 82, 255, 0.13) 0 6px, transparent 14px),
+                linear-gradient(
+                    180deg,
+                    rgba(253, 247, 250, var(--pink-opacity)) 0%,
+                    rgba(250, 238, 245, var(--pink-opacity-strong)) 55%,
+                    rgba(248, 234, 242, var(--pink-opacity-strong)) 100%
+                );
+            filter: blur(2px);
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background:
+                radial-gradient(circle at 6% 44%, rgba(140, 82, 255, 0.08) 0 4px, transparent 11px),
+                radial-gradient(circle at 24% 17%, rgba(140, 82, 255, 0.09) 0 4px, transparent 11px),
+                radial-gradient(circle at 36% 89%, rgba(140, 82, 255, 0.08) 0 5px, transparent 12px),
+                radial-gradient(circle at 52% 86%, rgba(140, 82, 255, 0.09) 0 4px, transparent 12px),
+                radial-gradient(circle at 68% 18%, rgba(140, 82, 255, 0.07) 0 4px, transparent 10px),
+                radial-gradient(circle at 79% 38%, rgba(140, 82, 255, 0.08) 0 5px, transparent 11px),
+                radial-gradient(circle at 94% 71%, rgba(140, 82, 255, 0.09) 0 4px, transparent 11px),
+                radial-gradient(circle at 50% 50%, rgba(255, 192, 203, 0.08) 0 220px, transparent 420px);
+            filter: blur(4px);
+        }
+
+        .forgot-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+
+        .forgot-card {
+            position: relative;
+            width: 100%;
+            max-width: 470px;
+            overflow: hidden;
+            border-radius: 28px;
+            padding: 2.4rem 2.2rem;
+            background: rgba(255, 255, 255, var(--glass-card-opacity));
+            border: 1px solid rgba(255, 255, 255, var(--glass-card-border-opacity));
+            box-shadow:
+                0 22px 48px rgba(60, 72, 88, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.58);
+            backdrop-filter: blur(24px) saturate(165%);
+            -webkit-backdrop-filter: blur(24px) saturate(165%);
+        }
+
+        .forgot-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.55) 0%,
+                    rgba(255, 255, 255, 0.16) 42%,
+                    rgba(255, 255, 255, 0.05) 100%
+                );
+        }
+
+        .forgot-card::after {
+            content: "";
+            position: absolute;
+            width: 190px;
+            height: 190px;
+            top: -75px;
+            right: -75px;
+            z-index: 0;
+            pointer-events: none;
+            background: radial-gradient(circle, rgba(140, 82, 255, 0.22), transparent 68%);
+        }
+
+        .forgot-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .mail-illustration {
+            width: 120px;
+            height: 95px;
+            margin: 0 auto 1.3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .forgot-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #26334d;
+            text-align: center;
+            margin-bottom: 0.65rem;
+        }
+
+        .forgot-subtitle {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: rgba(52, 71, 103, 0.72);
+            text-align: center;
+            margin-bottom: 1.8rem;
+        }
+
+        .form-label {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: rgba(52, 71, 103, 0.92);
+            margin-bottom: 0.55rem;
+        }
+
+        .form-control {
+            height: 52px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.62);
+            background: rgba(255, 255, 255, var(--glass-input-opacity));
+            color: #344767;
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.56),
+                0 8px 18px rgba(60, 72, 88, 0.06);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .form-control::placeholder {
+            color: rgba(52, 71, 103, 0.55);
+        }
+
+        .form-control:focus {
+            border-color: rgba(123, 92, 230, 0.55);
+            background: rgba(255, 255, 255, 0.52);
+            box-shadow:
+                0 0 0 0.15rem rgba(123, 92, 230, 0.13),
+                inset 0 1px 0 rgba(255, 255, 255, 0.62);
+        }
+
+        .btn-send {
+            height: 52px;
+            border-radius: 14px;
+            border: none;
+            background: linear-gradient(135deg, #7b5ce6 0%, #5e72e4 100%);
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 700;
+            box-shadow: 0 12px 22px rgba(94, 114, 228, 0.26);
+            transition: all 0.2s ease-in-out;
+        }
+
+        .btn-send:hover {
+            color: #ffffff;
+            transform: translateY(-1px);
+            box-shadow: 0 14px 26px rgba(94, 114, 228, 0.32);
+        }
+
+        .back-login {
+            display: inline-block;
+            margin-top: 1.1rem;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: rgba(52, 71, 103, 0.88);
+            text-decoration: none;
+        }
+
+        .back-login:hover {
+            color: #7b5ce6;
+            text-decoration: none;
+        }
+
+        .alert {
+            border-radius: 14px;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 576px) {
+            .forgot-card {
+                padding: 2rem 1.5rem;
+                border-radius: 24px;
+            }
+
+            .forgot-title {
+                font-size: 1.65rem;
+            }
+        }
+    </style>
 </head>
+
 <body>
-<div class="container mt-5" style="max-width: 500px;">
-    <div class="card shadow">
-        <div class="card-body">
-            <h3 class="mb-3 text-center">Lupa Password</h3>
-            <p class="text-muted text-center">
-                Masukkan email akun Anda. Kode OTP akan dikirim ke Telegram yang sudah terhubung.
-            </p>
+    <div class="forgot-wrapper">
+        <div class="forgot-card">
+            <div class="forgot-content">
 
-            @if($errors->any())
-                <div class="alert alert-danger">
-                    @foreach($errors->all() as $error)
-                        <div>{{ $error }}</div>
-                    @endforeach
-                </div>
-            @endif
-
-            @if(session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-            @endif
-
-            <form action="{{ route('telegram.password.sendOtp') }}" method="POST">
-                @csrf
-
-                <div class="mb-3">
-                    <label class="form-label">Email Akun</label>
-                    <input type="email" name="email" class="form-control" value="{{ old('email') }}" required>
+                <div class="mail-illustration">
+                    <svg viewBox="0 0 180 140" width="120" height="95" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M57 34C57 23.5066 65.5066 15 76 15H124C134.493 15 143 23.5066 143 34V79H57V34Z"
+                            fill="rgba(255,255,255,0.48)" stroke="#26334D" stroke-width="5" />
+                        <path d="M72 31H128C134.075 31 139 35.9249 139 42V84H61V42C61 35.9249 65.9249 31 72 31Z"
+                            fill="rgba(255,255,255,0.68)" stroke="#26334D" stroke-width="5" />
+                        <path d="M61 43L100 72L139 43" stroke="#26334D" stroke-width="5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <path d="M63 85H141" stroke="#26334D" stroke-width="5" stroke-linecap="round" />
+                        <path d="M42 59H69V93H42C32.6112 93 25 85.3888 25 76C25 66.6112 32.6112 59 42 59Z"
+                            fill="rgba(255,255,255,0.55)" stroke="#26334D" stroke-width="5" />
+                        <path d="M24 76H9" stroke="#26334D" stroke-width="5" stroke-linecap="round" />
+                        <circle cx="43" cy="76" r="8" fill="rgba(123,92,230,0.22)" stroke="#26334D"
+                            stroke-width="5" />
+                        <path d="M61 90C44 91 35 100 35 111" stroke="#26334D" stroke-width="5"
+                            stroke-linecap="round" />
+                        <path d="M143 90C154 94 159 102 159 113" stroke="#26334D" stroke-width="5"
+                            stroke-linecap="round" />
+                    </svg>
                 </div>
 
-                <button type="submit" class="btn btn-primary w-100">
-                    Kirim OTP ke Telegram
-                </button>
-            </form>
+                <h3 class="forgot-title">Forgot password?</h3>
 
-            <div class="text-center mt-3">
-                <a href="/">Kembali ke Login</a>
+                <p class="forgot-subtitle">
+                    Enter your email account. OTP code will be sent to your connected Telegram.
+                </p>
+
+                @if($errors->any())
+                    <div class="alert alert-danger mb-3">
+                        @foreach($errors->all() as $error)
+                            <div>{{ $error }}</div>
+                        @endforeach
+                    </div>
+                @endif
+
+                @if(session('success'))
+                    <div class="alert alert-success mb-3">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                <form action="{{ route('telegram.password.sendOtp') }}" method="POST">
+                    @csrf
+
+                    <div class="mb-3">
+                        <label class="form-label">Email Account</label>
+                        <input
+                            type="email"
+                            name="email"
+                            class="form-control"
+                            placeholder="Enter your email"
+                            value="{{ old('email') }}"
+                            required>
+                    </div>
+
+                    <button type="submit" class="btn btn-send w-100">
+                        Send OTP to Telegram
+                    </button>
+                </form>
+
+                <div class="text-center">
+                    <a href="/" class="back-login">Back to Login</a>
+                </div>
+
             </div>
         </div>
     </div>
-</div>
 </body>
+
 </html>
