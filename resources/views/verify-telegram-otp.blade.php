@@ -164,10 +164,18 @@
             font-size: 0.88rem;
             font-weight: 700;
             color: rgba(52, 71, 103, 0.92);
-            margin-bottom: 0.55rem;
+            margin-bottom: 0.75rem;
         }
 
-        .otp-input {
+        .otp-box-wrapper {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        .otp-box {
+            width: 100%;
             height: 58px;
             border-radius: 14px;
             border: 1px solid rgba(255, 255, 255, 0.62);
@@ -176,39 +184,22 @@
             font-size: 1.35rem;
             font-weight: 800;
             text-align: center;
-            letter-spacing: 0.65rem;
-            padding-left: 0.65rem;
             box-shadow:
                 inset 0 1px 0 rgba(255, 255, 255, 0.56),
                 0 8px 18px rgba(60, 72, 88, 0.06);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
+            outline: none;
+            transition: all 0.2s ease-in-out;
         }
 
-        .otp-input::placeholder {
-            color: rgba(52, 71, 103, 0.30);
-            letter-spacing: 0.35rem;
-        }
-
-        .otp-input:focus {
-            border-color: rgba(123, 92, 230, 0.55);
-            background: rgba(255, 255, 255, 0.52);
+        .otp-box:focus {
+            border-color: rgba(123, 92, 230, 0.75);
+            background: rgba(255, 255, 255, 0.55);
             box-shadow:
                 0 0 0 0.15rem rgba(123, 92, 230, 0.13),
                 inset 0 1px 0 rgba(255, 255, 255, 0.62);
-        }
-
-        .otp-dots {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 8px;
-            margin-top: 0.75rem;
-        }
-
-        .otp-dots span {
-            height: 4px;
-            border-radius: 999px;
-            background: rgba(123, 92, 230, 0.26);
+            transform: translateY(-1px);
         }
 
         .btn-verify {
@@ -258,10 +249,14 @@
                 font-size: 1.65rem;
             }
 
-            .otp-input {
-                font-size: 1.15rem;
-                letter-spacing: 0.45rem;
-                padding-left: 0.45rem;
+            .otp-box-wrapper {
+                gap: 7px;
+            }
+
+            .otp-box {
+                height: 50px;
+                font-size: 1.1rem;
+                border-radius: 12px;
             }
         }
     </style>
@@ -320,28 +315,21 @@
                     </div>
                 @endif
 
-                <form action="{{ route('telegram.password.verifyOtp') }}" method="POST">
+                <form action="{{ route('telegram.password.verifyOtp') }}" method="POST" id="otpForm">
                     @csrf
 
                     <div class="mb-4">
                         <label class="form-label">Kode OTP</label>
-                        <input
-                            type="text"
-                            name="otp"
-                            class="form-control otp-input"
-                            maxlength="6"
-                            inputmode="numeric"
-                            pattern="[0-9]{6}"
-                            placeholder="000000"
-                            required>
 
-                        <div class="otp-dots">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
+                        <input type="hidden" name="otp" id="otpValue">
+
+                        <div class="otp-box-wrapper">
+                            <input type="text" class="otp-box" maxlength="1" inputmode="numeric" autocomplete="one-time-code" required>
+                            <input type="text" class="otp-box" maxlength="1" inputmode="numeric" required>
+                            <input type="text" class="otp-box" maxlength="1" inputmode="numeric" required>
+                            <input type="text" class="otp-box" maxlength="1" inputmode="numeric" required>
+                            <input type="text" class="otp-box" maxlength="1" inputmode="numeric" required>
+                            <input type="text" class="otp-box" maxlength="1" inputmode="numeric" required>
                         </div>
                     </div>
 
@@ -361,13 +349,66 @@
     </div>
 
     <script>
-        const otpInput = document.querySelector('.otp-input');
+        const otpBoxes = document.querySelectorAll('.otp-box');
+        const otpValue = document.getElementById('otpValue');
+        const otpForm = document.getElementById('otpForm');
 
-        if (otpInput) {
-            otpInput.addEventListener('input', function () {
-                this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6);
+        otpBoxes.forEach((box, index) => {
+            box.addEventListener('input', function () {
+                this.value = this.value.replace(/[^0-9]/g, '');
+
+                if (this.value && index < otpBoxes.length - 1) {
+                    otpBoxes[index + 1].focus();
+                }
+
+                updateOtpValue();
             });
+
+            box.addEventListener('keydown', function (event) {
+                if (event.key === 'Backspace' && !this.value && index > 0) {
+                    otpBoxes[index - 1].focus();
+                }
+            });
+
+            box.addEventListener('paste', function (event) {
+                event.preventDefault();
+
+                const pasteData = (event.clipboardData || window.clipboardData)
+                    .getData('text')
+                    .replace(/[^0-9]/g, '')
+                    .slice(0, 6);
+
+                pasteData.split('').forEach((digit, i) => {
+                    if (otpBoxes[i]) {
+                        otpBoxes[i].value = digit;
+                    }
+                });
+
+                const nextIndex = pasteData.length < 6 ? pasteData.length : 5;
+                otpBoxes[nextIndex].focus();
+
+                updateOtpValue();
+            });
+        });
+
+        function updateOtpValue() {
+            let otp = '';
+
+            otpBoxes.forEach(box => {
+                otp += box.value;
+            });
+
+            otpValue.value = otp;
         }
+
+        otpForm.addEventListener('submit', function (event) {
+            updateOtpValue();
+
+            if (otpValue.value.length !== 6) {
+                event.preventDefault();
+                otpBoxes[0].focus();
+            }
+        });
     </script>
 </body>
 
