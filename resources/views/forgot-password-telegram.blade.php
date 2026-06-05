@@ -253,9 +253,22 @@
 
                 <div class="mail-illustration">
                     <svg viewBox="0 0 180 140" width="120" height="95" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" clip-rule="evenodd"
-                            d="M150 20H30C21.1634 20 14 27.1634 14 36V104C14 112.837 21.1634 120 30 120H150C158.837 120 166 112.837 166 104V36C166 27.1634 158.837 20 150 20ZM30 24H150C156.627 24 162 29.3731 162 36V104C162 110.627 156.627 116 150 116H30C23.3729 116 18 110.627 18 104V36C18 29.3731 23.3729 24 30 24ZM31.9998 28L89.9998 78L148.001 -0.00012207L149.999 -0.00012207L89.9998 77L31.9998 28Z"
-                            fill="#7B5CE6" />
+                        <path d="M57 34C57 23.5066 65.5066 15 76 15H124C134.493 15 143 23.5066 143 34V79H57V34Z"
+                            fill="rgba(255,255,255,0.48)" stroke="#26334D" stroke-width="5" />
+                        <path d="M72 31H128C134.075 31 139 35.9249 139 42V84H61V42C61 35.9249 65.9249 31 72 31Z"
+                            fill="rgba(255,255,255,0.68)" stroke="#26334D" stroke-width="5" />
+                        <path d="M61 43L100 72L139 43" stroke="#26334D" stroke-width="5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <path d="M63 85H141" stroke="#26334D" stroke-width="5" stroke-linecap="round" />
+                        <path d="M42 59H69V93H42C32.6112 93 25 85.3888 25 76C25 66.6112 32.6112 59 42 59Z"
+                            fill="rgba(255,255,255,0.55)" stroke="#26334D" stroke-width="5" />
+                        <path d="M24 76H9" stroke="#26334D" stroke-width="5" stroke-linecap="round" />
+                        <circle cx="43" cy="76" r="8" fill="rgba(123,92,230,0.22)" stroke="#26334D"
+                            stroke-width="5" />
+                        <path d="M61 90C44 91 35 100 35 111" stroke="#26334D" stroke-width="5"
+                            stroke-linecap="round" />
+                        <path d="M143 90C154 94 159 102 159 113" stroke="#26334D" stroke-width="5"
+                            stroke-linecap="round" />
                     </svg>
                 </div>
 
