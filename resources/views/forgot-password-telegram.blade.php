@@ -57,12 +57,10 @@
                 radial-gradient(circle at 83% 61%, rgba(140, 82, 255, 0.12) 0 7px, transparent 15px),
                 radial-gradient(circle at 91% 22%, rgba(140, 82, 255, var(--purple-bokeh-opacity)) 0 7px, transparent 16px),
                 radial-gradient(circle at 88% 80%, rgba(140, 82, 255, 0.13) 0 6px, transparent 14px),
-                linear-gradient(
-                    180deg,
+                linear-gradient(180deg,
                     rgba(253, 247, 250, var(--pink-opacity)) 0%,
                     rgba(250, 238, 245, var(--pink-opacity-strong)) 55%,
-                    rgba(248, 234, 242, var(--pink-opacity-strong)) 100%
-                );
+                    rgba(248, 234, 242, var(--pink-opacity-strong)) 100%);
             filter: blur(2px);
         }
 
@@ -114,12 +112,10 @@
             z-index: 0;
             pointer-events: none;
             background:
-                linear-gradient(
-                    135deg,
+                linear-gradient(135deg,
                     rgba(255, 255, 255, 0.55) 0%,
                     rgba(255, 255, 255, 0.16) 42%,
-                    rgba(255, 255, 255, 0.05) 100%
-                );
+                    rgba(255, 255, 255, 0.05) 100%);
         }
 
         .forgot-card::after {
@@ -252,22 +248,47 @@
             <div class="forgot-content">
 
                 <div class="mail-illustration">
-                    <svg viewBox="0 0 180 140" width="120" height="95" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M57 34C57 23.5066 65.5066 15 76 15H124C134.493 15 143 23.5066 143 34V79H57V34Z"
-                            fill="rgba(255,255,255,0.48)" stroke="#26334D" stroke-width="5" />
-                        <path d="M72 31H128C134.075 31 139 35.9249 139 42V84H61V42C61 35.9249 65.9249 31 72 31Z"
-                            fill="rgba(255,255,255,0.68)" stroke="#26334D" stroke-width="5" />
-                        <path d="M61 43L100 72L139 43" stroke="#26334D" stroke-width="5" stroke-linecap="round"
-                            stroke-linejoin="round" />
-                        <path d="M63 85H141" stroke="#26334D" stroke-width="5" stroke-linecap="round" />
-                        <path d="M42 59H69V93H42C32.6112 93 25 85.3888 25 76C25 66.6112 32.6112 59 42 59Z"
-                            fill="rgba(255,255,255,0.55)" stroke="#26334D" stroke-width="5" />
-                        <path d="M24 76H9" stroke="#26334D" stroke-width="5" stroke-linecap="round" />
-                        <circle cx="43" cy="76" r="8" fill="rgba(123,92,230,0.22)" stroke="#26334D"
-                            stroke-width="5" />
-                        <path d="M61 90C44 91 35 100 35 111" stroke="#26334D" stroke-width="5"
+                    <svg viewBox="0 0 240 170" width="132" height="96" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <!-- Mailbox post -->
+                        <path d="M169 120V158" stroke="#26334D" stroke-width="5" stroke-linecap="round" />
+                        <path d="M188 120V145" stroke="#26334D" stroke-width="5" stroke-linecap="round" />
+
+                        <!-- Bottom/open tray -->
+                        <path d="M45 108H220C209 126 191 134 168 134H62C49 134 39 121 45 108Z" fill="#FFFFFF"
+                            fill-opacity="0.58" stroke="#26334D" stroke-width="5" stroke-linejoin="round" />
+
+                        <!-- Mailbox body -->
+                        <path d="M76 35H164C194 35 218 59 218 89V112H76V35Z" fill="#FFFFFF" fill-opacity="0.55"
+                            stroke="#26334D" stroke-width="5" stroke-linejoin="round" />
+
+                        <!-- Dark inner opening -->
+                        <path d="M78 35C58 36 42 53 42 74V112H88V74C88 54 84 42 78 35Z" fill="#111111" stroke="#26334D"
+                            stroke-width="5" stroke-linejoin="round" />
+
+                        <!-- Rolled mail on left -->
+                        <path d="M43 66H20C12 66 7 60 7 53C7 46 13 40 20 40H43" fill="#FFFFFF" fill-opacity="0.65"
+                            stroke="#26334D" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M21 41C28 41 33 46 33 53C33 60 28 65 21 65" stroke="#26334D" stroke-width="4"
                             stroke-linecap="round" />
-                        <path d="M143 90C154 94 159 102 159 113" stroke="#26334D" stroke-width="5"
+                        <path d="M20 48C23 48 25 50 25 53C25 56 23 58 20 58" stroke="#26334D" stroke-width="3"
+                            stroke-linecap="round" />
+
+                        <!-- Envelope/mail in front -->
+                        <rect x="55" y="59" width="93" height="58" rx="3" fill="#FFFFFF"
+                            fill-opacity="0.82" stroke="#26334D" stroke-width="5" />
+
+                        <path d="M58 62L101.5 96L145 62" stroke="#26334D" stroke-width="5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+
+                        <path d="M58 115L89 88" stroke="#26334D" stroke-width="5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+
+                        <path d="M145 115L114 88" stroke="#26334D" stroke-width="5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+
+                        <!-- Front curve detail -->
+                        <path d="M88 35C103 43 111 59 111 83V112" stroke="#26334D" stroke-width="5"
                             stroke-linecap="round" />
                     </svg>
                 </div>
@@ -278,15 +299,15 @@
                     Enter your email account. OTP code will be sent to your connected Telegram.
                 </p>
 
-                @if($errors->any())
+                @if ($errors->any())
                     <div class="alert alert-danger mb-3">
-                        @foreach($errors->all() as $error)
+                        @foreach ($errors->all() as $error)
                             <div>{{ $error }}</div>
                         @endforeach
                     </div>
                 @endif
 
-                @if(session('success'))
+                @if (session('success'))
                     <div class="alert alert-success mb-3">
                         {{ session('success') }}
                     </div>
@@ -297,13 +318,8 @@
 
                     <div class="mb-3">
                         <label class="form-label">Email Account</label>
-                        <input
-                            type="email"
-                            name="email"
-                            class="form-control"
-                            placeholder="Enter your email"
-                            value="{{ old('email') }}"
-                            required>
+                        <input type="email" name="email" class="form-control" placeholder="Enter your email"
+                            value="{{ old('email') }}" required>
                     </div>
 
                     <button type="submit" class="btn btn-send w-100">
