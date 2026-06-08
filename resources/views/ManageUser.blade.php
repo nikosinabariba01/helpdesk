@@ -77,8 +77,8 @@
                                             <form method="POST" action="{{ route('user.destroy', $user->id) }}">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="dropdown-item text-danger" onclick="return confirm('Are you sure you want to delete this user?')">
-                                                    <i class="fa fa-trash text-danger pe-2"></i>Delete
+                                                <button type="submit" class="dropdown-item text-danger" onclick="return confirm('Are you sure you want to deaktivate this user?')">
+                                                    <i class="fa fa-trash text-danger pe-2"></i>Deaktivasi
                                                 </button>
                                             </form>
                                         </li>
