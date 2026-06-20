@@ -212,7 +212,7 @@ class TicketController extends Controller
         $validated = $request->validate([
             'subject' => 'required|string|max:255',
             'Jenis_Pengaduan' => 'required|string',
-            'Lokasi' => 'required|string|max:255',
+            'Lokasi' => 'required|string|max:100',
             'Detail' => 'required|string',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',  // Validasi gambar
         ], [
@@ -224,7 +224,7 @@ class TicketController extends Controller
 
             'Lokasi.required' => 'Lokasi wajib diisi.',
             'Lokasi.string' => 'Lokasi harus berupa teks.',
-            'Lokasi.max' => 'Lokasi tidak boleh lebih dari 255 karakter.',
+            'Lokasi.max' => 'Lokasi tidak boleh lebih dari 100 karakter.',
 
             'Detail.required' => 'Detail wajib diisi.',
             'Detail.string' => 'Detail harus berupa teks.',
@@ -289,7 +289,7 @@ class TicketController extends Controller
         $rules = [
             'subject' => 'required|string|max:255',
             'Jenis_Pengaduan' => 'required',
-            'Lokasi' => 'required|string|max:255',
+            'Lokasi' => 'required|string|max:100',
             'Detail' => 'required|string',
             'gambar' => 'sometimes|file|mimes:jpg,jpeg,png|max:2048', // Validasi file gambar dan pdf dengan ukuran maksimal 2MB
         ];
@@ -304,7 +304,7 @@ class TicketController extends Controller
 
             'Lokasi.required' => 'Lokasi wajib diisi.',
             'Lokasi.string' => 'Lokasi harus berupa teks.',
-            'Lokasi.max' => 'Lokasi tidak boleh lebih dari 255 karakter.',
+            'Lokasi.max' => 'Lokasi tidak boleh lebih dari 100 karakter.',
 
             'Detail.required' => 'Detail wajib diisi.',
             'Detail.string' => 'Detail harus berupa teks.',
@@ -346,7 +346,7 @@ class TicketController extends Controller
         $rules = [
             'subject' => 'required|string|max:255',
             'Jenis_Pengaduan' => 'required',
-            'Lokasi' => 'required|string|max:255',
+            'Lokasi' => 'required|string|max:100',
             'Detail' => 'required|string',
             'gambar' => 'sometimes|file|mimes:jpg,jpeg,png,pdf',
         ];

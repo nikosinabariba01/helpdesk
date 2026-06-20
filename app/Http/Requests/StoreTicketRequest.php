@@ -24,7 +24,7 @@ class StoreTicketRequest extends FormRequest
         return [
             'subject'         => ['required', 'string', 'max:255'],
             'Jenis_Pengaduan' => ['required'],
-            'Lokasi'          => ['required', 'string', 'max:255'],
+            'Lokasi'          => ['required', 'string', 'max:100'],
             'Detail'       => ['required', 'string'],
             'gambar'          => ['sometimes', 'file', 'mimes:jpg,jpeg,png,pdf'],
         ];
