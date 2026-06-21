@@ -288,33 +288,60 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <form action="{{ route('teknisi.profileupdate') }}" method="POST"
-                                enctype="multipart/form-data">
+
+                            @if (session('success'))
+                                <div class="alert alert-success text-white">
+                                    {{ session('success') }}
+                                </div>
+                            @endif
+
+                            <form
+                                action="{{ Auth::user()->role == 'pengurus' || Auth::user()->role == 'pemilik' || Auth::user()->role == 'admin' ? route('teknisi.profileupdate') : route('customer.profileupdate') }}"
+                                method="POST" enctype="multipart/form-data">
                                 @csrf
+
                                 <p class="text-uppercase text-sm">User Information</p>
+
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="name" class="form-control-label">Name</label>
-                                            <input id="name" name="name" class="form-control" type="text"
-                                                value="{{ Auth::user()->name }}">
+                                            <input id="name" name="name"
+                                                class="form-control @error('name') is-invalid @enderror"
+                                                type="text" value="{{ old('name', Auth::user()->name) }}">
+
+                                            @error('name')
+                                                <div class="invalid-feedback">
+                                                    {{ $message }}
+                                                </div>
+                                            @enderror
                                         </div>
                                     </div>
+
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="description" class="form-control-label">Description</label>
-                                            <input id="description" name="description" class="form-control"
-                                                type="text" value="{{ Auth::user()->description }}">
+                                            <input id="description" name="description"
+                                                class="form-control @error('description') is-invalid @enderror"
+                                                type="text"
+                                                value="{{ old('description', Auth::user()->description) }}">
+
+                                            @error('description')
+                                                <div class="invalid-feedback">
+                                                    {{ $message }}
+                                                </div>
+                                            @enderror
                                         </div>
                                     </div>
+
                                     <div class="col-md-6">
-                                        <div class="form-group">
+                                        <div class="form-group mb-md-0">
                                             <label for="profile_photo" class="form-control-label">Profile
                                                 Photo</label>
                                             <input id="profile_photo" name="profile_photo"
                                                 class="form-control @error('profile_photo') is-invalid @enderror"
                                                 type="file" accept="image/*">
-                                            <!-- Menampilkan pesan error jika ada -->
+
                                             @error('profile_photo')
                                                 <div class="invalid-feedback">
                                                     {{ $message }}
@@ -322,8 +349,23 @@
                                             @enderror
                                         </div>
                                     </div>
+
+                                    <div class="col-md-6 d-flex align-items-end">
+                                        <div class="form-group w-100 mb-md-0">
+                                            <label class="form-control-label d-block">Password</label>
+                                            <button type="button" class="btn btn-outline-primary w-100 mb-0"
+                                                data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                                                <i class="fa fa-lock me-2"></i>Change Password
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
-                                <button type="submit" class="btn btn-primary">Save Changes</button>
+
+                                <div class="mt-4">
+                                    <button type="submit" class="btn btn-primary mb-0">
+                                        <i class="fa fa-save me-2"></i>Save Changes
+                                    </button>
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -332,6 +374,76 @@
         </div>
 
     </div>
+    </div>
+    <!-- Change Password Modal -->
+    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+
+                <form action="{{ route('profile.change-password') }}" method="POST">
+                    @csrf
+
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="changePasswordModalLabel">
+                            <i class="fa fa-lock me-2 text-primary"></i>Change Password
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="alert alert-light border text-sm">
+                            Masukkan password lama Anda, lalu buat password baru minimal 8 karakter.
+                        </div>
+
+                        <div class="form-group">
+                            <label for="current_password" class="form-control-label">Current Password</label>
+                            <input type="password" id="current_password" name="current_password"
+                                class="form-control @error('current_password') is-invalid @enderror"
+                                placeholder="Masukkan password lama">
+
+                            @error('current_password')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <label for="new_password" class="form-control-label">New Password</label>
+                            <input type="password" id="new_password" name="new_password"
+                                class="form-control @error('new_password') is-invalid @enderror"
+                                placeholder="Masukkan password baru">
+
+                            @error('new_password')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
+
+                        <div class="form-group mb-0">
+                            <label for="new_password_confirmation" class="form-control-label">
+                                Confirm New Password
+                            </label>
+                            <input type="password" id="new_password_confirmation" name="new_password_confirmation"
+                                class="form-control" placeholder="Ulangi password baru">
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light mb-0" data-bs-dismiss="modal">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary mb-0">
+                            <i class="fa fa-save me-2"></i>Save Password
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
     </div>
     <!--   Core JS Files   -->
     <script src="{{ asset('style/assets/js/core/popper.min.js') }}"></script>
@@ -389,6 +501,15 @@
             });
         }
     </script>
+    
+    @if ($errors->has('current_password') || $errors->has('new_password') || session('password_modal'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var changePasswordModal = new bootstrap.Modal(document.getElementById('changePasswordModal'));
+                changePasswordModal.show();
+            });
+        </script>
+    @endif
 </body>
 
 </html>
