@@ -166,7 +166,7 @@ class TicketController extends Controller
         return redirect()->back()->with('success', 'Tiket berhasil dikembalikan ke status "on process" dengan pemilik sebagai asignee.');
     }
 
-        public function contribute($id)
+    public function contribute($id)
     {
         $ticket = Ticket::findOrFail($id);
 
@@ -334,8 +334,18 @@ class TicketController extends Controller
         // Simpan perubahan tiket
         $ticket->save();
 
-        // Redirect dengan pesan sukses
-        return redirect(route('customer.index'))->with('success', 'Data Tiket Berhasil diupdate');
+        $redirectTo = $request->input('redirect_to', 'customer.index');
+
+        $allowedRedirects = [
+            'customer.index',
+            'customer.viewprocess',
+        ];
+
+        if (! in_array($redirectTo, $allowedRedirects)) {
+            $redirectTo = 'customer.index';
+        }
+
+        return redirect()->route($redirectTo)->with('success', 'Data Tiket Berhasil diupdate');
     }
 
 

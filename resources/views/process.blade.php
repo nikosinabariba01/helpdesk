@@ -279,6 +279,7 @@
                             @csrf
                             @method('PUT')
                             <input type="hidden" id="ticketId" name="ticketId" value="">
+                            <input type="hidden" name="redirect_to" value="{{ Route::currentRouteName() }}">
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
