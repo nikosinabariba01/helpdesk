@@ -57,16 +57,16 @@
                             data-email="{{ $user->email }}"
                             data-role="{{ $user->role }}"
                             data-created-at="{{ $user->created_at->timestamp ?? 0 }}">
-                            <td class="align-middle text-center text-sm border border-light" style="padding: 10px;">
+                            <td class="align-middle text-center text-sm" style="padding: 10px;">
                                 <span class="text-secondary text-xs font-weight-bold">{{ $user->name }}</span>
                             </td>
-                            <td class="align-middle text-center text-sm border border-light" style="padding: 10px;">
+                            <td class="align-middle text-center text-sm" style="padding: 10px;">
                                 <span class="text-secondary text-xs font-weight-bold">{{ $user->email }}</span>
                             </td>
-                            <td class="align-middle text-center text-sm border border-light" style="padding: 10px;">
-                                <span class="badge bg-secondary">{{ $user->role }}</span>
+                            <td class="align-middle text-center text-sm" style="padding: 10px;">
+                                <span class="text-secondary text-xs font-weight-bold">{{ $user->role }}</span>
                             </td>
-                            <td class="align-middle text-center text-sm border border-light" style="padding: 10px;">
+                            <td class="align-middle text-center text-sm" style="padding: 10px;">
                                 <div class="dropdown">
                                     <a class="btn text-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink{{ $user->id }}" data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class=""></i>
