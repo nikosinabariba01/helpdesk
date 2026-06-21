@@ -734,6 +734,37 @@
     </script>
 
     <style>
+        /* Card Stat - Layout untuk dashboard cards */
+        .card-body.card-stat {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 100px;
+        }
+
+        .card-stat .numbers {
+            flex: 1;
+        }
+
+        .card-stat-title {
+            font-size: 11px;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .card-stat-value {
+            font-size: 28px;
+            line-height: 1.2;
+        }
+
+        .card-stat-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 12px;
+            flex-shrink: 0;
+        }
+
         /* Tetapkan space untuk ikon supaya kolom tidak bergeser */
         th.sorting {
             position: relative;
