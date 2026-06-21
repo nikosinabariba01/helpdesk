@@ -113,59 +113,46 @@
                                             <span
                                                 class="text-secondary text-xs font-weight-bold ">{{ Str::limit($dataticket->Detail, 40, '...') }}</span>
                                         </td>
+                                        <!-- "Edit" button within a dropdown -->
                                         <td class="align-middle text-center border border-light">
-                                            @php
-                                                $ticketStatus = strtolower($dataticket->status);
-                                            @endphp
-
                                             <div class="dropdown">
-                                                <a class="btn text-primary dropdown-toggle mb-0" href="#"
-                                                    role="button" id="dropdownMenuLink{{ $dataticket->id }}"
-                                                    data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <i class="fa fa-ellipsis-v"></i>
+                                                <a class="btn text-primary dropdown-toggle" href="#" role="button"
+                                                    id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class=""></i>
                                                 </a>
-
                                                 <ul class="dropdown-menu dropdown-menu-end"
-                                                    aria-labelledby="dropdownMenuLink{{ $dataticket->id }}">
-
-                                                    {{-- Detail: semua status bisa --}}
+                                                    aria-labelledby="dropdownMenuLink">
+                                                    <li>
                                                     <li>
                                                         <a class="dropdown-item text-info"
                                                             href="{{ route('viewtickets.index', ['id' => $dataticket->id]) }}">
                                                             <i class="fa fa-eye pe-2 text-info"></i>Detail
                                                         </a>
                                                     </li>
+                                                    <a class="dropdown-item" href="#" data-bs-toggle="modal"
+                                                        data-bs-target="#exampleModalMessage"
+                                                        data-ticket-id="{{ $dataticket->id }}"
+                                                        data-ticket-subject="{{ $dataticket->subject }}"
+                                                        data-ticket-jenis="{{ $dataticket->Jenis_Pengaduan }}"
+                                                        data-ticket-lokasi="{{ $dataticket->Lokasi }}"
+                                                        data-ticket-detail="{{ $dataticket->Detail }}">
+                                                        <i class="fa fa-pencil pe-2 text-success"></i>edit
+                                                    </a>
 
-                                                    {{-- Edit: hanya open, on process, dan escalated --}}
-                                                    @if (in_array($ticketStatus, ['open', 'on process', 'escalated']))
-                                                        <li>
-                                                            <a class="dropdown-item text-success" href="#"
-                                                                data-bs-toggle="modal" data-bs-target="#exampleModalMessage"
-                                                                data-ticket-id="{{ $dataticket->id }}"
-                                                                data-ticket-subject="{{ $dataticket->subject }}"
-                                                                data-ticket-jenis="{{ $dataticket->Jenis_Pengaduan }}"
-                                                                data-ticket-lokasi="{{ $dataticket->Lokasi }}"
-                                                                data-ticket-detail="{{ $dataticket->Detail }}">
-                                                                <i class="fa fa-pencil pe-2 text-success"></i>Edit
-                                                            </a>
-                                                        </li>
-                                                    @endif
-
-                                                    {{-- Delete: hanya open --}}
-                                                    @if ($ticketStatus === 'open')
+                                                    </li>
+                                                    @if ($dataticket->status === 'open')
                                                         <li>
                                                             <form method="POST"
                                                                 action="{{ route('tickets.destroy', $dataticket->id) }}">
-                                                                @csrf
                                                                 @method('delete')
+                                                                @csrf
                                                                 <button type="submit" class="dropdown-item text-danger"
-                                                                    onclick="return confirm('Are you sure?')">
-                                                                    <i class="fa fa-trash pe-2 text-danger"></i>Delete
-                                                                </button>
+                                                                    href="#"
+                                                                    onclick="return confirm ('are you sure?')"><i
+                                                                        class="fa fa-trash pe-2 text-danger"></i>delete</button>
                                                             </form>
                                                         </li>
                                                     @endif
-
                                                 </ul>
                                             </div>
                                         </td>
@@ -665,6 +652,16 @@
 
 <!-- Modal -->
 
+<script>
+    // Menangani peristiwa klik pada tombol edit
+    document.getElementById('editButton').addEventListener('click', function() {
+        // Memanggil modal dengan menggunakan modal('show')
+        var myModal = new bootstrap.Modal(document.getElementById('exampleModalMessage'));
+        myModal.show();
+    });
+</script>
+
+<!-- Add this script at the end of your HTML file or in a separate script file -->
 <script>
     // Menangani peristiwa klik pada tombol edit
     document.getElementById('editButton').addEventListener('click', function() {
