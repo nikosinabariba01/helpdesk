@@ -41,17 +41,17 @@
             </div>
             @else
             <div class="table-responsive margin-right: 15px;" style="height: 400px; max-height: 400px; overflow-y: auto;">
-                <table class="table align-items-center mb-0" id="UserTable">
+                <table class="table align-items-center mb-0" id="UserTable" style="table-layout: fixed; width: 100%;">
                     <thead>
                         <tr>
                             <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
-                                style="padding: 10px;">Nama</th>
+                                style="padding: 10px; width: 25%;">Nama</th>
                             <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
-                                style="padding: 10px;">Email</th>
+                                style="padding: 10px; width: 35%;">Email</th>
                             <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
-                                style="padding: 10px;">Role</th>
+                                style="padding: 10px; width: 20%;">Role</th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
-                                style="padding: 10px;">Aksi</th>
+                                style="padding: 10px; width: 20%;">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -61,16 +61,16 @@
                             data-email="{{ $user->email }}"
                             data-role="{{ $user->role }}"
                             data-created-at="{{ $user->created_at->timestamp ?? 0 }}">
-                            <td class="align-middle text-center text-sm" style="padding: 10px;">
+                            <td class="align-middle text-center text-sm" style="padding: 10px; width: 25%; word-wrap: break-word; overflow-wrap: break-word;">
                                 <span class="text-secondary text-xs font-weight-bold">{{ $user->name }}</span>
                             </td>
-                            <td class="align-middle text-center text-sm" style="padding: 10px;">
+                            <td class="align-middle text-center text-sm" style="padding: 10px; width: 35%; word-wrap: break-word; overflow-wrap: break-word;">
                                 <span class="text-secondary text-xs font-weight-bold">{{ $user->email }}</span>
                             </td>
-                            <td class="align-middle text-center text-sm" style="padding: 10px;">
+                            <td class="align-middle text-center text-sm" style="padding: 10px; width: 20%; word-wrap: break-word; overflow-wrap: break-word;">
                                 <span class="text-secondary text-xs font-weight-bold">{{ $user->role }}</span>
                             </td>
-                            <td class="align-middle text-center text-sm" style="padding: 10px;">
+                            <td class="align-middle text-center text-sm" style="padding: 10px; width: 20%;">
                                 <div class="dropdown">
                                     <a class="btn text-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink{{ $user->id }}" data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class=""></i>
