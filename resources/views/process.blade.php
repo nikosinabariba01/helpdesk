@@ -122,7 +122,6 @@
                                                 <a class="btn text-primary dropdown-toggle mb-0" href="#"
                                                     role="button" id="dropdownMenuLink{{ $dataticket->id }}"
                                                     data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <i class="fa fa-ellipsis-v"></i>
                                                 </a>
 
                                                 <ul class="dropdown-menu dropdown-menu-end"
