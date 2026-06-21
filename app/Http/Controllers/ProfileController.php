@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class ProfileController extends Controller
@@ -86,6 +87,46 @@ class ProfileController extends Controller
 
         // Bisa tambahkan cek autentikasi/otorisasi di sini jika perlu
         return Response::file($path);
+    }
+
+    public function changePassword(Request $request)
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|string|min:8|confirmed|different:current_password',
+        ], [
+            'current_password.required' => 'Password lama wajib diisi.',
+            'new_password.required' => 'Password baru wajib diisi.',
+            'new_password.min' => 'Password baru minimal 8 karakter.',
+            'new_password.confirmed' => 'Konfirmasi password baru tidak sesuai.',
+            'new_password.different' => 'Password baru tidak boleh sama dengan password lama.',
+        ]);
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            if ($user->role == 'pengurus' || $user->role == 'pemilik' || $user->role == 'admin') {
+                return redirect()->route('teknisi.profile')
+                    ->withErrors(['current_password' => 'Password lama tidak sesuai.'])
+                    ->with('password_modal', true);
+            } else {
+                return redirect()->route('customer.profile')
+                    ->withErrors(['current_password' => 'Password lama tidak sesuai.'])
+                    ->with('password_modal', true);
+            }
+        }
+
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        if ($user->role == 'pengurus' || $user->role == 'pemilik' || $user->role == 'admin') {
+            return redirect()->route('teknisi.profile')
+                ->with('success', 'Password berhasil diubah.');
+        } else {
+            return redirect()->route('customer.profile')
+                ->with('success', 'Password berhasil diubah.');
+        }
     }
 
     // Redirect dengan pesan sukses
