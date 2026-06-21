@@ -20,28 +20,27 @@
 @section('container')
 <div class="card mb-4">
     <div class="card z-index-2 h-100 d-flex flex-column shadow-lg" style="border: 1px solid #e4e4e4;">
-        <div class="card-header pb-0 d-flex align-items-center justify-content-between">
+        <div class="card-header pb-3 pt-3 d-flex align-items-center justify-content-between">
             <div>
-                <h6 class="mb-0">Manage User</h6>
+                <h6 class="mb-3">Manage User</h6>
+                <a href="{{ route('user.create') }}" class="btn btn-primary btn-sm">Create User</a>
             </div>
-            <div class="d-flex gap-2">
+            <div class="d-flex">
                 <!-- Kolom Pencarian dengan input-group -->
                 <div class="input-group input-group-sm">
                     <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
                     <input type="text" id="search" class="form-control" placeholder="Search"
                         onfocus="focused(this)" onfocusout="defocused(this)">
                 </div>
-                <!-- Create User Button -->
-                <a href="{{ route('user.create') }}" class="btn btn-primary btn-sm">Create User</a>
             </div>
         </div>
         <div class="card-body px-0 pt-0 pb-2 h-500">
             @if($users->isEmpty())
-            <div class="table-responsive" style="height: 400px; max-height: 400px; overflow-y: auto;">
+            <div class="table-responsive margin-right: 15px; position: relative;" style="height: 400px; max-height: 400px; overflow-y: auto;">
                 <a href="{{ route('user.create') }}" class="btn btn-primary position-absolute top-50 start-50 translate-middle">Create New User</a>
             </div>
             @else
-            <div class="table-responsive" style="height: 400px; max-height: 400px; overflow-y: auto;">
+            <div class="table-responsive margin-right: 15px;" style="height: 400px; max-height: 400px; overflow-y: auto;">
                 <table class="table align-items-center mb-0" id="UserTable">
                     <thead>
                         <tr>
