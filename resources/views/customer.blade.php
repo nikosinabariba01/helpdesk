@@ -802,6 +802,24 @@
         }
     </style>
 
+    <style>
+        /* Pastikan ikon benar-benar terpusat di dalam circle */
+        .icon.icon-shape {
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        /* Atur tampilan <i> supaya tidak bergeser karena baseline font */
+        .icon.icon-shape i {
+            display: block;
+            line-height: 1;
+            vertical-align: middle;
+            transform: translateY(0.2px);
+            font-size: 18px; /* sesuaikan jika perlu */
+        }
+    </style>
+
 @endsection
 
 <!-- Modal -->
