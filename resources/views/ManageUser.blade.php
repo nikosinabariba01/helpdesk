@@ -20,9 +20,12 @@
 @section('container')
 <div class="card mb-4">
     <div class="card z-index-2 h-100 d-flex flex-column shadow-lg" style="border: 1px solid #e4e4e4;">
-        <div class="card-header pb-0 d-flex align-items-center justify-content-between">
-            <h6 class="mb-0">Manage User</h6>
-            <div class="d-flex gap-2">
+        <div class="card-header pb-3 pt-3 d-flex align-items-center justify-content-between">
+            <div>
+                <h6 class="mb-3">Manage User</h6>
+                <a href="{{ route('user.create') }}" class="btn btn-primary btn-sm">Create User</a>
+            </div>
+            <div class="d-flex">
                 <!-- Kolom Pencarian dengan input-group -->
                 <div class="input-group input-group-sm">
                     <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
@@ -98,9 +101,6 @@
 
                 <!-- Left side: Filters / Dropdowns -->
                 <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-                    <!-- Create User Button -->
-                    <a href="{{ route('user.create') }}" class="btn btn-primary btn-sm">Create User</a>
-                    
                     <!-- Sort Dropdown -->
                     <div class="dropdown" style="position: relative;">
                         <button class="btn btn-sm btn-outline-secondary"
