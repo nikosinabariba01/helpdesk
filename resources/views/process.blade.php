@@ -52,7 +52,8 @@
                     }
                 </style>
                 @if ($data_ticket->isEmpty())
-                    <div class="table-responsive margin-right: 15px; position: relative; table-responsive-custom" style="overflow-y: auto;">
+                    <div class="table-responsive margin-right: 15px; position: relative; table-responsive-custom"
+                        style="overflow-y: auto;">
                         <!-- Add your button here -->
                         <a href="{{ route('customer.tickets') }}"
                             class="btn btn-primary position-absolute top-50 start-50 translate-middle">Buat Tiket</a>
@@ -113,10 +114,60 @@
                                                 class="text-secondary text-xs font-weight-bold ">{{ Str::limit($dataticket->Detail, 40, '...') }}</span>
                                         </td>
                                         <td class="align-middle text-center border border-light">
-                                            <a class="dropdown-item"
-                                                href="{{ route('viewtickets.index', ['id' => $dataticket->id]) }}">
-                                                <i class="fa fa-eye pe-2 text-dark"></i>
-                                            </a>
+                                            @php
+                                                $ticketStatus = strtolower($dataticket->status);
+                                            @endphp
+
+                                            <div class="dropdown">
+                                                <a class="btn text-primary dropdown-toggle mb-0" href="#"
+                                                    role="button" id="dropdownMenuLink{{ $dataticket->id }}"
+                                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="fa fa-ellipsis-v"></i>
+                                                </a>
+
+                                                <ul class="dropdown-menu dropdown-menu-end"
+                                                    aria-labelledby="dropdownMenuLink{{ $dataticket->id }}">
+
+                                                    {{-- Detail: semua status bisa --}}
+                                                    <li>
+                                                        <a class="dropdown-item text-info"
+                                                            href="{{ route('viewtickets.index', ['id' => $dataticket->id]) }}">
+                                                            <i class="fa fa-eye pe-2 text-info"></i>Detail
+                                                        </a>
+                                                    </li>
+
+                                                    {{-- Edit: hanya open, on process, dan escalated --}}
+                                                    @if (in_array($ticketStatus, ['open', 'on process', 'escalated']))
+                                                        <li>
+                                                            <a class="dropdown-item text-success" href="#"
+                                                                data-bs-toggle="modal" data-bs-target="#exampleModalMessage"
+                                                                data-ticket-id="{{ $dataticket->id }}"
+                                                                data-ticket-subject="{{ $dataticket->subject }}"
+                                                                data-ticket-jenis="{{ $dataticket->Jenis_Pengaduan }}"
+                                                                data-ticket-lokasi="{{ $dataticket->Lokasi }}"
+                                                                data-ticket-detail="{{ $dataticket->Detail }}">
+                                                                <i class="fa fa-pencil pe-2 text-success"></i>Edit
+                                                            </a>
+                                                        </li>
+                                                    @endif
+
+                                                    {{-- Delete: hanya open --}}
+                                                    @if ($ticketStatus === 'open')
+                                                        <li>
+                                                            <form method="POST"
+                                                                action="{{ route('tickets.destroy', $dataticket->id) }}">
+                                                                @csrf
+                                                                @method('delete')
+                                                                <button type="submit" class="dropdown-item text-danger"
+                                                                    onclick="return confirm('Are you sure?')">
+                                                                    <i class="fa fa-trash pe-2 text-danger"></i>Delete
+                                                                </button>
+                                                            </form>
+                                                        </li>
+                                                    @endif
+
+                                                </ul>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -126,68 +177,83 @@
                     </div>
                     <div style="padding: 15px 16px; border-top: 1px solid #e4e4e4; background-color: #ffffff;"
                         class="d-flex flex-column flex-md-row justify-content-between align-items-center flex-wrap">
-                    <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-                        <!-- Sort Dropdown -->
-                        <div class="dropdown" style="position: relative;">
-                            <button class="btn btn-sm btn-outline-secondary"
-                                style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                <span id="paginationDisplay">1-10 dari {{ $data_ticket->count() }}</span>
-                                <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
-                            </button>
-                            <ul class="dropdown-menu" style="font-size: 13px; min-width: 150px;">
-                                <li><a class="dropdown-item page-sort-option" href="#" data-sort="desc"><i class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru</a></li>
-                                <li><a class="dropdown-item page-sort-option" href="#" data-sort="asc"><i class="fa fa-arrow-up me-2" style="color: #6c757d;"></i>Terlama</a></li>
-                            </ul>
+                        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                            <!-- Sort Dropdown -->
+                            <div class="dropdown" style="position: relative;">
+                                <button class="btn btn-sm btn-outline-secondary"
+                                    style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span id="paginationDisplay">1-10 dari {{ $data_ticket->count() }}</span>
+                                    <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
+                                </button>
+                                <ul class="dropdown-menu" style="font-size: 13px; min-width: 150px;">
+                                    <li><a class="dropdown-item page-sort-option" href="#" data-sort="desc"><i
+                                                class="fa fa-arrow-down me-2" style="color: #6c757d;"></i>Terbaru</a></li>
+                                    <li><a class="dropdown-item page-sort-option" href="#" data-sort="asc"><i
+                                                class="fa fa-arrow-up me-2" style="color: #6c757d;"></i>Terlama</a></li>
+                                </ul>
+                            </div>
+
+                            <!-- Filter Jenis Pengaduan -->
+                            <div class="dropdown" style="position: relative; display: inline-block;">
+                                <button class="btn btn-sm btn-outline-secondary"
+                                    style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
+                                    type="button" id="filterJenisPengaduanBtn" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    <span id="filterJenisPengaduanDisplay">Jenis Pengaduan</span>
+                                    <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="filterJenisPengaduanBtn"
+                                    style="font-size: 13px; min-width: 150px;">
+                                    <li><a class="dropdown-item filter-option" href="#"
+                                            data-filter-type="jenis_pengaduan" data-filter-value="">Semua</a></li>
+                                    <li><a class="dropdown-item filter-option" href="#"
+                                            data-filter-type="jenis_pengaduan" data-filter-value="perbaikan">Perbaikan</a>
+                                    </li>
+                                    <li><a class="dropdown-item filter-option" href="#"
+                                            data-filter-type="jenis_pengaduan"
+                                            data-filter-value="permintaan">Permintaan</a></li>
+                                </ul>
+                            </div>
+
+                            <!-- Filter Status -->
+                            <div class="dropdown" style="position: relative; display: inline-block;">
+                                <button class="btn btn-sm btn-outline-secondary"
+                                    style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
+                                    type="button" id="filterStatusBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span id="filterStatusDisplay">Status</span>
+                                    <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="filterStatusBtn"
+                                    style="font-size: 13px; min-width: 150px;">
+                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
+                                            data-filter-value="">Semua</a></li>
+                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
+                                            data-filter-value="open">Open</a></li>
+                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
+                                            data-filter-value="on process">On Process</a></li>
+                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
+                                            data-filter-value="escalated">Escalated</a></li>
+                                    <li><a class="dropdown-item filter-option" href="#" data-filter-type="status"
+                                            data-filter-value="close">Close</a></li>
+                                </ul>
+                            </div>
                         </div>
 
-                        <!-- Filter Jenis Pengaduan -->
-                        <div class="dropdown" style="position: relative; display: inline-block;">
-                            <button class="btn btn-sm btn-outline-secondary"
-                                style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
-                                type="button" id="filterJenisPengaduanBtn" data-bs-toggle="dropdown" aria-expanded="false">
-                                <span id="filterJenisPengaduanDisplay">Jenis Pengaduan</span>
-                                <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
+                        <!-- Right side: Pagination -->
+                        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                            <button id="prevPage" class="btn btn-sm btn-outline-secondary"
+                                style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;"
+                                title="Halaman Sebelumnya">
+                                <i class="fa fa-chevron-left" style="font-size: 11px;"></i>
                             </button>
-                            <ul class="dropdown-menu" aria-labelledby="filterJenisPengaduanBtn" style="font-size: 13px; min-width: 150px;">
-                                <li><a class="dropdown-item filter-option" href="#" data-filter-type="jenis_pengaduan" data-filter-value="">Semua</a></li>
-                                <li><a class="dropdown-item filter-option" href="#" data-filter-type="jenis_pengaduan" data-filter-value="perbaikan">Perbaikan</a></li>
-                                <li><a class="dropdown-item filter-option" href="#" data-filter-type="jenis_pengaduan" data-filter-value="permintaan">Permintaan</a></li>
-                            </ul>
-                        </div>
-
-                        <!-- Filter Status -->
-                        <div class="dropdown" style="position: relative; display: inline-block;">
-                            <button class="btn btn-sm btn-outline-secondary"
-                                style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
-                                type="button" id="filterStatusBtn" data-bs-toggle="dropdown" aria-expanded="false">
-                                <span id="filterStatusDisplay">Status</span>
-                                <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
+                            <button id="nextPage" class="btn btn-sm btn-outline-secondary"
+                                style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;"
+                                title="Halaman Berikutnya">
+                                <i class="fa fa-chevron-right" style="font-size: 11px;"></i>
                             </button>
-                            <ul class="dropdown-menu" aria-labelledby="filterStatusBtn" style="font-size: 13px; min-width: 150px;">
-                                <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="">Semua</a></li>
-                                <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="open">Open</a></li>
-                                <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="on process">On Process</a></li>
-                                <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="escalated">Escalated</a></li>
-                                <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="close">Close</a></li>
-                            </ul>
                         </div>
                     </div>
-
-                    <!-- Right side: Pagination -->
-                    <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-                        <button id="prevPage" class="btn btn-sm btn-outline-secondary"
-                            style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;"
-                            title="Halaman Sebelumnya">
-                            <i class="fa fa-chevron-left" style="font-size: 11px;"></i>
-                        </button>
-                        <button id="nextPage" class="btn btn-sm btn-outline-secondary"
-                            style="border-color: #dee2e6; color: #495057; background-color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 32px; cursor: pointer;"
-                            title="Halaman Berikutnya">
-                            <i class="fa fa-chevron-right" style="font-size: 11px;"></i>
-                        </button>
-                    </div>
-                </div>
                 @endif
             </div>
         </div>
@@ -599,16 +665,6 @@
 
 <!-- Modal -->
 
-<script>
-    // Menangani peristiwa klik pada tombol edit
-    document.getElementById('editButton').addEventListener('click', function() {
-        // Memanggil modal dengan menggunakan modal('show')
-        var myModal = new bootstrap.Modal(document.getElementById('exampleModalMessage'));
-        myModal.show();
-    });
-</script>
-
-<!-- Add this script at the end of your HTML file or in a separate script file -->
 <script>
     // Menangani peristiwa klik pada tombol edit
     document.getElementById('editButton').addEventListener('click', function() {
