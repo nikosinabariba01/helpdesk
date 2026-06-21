@@ -18,6 +18,7 @@
 
 @section('container')
 
+    <!-- Open Ticket -->
     <div class="col-xl-3 col-sm-6 col-6 mb-xl-0 mb-4">
         <div class="card">
             <div class="card-body p-3"
@@ -30,14 +31,15 @@
                     </h5>
                 </div>
                 <div class="d-flex align-items-center justify-content-center" style="flex: 0 0 auto; margin-left: 12px;">
-                    <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle"
-                        style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
-                        <i class="fa fa-copy text-lg opacity-10" aria-hidden="true"></i>
+                    <div class="icon icon-shape text-center rounded-circle"
+                        style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: rgba(46,204,113,1);">
+                        <i class="fa fa-ticket text-lg opacity-10" aria-hidden="true"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <!-- On Process Ticket -->
     <div class="col-xl-3 col-sm-6 col-6 mb-xl-0 mb-4">
         <div class="card">
             <div class="card-body p-3"
@@ -50,35 +52,16 @@
                     </h5>
                 </div>
                 <div class="d-flex align-items-center justify-content-center" style="flex: 0 0 auto; margin-left: 12px;">
-                    <div class="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle"
-                        style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
-                        <i class="fa fa-clipboard text-lg opacity-10" aria-hidden="true"></i>
+                    <div class="icon icon-shape text-center rounded-circle"
+                        style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: rgba(245,158,11,1);">
+                        <i class="fa fa-spinner text-lg opacity-10" aria-hidden="true"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <!-- Escalation Ticket -->
     <div class="col-xl-3 col-sm-6 col-6 mb-xl-0 mb-4">
-        <div class="card">
-            <div class="card-body p-3"
-                style="min-height: 120px; display: flex; align-items: center; justify-content: space-between;">
-                <div class="numbers" style="flex: 1;">
-                    <p class="text-sm mb-2 text-uppercase font-weight-bold" style="font-size: 11px; letter-spacing: 0.5px;">
-                        Close</p>
-                    <h5 class="font-weight-bolder mb-0" style="font-size: 28px; line-height: 1.2;">
-                        {{ $closedtic }}
-                    </h5>
-                </div>
-                <div class="d-flex align-items-center justify-content-center" style="flex: 0 0 auto; margin-left: 12px;">
-                    <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle"
-                        style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
-                        <i class="fa fa-minus text-lg opacity-10" aria-hidden="true"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-xl-3 col-sm-6 col-6">
         <div class="card">
             <div class="card-body p-3"
                 style="min-height: 120px; display: flex; align-items: center; justify-content: space-between;">
@@ -90,9 +73,30 @@
                     </h5>
                 </div>
                 <div class="d-flex align-items-center justify-content-center" style="flex: 0 0 auto; margin-left: 12px;">
-                    <div class="icon icon-shape bg-gradient-warning shadow-warning text-center rounded-circle"
-                        style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
-                        <i class="fa fa-folder text-lg opacity-10" aria-hidden="true"></i>
+                    <div class="icon icon-shape text-center rounded-circle"
+                        style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: rgba(94,114,228,1);">
+                        <i class="fa fa-flag text-lg opacity-10" aria-hidden="true"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Closed Ticket -->
+    <div class="col-xl-3 col-sm-6 col-6">
+        <div class="card">
+            <div class="card-body p-3"
+                style="min-height: 120px; display: flex; align-items: center; justify-content: space-between;">
+                <div class="numbers" style="flex: 1;">
+                    <p class="text-sm mb-2 text-uppercase font-weight-bold" style="font-size: 11px; letter-spacing: 0.5px;">
+                        Close</p>
+                    <h5 class="font-weight-bolder mb-0" style="font-size: 28px; line-height: 1.2;">
+                        {{ $closedtic }}
+                    </h5>
+                </div>
+                <div class="d-flex align-items-center justify-content-center" style="flex: 0 0 auto; margin-left: 12px;">
+                    <div class="icon icon-shape text-center rounded-circle"
+                        style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: rgba(255,0,0,1);">
+                        <i class="fa fa-archive text-lg opacity-10" aria-hidden="true"></i>
                     </div>
                 </div>
             </div>
@@ -799,24 +803,6 @@
 
         th.sorting .sort-icons::after {
             content: "▼";
-        }
-    </style>
-
-    <style>
-        /* Pastikan ikon benar-benar terpusat di dalam circle */
-        .icon.icon-shape {
-            display: inline-flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-        }
-
-        /* Atur tampilan <i> supaya tidak bergeser karena baseline font */
-        .icon.icon-shape i {
-            display: block;
-            line-height: 1;
-            vertical-align: middle;
-            transform: translateY(0.2px);
-            font-size: 18px; /* sesuaikan jika perlu */
         }
     </style>
 
