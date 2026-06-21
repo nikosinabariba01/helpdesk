@@ -103,7 +103,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('customer/viewticket/{id}', [ViewTicketController::class, 'index'])->name('viewtickets.index')->middleware('userAkses:penyewa,admin');
     Route::post('/Profile/update', [ProfileController::class, 'updatecustomer'])->name('customer.profileupdate')->middleware('userAkses:pengurus,pemilik,admin,penyewa');
-
+    Route::post('/profile/change-password', [ProfileController::class, 'changePassword'])->name('profile.change-password')->middleware('userAkses:pengurus,pemilik,admin,penyewa');
     Route::get('/customer/ticket', [TicketController::class, 'index'])->name('customer.tickets')->middleware('userAkses:penyewa,admin');
     Route::post('/customer/ticket', [TicketController::class, 'store'])->name('tickets.store')->middleware('userAkses:penyewa,admin');
     Route::put('/customer/ticket/{id}', [TicketController::class, 'update'])->name('tickets.update')->middleware('userAkses:penyewa,admin');
