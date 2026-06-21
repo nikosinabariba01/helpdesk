@@ -113,43 +113,56 @@
                                             <span
                                                 class="text-secondary text-xs font-weight-bold ">{{ Str::limit($dataticket->Detail, 40, '...') }}</span>
                                         </td>
-                                        <!-- "Edit" button within a dropdown -->
                                         <td class="align-middle text-center border border-light">
+                                            @php
+                                                $ticketStatus = strtolower($dataticket->status);
+                                            @endphp
+
                                             <div class="dropdown">
-                                                <a class="btn text-primary dropdown-toggle" href="#" role="button"
-                                                    id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <i class=""></i>
+                                                <a class="btn text-primary dropdown-toggle mb-0" href="#"
+                                                    role="button" id="dropdownMenuLink{{ $dataticket->id }}"
+                                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="fa fa-ellipsis-v"></i>
                                                 </a>
+
                                                 <ul class="dropdown-menu dropdown-menu-end"
-                                                    aria-labelledby="dropdownMenuLink">
-                                                    <li>
+                                                    aria-labelledby="dropdownMenuLink{{ $dataticket->id }}">
+
+                                                    {{-- Semua status bisa lihat detail --}}
                                                     <li>
                                                         <a class="dropdown-item text-info"
                                                             href="{{ route('viewtickets.index', ['id' => $dataticket->id]) }}">
                                                             <i class="fa fa-eye pe-2 text-info"></i>Detail
                                                         </a>
                                                     </li>
-                                                    <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                                        data-bs-target="#exampleModalMessage"
-                                                        data-ticket-id="{{ $dataticket->id }}"
-                                                        data-ticket-subject="{{ $dataticket->subject }}"
-                                                        data-ticket-jenis="{{ $dataticket->Jenis_Pengaduan }}"
-                                                        data-ticket-lokasi="{{ $dataticket->Lokasi }}"
-                                                        data-ticket-detail="{{ $dataticket->Detail }}">
-                                                        <i class="fa fa-pencil pe-2 text-success"></i>edit
-                                                    </a>
 
-                                                    </li>
-                                                    @if ($dataticket->status === 'open')
+                                                    {{-- Status open, on process, dan escalated bisa edit --}}
+                                                    @if (in_array($ticketStatus, ['open', 'on process', 'escalated']))
+                                                        <li>
+                                                            <a class="dropdown-item text-success" href="#"
+                                                                data-bs-toggle="modal" data-bs-target="#exampleModalMessage"
+                                                                data-ticket-id="{{ $dataticket->id }}"
+                                                                data-ticket-subject="{{ $dataticket->subject }}"
+                                                                data-ticket-jenis="{{ $dataticket->Jenis_Pengaduan }}"
+                                                                data-ticket-lokasi="{{ $dataticket->Lokasi }}"
+                                                                data-ticket-detail="{{ $dataticket->Detail }}">
+                                                                <i class="fa fa-pencil pe-2 text-success"></i>Edit
+                                                            </a>
+                                                        </li>
+                                                    @endif
+
+                                                    {{-- Hanya status open yang bisa delete --}}
+                                                    @if ($ticketStatus === 'open')
                                                         <li>
                                                             <form method="POST"
                                                                 action="{{ route('tickets.destroy', $dataticket->id) }}">
-                                                                @method('delete')
                                                                 @csrf
+                                                                @method('delete')
+
                                                                 <button type="submit" class="dropdown-item text-danger"
-                                                                    href="#"
-                                                                    onclick="return confirm ('are you sure?')"><i
-                                                                        class="fa fa-trash pe-2 text-danger"></i>delete</button>
+                                                                    onclick="return confirm('Are you sure?')">
+                                                                    <i class="fa fa-trash pe-2 text-danger"></i>Delete
+                                                                </button>
                                                             </form>
                                                         </li>
                                                     @endif
@@ -262,10 +275,10 @@
                         <!-- Tampilkan tombol untuk membuat tiket baru -->
                         <a href="{{ route('customer.index') }}" class="btn btn-primary">Buat Tiket Baru</a>
                     @else
-                        <form method="POST" action="{{ route('tickets.update', $dataticket->id) }}"
-                            enctype="multipart/form-data">
+                        <form method="POST" id="editTicketForm" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
+                            <input type="hidden" id="ticketId" name="ticketId" value="">
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
@@ -325,7 +338,7 @@
                                 <div class="col-md-6">
                                     <label for="gambar">Gambar Pendukung</label>
                                     <input class="form-control form-control-sm" id="gambar" name="gambar"
-                                        type="file">
+                                        type="file" accept="image/*">
                                     @error('gambar')
                                         <p class="text-danger">{{ $message }}</p>
                                     @enderror
@@ -586,6 +599,37 @@
         });
     </script>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('exampleModalMessage');
+
+            if (modal) {
+                modal.addEventListener('show.bs.modal', function(event) {
+                    const button = event.relatedTarget;
+
+                    if (!button) {
+                        return;
+                    }
+
+                    const ticketId = button.getAttribute('data-ticket-id');
+                    const ticketSubject = button.getAttribute('data-ticket-subject');
+                    const ticketJenis = button.getAttribute('data-ticket-jenis');
+                    const ticketLokasi = button.getAttribute('data-ticket-lokasi');
+                    const ticketDetail = button.getAttribute('data-ticket-detail');
+
+                    const form = modal.querySelector('#editTicketForm');
+
+                    form.action = "{{ url('/tickets') }}/" + ticketId;
+                    form.querySelector('#ticketId').value = ticketId;
+                    form.querySelector('#subject').value = ticketSubject;
+                    form.querySelector('#Jenis_Pengaduan').value = ticketJenis;
+                    form.querySelector('#Lokasi').value = ticketLokasi;
+                    form.querySelector('#Detail').value = ticketDetail;
+                });
+            }
+        });
+    </script>
+
     <style>
         /* Tetapkan space untuk ikon supaya kolom tidak bergeser */
         th.sorting {
@@ -649,76 +693,3 @@
     </style>
 
 @endsection
-
-<!-- Modal -->
-
-
-<script>
-    // Menangani peristiwa klik pada tombol edit
-    document.getElementById('editButton').addEventListener('click', function() {
-        // Memanggil modal dengan menggunakan modal('show')
-        var myModal = new bootstrap.Modal(document.getElementById('exampleModalMessage'));
-        myModal.show();
-    });
-</script>
-
-<!-- Add this script at the end of your HTML file or in a separate script file -->
-<script>
-    // Menangani peristiwa klik pada tombol edit
-    document.getElementById('editButton').addEventListener('click', function() {
-        // Memanggil modal dengan menggunakan modal('show')
-        var myModal = new bootstrap.Modal(document.getElementById('exampleModalMessage'));
-        myModal.show();
-    });
-</script>
-
-<!-- Add this script at the end of your HTML file or in a separate script file -->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const modal = document.getElementById('exampleModalMessage');
-        modal.addEventListener('show.bs.modal', function(event) {
-            const button = event.relatedTarget;
-            const ticketId = button.getAttribute('data-ticket-id');
-            const ticketSubject = button.getAttribute('data-ticket-subject');
-            const ticketJenis = button.getAttribute('data-ticket-jenis');
-            const ticketLokasi = button.getAttribute('data-ticket-lokasi');
-            const ticketDetail = button.getAttribute('data-ticket-detail');
-
-            const form = modal.querySelector('#editTicketForm');
-            form.action = `/tickets/${ticketId}`;
-            form.querySelector('#ticketId').value = ticketId;
-            form.querySelector('#subject').value = ticketSubject;
-            form.querySelector('#Jenis_Pengaduan').value = ticketJenis;
-            form.querySelector('#Lokasi').value = ticketLokasi;
-            form.querySelector('#Detail').value = ticketDetail;
-        });
-
-        // Handle announcement modal
-        const announcementModal = document.getElementById('announcementModal');
-        announcementModal.addEventListener('show.bs.modal', function(event) {
-            const button = event.relatedTarget;
-            const judul = button.getAttribute('data-pengumuman-judul');
-            const deskripsi = button.getAttribute('data-pengumuman-deskripsi');
-            const creatorName = button.getAttribute('data-creator-name');
-            const creatorRole = button.getAttribute('data-creator-role');
-            const creatorPhoto = button.getAttribute('data-creator-photo');
-            const createdAt = button.getAttribute('data-created-at');
-
-            document.getElementById('modalJudul').textContent = judul;
-            document.getElementById('modalDeskripsi').textContent = deskripsi;
-            document.getElementById('modalCreatorName').textContent = creatorName;
-            document.getElementById('modalCreatorRole').textContent = creatorRole;
-            document.getElementById('modalCreatorPhoto').src = creatorPhoto;
-            document.getElementById('modalCreatedAt').textContent = new Date(createdAt)
-                .toLocaleDateString('id-ID', {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-            document.getElementById('modalTimeAgo').textContent = moment(createdAt).fromNow();
-        });
-    });
-</script>
