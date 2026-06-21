@@ -652,6 +652,7 @@
 
 <!-- Modal -->
 
+
 <script>
     // Menangani peristiwa klik pada tombol edit
     document.getElementById('editButton').addEventListener('click', function() {
@@ -674,28 +675,50 @@
 <!-- Add this script at the end of your HTML file or in a separate script file -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Get the modal element
         const modal = document.getElementById('exampleModalMessage');
-
-        // Attach an event listener to the modal when it is shown
         modal.addEventListener('show.bs.modal', function(event) {
-            // Extract the button that triggered the modal
             const button = event.relatedTarget;
-
-            // Extract ticket details from the button's data attributes
             const ticketId = button.getAttribute('data-ticket-id');
             const ticketSubject = button.getAttribute('data-ticket-subject');
             const ticketJenis = button.getAttribute('data-ticket-jenis');
             const ticketLokasi = button.getAttribute('data-ticket-lokasi');
             const ticketDetail = button.getAttribute('data-ticket-detail');
-            const ticketgambar = button.getAttribute('data-ticket-gambar');
 
-            // Set the form values based on the ticket details
-            modal.querySelector('#subject').value = ticketSubject;
-            modal.querySelector('#Jenis_Pengaduan').value = ticketJenis;
-            modal.querySelector('#Lokasi').value = ticketLokasi;
-            modal.querySelector('#Detail').value = ticketDetail;
-            modal.querySelector('#gambar').value = ticketgambar;
+            const form = modal.querySelector('#editTicketForm');
+            form.action = `/tickets/${ticketId}`;
+            form.querySelector('#ticketId').value = ticketId;
+            form.querySelector('#subject').value = ticketSubject;
+            form.querySelector('#Jenis_Pengaduan').value = ticketJenis;
+            form.querySelector('#Lokasi').value = ticketLokasi;
+            form.querySelector('#Detail').value = ticketDetail;
+        });
+
+        // Handle announcement modal
+        const announcementModal = document.getElementById('announcementModal');
+        announcementModal.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            const judul = button.getAttribute('data-pengumuman-judul');
+            const deskripsi = button.getAttribute('data-pengumuman-deskripsi');
+            const creatorName = button.getAttribute('data-creator-name');
+            const creatorRole = button.getAttribute('data-creator-role');
+            const creatorPhoto = button.getAttribute('data-creator-photo');
+            const createdAt = button.getAttribute('data-created-at');
+
+            document.getElementById('modalJudul').textContent = judul;
+            document.getElementById('modalDeskripsi').textContent = deskripsi;
+            document.getElementById('modalCreatorName').textContent = creatorName;
+            document.getElementById('modalCreatorRole').textContent = creatorRole;
+            document.getElementById('modalCreatorPhoto').src = creatorPhoto;
+            document.getElementById('modalCreatedAt').textContent = new Date(createdAt)
+                .toLocaleDateString('id-ID', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            document.getElementById('modalTimeAgo').textContent = moment(createdAt).fromNow();
         });
     });
 </script>
