@@ -44,10 +44,14 @@
                 <table class="table align-items-center mb-0" id="UserTable">
                     <thead>
                         <tr>
-                            <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Nama</th>
-                            <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Email</th>
-                            <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Role</th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="padding: 10px;">Aksi</th>
+                            <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
+                                style="padding: 10px;">Nama</th>
+                            <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
+                                style="padding: 10px;">Email</th>
+                            <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
+                                style="padding: 10px;">Role</th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
+                                style="padding: 10px;">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
