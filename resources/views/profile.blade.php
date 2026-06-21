@@ -20,15 +20,24 @@
 </head>
 
 <body class="g-sidenav-show bg-gray-100">
-    <div class="position-absolute w-100 min-height-300 top-0" style="background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/profile-layout-header.jpg'); background-position-y: 50%;">
+    <div class="position-absolute w-100 min-height-300 top-0"
+        style="background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/profile-layout-header.jpg'); background-position-y: 50%;">
         <span class="mask bg-primary opacity-6"></span>
     </div>
-    <aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 " id="sidenav-main">
+    <aside
+        class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 "
+        id="sidenav-main">
         <div class="sidenav-header">
-            <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
-            <a class="navbar-brand m-0" href="" target="_blank">
-                <img src="/style/assets/img/it-high-resolution-logo-transparent.png" class="navbar-brand-img h-100" alt="main_logo">
-                <span class="ms-1 font-weight-bold">Service IT</span>
+            <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
+                aria-hidden="true" id="iconSidenav"></i>
+            <a class="navbar-brand m-0 d-flex flex-column align-items-center justify-content-center"
+                href="@if (Auth::user()->role == 'admin') {{ route('admin.index') }}@elseif(Auth::user()->role == 'pengurus' || Auth::user()->role == 'pemilik'){{ route('teknisi.index') }}@else{{ route('customer.index') }} @endif">
+                <img src="/style/assets/img/koslogo.png" class="navbar-brand-img h-100" alt="main_logo"
+                    style="width: 50px; height: auto; margin-bottom: 0.5rem;">
+                <div class="text-center">
+                    <div class="font-weight-bold" style="font-size: 0.9rem; line-height: 1.2;">Kost Tengger 74</div>
+                    <div class="font-weight-bold" style="font-size: 0.85rem; line-height: 1.2;">Service</div>
+                </div>
             </a>
         </div>
         <hr class="horizontal dark mt-0">
@@ -36,11 +45,13 @@
     </aside>
     <div class="main-content position-relative max-height-vh-100 h-100">
         <!-- Navbar -->
-        <nav class="navbar navbar-main navbar-expand-lg bg-transparent shadow-none position-absolute px-4 w-100 z-index-2 mt-n11">
+        <nav
+            class="navbar navbar-main navbar-expand-lg bg-transparent shadow-none position-absolute px-4 w-100 z-index-2 mt-n11">
             <div class="container-fluid py-1">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 ps-2 me-sm-6 me-5">
-                        <li class="breadcrumb-item text-sm"><a class="text-white opacity-5" href="javascript:;">Pages</a></li>
+                        <li class="breadcrumb-item text-sm"><a class="text-white opacity-5"
+                                href="javascript:;">Pages</a></li>
                         <li class="breadcrumb-item text-sm text-white active" aria-current="page">Profile</li>
                     </ol>
                     <h6 class="text-white font-weight-bolder ms-2">Profile</h6>
@@ -73,10 +84,12 @@
                             </a>
                         </li>
                         <li class="nav-item dropdown pe-2 d-flex align-items-center">
-                            <a href="javascript:;" class="nav-link text-white p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a href="javascript:;" class="nav-link text-white p-0" id="dropdownMenuButton"
+                                data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fa fa-bell cursor-pointer"></i>
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end px-2 py-3 ms-n4" aria-labelledby="dropdownMenuButton">
+                            <ul class="dropdown-menu dropdown-menu-end px-2 py-3 ms-n4"
+                                aria-labelledby="dropdownMenuButton">
                                 <li class="mb-2">
                                     <a class="dropdown-item border-radius-md" href="javascript:;">
                                         <div class="d-flex py-1">
@@ -99,7 +112,8 @@
                                     <a class="dropdown-item border-radius-md" href="javascript:;">
                                         <div class="d-flex py-1">
                                             <div class="my-auto">
-                                                <img src="../assets/img/small-logos/logo-spotify.svg" class="avatar avatar-sm bg-gradient-dark me-3">
+                                                <img src="../assets/img/small-logos/logo-spotify.svg"
+                                                    class="avatar avatar-sm bg-gradient-dark me-3">
                                             </div>
                                             <div class="d-flex flex-column justify-content-center">
                                                 <h6 class="text-sm font-weight-normal mb-1">
@@ -117,14 +131,22 @@
                                     <a class="dropdown-item border-radius-md" href="javascript:;">
                                         <div class="d-flex py-1">
                                             <div class="avatar avatar-sm bg-gradient-secondary me-3 my-auto">
-                                                <svg width="12px" height="12px" viewBox="0 0 43 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                                <svg width="12px" height="12px" viewBox="0 0 43 36" version="1.1"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    xmlns:xlink="http://www.w3.org/1999/xlink">
                                                     <title>credit-card</title>
-                                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                                        <g transform="translate(-2169.000000, -745.000000)" fill="#FFFFFF" fill-rule="nonzero">
+                                                    <g stroke="none" stroke-width="1" fill="none"
+                                                        fill-rule="evenodd">
+                                                        <g transform="translate(-2169.000000, -745.000000)"
+                                                            fill="#FFFFFF" fill-rule="nonzero">
                                                             <g transform="translate(1716.000000, 291.000000)">
                                                                 <g transform="translate(453.000000, 454.000000)">
-                                                                    <path class="color-background" d="M43,10.7482083 L43,3.58333333 C43,1.60354167 41.3964583,0 39.4166667,0 L3.58333333,0 C1.60354167,0 0,1.60354167 0,3.58333333 L0,10.7482083 L43,10.7482083 Z" opacity="0.593633743"></path>
-                                                                    <path class="color-background" d="M0,16.125 L0,32.25 C0,34.2297917 1.60354167,35.8333333 3.58333333,35.8333333 L39.4166667,35.8333333 C41.3964583,35.8333333 43,34.2297917 43,32.25 L43,16.125 L0,16.125 Z M19.7083333,26.875 L7.16666667,26.875 L7.16666667,23.2916667 L19.7083333,23.2916667 L19.7083333,26.875 Z M35.8333333,26.875 L28.6666667,26.875 L28.6666667,23.2916667 L35.8333333,23.2916667 L35.8333333,26.875 Z"></path>
+                                                                    <path class="color-background"
+                                                                        d="M43,10.7482083 L43,3.58333333 C43,1.60354167 41.3964583,0 39.4166667,0 L3.58333333,0 C1.60354167,0 0,1.60354167 0,3.58333333 L0,10.7482083 L43,10.7482083 Z"
+                                                                        opacity="0.593633743"></path>
+                                                                    <path class="color-background"
+                                                                        d="M0,16.125 L0,32.25 C0,34.2297917 1.60354167,35.8333333 3.58333333,35.8333333 L39.4166667,35.8333333 C41.3964583,35.8333333 43,34.2297917 43,32.25 L43,16.125 L0,16.125 Z M19.7083333,26.875 L7.16666667,26.875 L7.16666667,23.2916667 L19.7083333,23.2916667 L19.7083333,26.875 Z M35.8333333,26.875 L28.6666667,26.875 L28.6666667,23.2916667 L35.8333333,23.2916667 L35.8333333,26.875 Z">
+                                                                    </path>
                                                                 </g>
                                                             </g>
                                                         </g>
@@ -157,7 +179,8 @@
                 <div class="row gx-4">
                     <div class="col-auto">
                         <div class="avatar avatar-xl position-relative">
-                            <img src="{{ Auth::user()->profile_photo ? route('profile.photo', ['filename' => basename(Auth::user()->profile_photo)]) : asset('default-profile.png') }}" alt="Profile Image" class="w-100 border-radius-lg shadow-sm">
+                            <img src="{{ Auth::user()->profile_photo ? route('profile.photo', ['filename' => basename(Auth::user()->profile_photo)]) : asset('default-profile.png') }}"
+                                alt="Profile Image" class="w-100 border-radius-lg shadow-sm">
                         </div>
                     </div>
                     <div class="col-auto my-auto">
@@ -182,70 +205,74 @@
                                 <h5 class="mb-0">
                                     <i class="fab fa-telegram me-2" style="color: #0088cc;"></i>Telegram Integration
                                 </h5>
-                                @if(Auth::user()->telegram_chat_id)
-                                <span class="badge bg-success">
-                                    <i class="fa fa-check me-1"></i>Connected
-                                </span>
+                                @if (Auth::user()->telegram_chat_id)
+                                    <span class="badge bg-success">
+                                        <i class="fa fa-check me-1"></i>Connected
+                                    </span>
                                 @else
-                                <span class="badge bg-secondary">
-                                    <i class="fa fa-times me-1"></i>Not Connected
-                                </span>
+                                    <span class="badge bg-secondary">
+                                        <i class="fa fa-times me-1"></i>Not Connected
+                                    </span>
                                 @endif
                             </div>
                         </div>
                         <div class="card-body">
-                            @if(Auth::user()->telegram_chat_id)
-                            <!-- Telegram Connected State -->
-                            <div class="alert alert-info mb-4">
-                                <div class="d-flex align-items-center">
-                                    <i class="fa fa-info-circle me-3" style="font-size: 20px;"></i>
-                                    <div>
-                                        <strong>Telegram sudah terhubung!</strong>
-                                        <p class="mb-0 mt-1">Anda akan menerima notifikasi untuk setiap update tiket langsung di Telegram.</p>
+                            @if (Auth::user()->telegram_chat_id)
+                                <!-- Telegram Connected State -->
+                                <div class="alert alert-info mb-4">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fa fa-info-circle me-3" style="font-size: 20px;"></i>
+                                        <div>
+                                            <strong>Telegram sudah terhubung!</strong>
+                                            <p class="mb-0 mt-1">Anda akan menerima notifikasi untuk setiap update
+                                                tiket langsung di Telegram.</p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="d-flex justify-content-center">
-                                <form action="{{ route('telegram.logout') }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="btn btn-danger" onclick="return confirm('Apakah Anda yakin ingin memutuskan koneksi Telegram?')">
-                                        <i class="fab fa-telegram me-2"></i>Logout Telegram
-                                    </button>
-                                </form>
-                            </div>
+                                <div class="d-flex justify-content-center">
+                                    <form action="{{ route('telegram.logout') }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="btn btn-danger"
+                                            onclick="return confirm('Apakah Anda yakin ingin memutuskan koneksi Telegram?')">
+                                            <i class="fab fa-telegram me-2"></i>Logout Telegram
+                                        </button>
+                                    </form>
+                                </div>
                             @else
-                            <!-- Telegram Not Connected State -->
-                            <div class="alert alert-warning mb-4">
-                                <div class="d-flex align-items-center">
-                                    <i class="fa fa-exclamation-triangle me-3" style="font-size: 20px;"></i>
-                                    <div>
-                                        <strong>Telegram belum terhubung.</strong>
-                                        <p class="mb-0 mt-1">Hubungkan akun Telegram Anda untuk menerima notifikasi tiket secara real-time.</p>
+                                <!-- Telegram Not Connected State -->
+                                <div class="alert alert-warning mb-4">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fa fa-exclamation-triangle me-3" style="font-size: 20px;"></i>
+                                        <div>
+                                            <strong>Telegram belum terhubung.</strong>
+                                            <p class="mb-0 mt-1">Hubungkan akun Telegram Anda untuk menerima notifikasi
+                                                tiket secara real-time.</p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="text-center">
-                                <p class="text-muted mb-3">Klik tombol di bawah untuk login dengan Telegram:</p>
-                                <div id="telegram-widget-container" class="d-flex justify-content-center">
-                                    <script async src="https://telegram.org/js/telegram-widget.js?22" data-telegram-login="kos74_bot" data-size="large" data-userpic="false" data-onauth="onTelegramAuth(user)" data-request-access="write"></script>
+                                <div class="text-center">
+                                    <p class="text-muted mb-3">Klik tombol di bawah untuk login dengan Telegram:</p>
+                                    <div id="telegram-widget-container" class="d-flex justify-content-center">
+                                        <script async src="https://telegram.org/js/telegram-widget.js?22" data-telegram-login="kos74_bot" data-size="large"
+                                            data-userpic="false" data-onauth="onTelegramAuth(user)" data-request-access="write"></script>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <hr class="my-4">
+                                <hr class="my-4">
 
-                            <div class="alert alert-light border">
-                                <h6 class="alert-heading mb-3">
-                                    <i class="fa fa-lightbulb me-2"></i>Mengapa perlu Telegram?
-                                </h6>
-                                <ul class="mb-0">
-                                    <li>Menerima notifikasi tiket secara real-time</li>
-                                    <li>Mendapatkan update status tiket dengan cepat</li>
-                                    <li>Memudahkan komunikasi dengan tim support</li>
-                                    <li>Akses informasi tiket kapan saja</li>
-                                </ul>
-                            </div>
+                                <div class="alert alert-light border">
+                                    <h6 class="alert-heading mb-3">
+                                        <i class="fa fa-lightbulb me-2"></i>Mengapa perlu Telegram?
+                                    </h6>
+                                    <ul class="mb-0">
+                                        <li>Menerima notifikasi tiket secara real-time</li>
+                                        <li>Mendapatkan update status tiket dengan cepat</li>
+                                        <li>Memudahkan komunikasi dengan tim support</li>
+                                        <li>Akses informasi tiket kapan saja</li>
+                                    </ul>
+                                </div>
                             @endif
                         </div>
                     </div>
@@ -262,31 +289,37 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <form action="{{ route('customer.profileupdate') }}" method="POST" enctype="multipart/form-data">
+                            <form action="{{ route('customer.profileupdate') }}" method="POST"
+                                enctype="multipart/form-data">
                                 @csrf
                                 <p class="text-uppercase text-sm">User Information</p>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="name" class="form-control-label">Name</label>
-                                            <input id="name" name="name" class="form-control" type="text" value="{{ Auth::user()->name }}">
+                                            <input id="name" name="name" class="form-control" type="text"
+                                                value="{{ Auth::user()->name }}">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="description" class="form-control-label">Description</label>
-                                            <input id="description" name="description" class="form-control" type="text" value="{{ Auth::user()->description }}">
+                                            <input id="description" name="description" class="form-control"
+                                                type="text" value="{{ Auth::user()->description }}">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="profile_photo" class="form-control-label">Profile Photo</label>
-                                            <input id="profile_photo" name="profile_photo" class="form-control @error('profile_photo') is-invalid @enderror" type="file" accept="image/*">
+                                            <label for="profile_photo" class="form-control-label">Profile
+                                                Photo</label>
+                                            <input id="profile_photo" name="profile_photo"
+                                                class="form-control @error('profile_photo') is-invalid @enderror"
+                                                type="file" accept="image/*">
                                             <!-- Menampilkan pesan error jika ada -->
                                             @error('profile_photo')
-                                            <div class="invalid-feedback">
-                                                {{ $message }}
-                                            </div>
+                                                <div class="invalid-feedback">
+                                                    {{ $message }}
+                                                </div>
                                             @enderror
                                         </div>
                                     </div>
@@ -329,24 +362,24 @@
                 formData.append(key, user[key]);
             });
 
-            fetch('{{ route("telegram.from.profile") }}', {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: formData
-            })
-            .then(response => {
-                if (response.redirected) {
-                    window.location.href = response.url;
-                } else if (response.ok) {
-                    location.reload();
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Terjadi kesalahan saat menghubungkan Telegram');
-            });
+            fetch('{{ route('telegram.from.profile') }}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: formData
+                })
+                .then(response => {
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                    } else if (response.ok) {
+                        location.reload();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan saat menghubungkan Telegram');
+                });
         }
 
         // Copy to Clipboard Function
