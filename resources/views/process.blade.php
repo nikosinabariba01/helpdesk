@@ -169,7 +169,7 @@
                                 <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="open">Open</a></li>
                                 <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="on process">On Process</a></li>
                                 <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="escalated">Escalated</a></li>
-                                <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="closed">Closed</a></li>
+                                <li><a class="dropdown-item filter-option" href="#" data-filter-type="status" data-filter-value="closed">Close</a></li>
                             </ul>
                         </div>
                     </div>
