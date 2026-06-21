@@ -18,85 +18,74 @@
 
 @section('container')
 
-    <!-- Open Ticket -->
-    <div class="col-xl-3 col-sm-6 col-6 mb-xl-0 mb-4">
-        <div class="card">
-            <div class="card-body p-3"
-                style="min-height: 120px; display: flex; align-items: center; justify-content: space-between;">
-                <div class="numbers" style="flex: 1;">
-                    <p class="text-sm mb-2 text-uppercase font-weight-bold" style="font-size: 11px; letter-spacing: 0.5px;">
-                        Open</p>
-                    <h5 class="font-weight-bolder mb-0" style="font-size: 28px; line-height: 1.2;">
-                        {{ $OpenTic }}
-                    </h5>
-                </div>
-                <div class="d-flex align-items-center justify-content-center" style="flex: 0 0 auto; margin-left: 12px;">
-                    <div class="icon icon-shape text-center rounded-circle"
-                        style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: rgba(46,204,113,1);">
-                        <i class="fa fa-ticket text-lg opacity-10" aria-hidden="true"></i>
+    <div class="row g-1">
+        <!-- Open Ticket -->
+        <div class="col-6 col-sm-6 col-xl-3">
+            <div class="card">
+                <div class="card-body p-3 card-stat">
+                    <div class="numbers">
+                        <p class="text-sm mb-2 text-uppercase font-weight-bold card-stat-title">Open Ticket</p>
+                        <h5 class="font-weight-bolder mb-0 card-stat-value">{{ $OpenTic }}</h5>
+                    </div>
+                    <div class="card-stat-icon">
+                        <div class="icon icon-shape shadow-success text-center rounded-circle icon-48"
+                            style="background: rgba(46,204,113,1);">
+                            <i class="fa fa-ticket text-lg opacity-10"></i>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- On Process Ticket -->
-    <div class="col-xl-3 col-sm-6 col-6 mb-xl-0 mb-4">
-        <div class="card">
-            <div class="card-body p-3"
-                style="min-height: 120px; display: flex; align-items: center; justify-content: space-between;">
-                <div class="numbers" style="flex: 1;">
-                    <p class="text-sm mb-2 text-uppercase font-weight-bold" style="font-size: 11px; letter-spacing: 0.5px;">
-                        On Process</p>
-                    <h5 class="font-weight-bolder mb-0" style="font-size: 28px; line-height: 1.2;">
-                        {{ $OnProcessTickets }}
-                    </h5>
-                </div>
-                <div class="d-flex align-items-center justify-content-center" style="flex: 0 0 auto; margin-left: 12px;">
-                    <div class="icon icon-shape text-center rounded-circle"
-                        style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: rgba(245,158,11,1);">
-                        <i class="fa fa-spinner text-lg opacity-10" aria-hidden="true"></i>
+
+        <!-- On Process Ticket -->
+        <div class="col-6 col-sm-6 col-xl-3">
+            <div class="card">
+                <div class="card-body p-3 card-stat">
+                    <div class="numbers">
+                        <p class="text-sm mb-2 text-uppercase font-weight-bold card-stat-title">On Process Ticket</p>
+                        <h5 class="font-weight-bolder mb-0 card-stat-value">{{ $OnProcessTickets }}</h5>
+                    </div>
+                    <div class="card-stat-icon">
+                        <div class="icon icon-shape shadow-warning text-center rounded-circle icon-48"
+                            style="background: rgba(245,158,11,1);">
+                            <i class="fa fa-spinner text-lg opacity-10"></i>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- Escalation Ticket -->
-    <div class="col-xl-3 col-sm-6 col-6 mb-xl-0 mb-4">
-        <div class="card">
-            <div class="card-body p-3"
-                style="min-height: 120px; display: flex; align-items: center; justify-content: space-between;">
-                <div class="numbers" style="flex: 1;">
-                    <p class="text-sm mb-2 text-uppercase font-weight-bold" style="font-size: 11px; letter-spacing: 0.5px;">
-                        Escalation</p>
-                    <h5 class="font-weight-bolder mb-0" style="font-size: 28px; line-height: 1.2;">
-                        {{ $totalEscalation }}
-                    </h5>
-                </div>
-                <div class="d-flex align-items-center justify-content-center" style="flex: 0 0 auto; margin-left: 12px;">
-                    <div class="icon icon-shape text-center rounded-circle"
-                        style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: rgba(94,114,228,1);">
-                        <i class="fa fa-flag text-lg opacity-10" aria-hidden="true"></i>
+
+        <!-- Escalation Ticket -->
+        <div class="col-6 col-sm-6 col-xl-3">
+            <div class="card">
+                <div class="card-body p-3 card-stat">
+                    <div class="numbers">
+                        <p class="text-sm mb-2 text-uppercase font-weight-bold card-stat-title">Escalation Ticket</p>
+                        <h5 class="font-weight-bolder mb-0 card-stat-value">{{ $totalEscalation }}</h5>
+                    </div>
+                    <div class="card-stat-icon">
+                        <div class="icon icon-shape shadow-primary text-center rounded-circle icon-48"
+                            style="background: rgba(94,114,228,1);">
+                            <i class="fa fa-flag text-lg opacity-10"></i>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- Closed Ticket -->
-    <div class="col-xl-3 col-sm-6 col-6">
-        <div class="card">
-            <div class="card-body p-3"
-                style="min-height: 120px; display: flex; align-items: center; justify-content: space-between;">
-                <div class="numbers" style="flex: 1;">
-                    <p class="text-sm mb-2 text-uppercase font-weight-bold" style="font-size: 11px; letter-spacing: 0.5px;">
-                        Close</p>
-                    <h5 class="font-weight-bolder mb-0" style="font-size: 28px; line-height: 1.2;">
-                        {{ $closedtic }}
-                    </h5>
-                </div>
-                <div class="d-flex align-items-center justify-content-center" style="flex: 0 0 auto; margin-left: 12px;">
-                    <div class="icon icon-shape text-center rounded-circle"
-                        style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: rgba(255,0,0,1);">
-                        <i class="fa fa-archive text-lg opacity-10" aria-hidden="true"></i>
+
+        <!-- Closed Ticket -->
+        <div class="col-6 col-sm-6 col-xl-3">
+            <div class="card">
+                <div class="card-body p-3 card-stat">
+                    <div class="numbers">
+                        <p class="text-sm mb-2 text-uppercase font-weight-bold card-stat-title">Closed Ticket</p>
+                        <h5 class="font-weight-bolder mb-0 card-stat-value">{{ $closedtic }}</h5>
+                    </div>
+                    <div class="card-stat-icon">
+                        <div class="icon icon-shape shadow-danger text-center rounded-circle icon-48"
+                            style="background: rgba(255,0,0,1);">
+                            <i class="fa fa-archive text-lg opacity-10"></i>
+                        </div>
                     </div>
                 </div>
             </div>
