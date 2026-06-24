@@ -39,7 +39,7 @@ class AdminController extends Controller
 
         $totalAllTickets = Ticket::whereNotNull('id')->count();
 
-        $totalTickets = $teknisi_data_ticket->count();
+        $totalTickets = Ticket::where('status', 'open')->count();
 
         return view('administrator', compact('teknisi_data_ticket', 'totalTickets', 'totalOnProcessTickets', 'totalClosedTickets', 'totalAllTickets'));
     }
