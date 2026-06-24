@@ -224,7 +224,7 @@
                                         <i class="fa fa-info-circle me-3" style="font-size: 20px;"></i>
                                         <div>
                                             <strong>Telegram sudah terhubung!</strong>
-                                            <p class="mb-0 mt-1">Anda akan menerima notifikasi untuk setiap update
+                                            <p class="mb-0 mt-1">Anda akan menerima notifikasi komentar
                                                 tiket langsung di Telegram.</p>
                                         </div>
                                     </div>
@@ -247,7 +247,7 @@
                                         <div>
                                             <strong>Telegram belum terhubung.</strong>
                                             <p class="mb-0 mt-1">Hubungkan akun Telegram Anda untuk menerima notifikasi
-                                                tiket secara real-time.</p>
+                                                komentar tiket secara real-time.</p>
                                         </div>
                                     </div>
                                 </div>
@@ -267,10 +267,8 @@
                                         <i class="fa fa-lightbulb me-2"></i>Mengapa perlu Telegram?
                                     </h6>
                                     <ul class="mb-0">
-                                        <li>Menerima notifikasi tiket secara real-time</li>
-                                        <li>Mendapatkan update status tiket dengan cepat</li>
-                                        <li>Memudahkan komunikasi dengan tim support</li>
-                                        <li>Akses informasi tiket kapan saja</li>
+                                        <li>Menerima notifikasi komentar secara real-time</li>
+                                        <li>Mendapatkan notifikasi pengumuman secara real-time</li>
                                     </ul>
                                 </div>
                             @endif
