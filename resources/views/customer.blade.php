@@ -127,7 +127,7 @@
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
                                             style="padding: 10px;">Description</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
-                                            style="padding: 10px;">aksi</th>
+                                            style="padding: 10px;">action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
