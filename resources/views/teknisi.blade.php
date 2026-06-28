@@ -147,7 +147,7 @@
             <div class="card z-index-2 h-100 shadow-lg" style="border: 1px solid #e4e4e4;">
                 <div class="card-header pb-0 d-flex align-items-center justify-content-between flex-wrap gap-2">
                     <div class="me-2">
-                        <h6 class="mb-0">Tickets per Bulan (Permintaan vs Perbaikan)</h6>
+                        <h6 class="mb-0">Tickets per Month (Permintaan vs Perbaikan)</h6>
                         <small class="text-secondary">
                             Tahun: {{ $selectedYear }} • Scope:
                             <b>{{ $scope === 'all' ? 'All (Resolved+Unresolved)' : strtoupper($scope) }}</b>
@@ -187,7 +187,7 @@
         <div class="col-12 col-lg-4">
             <div class="card z-index-2 h-100 shadow-lg" style="border: 1px solid #e4e4e4;">
                 <div class="card-header pb-0 d-flex align-items-center justify-content-between flex-wrap gap-2">
-                    <h6 class="mb-0">Komposisi Status</h6>
+                    <h6 class="mb-0">Status Composition</h6>
 
                     <select select id="pieMonthSelect" class="form-select form-select-sm" style="width: 140px;">
                         <option value="0">This year</option>
@@ -1377,8 +1377,8 @@
 
             function pieTopText(m) {
                 return m === 0 ?
-                    `Komposisi Status (${chartData.year})` :
-                    `Komposisi Status (${MONTHS_FULL[m - 1]} ${chartData.year})`;
+                    `Status Composition (${chartData.year})` :
+                    `Status Composition (${MONTHS_FULL[m - 1]} ${chartData.year})`;
             }
 
             function closeRateText(dataArr) {
