@@ -52,7 +52,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group card">
-                            <label for="Jenis_Pengaduan">Jenis Pengaduan</label>
+                            <label for="Jenis_Pengaduan">Complaint Type</label>
                             <select id="Jenis_Pengaduan" name="Jenis_Pengaduan" class="form-control border-input">
                                 <option value="" {{ old('Jenis_Pengaduan') == '' ? 'selected' : '' }}>--Pilih Jenis Pengaduan--</option>
                                 <option value="perbaikan" {{ old('Jenis_Pengaduan') == 'perbaikan' ? 'selected' : '' }}>Perbaikan</option>
@@ -68,7 +68,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group card">
-                            <label for="Lokasi">Lokasi/Nokamar</label>
+                            <label for="Lokasi">Location / Room Number</label>
                             <input type="text" id="Lokasi" name="Lokasi" class="form-control border-input" value="{{ old('Lokasi') }}">
                             @error('Lokasi')
                             <p class="text-danger">{{ $message }}</p>
@@ -80,7 +80,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group card">
-                            <label for="Detail">Deskripsi</label>
+                            <label for="Detail">Description</label>
                             <textarea id="Detail" name="Detail" rows="5" class="form-control border-input" placeholder="Here can be your description">{{ old('Detail') }}</textarea>
                             @error('Detail')
                             <p class="text-danger">{{ $message }}</p>
@@ -92,8 +92,8 @@
                     <div class="col-md-6">
                         <div divclass="form-group card">
                             <label for="gambar" class="form-control-label">
-                                Gambar Pendukung
-                                <span class="text-muted" style="font-size: 0.8em; vertical-align: middle;">*boleh kosong</span>
+                                image 
+                                <span class="text-muted" style="font-size: 0.8em; vertical-align: middle;">*optional</span>
                             </label>
                             <input class="form-control form-control-sm" id="gambar" name="gambar" type="file" accept="image/*">
                             @error('gambar')
