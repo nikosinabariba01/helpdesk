@@ -312,7 +312,7 @@
                         <label class="form-label mb-1">Type Complaint (optional)</label>
                         @php $jenis = request('jenis','all'); @endphp
                         <select name="jenis" class="form-select form-select-sm">
-                            <option value="all" {{ $jenis === 'all' ? 'selected' : '' }}>All Jenis</option>
+                            <option value="all" {{ $jenis === 'all' ? 'selected' : '' }}>All Types</option>
                             <option value="perbaikan" {{ $jenis === 'perbaikan' ? 'selected' : '' }}>Perbaikan</option>
                             <option value="permintaan" {{ $jenis === 'permintaan' ? 'selected' : '' }}>Permintaan</option>
                         </select>
