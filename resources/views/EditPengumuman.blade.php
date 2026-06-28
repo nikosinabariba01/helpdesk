@@ -66,7 +66,7 @@
 
                 <!-- Deskripsi Pengumuman -->
                 <div class="mb-3">
-                    <label for="deskripsi" class="form-label">Deskripsi Pengumuman:</label>
+                    <label for="deskripsi" class="form-label">Description:</label>
                     <textarea id="deskripsi" name="deskripsi" class="form-control" rows="4">{{ old('deskripsi', $pengumuman->deskripsi) }}</textarea>
                     @error('deskripsi')
                     <p class="text-danger">{{ $message }}</p>
@@ -115,7 +115,7 @@
         duplicateItems: false, // Tidak memperbolehkan duplikat item
         searchEnabled: true, // Mengaktifkan pencarian
         placeholder: true, // Menampilkan placeholder
-        delimiter: ', ', // Pembatas tag
+        delimiter: ', ', // patas tag
         maxItemCount: -1, // Tidak membatasi jumlah tag
         addItems: true, // Memungkinkan menambah item baru dari input
         itemSelectText: '', // Menghilangkan teks "Select"
