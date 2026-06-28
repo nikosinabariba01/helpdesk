@@ -223,9 +223,8 @@
                                     <div class="d-flex align-items-center">
                                         <i class="fa fa-info-circle me-3" style="font-size: 20px;"></i>
                                         <div>
-                                            <strong>Telegram sudah terhubung!</strong>
-                                            <p class="mb-0 mt-1">Anda akan menerima notifikasi komentar
-                                                tiket langsung di Telegram.</p>
+                                            <strong>Telegram Connected!</strong>
+                                            <p class="mb-0 mt-1">You will receive notifications for every ticket update directly on Telegram.</p>
                                         </div>
                                     </div>
                                 </div>

@@ -219,7 +219,7 @@
         {{-- HEADER (bersih, tanpa badge & quick actions) --}}
         <div class="card-header px-3 py-3">
             <h6 class="report-title">Download pdf report</h6>
-            <p class="report-subtitle mb-0">Rekap keluhan kos: ringkasan, close rate, top lokasi/subject, dan daftar tiket.
+            <p class="report-subtitle mb-0">Kost complaint recap: summary, close rate, top locations/subjects, and ticket list..
             </p>
         </div>
 
@@ -234,12 +234,12 @@
                     <div class="col-12 col-md-4 col-lg-3">
                         <label class="form-label mb-1">Periode</label>
                         <select name="period" id="periodSelect" class="form-select form-select-sm">
-                            <option value="monthly" {{ $period === 'monthly' ? 'selected' : '' }}>Bulanan</option>
-                            <option value="yearly" {{ $period === 'yearly' ? 'selected' : '' }}>Tahunan (Jan–Des)
+                            <option value="monthly" {{ $period === 'monthly' ? 'selected' : '' }}>Monthly</option>
+                            <option value="yearly" {{ $period === 'yearly' ? 'selected' : '' }}>Yearly (Jan–Des)
                             </option>
-                            <option value="all" {{ $period === 'all' ? 'selected' : '' }}>Semua Tahun</option>
+                            <option value="all" {{ $period === 'all' ? 'selected' : '' }}>All Years</option>
                         </select>
-                        <div class="form-text">Pilih cakupan laporan.</div>
+                        <div class="form-text">Select the report scope.</div>
                     </div>
 
                     {{-- ✅ YEAR: hide saat period = all --}}
@@ -257,7 +257,7 @@
                                     {{ (int) $selectedYear === (int) $y ? 'selected' : '' }}>{{ $y }}</option>
                             @endforeach
                         </select>
-                        <div class="form-text" id="yearHelp">Dipakai untuk Bulanan/Tahunan.</div>
+                        <div class="form-text" id="yearHelp">Used for monthly/yearly reports.</div>
                     </div>
 
                     {{-- ✅ MONTH: hide saat period = yearly ATAU all --}}
@@ -289,7 +289,7 @@
                                     {{ $name }}</option>
                             @endforeach
                         </select>
-                        <div class="form-text" id="monthHelp">Muncul hanya untuk Bulanan.</div>
+                        <div class="form-text" id="monthHelp">Shown only for monthly reports.</div>
                     </div>
                 </div>
 
@@ -342,9 +342,9 @@
             <div class="report-hint d-flex align-items-start gap-2">
                 <i class="fa fa-circle-info mt-1"></i>
                 <div class="small text-muted">
-                    <b>Bulanan:</b> hitung data dalam 1 bulan terpilih. &nbsp;|&nbsp;
-                    <b>Tahunan:</b> akumulasi Jan–Des untuk tahun tertentu. &nbsp;|&nbsp;
-                    <b>Semua Tahun:</b> akumulasi keseluruhan data.
+                    <b>Monthly:</b> calculates data for the selected month. &nbsp;|&nbsp;
+                    <b>Yearly:</b> accumulation of Jan–Des for a specific year. &nbsp;|&nbsp;
+                    <b>All Years:</b> accumulation of all data.
                 </div>
             </div>
         </div>
