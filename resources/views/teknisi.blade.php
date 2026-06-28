@@ -296,7 +296,7 @@
                 {{-- ROW 2 --}}
                 <div class="row g-3 align-items-end mt-1">
                     <div class="col-12 col-md-4">
-                        <label class="form-label mb-1">Status (opsional)</label>
+                        <label class="form-label mb-1">Status (optional)</label>
                         @php $status = request('status','all'); @endphp
                         <select name="status" class="form-select form-select-sm">
                             <option value="all" {{ $status === 'all' ? 'selected' : '' }}>Semua Status</option>
@@ -309,7 +309,7 @@
                     </div>
 
                     <div class="col-12 col-md-4">
-                        <label class="form-label mb-1">Jenis (opsional)</label>
+                        <label class="form-label mb-1">Type Complaint (optional)</label>
                         @php $jenis = request('jenis','all'); @endphp
                         <select name="jenis" class="form-select form-select-sm">
                             <option value="all" {{ $jenis === 'all' ? 'selected' : '' }}>Semua Jenis</option>
