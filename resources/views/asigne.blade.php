@@ -71,11 +71,11 @@
                                     <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
                                         style="padding: 10px;">Status</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
-                                        style="padding: 10px;">Deskripsi</th>
+                                        style="padding: 10px;">Description</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
-                                        style="padding: 10px;">Aksi Status</th>
+                                        style="padding: 10px;">Action Status</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
-                                        style="padding: 10px;">aksi</th>
+                                        style="padding: 10px;">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -268,7 +268,7 @@
                                     style="border-color: #ffffff; color: #495057; background-color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"
                                     type="button" id="filterJenisPengaduanBtn" data-bs-toggle="dropdown"
                                     aria-expanded="false">
-                                    <span id="filterJenisPengaduanDisplay">Jenis Pengaduan</span>
+                                    <span id="filterJenisPengaduanDisplay">Complaint Type</span>
                                     <i class="fa fa-chevron-down" style="font-size: 11px;"></i>
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="filterJenisPengaduanBtn"
