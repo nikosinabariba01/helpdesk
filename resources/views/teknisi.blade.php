@@ -299,7 +299,7 @@
                         <label class="form-label mb-1">Status (optional)</label>
                         @php $status = request('status','all'); @endphp
                         <select name="status" class="form-select form-select-sm">
-                            <option value="all" {{ $status === 'all' ? 'selected' : '' }}>Semua Status</option>
+                            <option value="all" {{ $status === 'all' ? 'selected' : '' }}>All Status</option>
                             <option value="open" {{ $status === 'open' ? 'selected' : '' }}>Open</option>
                             <option value="on process" {{ $status === 'on process' ? 'selected' : '' }}>On Process
                             </option>
@@ -312,7 +312,7 @@
                         <label class="form-label mb-1">Type Complaint (optional)</label>
                         @php $jenis = request('jenis','all'); @endphp
                         <select name="jenis" class="form-select form-select-sm">
-                            <option value="all" {{ $jenis === 'all' ? 'selected' : '' }}>Semua Jenis</option>
+                            <option value="all" {{ $jenis === 'all' ? 'selected' : '' }}>All Jenis</option>
                             <option value="perbaikan" {{ $jenis === 'perbaikan' ? 'selected' : '' }}>Perbaikan</option>
                             <option value="permintaan" {{ $jenis === 'permintaan' ? 'selected' : '' }}>Permintaan</option>
                         </select>
