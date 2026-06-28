@@ -428,7 +428,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="Jenis_Pengaduan">Jenis Pengaduan</label>
+                                        <label for="Jenis_Pengaduan">Complaint Type</label>
                                         <select id="Jenis_Pengaduan" name="Jenis_Pengaduan"
                                             class="form-control border-input">
                                             <option value="" selected>--Pilih Jenis Pengaduan--</option>
@@ -445,7 +445,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="Lokasi">Lokasi/Nokamar</label>
+                                        <label for="Lokasi">Location / Room Number</label>
                                         <input type="text" id="Lokasi" name="Lokasi"
                                             class="form-control border-input">
                                         @error('Lokasi')
@@ -458,7 +458,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="Detail">Deskripsi</label>
+                                        <label for="Detail">Description</label>
                                         <textarea id="Detail" name="Detail" rows="5" class="form-control border-input"
                                             placeholder="Here can be your description" value=""></textarea>
                                         @error('Detail')
@@ -469,7 +469,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <label for="gambar">Gambar Pendukung</label>
+                                    <label for="gambar">Image</label>
                                     <input class="form-control form-control-sm @error('gambar') is-invalid @enderror"
                                         id="gambar" name="gambar" type="file" accept="image/*">
                                     @error('gambar')
