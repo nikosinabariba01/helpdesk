@@ -45,7 +45,7 @@
                     <thead>
                         <tr>
                             <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
-                                style="padding: 10px; width: 25%;">Nama</th>
+                                style="padding: 10px; width: 25%;">Name</th>
                             <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
                                 style="padding: 10px; width: 35%;">Email</th>
                             <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
@@ -339,7 +339,7 @@
         // Sorting klik th
         $('#UserTable thead th.sorting').click(function() {
             const colText = $(this).text().trim().toLowerCase();
-            if (colText === 'nama') currentSort.column = 'name';
+            if (colText === 'name') currentSort.column = 'name';
             else if (colText === 'email') currentSort.column = 'email';
             else if (colText === 'role') currentSort.column = 'role';
             else return;
