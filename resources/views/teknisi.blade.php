@@ -263,7 +263,7 @@
                     {{-- ✅ MONTH: hide saat period = yearly ATAU all --}}
                     <div class="col-12 col-md-4 col-lg-3 {{ in_array($period, ['yearly', 'all']) ? 'd-none' : '' }}"
                         id="monthWrap">
-                        <label class="form-label mb-1"></label>
+                        <label class="form-label mb-1">Month</label>
                         @php
                             $months = [
                                 1 => 'Januari',
@@ -296,10 +296,10 @@
                 {{-- ROW 2 --}}
                 <div class="row g-3 align-items-end mt-1">
                     <div class="col-12 col-md-4">
-                        <label class="form-label mb-1">Status (optional)</label>
+                        <label class="form-label mb-1">Status (opsional)</label>
                         @php $status = request('status','all'); @endphp
                         <select name="status" class="form-select form-select-sm">
-                            <option value="all" {{ $status === 'all' ? 'selected' : '' }}>All Status</option>
+                            <option value="all" {{ $status === 'all' ? 'selected' : '' }}>Semua Status</option>
                             <option value="open" {{ $status === 'open' ? 'selected' : '' }}>Open</option>
                             <option value="on process" {{ $status === 'on process' ? 'selected' : '' }}>On Process
                             </option>
