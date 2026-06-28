@@ -125,7 +125,7 @@
                                         <th class="sorting text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
                                             style="padding: 10px;">Status</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
-                                            style="padding: 10px;">Deskripsi</th>
+                                            style="padding: 10px;">Description</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
                                             style="padding: 10px;">aksi</th>
                                     </tr>
