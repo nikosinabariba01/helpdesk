@@ -41,7 +41,7 @@
                 <div class="row mb-3">
                     <!-- Judul Pengumuman -->
                     <div class="col-md-6">
-                        <label for="judul" class="form-label">Judul Pengumuman:</label>
+                        <label for="judul" class="form-label">Subject</label>
                         <input type="text" id="judul" name="judul" value="{{ old('judul') }}" class="form-control">
                         @error('judul')
                         <p class="text-danger">{{ $message }}</p>
@@ -50,7 +50,7 @@
 
                     <!-- Pilih Penyewa (Choices) -->
                     <div class="col-md-6">
-                        <label for="penyewa" class="form-label">Pilih Penyewa:</label>
+                        <label for="penyewa" class="form-label">Receiver:</label>
                         <select class="form-control" name="penyewa[]" id="choices-button" placeholder="search or choice" multiple>
                             <option value="all">Pilih Semua</option>
                             @foreach($penyewa as $p)
@@ -65,7 +65,7 @@
 
                 <!-- Deskripsi Pengumuman -->
                 <div class="mb-3">
-                    <label for="deskripsi" class="form-label">Deskripsi Pengumuman:</label>
+                    <label for="deskripsi" class="form-label">Description:</label>
                     <textarea id="deskripsi" name="deskripsi" class="form-control" rows="4">{{ old('deskripsi') }}</textarea>
                     @error('deskripsi')
                     <p class="text-danger">{{ $message }}</p>
@@ -74,7 +74,7 @@
 
                 <!-- Submit Button -->
                 <div class="mt-3">
-                    <button type="submit" class="btn btn-primary">Kirim Pengumuman</button>
+                    <button type="submit" class="btn btn-primary">Send Announcement</button>
                 </div>
             </form>
         </div>
