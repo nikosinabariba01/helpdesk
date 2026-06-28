@@ -64,7 +64,7 @@
                 <div class="mt-2">
                     <label for="role" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Role:</label>
                     <select id="role" name="role" class="form-select">
-                        <option value="">Pilih role</option>
+                        <option value="">select role</option>
                         <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
                         <option value="pengurus" {{ old('role') == 'pengurus' ? 'selected' : '' }}>Pengurus</option>
                         <option value="penyewa" {{ old('role') == 'penyewa' ? 'selected' : '' }}>Penyewa</option>
